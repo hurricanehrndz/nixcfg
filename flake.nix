@@ -41,34 +41,23 @@
           linux = inputs.home-manager.lib.homeManagerConfiguration {
             configuration = { pkgs, config, ... }:
             {
+              nixpkgs = {
+                config.allowUnfree = true;
+                overlays = [ self.overlay ];
+              };
               home.stateVersion = "20.09";
               home.packages = with pkgs; [
                 htop
                 sheldon
               ];
-              nixpkgs = {
-                overlays = self.internal.overlays.x86_64-linux;
-              };
             };
             system = "x86_64-linux";
             homeDirectory = "/home/users/hurricanehrndz";
             username = "hurricanehrndz";
           };
         };
-
-        overlays =  forEachSystem (system: [
-          (self.internal.overlay."${system}")
-        ]);
-        overlay = forEachSystem (system: _: _: self.internal.packages."${system}");
-        packages = forEachSystem (system:
-          let
-            pkgs = pkgsBySystem."${system}";
-          in
-          {
-            sheldon = pkgs.callPackage ./nix/pkgs/sheldon { };
-          }
-        );
-
       };
+
+      overlay = final: prev: (import ./nix/pkgs/packages.nix) final prev;
     };
 }

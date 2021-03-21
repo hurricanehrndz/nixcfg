@@ -1,4 +1,4 @@
-{ stdenv, fetchFromGitHub, rustPlatform, pkgconfig, openssl, darwin }:
+{ stdenv, lib, fetchFromGitHub, rustPlatform, pkgconfig, openssl, darwin }:
 
 rustPlatform.buildRustPackage rec {
   pname = "sheldon";
@@ -16,11 +16,11 @@ rustPlatform.buildRustPackage rec {
 
   nativeBuildInputs = [ pkgconfig ];
   buildInputs = [ openssl ]
-  ++ stdenv.lib.optionals stdenv.isDarwin [
+  ++ lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Security
   ];
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Fast, configurable, shell plugin manager ";
     homepage = https://github.com/rossmacarthur/sheldon;
     license = with licenses; [ asl20 /* or */ mit ];
