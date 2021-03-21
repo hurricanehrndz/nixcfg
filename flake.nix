@@ -41,6 +41,7 @@
           linux = inputs.home-manager.lib.homeManagerConfiguration {
             configuration = { pkgs, config, ... }:
             {
+              imports = [ (import ./home/modules/programs) ];
               nixpkgs = {
                 config.allowUnfree = true;
                 overlays = [ self.overlay ];
@@ -48,8 +49,13 @@
               home.stateVersion = "20.09";
               home.packages = with pkgs; [
                 htop
-                sheldon
               ];
+              programs.sheldon = {
+                enable = true;
+                settings = {
+                  shell = "zsh";
+                };
+              };
             };
             system = "x86_64-linux";
             homeDirectory = "/home/users/hurricanehrndz";
