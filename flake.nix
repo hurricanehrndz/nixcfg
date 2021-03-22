@@ -41,6 +41,6 @@
       };
     };
 
-    overlay = final: prev: (import ./nix/pkgs/packages.nix) final prev;
+    overlay = import ./nix/pkgs/packages.nix;
   };
 }

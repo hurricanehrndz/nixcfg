@@ -1,4 +1,4 @@
-self: super:
+final: prev:
 {
-  sheldon = super.callPackage sheldon/default.nix { };
+  sheldon = prev.callPackage sheldon/default.nix { };
 }
