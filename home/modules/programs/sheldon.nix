@@ -1,13 +1,8 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-
 let
   cfg = config.programs.sheldon;
-
-  tomlFormat = pkgs.formats.toml { };
-
-  configFile = tomlFormat.generate "sheldon-config" cfg.settings;
 in {
   options.programs.sheldon = {
    enable = mkEnableOption "Sheldon configuration";
@@ -20,13 +15,11 @@ in {
    };
 
    settings = mkOption {
-     type = tomlFormat.type;
+     type = types.lines;
      default = { };
-     description = "Configuration for Sheldon";
+     description = "TOML inline config for Sheldon";
      example = literalExample ''
-       {
-         shell = "zsh"
-       }
+       shell = "zsh"
      '';
     };
   };
@@ -35,7 +28,7 @@ in {
     home.packages = [ cfg.package ];
 
     xdg.configFile."sheldon/plugins.toml" = mkIf (cfg.settings != { }) {
-      source = configFile;
+      text = cfg.settings;
     };
   };
 }
