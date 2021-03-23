@@ -18,20 +18,19 @@
         linux = inputs.home-manager.lib.homeManagerConfiguration {
           configuration = { pkgs, config, ... }:
           {
-            imports = [ (import ./home/modules/programs) ];
+            imports = [
+              # custom modules following home-manager pattern
+              (import ./home/modules/programs)
+              # abstraction on home-manager modules - keep it dry
+              (import ./home/configs)
+              # logical grouped configs
+              (import ./home/profiles)
+              # import host config
+              (import ./home/hosts/ryzen-vmm01.nix)
+            ];
             nixpkgs = {
               config.allowUnfree = true;
               overlays = [ self.overlay ];
-            };
-            home.stateVersion = "20.09";
-            home.packages = with pkgs; [
-              htop
-            ];
-            programs.sheldon = {
-              enable = true;
-              settings = {
-                shell = "zsh";
-              };
             };
           };
           system = "x86_64-linux";
