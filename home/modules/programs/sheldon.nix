@@ -30,5 +30,10 @@ in {
     xdg.configFile."sheldon/plugins.toml" = mkIf (cfg.settings != { }) {
       text = cfg.settings;
     };
+
+    programs.zsh.initExtraBeforeCompInit = ''
+      # load sheldon plugins
+      source <(sheldon source)
+    '';
   };
 }
