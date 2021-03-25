@@ -18,7 +18,9 @@ in
 
     hurricane.configs = {
       shell.enable = true;
+      # zsh plugin manager
       sheldon.enable = true;
+      neovim.enable = true;
     };
   };
 }

@@ -1,15 +1,25 @@
 {
   description = "Example home-manager from non-nixos system";
 
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
-  inputs.home-manager = {
-    url = "github:nix-community/home-manager/master";
-    inputs.nixpkgs.follows = "nixpkgs";
+    neovim-nightly-overlay = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
 
   outputs = { self, ... }@inputs:
+  let
+    neovim-nightly-overlay = inputs.neovim-nightly-overlay.overlay;
+  in
   {
     # `internal` isn't a known output attribute for flakes. It is used here to contain
     # anything that isn't meant to be re-usable.
@@ -30,7 +40,10 @@
             ];
             nixpkgs = {
               config.allowUnfree = true;
-              overlays = [ self.overlay ];
+              overlays = [
+                self.overlay
+                neovim-nightly-overlay
+              ];
             };
           };
           system = "x86_64-linux";
