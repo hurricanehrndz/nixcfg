@@ -16,7 +16,7 @@ in {
 
    settings = mkOption {
      type = types.lines;
-     default = { };
+     default = "";
      description = "TOML inline config for Sheldon";
      example = literalExample ''
        shell = "zsh"
@@ -27,7 +27,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = [ cfg.package ];
 
-    xdg.configFile."sheldon/plugins.toml" = mkIf (cfg.settings != { }) {
+    xdg.configFile."sheldon/plugins.toml" = mkIf (cfg.settings != "" ) {
       text = cfg.settings;
     };
 
