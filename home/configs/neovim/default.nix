@@ -11,7 +11,13 @@ in
     home.packages = with pkgs; [
       neovim-nightly
       rnix-lsp
+      nodePackages.npm
+      nodePackages.bash-language-server
       nodePackages.pyright
+      nodePackages.typescript-language-server
+      nodePackages.vim-language-server
+      nodePackages.yaml-language-server
+      sumneko-lua-language-server
     ];
 
     xdg.configFile."nvim".source = ./nvim;

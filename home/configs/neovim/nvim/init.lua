@@ -15,10 +15,25 @@ local packer_repo = 'https://github.com/wbthomason/packer.nvim'
 local packer_install_cmd =
     '!git clone ' .. ' ' .. packer_repo .. ' ' .. packer_path
 
--- Install packer if missing
+-- Install packer if missing as opt plugin
 if fn.empty(fn.glob(packer_path)) > 0 then
   execute(packer_install_cmd)
 end
+vim.cmd [[packadd packer.nvim]]
+-- Auto compile when there are changes in plugins.lu
+vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 
 -- Install plugins
 require('plugins')
+
+-- Key mappings
+require('keymappings')
+
+-- Auto Command Groups
+require('autocmds')
+
+-- LSP config
+require('completionconf')
+
+-- Configure plugins
+require('config')
