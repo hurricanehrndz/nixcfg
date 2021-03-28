@@ -6,10 +6,12 @@ let
 in
 {
   options.hurricane.profiles.common = {
-    enable = mkEnableOption "common configurations";
+    enable = mkEnableOption "common configuration";
   };
 
   config = mkIf cfg.enable {
+    keyboard.layout = "us";
+    language.base = "en_US.utf8";
     # Install home-manager manpages.
     manual.manpages.enable = true;
 
@@ -20,7 +22,6 @@ in
       shell.enable = true;
       # zsh plugin manager
       sheldon.enable = true;
-      neovim.enable = true;
     };
   };
 }

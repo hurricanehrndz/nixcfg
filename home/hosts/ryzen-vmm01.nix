@@ -6,6 +6,7 @@
   hurricane = {
     profiles = {
       common.enable = true;
+      development.enable = true;
     };
   };
 }
