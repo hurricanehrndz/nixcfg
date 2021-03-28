@@ -10,8 +10,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    keyboard.layout = "us";
-    language.base = "en_US.utf8";
+    home = {
+      keyboard.layout = "us";
+      language.base = "en_US.utf8";
+    };
     # Install home-manager manpages.
     manual.manpages.enable = true;
 
@@ -22,6 +24,7 @@ in
       shell.enable = true;
       # zsh plugin manager
       sheldon.enable = true;
+      nix.enable = true;
     };
   };
 }

@@ -5,5 +5,6 @@
     ./shell.nix
     ./sheldon
     ./neovim
+    ./nix
   ];
 }
