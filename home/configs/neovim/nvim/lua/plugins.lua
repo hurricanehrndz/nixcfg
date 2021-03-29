@@ -29,7 +29,7 @@ return require('packer').startup(function()
       }) end
     }
     -- Files grow on trees?
-    Plug 'kyazdani42/nvim-tree.lua'
+    use 'kyazdani42/nvim-tree.lua'
     -- Use the telescope to search between the fuzz
     use {'nvim-telescope/telescope.nvim',
       requires = {
