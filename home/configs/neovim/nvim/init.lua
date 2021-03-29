@@ -11,7 +11,7 @@ g.loaded_perl_provider = 0
 -- Sensible defaults
 require('settings')
 
-local packer_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
+local packer_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 local packer_repo = 'https://github.com/wbthomason/packer.nvim'
 local packer_install_cmd =
     '!git clone ' .. ' ' .. packer_repo .. ' ' .. packer_path
@@ -19,8 +19,9 @@ local packer_install_cmd =
 -- Install packer if missing as opt plugin
 if fn.empty(fn.glob(packer_path)) > 0 then
   execute(packer_install_cmd)
+  execute('packadd packer.nvim')
 end
-vim.cmd [[packadd packer.nvim]]
+
 -- Auto compile when there are changes in plugins.lu
 vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 

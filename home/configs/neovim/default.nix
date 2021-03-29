@@ -20,6 +20,9 @@ in
       sumneko-lua-language-server
     ];
 
-    xdg.configFile."nvim".source = ./nvim;
+    xdg.configFile."nvim" = {
+      recursive = true;
+      source = ./nvim;
+    };
   };
 }
