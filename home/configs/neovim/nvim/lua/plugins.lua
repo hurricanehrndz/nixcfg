@@ -78,7 +78,7 @@ return require('packer').startup(function()
     }
     use 'sheerun/vim-polyglot'
     -- Lua development -- lsp plugin
-    use { 'tjdevries/nlua.nvim'
+    use 'tjdevries/nlua.nvim'
 
     -- All hail to the Pope (tpope) + Other tools <--
     -- For the Git
