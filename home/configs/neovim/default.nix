@@ -20,9 +20,12 @@ in
       sumneko-lua-language-server
     ];
 
-    xdg.configFile."nvim" = {
-      recursive = true;
-      source = ./nvim;
+    xdg.configFile = {
+      "nvim" = {
+        recursive = true;
+        source = ./nvim;
+      };
+      "nvim/parser/c.so".source = "${pkgs.tree-sitter.builtGrammars.c}/parser";
     };
   };
 }
