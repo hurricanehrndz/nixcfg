@@ -44,10 +44,8 @@ o.selection = "exclusive"
 o.smartcase = true
 -- enable undofile
 o.undofile = true
--- wildmenu - tab completion menu for tab
-o.wildmode = "list:longest,list:full"
 -- round indent
-o.shift.round = true
+o.shiftround = true
 
 -->> buffer-scoped options <<--
 bo.shiftwidth = 4
