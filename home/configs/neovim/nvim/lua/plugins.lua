@@ -65,14 +65,16 @@ return require('packer').startup(function(use)
         -- color all the braces
         {'p00f/nvim-ts-rainbow'},
       },
-      run = ':TSUpdate',
+      -- Parsers are maintained by nix
+      -- run = ':TSUpdate',
       config = function() require'nvim-treesitter.configs'.setup({
-        ensure_installed = "maintained",
         highlight = {
           enable = true,
+          disable = { "nix" },
         },
         rainbow = {
           enable = true,
+          disable = {'bash', 'nix'},
         },
       }) end,
     }
