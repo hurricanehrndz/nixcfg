@@ -8,32 +8,34 @@ in
   options.hurricane.configs.neovim.enable = mkEnableOption "neovim config";
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      neovim-nightly
-      nodePackages.npm
+    programs.neovim = {
+      enable = true;
+      package = pkgs.neovim-nightly;
+      withNodeJs = true;
+      extraPackages = with pkgs; [
+        nodePackages.typescript
+        nodePackages.typescript-language-server
 
-      nodePackages.typescript
-      nodePackages.typescript-language-server
+        nodePackages.bash-language-server
+        nodePackages.vim-language-server
+        nodePackages.yaml-language-server
+        nodePackages.dockerfile-language-server-nodejs
+        nodePackages.dockerfile-language-server-nodejs
 
-      nodePackages.bash-language-server
-      nodePackages.vim-language-server
-      nodePackages.yaml-language-server
-      nodePackages.dockerfile-language-server-nodejs
-      nodePackages.dockerfile-language-server-nodejs
+        nodePackages.pyright
 
-      nodePackages.pyright
+        # Language Server
+        sumneko-lua-language-server
+        rnix-lsp
+        terraform-ls
 
-      # Language Server
-      sumneko-lua-language-server
-      rnix-lsp
-      terraform-ls
-
-      # Formatters
-      nodePackages.prettier
-      nixfmt
-      rustfmt
-      terraform
-    ];
+        # Formatters
+        nodePackages.prettier
+        nixfmt
+        rustfmt
+        terraform
+      ];
+    };
 
     xdg.configFile = {
       "nvim" = {
