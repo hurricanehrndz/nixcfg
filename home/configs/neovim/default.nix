@@ -21,7 +21,6 @@ in
       enable = true;
       package = pkgs.neovim-nightly;
       withNodeJs = true;
-      withRuby = false;
       extraConfig = ''
         lua require'init'
       '';
