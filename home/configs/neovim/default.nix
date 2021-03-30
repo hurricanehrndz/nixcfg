@@ -12,6 +12,10 @@ in
       enable = true;
       package = pkgs.neovim-nightly;
       withNodeJs = true;
+      extraConfig = ''
+        lua require'init'
+      '';
+
       extraPackages = with pkgs; [
         nodePackages.typescript
         nodePackages.typescript-language-server
