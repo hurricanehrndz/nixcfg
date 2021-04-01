@@ -40,11 +40,11 @@ return require('packer').startup(function(use)
     }
     use 'christoomey/vim-tmux-navigator'
     -- Let me see the status of the galaxy
-    -- use {
-    --     'glepnir/galaxyline.nvim',
-    --     branch = 'main',
-    --     config = function() require'statusline' end,
-    -- }
+    use {
+        'glepnir/galaxyline.nvim',
+        branch = 'main',
+        config = function() require'statusline' end,
+    }
 
     -- Please complete me
     use 'neovim/nvim-lspconfig'
