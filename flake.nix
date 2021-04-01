@@ -47,7 +47,7 @@
             };
           };
           system = "x86_64-linux";
-          homeDirectory = "/home/users/hurricanehrndz";
+          homeDirectory = "/home/hurricane";
           username = "hurricanehrndz";
         };
       };

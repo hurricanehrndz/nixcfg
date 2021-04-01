@@ -21,7 +21,7 @@ in
         expireDuplicatesFirst = true;
         ignoreDups = true;
         ignoreSpace = true;
-        path = ".config/zsh/.zsh_history";
+        path =  "${config.xdg.configHome}/zsh/zsh_history";
       };
       shellAliases = with pkgs; {
         # Aliases that make commands colourful.
