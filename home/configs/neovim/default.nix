@@ -17,6 +17,9 @@ in
   options.hurricane.configs.neovim.enable = mkEnableOption "neovim config";
 
   config = mkIf cfg.enable {
+    home.sessionVariables = {
+      EDITOR = "nvim";
+    };
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;
