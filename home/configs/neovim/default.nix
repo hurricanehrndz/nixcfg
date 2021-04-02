@@ -21,6 +21,9 @@ in
       enable = true;
       package = pkgs.neovim-nightly;
       withNodeJs = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
       extraConfig = ''
         lua require'init'
       '';
