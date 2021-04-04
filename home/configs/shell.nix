@@ -34,6 +34,7 @@ in
         "la" = "${exa}/bin/exa -alhF --group-directories-first";
         "lt" = "${exa}/bin/exa -alhF --sort modified";
         "l"  = "${exa}/bin/exa -1 --group-directories-first -F";
+        "tree" = "${exa}/bin/exa -T";
         # Aliases for `cat` to `bat`.
         "cat" = "${bat}/bin/bat --theme ansi-dark";
 
