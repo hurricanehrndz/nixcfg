@@ -2,8 +2,7 @@
 
 {
   imports = [
-    ./shell.nix
-    ./sheldon
+    ./shell
     ./neovim
     ./nix
   ];

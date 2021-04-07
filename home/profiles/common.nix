@@ -22,8 +22,6 @@ in
 
     hurricane.configs = {
       shell.enable = true;
-      # zsh plugin manager
-      sheldon.enable = true;
       nix.enable = true;
     };
   };

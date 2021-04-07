@@ -30,7 +30,7 @@
           {
             imports = [
               # custom modules following home-manager pattern
-              (import ./home/modules/programs)
+              (import ./home/modules)
               # abstraction on home-manager modules - keep it dry
               (import ./home/configs)
               # logical grouped configs

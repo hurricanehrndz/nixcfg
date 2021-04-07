@@ -2,6 +2,6 @@
 
 {
   imports = [
-    ./sheldon.nix
+    ./zplugins.nix
   ];
 }
