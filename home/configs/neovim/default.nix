@@ -20,6 +20,10 @@ in
     home.sessionVariables = {
       EDITOR = "nvim";
     };
+    home.packages = with pkgs; [
+      # Stdenv links libstdc++ to lib path - tree-sitter
+      gcc gccStdenv
+    ];
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;
@@ -47,10 +51,6 @@ in
         sumneko-lua-language-server
         rnix-lsp
         terraform-ls
-
-        # tree-sitter requirements
-        gcc
-        gccStdenv
 
         # Formatters
         nodePackages.prettier
