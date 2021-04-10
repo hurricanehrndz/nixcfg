@@ -48,6 +48,6 @@ o.undofile = true
 o.shiftround = true
 
 -->> buffer-scoped options <<--
-bo.shiftwidth = 4
+bo.shiftwidth = 4     -- smarttab enable by default, ts sts ignored
 bo.expandtab = true
 bo.smartindent = true
