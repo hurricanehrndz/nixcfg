@@ -1,2 +1,3 @@
-require('telescope')
+require('config.telescope')
+require('config.indentline')
 --require('theme')

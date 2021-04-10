@@ -7,7 +7,7 @@ return require('packer').startup(function(use)
     -- Embrace the darkside
     use 'joshdick/onedark.vim'
     -- Use the guides
-    use 'lukas-reineke/indent-blankline.nvim'
+    use { 'lukas-reineke/indent-blankline.nvim', branch="lua" }
     -- But mind the (git) warning signs
     use { 'lewis6991/gitsigns.nvim',
       config = function() require('gitsigns').setup({
