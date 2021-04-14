@@ -68,6 +68,23 @@
         "type": "github"
       }
     },
+    "lua-language-server": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1618304898,
+        "narHash": "sha256-ujs70BXs3UAOBsrzmBXgI3516gQalu/iwy9t2Z90KHM=",
+        "owner": "sumneko",
+        "repo": "lua-language-server",
+        "rev": "eda3e2b640b2cef22c9012120b13e507979240c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sumneko",
+        "ref": "master",
+        "repo": "lua-language-server",
+        "type": "github"
+      }
+    },
     "neovim-nightly": {
       "flake": false,
       "locked": {
@@ -144,6 +161,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "lua-language-server": "lua-language-server",
         "neovim-nightly-overlay": "neovim-nightly-overlay",
         "nixpkgs": "nixpkgs"
       }
