@@ -27,6 +27,7 @@ in
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;
+      withRuby = false;
       withNodeJs = true;
       viAlias = true;
       vimAlias = true;
