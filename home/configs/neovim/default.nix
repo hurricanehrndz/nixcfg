@@ -48,7 +48,6 @@ in
         nodePackages.pyright
 
         # Language Server
-        sumneko-lua-language-server
         rnix-lsp
         terraform-ls
 
@@ -57,7 +56,7 @@ in
         nixfmt
         rustfmt
         terraform
-      ];
+      ] ++ optional pkgs.stdenv.isLinux [ sumneko-lua-language-server ];
     };
 
     xdg.configFile = {
