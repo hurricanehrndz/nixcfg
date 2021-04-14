@@ -17,6 +17,7 @@ in
 
     hurricane.configs = {
       neovim.enable = true;
+      git.enable = true;
     };
   };
 }
