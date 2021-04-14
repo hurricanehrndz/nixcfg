@@ -88,7 +88,7 @@ in
         "l"  = "${exa}/bin/exa -1 --group-directories-first -F";
         "tree" = "${exa}/bin/exa -T";
         # Aliases for `cat` to `bat`.
-        "cat" = "${bat}/bin/bat --theme TwoDark";
+        "cat" = "${bat}/bin/bat";
       };
     };
     programs.skim = {
@@ -129,8 +129,6 @@ in
       ripgrep
       # ls alternative.
       exa
-      # cat alternative.
-      bat
       # nix stuff
       nix-zsh-completions
       # Simple, fast and user-friendly alternative to find.
@@ -151,6 +149,14 @@ in
 
     home.sessionVariables = {
       MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+      BAT_THEME = "TwoDark";
+    };
+    programs.bat = {
+      enable = true;
+      config = {
+        theme = config.home.sessionVariables.BAT_THEME;
+        pager = "less -FR";
+      };
     };
   };
 }
