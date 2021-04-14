@@ -12,11 +12,11 @@ in {
     (old: rec {
       version = src.shortRev;
       src = fixed_lua-language-server;
-      preConfigure = ''
-        sed -ribak -e 's%if \(::utimensat.*%if (::utimes(p.c_str(), times) != 0) {%g' 3rd/bee.lua/bee/nonstd/filesystem.h
-        sed -ribak -e 's%if \(::utimensat.*%if (::utimes(p.c_str(), times) != 0) {%g' 3rd/luamake/3rd/bee.lua/bee/nonstd/filesystem.h
-      '';
-      patches = [ ./darwin.patch ]; #(if prev.stdenv.isDarwin then [ ./darwin.patch ] else [ ]);
+      # preConfigure = ''
+      #   sed -ribak -e 's%if \(::utimensat.*%if (::utimes(p.c_str(), times) != 0) {%g' 3rd/bee.lua/bee/nonstd/filesystem.h
+      #   sed -ribak -e 's%if \(::utimensat.*%if (::utimes(p.c_str(), times) != 0) {%g' 3rd/luamake/3rd/bee.lua/bee/nonstd/filesystem.h
+      # '';
+      patches = (if prev.stdenv.isDarwin then [ ./darwin.patch ] else [ ]);
       ninjaFlags = (if prev.stdenv.isDarwin then
         [ "-f compile/ninja/macos.ninja" ]
       else

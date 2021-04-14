@@ -38,12 +38,12 @@ index df09dcd..0c8ef80 100644
    description = Compile C++ $out
    depfile = $out.d
    deps = gcc
-#diff --git a/bee/fsevent/fsevent_osx.cpp b/bee/fsevent/fsevent_osx.cpp
-#index fe3bcd7..f1cbe8b 100644
-#--- a/3rd/luamake/3rd/bee.lua/bee/fsevent/fsevent_osx.cpp
-#+++ b/3rd/luamake/3rd/bee.lua/bee/fsevent/fsevent_osx.cpp
-#@@ -1,4 +1,5 @@
-# #include <bee/fsevent/fsevent_osx.h>
-#+#include <functional>
-# #include <fmt/format.h>
-# #include <thread>
+diff --git a/bee/fsevent/fsevent_osx.cpp b/bee/fsevent/fsevent_osx.cpp
+index fe3bcd7..f1cbe8b 100644
+--- a/3rd/luamake/3rd/bee.lua/bee/fsevent/fsevent_osx.cpp
++++ b/3rd/luamake/3rd/bee.lua/bee/fsevent/fsevent_osx.cpp
+@@ -1,4 +1,5 @@
+ #include <bee/fsevent/fsevent_osx.h>
++#include <functional>
+ #include <fmt/format.h>
+ #include <thread>
