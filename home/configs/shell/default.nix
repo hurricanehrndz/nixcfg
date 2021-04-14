@@ -76,6 +76,7 @@ in
       };
 
       initExtra = ''
+        path=("$HOME/.local/bin" $path)
         # Nix setup (environment variables, etc.)
         if [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] \
             && [[ -z "$NIX_SSL_CERT_FILE" ]]; then
