@@ -77,7 +77,6 @@ in
     {
       programs.zsh.initExtra = ''
         ${concatStrings (map (plugin: ''
-          path+="$HOME/${pluginsDir}/${plugin.name}"
           fpath+="$HOME/${pluginsDir}/${plugin.name}"
         '') cfg.plugins)}
 
