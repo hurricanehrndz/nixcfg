@@ -11,6 +11,9 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      direnv
+      nix-direnv
+      powershell
       poetry
       (python38.withPackages (ps: with ps; [ pip ]))
     ];
