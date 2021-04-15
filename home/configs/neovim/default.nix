@@ -37,6 +37,7 @@ in
       '';
 
       extraPackages = with pkgs; [
+        nodePackages.neovim
         nodePackages.typescript
         nodePackages.typescript-language-server
 
