@@ -93,7 +93,7 @@ api.nvim_set_keymap(
 -- help finder
 api.nvim_set_keymap(
   'n',
-  '<space>vh',
+  '<space>fh',
   [[<cmd>lua require('telescope.builtin').help_tags()<CR>]],
   silent_nmap
 )
