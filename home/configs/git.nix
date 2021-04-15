@@ -112,10 +112,10 @@ in
         "grst" = "${git}/bin/git reset";
         "gd" = "${git}/bin/git diff";
         "gdc" = "${git}/bin/git diff --cached";
-        "gc" = "${git}/bin/git commit -verbose";
-        "gcs" = "${git}/bin/git commit -S -verbose";
-        "gca" = "${git}/bin/git commit -a -verbose";
-        "gca!" = "${git}/bin/git commit -a --amend -verbose";
+        "gc" = "${git}/bin/git commit --verbose";
+        "gcs" = "${git}/bin/git commit -S --verbose";
+        "gca" = "${git}/bin/git commit -a --verbose";
+        "gca!" = "${git}/bin/git commit -a --amend --verbose";
         "ga" = "${git}/bin/git add";
         "gp" = "${git}/bin/git push";
         "gpf" = "${git}/bin/git push --force-with-lease";
