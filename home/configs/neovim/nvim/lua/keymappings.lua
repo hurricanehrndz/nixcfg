@@ -49,7 +49,7 @@ local silent_nmap = { noremap=true, silent=true }
 -- search for current word under cursor
 api.nvim_set_keymap(
     'n',
-    '<space>pw',
+    '<space>fw',
     [[<cmd>lua require('telescope.builtin').grep_strings(
       { search = vim.fn.expand("<cword>") }
     )<CR>]],
@@ -57,13 +57,13 @@ api.nvim_set_keymap(
 )
 api.nvim_set_keymap(
   'n',
-  '<space>ps',
+  '<space>fs',
   [[<cmd>lua require('telescope.builtin').grep_string()<CR>]],
   silent_nmap
 )
 api.nvim_set_keymap(
   'n',
-  '<space>pg',
+  '<space>fg',
   [[<cmd>lua require('telescope.builtin').live_grep()<CR>]],
   silent_nmap
 )
@@ -77,7 +77,7 @@ api.nvim_set_keymap(
 )
 api.nvim_set_keymap(
   'n',
-  '<space>pf',
+  '<space>ff',
   [[<cmd>lua require('telescope.builtin').find_files()<CR>]],
   silent_nmap
 )
@@ -85,7 +85,7 @@ api.nvim_set_keymap(
 -- buffer finder
 api.nvim_set_keymap(
   'n',
-  '<space>pb',
+  '<space>fb',
   [[<cmd>lua require('telescope.builtin').buffers()<CR>]],
   silent_nmap
 )
