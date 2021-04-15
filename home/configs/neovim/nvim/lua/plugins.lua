@@ -41,6 +41,7 @@ return require('packer').startup(function(use)
     use 'christoomey/vim-tmux-navigator'
     -- Let me see the status of the galaxy
     use {
+        -- effects start page (redraw)
         'glepnir/galaxyline.nvim',
         branch = 'main',
         config = function() require'statusline' end,
@@ -58,8 +59,8 @@ return require('packer').startup(function(use)
     use 'norcalli/snippets.nvim'
 
     --> Polyglot Plugins <--
-    use { 'prettier/vim-prettier', run = 'yarn install' }
-    -- Better syntax
+    use { 'prettier/vim-prettier', run = 'npm install' }
+     --  Better syntax
     use { 'nvim-treesitter/nvim-treesitter',
       requires = {
         -- color all the braces
@@ -79,7 +80,7 @@ return require('packer').startup(function(use)
         },
       }) end,
     }
-    use 'sheerun/vim-polyglot'
+    use 'sheerun/vim-polyglot'       -- forces redraw effecting startpage
     -- Lua development -- lsp plugin
     use 'tjdevries/nlua.nvim'
 
