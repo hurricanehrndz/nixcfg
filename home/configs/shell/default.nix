@@ -161,6 +161,8 @@ in {
       (writeScriptBin "print-colors" (builtins.readFile ./print-colors))
       (writeScriptBin "test-truecolors" (builtins.readFile ./test-truecolors))
       (writeScriptBin "rtfm" (builtins.readFile ./rtfm))
+      # top alternativ
+      bottom
       # fuzzy finder
       skim
       # curl
