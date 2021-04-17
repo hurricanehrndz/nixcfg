@@ -29,6 +29,9 @@ vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 -- Install plugins
 require('plugins')
 
+-- Force loading of astronauta first
+vim.cmd [[runtime plugin/astronauta.vim]]
+
 -- Key mappings
 require('keymappings')
 

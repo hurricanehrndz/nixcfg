@@ -2,12 +2,16 @@ return require('packer').startup(function(use)
 
     -- Packer can manage itself
     use {'wbthomason/packer.nvim'}
+    -- let's go to space
+    use 'tjdevries/astronauta.nvim'
 
     --> Look and feel <--
     -- Embrace the darkside
     use 'joshdick/onedark.vim'
     -- Use the guides
     use { 'lukas-reineke/indent-blankline.nvim', branch="lua" }
+    -- Show me end of column
+    use 'tjdevries/overlength.vim'
     -- But mind the (git) warning signs
     use { 'lewis6991/gitsigns.nvim',
       config = function() require('gitsigns').setup({
