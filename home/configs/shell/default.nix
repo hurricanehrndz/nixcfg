@@ -145,6 +145,8 @@ in {
         "cat" = "${bat}/bin/bat";
         # tmux
         "tm" = "${tmux}/bin/tmux new-session -A -s main";
+        # general
+        "mkdir" = "mkdir -p";
       };
     };
     programs.starship = {
