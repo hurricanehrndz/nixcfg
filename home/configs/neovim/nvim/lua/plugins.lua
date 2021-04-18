@@ -59,8 +59,10 @@ return require('packer').startup(function(use)
       config = function() require'lspkind'.init() end
     }
     use 'sbdchd/neoformat'
-    -- snippets from LSP
-    use 'norcalli/snippets.nvim'
+    -- Snippets
+    use 'rafamadriz/friendly-snippets'
+    use 'hrsh7th/vim-vsnip'
+    -- use 'norcalli/snippets.nvim'
 
     --> Polyglot Plugins <--
     use { 'prettier/vim-prettier', run = 'npm install' }
