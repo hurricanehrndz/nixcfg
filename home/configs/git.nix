@@ -103,7 +103,7 @@ in
         "g" = "${git}/bin/git";
         "gcl" = "${git}/bin/git clone --recursive";
         "gf" = "${git}/bin/git fetch";
-        "gco" = "${git}/bin/git chechout";
+        "gco" = "${git}/bin/git checkout";
         "gcm" = "${git}/bin/git checkout master";
         "gst" = "${git}/bin/git status";
         "gss" = "${git}/bin/git status --short";
