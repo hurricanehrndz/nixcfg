@@ -15,7 +15,7 @@ require('settings')
 local packer_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 local packer_repo = 'https://github.com/wbthomason/packer.nvim'
 local packer_install_cmd =
-    '!git clone ' .. ' ' .. packer_repo .. ' ' .. packer_path
+  '!git clone ' .. ' ' .. packer_repo .. ' ' .. packer_path
 
 -- Install packer if missing as opt plugin
 if fn.empty(fn.glob(packer_path)) > 0 then
