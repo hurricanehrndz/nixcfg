@@ -15,13 +15,13 @@ return require('packer').startup(function(use)
     -- But mind the (git) warning signs
     use { 'lewis6991/gitsigns.nvim',
       config = function() require('gitsigns').setup({
-        signs = {
-          add          = {hl = 'GitGutterAdd'   , text = '+'},
-          change       = {hl = 'GitGutterChange', text = '~'},
-          delete       = {hl = 'GitGutterDelete', text = '_'},
-          topdelete    = {hl = 'GitGutterDelete', text = '‾'},
-          changedelete = {hl = 'GitGutterChange', text = '~'},
-        }
+        -- signs = {
+        --   add          = {hl = 'GitGutterAdd'   , text = '+'},
+        --   change       = {hl = 'GitGutterChange', text = '~'},
+        --   delete       = {hl = 'GitGutterDelete', text = '_'},
+        --   topdelete    = {hl = 'GitGutterDelete', text = '‾'},
+        --   changedelete = {hl = 'GitGutterChange', text = '~'},
+        -- }
       }) end
     }
     -- A splash of color in your life
