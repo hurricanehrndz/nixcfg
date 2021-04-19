@@ -1,4 +1,4 @@
-if !(vim.g.loaded_overlength) then
+if (vim.g.loaded_overlength == nil) then
  do return end
 end
 
