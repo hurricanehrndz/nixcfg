@@ -41,7 +41,7 @@ in
         # See https://github.com/jlesquembre/dotfiles/blob/23d7906e5de3dbf4e9433dffeb23c95d3d9a9d06/home-manager/neovim.nix#L169
 
         # Language Servers
-        rls
+        rust-analyzer
         rnix-lsp
         terraform-ls
 
