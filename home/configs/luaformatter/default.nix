@@ -12,6 +12,6 @@ in {
     home.packages = with pkgs;
       [ ] ++ optional stdenv.isLinux [ luaformatter ];
 
-    xdg.configFile."luaformatter/config.yaml".source = ./luaformat.yml;
+    home.file.".lua-format".source = ./luaformat.yml;
   };
 }
