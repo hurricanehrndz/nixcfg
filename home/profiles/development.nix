@@ -14,7 +14,7 @@ in
       nixfmt
       direnv
       nix-direnv
-      # powershell
+      powershell
       poetry
       (python38.withPackages (ps: with ps; [ pip ]))
     ];
