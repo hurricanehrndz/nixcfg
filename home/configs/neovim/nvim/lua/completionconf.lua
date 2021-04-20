@@ -5,7 +5,7 @@ local on_attach = function(client, bufnr)
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
-  local opts = { noremap=true, silent=true }
+  local opts = {noremap = true, silent = true}
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
@@ -50,23 +50,20 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- Enable snippet support from hrsh7th/vim-vsnip
 capabilities.textDocument.completion.completionItem.snippetSupport = true;
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    'documentation',
-    'detail',
-    'additionalTextEdits',
-  }
-}
+capabilities.textDocument.completion.completionItem.resolveSupport =
+  {properties = {'documentation', 'detail', 'additionalTextEdits'}}
 
-local servers = { "pyright", "bashls", "vimls", "tsserver", "rust_analyzer" }
+local servers = {"pyright", "bashls", "vimls", "tsserver", "rust_analyzer"}
 for _, lsp in ipairs(servers) do
-  capabilities = capabilities,
-  nvim_lsp[lsp].setup { on_attach = on_attach }
+  nvim_lsp[lsp].setup {capabilities = capabilities, on_attach = on_attach}
 end
 
 -- lua
+local lua_lsp_location = vim.fn.expand("~/.local/share/lua-lsp")
+local lua_lsp = string.format("%s/lua-language-server", lua_lsp_location)
+local lua_lsp_build_file = string.format("%s/main.lua", lua_lsp_location)
 require('nlua.lsp.nvim').setup(require('lspconfig'), {
   on_attach = on_attach,
   capabilities = capabilities,
-  cmd = { "lua-language-server", "-E", vim.fn.expand("~/.local/share/lua-lsp/main.lua"),  }
+  cmd = {lua_lsp, "-E", lua_lsp_build_file}
 })
