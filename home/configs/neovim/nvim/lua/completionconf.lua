@@ -53,10 +53,8 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true;
 capabilities.textDocument.completion.completionItem.resolveSupport =
   {properties = {'documentation', 'detail', 'additionalTextEdits'}}
 
-local servers = {"pyright", "bashls", "vimls", "tsserver", "rust_analyzer"}
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {capabilities = capabilities, on_attach = on_attach}
-end
+local servers = {"pyright", "bashls", "dockerls", "vimls", "tsserver", "rust_analyzer"}
+for _, lsp in ipairs(servers) do nvim_lsp[lsp].setup {capabilities = capabilities, on_attach = on_attach} end
 
 -- lua
 local lua_lsp_location = vim.fn.expand("~/.local/share/lua-lsp")
@@ -67,3 +65,7 @@ require('nlua.lsp.nvim').setup(require('lspconfig'), {
   capabilities = capabilities,
   cmd = {lua_lsp, "-E", lua_lsp_build_file}
 })
+
+-- powershell
+local pwsh_bundle_location = vim.fn.expand("~/.local/share/pses")
+nvim_lsp.powershell_es.setup({bundle_path = pwsh_bundle_location})
