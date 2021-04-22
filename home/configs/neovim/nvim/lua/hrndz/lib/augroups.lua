@@ -1,5 +1,5 @@
 -- util function to define autocmd groups
-local af = require("lib.autofunc")
+local af = require("hrndz.lib.autofunc")
 
 return function(definitions)
   for group_name, definition in pairs(definitions) do

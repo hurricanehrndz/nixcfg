@@ -1,4 +1,4 @@
-local create_augroups = require("lib.augroups")
+local create_augroups = require("hrndz.lib.augroups")
 
 local autocmds = {
   open_terminal = {

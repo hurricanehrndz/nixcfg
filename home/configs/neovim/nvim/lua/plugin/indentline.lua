@@ -1,3 +1,8 @@
+local loaded_indent_blankline, _ = pcall(function() return vim.g.loaded_indent_blankline end)
+if (not loaded_indent_blankline) then
+ do return end
+end
+
 local g = vim.g                       -- global settings
 g.indent_blankline_space_char = ' '
 g.indent_blankline_space_char_blankline = ' '

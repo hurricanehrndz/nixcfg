@@ -1,8 +1,15 @@
-local bo = require("lib.bufopts")
+local bo = require("hrndz.lib.bufopts")
 local wo = vim.wo
 local o = vim.o
+local g = vim.g
 
--->> window-scoped options <<--
+-- Disable python plugin support
+g.loaded_python_provider = 0
+g.loaded_python3_provider = 0
+g.loaded_perl_provider = 0
+g.loaded_ruby_provider = 0
+
+-- >> window-scoped options <<--
 -- show line numbers
 wo.number = true
 -- show relative numbers
@@ -12,7 +19,7 @@ wo.signcolumn = "yes"
 -- disable line wrap
 wo.wrap = false
 
--->> edior options <<--
+-- >> edior options <<--
 -- abandon buffer when unloading
 o.hidden = true
 -- refresh rate of diagnostic msg
@@ -45,7 +52,6 @@ o.undofile = true
 -- round indent
 o.shiftround = true
 
--->> buffer-scoped options <<--
-bo.shiftwidth = 4     -- smarttab enable by default, ts sts ignored
+-- >> buffer-scoped options <<--
+bo.shiftwidth = 4 -- smarttab enable by default, ts sts ignored
 bo.expandtab = true
--- bo.smartindent = true
