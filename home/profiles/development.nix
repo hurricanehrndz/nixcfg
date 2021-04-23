@@ -22,7 +22,7 @@ in
     hurricane.configs = {
       neovim.enable = true;
       git.enable = true;
-      luaformatter.enable = true;
+      # luaformatter.enable = true;
     };
   };
 }
