@@ -3,7 +3,7 @@ if (not loaded_overlength) then
  do return end
 end
 
-vim.g['overlength#default_overlength'] = 120
+vim.g['overlength#default_overlength'] = 80
 vim.g['overlength#default_to_textwidth'] = 1
 vim.g['overlength#default_grace_length'] = 1
 vim.fn['overlength#disable_filetypes']({ 'gitcommit', 'markdown', 'vimwiki', 'startify', 'term', 'man', 'qf', '' })
