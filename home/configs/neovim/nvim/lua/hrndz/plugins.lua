@@ -50,14 +50,13 @@ return require('packer').startup(function(use)
 
   -- > Polyglot Plugins <--
   --  Better syntax
-  use {
+  use({
     'nvim-treesitter/nvim-treesitter',
     requires = {
       -- color all the braces
       {'p00f/nvim-ts-rainbow'}
     },
     -- Parsers are maintained by nix
-    run = ':TSUpdate',
     config = function()
       require'nvim-treesitter.configs'.setup({
         ensure_installed = "maintained",
@@ -65,7 +64,7 @@ return require('packer').startup(function(use)
         rainbow = {enable = true, disable = {'bash', 'nix'}}
       })
     end
-  }
+  })
   use 'sheerun/vim-polyglot' -- forces redraw effecting startpage
   -- Lua development -- lsp plugin
   use 'tjdevries/nlua.nvim'
