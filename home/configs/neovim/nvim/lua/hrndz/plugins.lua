@@ -80,8 +80,6 @@ return require('packer').startup(function(use)
   use 'tpope/vim-commentary'
   -- So good, why not do it again
   use 'tpope/vim-repeat'
-  -- Find your coding buddy and get impaired {}
-  use 'tpope/vim-unimpaired'
   -- In case you need to break-up and reconcile
   use 'AndrewRadev/splitjoin.vim'
   -- I am a Super
