@@ -49,7 +49,6 @@ return require('packer').startup(function(use)
   -- use 'norcalli/snippets.nvim'
 
   -- > Polyglot Plugins <--
-  use {'prettier/vim-prettier', run = 'npm install'}
   --  Better syntax
   use {
     'nvim-treesitter/nvim-treesitter',
