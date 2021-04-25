@@ -60,17 +60,19 @@ end
 
 -- lua
 local lua_lsp_location = vim.fn.expand("~/.local/share/lua-lsp")
-local lua_lsp = string.format("%s/lua-language-server", lua_lsp_location)
+local lua_lsp = string.format("%s/.lua-language-server-unwrapped", lua_lsp_location)
 local lua_lsp_build_file = string.format("%s/main.lua", lua_lsp_location)
+local lua_lsp_log = string.format("--logpath=%s", vim.fn.expand("~/.cache/lua-lsp/log"))
+local lua_lsp_meta = string.format("--metapath=%s", vim.fn.expand("~/.cache/lua-lsp/meta"))
 require("nlua.lsp.nvim").setup(require("lspconfig"), {
   on_attach = custom_attach,
   capabilities = capabilities,
-  cmd = {lua_lsp, "-E", lua_lsp_build_file},
+  cmd = {lua_lsp, "-E", lua_lsp_build_file, lua_lsp_log, lua_lsp_meta},
 })
 
 -- powershell
-local pwsh_bundle_location = vim.fn.expand("~/.local/share/pses")
+local pwsh_bundle_path = vim.fn.expand("~/.local/share/pses")
 nvim_lsp.powershell_es.setup({
   on_attach = custom_attach,
-  bundle_path = pwsh_bundle_location,
+  bundle_path = pwsh_bundle_path,
 })

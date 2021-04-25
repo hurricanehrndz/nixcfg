@@ -3,6 +3,8 @@
 {
   home.stateVersion = "20.09";
 
+  programs.home-manager.enable = true;
+
   hurricane = {
     profiles = {
       common.enable = true;

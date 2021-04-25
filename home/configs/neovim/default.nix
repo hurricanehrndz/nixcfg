@@ -53,16 +53,12 @@ in
         nodePackages.vim-language-server
         nodePackages.yaml-language-server
 
-        # Tree-Sitter
-        # see: https://github.com/breuerfelix/nixos/commit/f6aaf6d75e9a847a91e16314752c9d6614e1b04c#diff-fad35a4bb4e2335be1b89e3563ec9be3946208467db9de26226674db7469b6d4R41-R44
-        gcc gccStdenv
-
         # Formatters
         nodePackages.prettier
         nixfmt
         rustfmt
         terraform
-      ] ++ optional pkgs.stdenv.isLinux [ sumneko-lua-language-server ];
+      ];
     };
 
     xdg.configFile = {
