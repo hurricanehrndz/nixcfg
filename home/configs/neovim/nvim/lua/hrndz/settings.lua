@@ -18,6 +18,8 @@ wo.relativenumber = true
 wo.signcolumn = "yes"
 -- disable line wrap
 wo.wrap = false
+-- enable color column
+wo.colorcolumn = "80"
 
 -- >> edior options <<--
 -- abandon buffer when unloading
