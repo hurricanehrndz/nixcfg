@@ -87,4 +87,6 @@ return require('packer').startup(function(use)
   -- Need a table?
   use 'godlygeek/tabular'
   use 'ntpeters/vim-better-whitespace'
+  -- Add a terminal
+  use("voldikss/vim-floaterm")
 end)

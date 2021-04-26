@@ -2,7 +2,6 @@ local custom_attach = function(client)
   vim.bo.omnifunc = 'v:lua.vim.lsp.omnifunc'
   local nnoremap = vim.keymap.nnoremap
   local vnoremap = vim.keymap.vnoremap
-  local tnoremap = vim.keymap.tnoremap
 
   local has_saga, _ = pcall(require, "lspsaga")
   local opts = {buffer = 0, silent = true,}
@@ -16,9 +15,6 @@ local custom_attach = function(client)
     nnoremap({"K", require("lspsaga.hover").render_hover_doc, opts})
     nnoremap({"<space>ca", require("lspsaga.codeaction").code_action, opts})
     nnoremap({"gs", require("lspsaga.signaturehelp").signature_help, opts})
-    -- terminal
-    -- nnoremap({"<A-e>", require("lspsaga.floaterm").open_float_terminal, opts})
-    -- tnoremap({"<A-e>", [[<C-\><C-n><cmd>lua require("lspsaga.floaterm").close_float_terminal()<CR>]], opts})
     -- smart scroll
     nnoremap({
       "<C-f>",
