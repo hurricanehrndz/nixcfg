@@ -6,3 +6,4 @@ vim.g.floaterm_keymap_toggle = "<A-e>"
 vim.g.floaterm_keymap_prev = "<A-[>"
 vim.g.floaterm_keymap_next = "<A-]>"
 vim.g.floaterm_keymap_new = "<A-n>"
+vim.cmd("hi Floaterm guibg=#21252b")
