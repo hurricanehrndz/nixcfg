@@ -51,6 +51,11 @@
             username = "hurricanehrndz";
             homeDirectory = "/home/hurricanehrndz";
           };
+          macbook-pro = {
+            system = "x86_64-darwin";
+            username = "chernand";
+            homeDirectory = "/Users/chernand";
+          };
         };
       };
 
