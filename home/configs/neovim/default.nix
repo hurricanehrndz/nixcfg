@@ -12,14 +12,11 @@ let
   #       "tree-sitter-lua"
   #     ])
   #   pkgs.tree-sitter.builtGrammars;
-in
-{
+in {
   options.hurricane.configs.neovim.enable = mkEnableOption "neovim config";
 
   config = mkIf cfg.enable {
-    home.sessionVariables = {
-      EDITOR = "nvim";
-    };
+    home.sessionVariables = { EDITOR = "nvim"; };
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;
@@ -67,11 +64,8 @@ in
         source = ./nvim;
       };
     };
-    # Add all tree-sitter parsers -- out of date
-    # home.file = lib.attrsets.mapAttrs'
-    #   (name: drv: lib.attrsets.nameValuePair
-    #     ("${config.xdg.configHome}/nvim/parser/" + (lib.strings.removePrefix "tree-sitter-" name) + ".so")
-    #     { source = "${drv}/parser"; })
-    #   workingGrammars;
+    # treesitter parsers
+    xdg.configFile."nvim/parser".source =
+      "${pkgs.nvim-treesitter-parsers}/share/nvim/parser";
   };
 }
