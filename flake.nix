@@ -24,7 +24,8 @@
     with inputs.nixpkgs.lib;
     let
       neovim-overlay = inputs.neovim-nightly.overlay;
-      mkHomeConfig = name: { configName ? name, username, homeDirectory, system }:
+      mkHomeConfig = name:
+        { configName ? name, username, homeDirectory, system }:
         nameValuePair name (inputs.home-manager.lib.homeManagerConfiguration {
           inherit system username homeDirectory;
           configuration = { ... }: {
@@ -70,9 +71,7 @@
       }) (attrNames (builtins.readDir ./nix/overlays)));
 
       # home-manager configs
-      ryzen-vmm01 =
-        self.internal.homeConfigs.ryzen-vmm01.activationPackage;
-      macbook-pro =
-        self.internal.homeConfigs.macbook-pro.activationPackage;
+      ryzen-vmm01 = self.internal.homeConfigs.ryzen-vmm01.activationPackage;
+      macbook-pro = self.internal.homeConfigs.macbook-pro.activationPackage;
     };
 }
