@@ -243,12 +243,15 @@ in {
             set -g @extrakto_clip_tool_run "fg"
             set -g @extrakto_clip_tool "yank"
             set -g @extrakto_copy_key "y"
+            set -g @extrakto_insert_key "enter"
+            set -g @extrakto_popup_size "65%"
+            set -g @extrakto_grab_area "window 500"
           '';
         }
       ];
       extraConfig = with lib; ''
         # Reload tmux.conf
-        bind r source-file ~/.tmux.conf \; display "TMUX conf reloaded!"
+        bind r source-file ~/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
 
         # begin selection with v, yank with y
         bind-key -T copy-mode-vi v send-keys -X begin-selection
