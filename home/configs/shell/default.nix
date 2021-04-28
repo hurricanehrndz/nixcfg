@@ -179,6 +179,7 @@ in {
         "tm" = "${tmux}/bin/tmux new-session -A -s main";
         # general
         "mkdir" = "mkdir -p";
+        "nixfmt" = "${nixfmt}/bin/nixfmt --width 120";
       };
     };
     programs.starship = {
