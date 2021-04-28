@@ -3,9 +3,7 @@
 with lib;
 let cfg = config.hurricane.configs.shell;
 in {
-  options.hurricane = {
-    configs.shell.enable = mkEnableOption "enable awsome zsh config";
-  };
+  options.hurricane = { configs.shell.enable = mkEnableOption "enable awsome zsh config"; };
   config = mkIf cfg.enable {
     hurricane.configs.zplugins = {
       enable = true;
@@ -51,8 +49,7 @@ in {
         {
           name = "zsh-history-substring-search";
           file = "zsh-history-substring-search.zsh";
-          src =
-            "${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search";
+          src = "${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search";
         }
         {
           name = "zsh-autosuggestions";
