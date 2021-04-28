@@ -17,6 +17,9 @@ in {
 
   config = mkIf cfg.enable {
     home.sessionVariables = { EDITOR = "nvim"; };
+    home.packages = with pkgs; [
+      neovim-remote
+    ];
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;

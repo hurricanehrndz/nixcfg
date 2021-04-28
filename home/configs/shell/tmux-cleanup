@@ -1,0 +1,15 @@
+#!/bin/bash
+
+IFS=$'\n' read -r -d '' -a tmux_windows < <(
+  tmux list-windows | cut -d ' ' -f 8
+)
+IFS=$'\n' read -r -d '' -a tmux_popups < <(
+  tmux list-sessions | awk '/popup/{sub(/:.*/,""); sub(/popup/,""); print}'
+)
+
+for popup in ${tmux_popups[@]}; do
+  if [[ ! " ${tmux_windows[@]} " =~ " ${popup} " ]]; then
+    # clean up required
+    tmux kill-session -t "popup${popup}"
+  fi
+done

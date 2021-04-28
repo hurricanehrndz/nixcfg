@@ -1,0 +1,22 @@
+#!/bin/bash
+width=${2:-60%}
+height=${2:-60%}
+session_name="$(tmux display-message -p -F "#{session_name}")"
+window_id="$(tmux display-message -p -F "#{window_id}")"
+popup_session_name="popup${window_id}"
+nvim_listen_address="/tmp/nvim_${USER}_${window_id}"
+
+read -r -d '' tmux_popup_cmd <<- EOF
+tmux new-session -A -s $popup_session_name \; \
+setenv NVIM_LISTEN_ADDRESS $nvim_listen_address \;
+EOF
+
+if [[ "${session_name}" =~ "popup" ]]; then
+  tmux detach-client
+else
+  tmux display-popup          \
+    -xC -yC                   \
+    -w$width -h$height        \
+    -d "#{pane_current_path}" \
+    -E "$tmux_popup_cmd"
+fi

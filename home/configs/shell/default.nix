@@ -98,6 +98,25 @@ in {
           source ~/.env
         fi
 
+        # nvim inside tmux popup
+        function tvi () {
+          tmux detach
+          tmux run-shell -t main "nvr -s --servername "$NVIM_LISTEN_ADDRESS" $@"
+        }
+
+        # Update environment before execute
+        function import_tmux_env() {
+          if [[ -n "$TMUX" ]]; then
+            ssh_auth_sock=$(tmux show-environment | grep "^SSH_AUTH_SOCK")
+            [[ -n "$ssh_auth_sock" ]] && export $ssh_auth_sock
+            display=$(tmux show-environment | grep  "^DISPLAY")
+            [[ -n "$display" ]] && export $display
+            nvim_listen_address=$(tmux show-environment | grep  "^NVIM_LISTEN_ADDRESS")
+            [[ -n "$nvim_listen_address" ]] && export $nvim_listen_address
+          fi
+        }
+        preexec_functions+=(import_tmux_env)
+
         # Inserts 'sudo ' at the beginning of the line.
         function prepend_sudo {
           if [[ "$BUFFER" != su(do|)\ * ]]; then
@@ -128,6 +147,19 @@ in {
       '';
       initExtra = ''
         ZVM_CURSOR_STYLE_ENABLED=false
+        if [[ -n "$TMUX" ]]; then
+          tmux_session="$(tmux display-message -p -F "#{session_name}")"
+          if [[ ! "$tmux_session" =~ "popup" ]]; then
+            WINDOW_ID=$(tmux display -p "#{window_id}")
+            export NVIM_LISTEN_ADDRESS="/tmp/nvim_''${USER}_''${WINDOW_ID}"
+          fi
+          # special zfunction to open vim in parent window
+          if [[ "$tmux_session" =~ "popup" ]]; then
+            export EDITOR='tvi'
+            alias nvim='tvi'
+            alias vi='tvi'
+          fi
+        fi
       '';
       shellAliases = with pkgs; {
         # Aliases that make commands colourful.
@@ -171,6 +203,8 @@ in {
       (writeScriptBin "test-truecolors" (builtins.readFile ./test-truecolors))
       (writeScriptBin "rtfm" (builtins.readFile ./rtfm))
       (writeScriptBin "yank" (builtins.readFile ./yank))
+      (writeScriptBin "tmux-popup" (builtins.readFile ./tmux-popup))
+      (writeScriptBin "tmux-cleanup" (builtins.readFile ./tmux-cleanup))
       # top alternativ
       bottom
       # fuzzy finder
@@ -276,6 +310,14 @@ in {
 
         # easily zoom
         bind-key -n 'M-z' resize-pane -Z
+
+        # tmux popup
+        # TODO: need to kill popup session when parent session dies
+        bind-key e run-shell 'tmux-popup'
+        # clean popups
+        set-hook -g pane-died "run-shell 'tmux-cleanup'"
+        set-hook -g pane-exited "run-shell 'tmux-cleanup'"
+        set-hook -g after-kill-pane "run-shell 'tmux-cleanup'"
 
         # neovim recommendations - checkhealth
         set-option -sg escape-time 0
