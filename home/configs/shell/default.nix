@@ -78,14 +78,15 @@ in {
         ignoreSpace = true;
         path = "${config.xdg.configHome}/zsh/zsh_history";
       };
-      initExtraBeforeCompInit = ''
+      envExtra = ''
         # Nix setup (environment variables, etc.)
         [[ -e ~/.nix-profile/bin ]] && path=("$HOME/.nix-profile/bin" $path)
         if [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] \
             && [[ -z "$NIX_SSL_CERT_FILE" ]]; then
           source ~/.nix-profile/etc/profile.d/nix.sh
         fi
-
+      '';
+      initExtraBeforeCompInit = ''
         # XDG bin
         path=("$HOME/.local/bin" $path)
 

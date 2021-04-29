@@ -9,6 +9,7 @@
     profiles = {
       common.enable = true;
       development.enable = true;
+      desktop.enable = true;
     };
   };
 }
