@@ -80,7 +80,6 @@ in {
       };
       envExtra = ''
         # Nix setup (environment variables, etc.)
-        [[ -e ~/.nix-profile/bin ]] && path=("$HOME/.nix-profile/bin" $path)
         if [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]] \
             && [[ -z "$NIX_SSL_CERT_FILE" ]]; then
           source ~/.nix-profile/etc/profile.d/nix.sh
@@ -89,6 +88,7 @@ in {
       initExtraBeforeCompInit = ''
         # XDG bin
         path=("$HOME/.local/bin" $path)
+        [[ -e ~/.nix-profile/bin ]] && path=("$HOME/.nix-profile/bin" $path)
 
         # Load environment variables from a file; this approach allows me to not
         # commit secrets like API keys to Git
@@ -98,8 +98,13 @@ in {
 
         # nvim inside tmux popup
         function tvi () {
-          tmux detach
-          tmux run-shell -t main "nvr -s --servername "$NVIM_LISTEN_ADDRESS" $@"
+          if [[ -S $NVIM_LISTEN_ADDRESS ]]; then
+            nvim_cmd="nvr -s --servername "$NVIM_LISTEN_ADDRESS""
+            tmux detach
+            tmux run-shell -t main "$nvim_cmd $@"
+          else
+            tmux display-message "nvim not running in parent!"
+          fi
         }
 
         # Update environment before execute
