@@ -22,6 +22,7 @@ in
 
     hurricane.configs = {
       shell.enable = true;
+      tmux.enable = true;
       nix.enable = true;
     };
   };

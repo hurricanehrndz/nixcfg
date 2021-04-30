@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IFS=$'\n' read -r -d '' -a tmux_windows < <(
-  tmux list-windows | cut -d ' ' -f 8
+  tmux list-windows -t main | cut -d ' ' -f 8
 )
 IFS=$'\n' read -r -d '' -a tmux_popups < <(
   tmux list-sessions | awk '/popup/{sub(/:.*/,""); sub(/popup/,""); print}'
