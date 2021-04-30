@@ -5,6 +5,8 @@ let
   cfg = config.hurricane.configs.shell;
   zshPlugins = (import ./zsh-plugins.nix pkgs).plugins;
   zshAliases = (import ./zsh-aliases.nix pkgs).aliases;
+  zshrcBeforeCompInit = (import ./zshrc-BeforeCompInit.nix pkgs).zshrcBeforeCompInit;
+  zshenvExtra = (import ./zshenv-extra.nix pkgs).zshenvExtra;
 in {
   options.hurricane = { configs.shell.enable = mkEnableOption "enable awsome zsh config"; };
   config = mkIf cfg.enable {
@@ -26,8 +28,8 @@ in {
         ignoreSpace = true;
         path = "${config.xdg.configHome}/zsh/zsh_history";
       };
-      envExtra = builtins.readFile ./zshenv-extra.zsh;
-      initExtraBeforeCompInit = builtins.readFile ./zshrc-BeforeCompInit.zsh;
+      envExtra = zshenvExtra;
+      initExtraBeforeCompInit = zshrcBeforeCompInit;
       shellAliases = zshAliases;
     };
     programs.starship = {

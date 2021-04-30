@@ -3,6 +3,9 @@
 with lib;
 let
   cfg = config.hurricane.configs.tmux;
+  zshrcBeforeCompInit = (import ./zshrc-BeforeCompInit.nix pkgs).zshrcBeforeCompInit;
+  zshrcExtra = (import ./zshrc-extra.nix pkgs).zshrcExtra;
+  tmuxConf = (import ./tmux-conf.nix { inherit lib config; }).tmuxConf;
 in
 {
 
@@ -42,11 +45,11 @@ in
           '';
         }
       ];
-      extraConfig = with lib; builtins.readFile ./tmux.conf;
+      extraConfig = tmuxConf;
     };
 
     # Adding helper functions to improve zsh and tmux
-    programs.zsh.initExtraBeforeCompInit = builtins.readFile ./zshrc-BeforeCompInit.zsh;
-    programs.zsh.initExtra = builtins.readFile ./zshrc-extra.zsh;
+    programs.zsh.initExtraBeforeCompInit = zshrcBeforeCompInit;
+    programs.zsh.initExtra = zshrcExtra;
   };
 }
