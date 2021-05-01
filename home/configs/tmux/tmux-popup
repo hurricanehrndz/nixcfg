@@ -1,6 +1,6 @@
 #!/bin/bash
-width=${2:-60%}
-height=${2:-60%}
+width=${2:-80%}
+height=${2:-80%}
 session_name="$(tmux display-message -p -F "#{session_name}")"
 window_id="$(tmux display-message -p -F "#{window_id}")"
 popup_session_name="popup${window_id}"

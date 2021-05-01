@@ -6,6 +6,7 @@
     ./tmux
     ./neovim
     ./nix
+    ./alacritty
     ./git.nix
   ];
 }
