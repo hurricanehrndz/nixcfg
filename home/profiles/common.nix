@@ -20,6 +20,11 @@ in
     # Install man output for any Nix packages.
     programs.man.enable = true;
 
+    # Install cachix
+    home.packages = with pkgs; [
+      cachix
+    ];
+
     hurricane.configs = {
       shell.enable = true;
       tmux.enable = true;
