@@ -100,7 +100,7 @@ in {
       enable = true;
       config = {
         theme = config.home.sessionVariables.BAT_THEME;
-        pager = "less -FR";
+        pager = "less -FRI";
       };
     };
   };
