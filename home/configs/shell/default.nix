@@ -6,7 +6,7 @@ let
   zshPlugins = (import ./zsh-plugins.nix pkgs).plugins;
   zshAliases = (import ./zsh-aliases.nix pkgs).aliases;
   zshrcBeforeCompInit = (import ./zshrc-BeforeCompInit.nix pkgs).zshrcBeforeCompInit;
-  zshenvExtra = (import ./zshenv-extra.nix pkgs).zshenvExtra;
+  zshenvExtra = (import ./zshenv-extra.nix { inherit (pkgs) lib stdenv; }).zshenvExtra;
 in {
   options.hurricane = { configs.shell.enable = mkEnableOption "enable awsome zsh config"; };
   config = mkIf cfg.enable {

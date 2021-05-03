@@ -4,11 +4,13 @@
   home.stateVersion = "20.09";
 
   programs.home-manager.enable = true;
+  targets.genericLinux.enable = true;
 
   hurricane = {
     profiles = {
       common.enable = true;
       development.enable = true;
+      desktop.enable = true;
     };
   };
 }

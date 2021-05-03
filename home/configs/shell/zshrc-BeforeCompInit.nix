@@ -1,10 +1,13 @@
 { pkgs, ... }:
 
-{
+let inherit (pkgs) stdenv lib;
+in {
   zshrcBeforeCompInit = ''
     # XDG bin
     path=("$HOME/.local/bin" $path)
+  '' + lib.optionalString stdenv.isDarwin ''
     [[ -e ~/.nix-profile/bin ]] && path=("$HOME/.nix-profile/bin" $path)
+  '' + ''
 
     # Load environment variables from a file; this approach allows me to not
     # commit secrets like API keys to Git
