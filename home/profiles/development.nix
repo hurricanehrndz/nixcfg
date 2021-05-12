@@ -1,10 +1,8 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-let
-  cfg = config.hurricane.profiles.development;
-in
-{
+let cfg = config.hurricane.profiles.development;
+in {
   options.hurricane.profiles.development = {
     enable = mkEnableOption "development configuration";
   };
@@ -13,7 +11,6 @@ in
     {
       home.packages = with pkgs; [
         nixfmt
-        direnv
         nix-direnv
         powershell
         powershell-es
@@ -31,9 +28,7 @@ in
     }
 
     (mkIf (pkgs.stdenv.isLinux) {
-      home.packages = with pkgs; [
-        sumneko-lua-language-server
-      ];
+      home.packages = with pkgs; [ sumneko-lua-language-server ];
       xdg.dataFile."lua-lsp".source =
         "${pkgs.sumneko-lua-language-server}/extras";
     })

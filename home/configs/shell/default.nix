@@ -5,10 +5,14 @@ let
   cfg = config.hurricane.configs.shell;
   zshPlugins = (import ./zsh-plugins.nix pkgs).plugins;
   zshAliases = (import ./zsh-aliases.nix pkgs).aliases;
-  zshrcBeforeCompInit = (import ./zshrc-BeforeCompInit.nix pkgs).zshrcBeforeCompInit;
-  zshenvExtra = (import ./zshenv-extra.nix { inherit (pkgs) lib stdenv; }).zshenvExtra;
+  zshrcBeforeCompInit =
+    (import ./zshrc-BeforeCompInit.nix pkgs).zshrcBeforeCompInit;
+  zshenvExtra =
+    (import ./zshenv-extra.nix { inherit (pkgs) lib stdenv; }).zshenvExtra;
 in {
-  options.hurricane = { configs.shell.enable = mkEnableOption "enable awsome zsh config"; };
+  options.hurricane = {
+    configs.shell.enable = mkEnableOption "enable awsome zsh config";
+  };
   config = mkIf cfg.enable {
     hurricane.configs.zplugins = {
       enable = true;
@@ -47,6 +51,9 @@ in {
     };
     # Enable XDG User Directories
     xdg.enable = true;
+    # Enable direnv
+    programs.direnv.enable = true;
+    programs.direnv.enableZshIntegration = true;
 
     # my favorite utils
     home.packages = with pkgs; [
