@@ -13,6 +13,12 @@ local autocmds = {
     {"Filetype", "gitcommit", [[setl spell spl=en]]},
     {"Filetype", "gitcommit", [[setl tw=72]]},
   },
+  puppet_files = {
+    {"BufNewFile,BufRead", "*.pp", [[ setf puppet]]},
+  },
+  autoformat = {
+    {"BufWritePre", "*", [[ undojoin | Neoformat]]},
+  },
 }
 
 -- create augroups
