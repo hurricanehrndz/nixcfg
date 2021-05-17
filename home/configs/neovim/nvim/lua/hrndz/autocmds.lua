@@ -16,9 +16,6 @@ local autocmds = {
   puppet_files = {
     {"BufNewFile,BufRead", "*.pp", [[ setf puppet]]},
   },
-  autoformat = {
-    {"BufWritePre", "*", [[ undojoin | Neoformat]]},
-  },
 }
 
 -- create augroups
