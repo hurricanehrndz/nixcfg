@@ -38,8 +38,6 @@ in
 
             set -g @extrakto_clip_tool_run "fg"
             set -g @extrakto_clip_tool "yank"
-            set -g @extrakto_copy_key "y"
-            set -g @extrakto_insert_key "enter"
             set -g @extrakto_popup_size "65%"
             set -g @extrakto_grab_area "window 500"
           '';
