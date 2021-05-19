@@ -45,4 +45,4 @@ test -n "$TMUX" && tmux set-buffer "$buf" ||:
 # also copy via X11
 test -n "$DISPLAY" && printf %s "$buf" | { xsel -i -b || xclip -sel c ;} ||:
 
-test -n "$ITERM_SESSION_ID" && printf %r "$buf" | pbcopy ||:
+test "$(uname)" == "Darwin" && printf %s "$buf" | pbcopy ||:
