@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/tormodatt/tree-sitter-kotlin",
+  "rev": "48bfb38abd93f8d617877d7bb7f92a6bb1166285",
+  "date": "2021-03-20T16:06:33+01:00",
+  "path": "/nix/store/46pc7i32z0858j14vd6fqkjphz486za2-tree-sitter-kotlin-48bfb38",
+  "sha256": "0g9xag3m52yw6527dwhxwbk3g63xfrjjixmzn7ab0r0ffvp6dn76",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

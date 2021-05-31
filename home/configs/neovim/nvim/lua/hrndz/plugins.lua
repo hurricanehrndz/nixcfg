@@ -59,7 +59,6 @@ return require('packer').startup(function(use)
     -- Parsers are maintained by nix
     config = function()
       require'nvim-treesitter.configs'.setup({
-        ensure_installed = "maintained",
         highlight = {enable = true, disable = {"nix"}},
         rainbow = {enable = true, disable = {'bash', 'nix'}}
       })

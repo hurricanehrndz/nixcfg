@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/ananthakumaran/tree-sitter-elixir",
+  "rev": "803bf47ea664817aa5ef2459560dd3cb7ce68fb5",
+  "date": "2021-05-26T12:17:53+05:30",
+  "path": "/nix/store/fzjrlmkvlp0ski5ans5xg63qbap3hnq4-tree-sitter-elixir-803bf47",
+  "sha256": "08fhh8z40w5yakvkvvdp7mpps9j1wvxhylcnfnk428j03pslbpvq",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

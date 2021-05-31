@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/tree-sitter/tree-sitter-swift",
+  "rev": "a22fa5e19bae50098e2252ea96cba3aba43f4c58",
+  "date": "2019-10-24T19:04:02-06:00",
+  "path": "/nix/store/d35ab73xin0q020q8fbgqvciddslgs2v-tree-sitter-swift-a22fa5e",
+  "sha256": "14b40lmwrnyvdz2wiv684kfh4fvqfhbj1dgrx81ppmy7hsz7jcq7",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

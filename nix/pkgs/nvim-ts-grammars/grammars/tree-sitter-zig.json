@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Himujjal/tree-sitter-zig",
+  "rev": "05d6f44e5ae8fe986a7ca09ce2a301aa5148a20f",
+  "date": "2021-04-02T05:36:35+05:30",
+  "path": "/nix/store/hrpg7gn1604jfcrf0inlc47v024r4mr4-tree-sitter-zig-05d6f44",
+  "sha256": "1r3rzifmjq0ji51b0b2hhr7r4gqdszr8mvrdg7bgbrdw6vfica67",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

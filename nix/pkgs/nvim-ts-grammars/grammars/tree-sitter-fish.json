@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/krnik/tree-sitter-fish",
+  "rev": "1c25205cd7a68434bd1e576972193b3994404307",
+  "date": "2021-05-17T18:04:22+02:00",
+  "path": "/nix/store/60ycbpj8901f3sgzd0kvkzndwjyr0kxn-tree-sitter-fish-1c25205",
+  "sha256": "16za4kdrjcdhvdaznrq2chld7wwbz6dhk93xfxim7aph1k6yy311",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

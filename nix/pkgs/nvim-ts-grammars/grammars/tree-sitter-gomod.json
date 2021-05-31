@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/camdencheek/tree-sitter-go-mod",
+  "rev": "2dfd6b7d3a4cfedc52e5eaa3cc497f419e628ebb",
+  "date": "2021-05-11T20:42:18-06:00",
+  "path": "/nix/store/xym36ay4hrq2qk67c1fx4plmf23hq4s3-tree-sitter-go-mod-2dfd6b7",
+  "sha256": "1z1m1k3lk4p4b2rn4m4aihz46j86kic4v6nyynnvrcfkdm3042w7",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

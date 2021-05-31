@@ -3,14 +3,23 @@
 with lib;
 let
   cfg = config.hurricane.configs.neovim;
+  workingGrammars = attrsets.filterAttrs (n: v:
+    !builtins.elem n [
+      "tree-sitter-verilog"
+      "tree-sitter-fennel"
+      "tree-sitter-agda"
+      "tree-sitter-svelte"
+      "tree-sitter-elixir"
+      "tree-sitter-swift"
+      "tree-sitter-gdscript"
+      "tree-sitter-ocamllex"
+    ]) pkgs.nvim-ts-grammars.builtGrammars;
 in {
   options.hurricane.configs.neovim.enable = mkEnableOption "neovim config";
 
   config = mkIf cfg.enable {
     home.sessionVariables = { EDITOR = "nvim"; };
-    home.packages = with pkgs; [
-      neovim-remote
-    ];
+    home.packages = with pkgs; [ neovim-remote ];
     programs.neovim = {
       enable = true;
       package = pkgs.neovim-nightly;
@@ -57,9 +66,9 @@ in {
         recursive = true;
         source = ./nvim;
       };
-    };
-    # treesitter parsers
-    xdg.configFile."nvim/parser".source =
-      "${pkgs.nvim-treesitter-parsers}/share/nvim/parser";
+    }  // lib.attrsets.mapAttrs' (name: drv:
+      lib.attrsets.nameValuePair ("nvim/parser/"
+        + (lib.strings.removePrefix "tree-sitter-" name)
+        + ".so") { source = "${drv}/parser.so"; }) workingGrammars;
   };
 }

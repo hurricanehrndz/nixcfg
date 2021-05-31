@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/AbstractMachinesLab/tree-sitter-erlang",
+  "rev": "fea0141fb1e6d3af45c3d8f45441766793ed6e30",
+  "date": "2021-05-07T07:32:35+02:00",
+  "path": "/nix/store/88i4yhxhinnbpv7lkl7qnwkpa53hm7hd-tree-sitter-erlang-fea0141",
+  "sha256": "1prf02wrqmwy2i9zr074jppf3i6rsh1d2l3m4frsd73wrqa28zkh",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

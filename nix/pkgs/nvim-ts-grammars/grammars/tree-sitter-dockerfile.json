@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/camdencheek/tree-sitter-dockerfile",
+  "rev": "b25f86c3b2ec4192d040432a1a279861df390762",
+  "date": "2021-05-11T20:01:30-06:00",
+  "path": "/nix/store/g867wbcmsx53rfph9bls071736x781qa-tree-sitter-dockerfile-b25f86c",
+  "sha256": "0imyz6rmp5s76rn89lvzdhzzcfd8xi9899fbn1xlh35pk12a0qwr",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

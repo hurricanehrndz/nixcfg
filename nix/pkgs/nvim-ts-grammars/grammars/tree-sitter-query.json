@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/nvim-treesitter/tree-sitter-query",
+  "rev": "bc753fa4d8349bd6280f634f57bd6e7be9a3ed17",
+  "date": "2021-04-10T17:07:35-05:00",
+  "path": "/nix/store/9j8qlj9szicsan7g625806npbs07m1ya-tree-sitter-query-bc753fa",
+  "sha256": "0cshdvb7d0glmrkl8bfkxyrjb0z8r003fqprb86ky35k19758vam",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}
