@@ -1,3 +1,1 @@
-inputs@{ self, ... }: final: prev: {
-  flake = self;
-} // import ../pkgs final prev
+inputs@{ self, ... }: final: prev: { flake = self; } // import ../pkgs final prev

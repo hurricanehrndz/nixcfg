@@ -18,6 +18,12 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # hardware stuff
+    nixGL = {
+      url = "github:guibou/nixGL";
+      flake = false;
+    };
   };
 
   outputs = { self, ... }@inputs:
