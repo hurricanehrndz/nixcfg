@@ -100,11 +100,11 @@
     "nixGL": {
       "flake": false,
       "locked": {
-        "lastModified": 1619626023,
-        "narHash": "sha256-kNlEzRalqw3cz9gBXjeHLwLL3ovwSd7mdXVo0ZwAU6Q=",
+        "lastModified": 1621410432,
+        "narHash": "sha256-OHCtF0HL0E/LNnT8jNeBIpoKTTjvTD5Oo6uQuqVzXAA=",
         "owner": "guibou",
         "repo": "nixGL",
-        "rev": "3ab1aae698dc45d11cc2699dd4e36de9cdc5aa4c",
+        "rev": "44015623da7bb650060277596ce7ef42018c97d5",
         "type": "github"
       },
       "original": {
