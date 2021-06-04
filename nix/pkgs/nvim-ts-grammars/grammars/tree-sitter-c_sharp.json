@@ -1,9 +1,9 @@
 {
   "url": "https://github.com/tree-sitter/tree-sitter-c-sharp",
-  "rev": "d5b3e64752426c9f15b4a407790ca362b7c86bc3",
-  "date": "2021-05-28T20:12:10+02:00",
-  "path": "/nix/store/1jr341wavp4jdch9kgg8m360s8hk6ycx-tree-sitter-c-sharp-d5b3e64",
-  "sha256": "1liswgq2gp2lyvrxjvn42ssmv03dv5w00bxsg3b4lfq9dkbqxhhw",
+  "rev": "3a9e0e37a3cf6d316e7d5508512e02428383a6e5",
+  "date": "2021-06-03T08:52:20+01:00",
+  "path": "/nix/store/24b6w81mimng9xwagfhpm28navg95lkl-tree-sitter-c-sharp-3a9e0e3",
+  "sha256": "1s414s5mc5n2yfa9yvxskjg9akgccgi82g7ysmx47q9w25b06m16",
   "fetchSubmodules": false,
   "deepClone": false,
   "leaveDotGit": false

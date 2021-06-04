@@ -22,7 +22,6 @@ stdenv.mkDerivation {
 
   dontUnpack = true;
   configurePhase = ":";
-  buildFlags = [ "USE_LIBCXX=1" ];
   buildPhase = ''
     runHook preBuild
     scanner_cc="$src/src/scanner.cc"

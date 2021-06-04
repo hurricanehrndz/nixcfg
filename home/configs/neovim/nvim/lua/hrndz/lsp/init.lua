@@ -49,6 +49,11 @@ local custom_attach = function(client)
   if client.resolved_capabilities.document_range_formatting then
     vnoremap({",f", vim.lsp.buf.range_formatting, buffer = 0})
   end
+
+  -- Enale incremental_sync
+  if client.config.flags then
+    client.config.flags.allow_incremental_sync = true
+  end
 end
 
 local nvim_lsp = require("lspconfig")
@@ -59,7 +64,8 @@ local lsp = vim.lsp
 lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(
   lsp.diagnostic.on_publish_diagnostics, {
     -- Disable virtual_text
-    virtual_text = false,
+    virtual_text = true,
+    update_in_insert = true,
   }
 )
 
