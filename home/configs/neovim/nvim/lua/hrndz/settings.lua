@@ -45,7 +45,7 @@ o.sidescrolloff = 10
 -- strings to use in list command for punctuation
 o.listchars = [[tab:→ ,eol:↲,space:␣,trail:•,extends:⟩,precedes:⟨]]
 -- set max with of text
-o.textwidth = 78
+o.textwidth = 80
 -- set selection to exclusive
 o.selection = "exclusive"
 o.smartcase = true
