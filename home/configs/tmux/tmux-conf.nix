@@ -13,8 +13,7 @@ with lib;
 
     # Smart pane switching with awareness of Vim splits.
     # See: https://github.com/christoomey/vim-tmux-navigator
-    is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
-        | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
+    is_vim="ps -o state=,tty=,comm= | grep -iqE '^[^TXZ ]+ +#{s|/dev/||:pane_tty}\s+(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
     bind-key -n 'M-h' if-shell "$is_vim" 'send-keys M-h'  'select-pane -L'
     bind-key -n 'M-j' if-shell "$is_vim" 'send-keys M-j'  'select-pane -D'
     bind-key -n 'M-k' if-shell "$is_vim" 'send-keys M-k'  'select-pane -U'
