@@ -29,7 +29,6 @@ in
         "._*"
         ".Spotlight-V100"
         ".Trashes"
-        "Icon?"
         "ehtumb.db"
         "Thumbs.db"
         "doc/tags"
