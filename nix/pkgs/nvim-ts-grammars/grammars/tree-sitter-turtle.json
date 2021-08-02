@@ -1,9 +1,9 @@
 {
   "url": "https://github.com/BonaBeavis/tree-sitter-turtle",
-  "rev": "05b2419c35ca64ad7a51dc5620426d5c9bf9c357",
-  "date": "2021-03-17T13:48:00+01:00",
-  "path": "/nix/store/3qk56yzckr4mfyql8wzkxg812w4yfhs8-tree-sitter-turtle-05b2419",
-  "sha256": "10r5vq1wyvr2c02h9l64warfaky1zhz353a5rywk362wp5pz8fmm",
+  "rev": "ae634171e8ea4fd88fe3199bc27d03abf2d4c7e4",
+  "date": "2021-06-06T11:05:23+02:00",
+  "path": "/nix/store/bd1nd9vidkci8rzn8jpnx1ql99fywvdz-tree-sitter-turtle-ae63417",
+  "sha256": "12x50dyi625bn3w7fm1zx4rrh36llhxksjj0v1ifksg8m9x0hahs",
   "fetchSubmodules": false,
   "deepClone": false,
   "leaveDotGit": false

@@ -1,0 +1,10 @@
+{
+  "url": "https://github.com/Hubro/tree-sitter-yang",
+  "rev": "eb4ace1fdc4954d7e4f0687c687219f78a6ce64e",
+  "date": "2021-07-23T17:20:31+02:00",
+  "path": "/nix/store/c5yb9g5ps516w21r0z50vb45cirv6hax-tree-sitter-yang-eb4ace1",
+  "sha256": "00l2rbi25vx8hjigxw2hgg0i14dqvcxjx79ipks21hqlyh0jhzc9",
+  "fetchSubmodules": false,
+  "deepClone": false,
+  "leaveDotGit": false
+}

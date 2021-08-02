@@ -25,9 +25,12 @@ grammars_file_path = os.path.join(grammars_path, "default.nix")
 grammars_file = open(grammars_file_path, "w")
 
 grammars_file.write("{\n")
+problematic_parsers = ["godotResource", "teal"]
 
 for data in parsers_data:
     parser_name, parser_repo = data
+    if parser_name in problematic_parsers:
+        continue
     parser_rev = lockfile_data[parser_name]['revision']
     parser_file_path = os.path.join(grammars_path,
                                     f"tree-sitter-{parser_name}.json")
