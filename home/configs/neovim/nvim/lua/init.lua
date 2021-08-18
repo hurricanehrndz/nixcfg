@@ -11,7 +11,7 @@ require('hrndz.theme')
 require('hrndz.plugins')
 
 -- Force loading of astronauta first
---vim.cmd [[runtime plugin/astronauta.vim]]
+vim.cmd [[runtime plugin/astronauta.vim]]
 
 -- Key mappings
 require('hrndz.keymaps')
