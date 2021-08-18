@@ -1,9 +1,9 @@
 {
-  "url": "https://github.com/Himujjal/tree-sitter-zig",
-  "rev": "05d6f44e5ae8fe986a7ca09ce2a301aa5148a20f",
-  "date": "2021-04-02T05:36:35+05:30",
-  "path": "/nix/store/hrpg7gn1604jfcrf0inlc47v024r4mr4-tree-sitter-zig-05d6f44",
-  "sha256": "1r3rzifmjq0ji51b0b2hhr7r4gqdszr8mvrdg7bgbrdw6vfica67",
+  "url": "https://github.com/maxxnino/tree-sitter-zig",
+  "rev": "fef3c6f5c0047de147c45540fc93dc1ebf664da4",
+  "date": "2021-08-16T22:33:28+09:00",
+  "path": "/nix/store/3r2r1mwaav1yy9vmz6x33gr92iqljsdh-tree-sitter-zig-fef3c6f",
+  "sha256": "12mfdaz92jpsyl9wvl33g5nf99mqy922barpnj1h0p62nqk4450f",
   "fetchSubmodules": false,
   "deepClone": false,
   "leaveDotGit": false

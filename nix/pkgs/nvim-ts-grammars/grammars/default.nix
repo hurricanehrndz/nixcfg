@@ -26,6 +26,8 @@
   tree-sitter-scss = (builtins.fromJSON (builtins.readFile ./tree-sitter-scss.json));
   tree-sitter-erlang = (builtins.fromJSON (builtins.readFile ./tree-sitter-erlang.json));
   tree-sitter-elixir = (builtins.fromJSON (builtins.readFile ./tree-sitter-elixir.json));
+  tree-sitter-surface = (builtins.fromJSON (builtins.readFile ./tree-sitter-surface.json));
+  tree-sitter-heex = (builtins.fromJSON (builtins.readFile ./tree-sitter-heex.json));
   tree-sitter-ocaml = (builtins.fromJSON (builtins.readFile ./tree-sitter-ocaml.json));
   tree-sitter-ocaml_interface = (builtins.fromJSON (builtins.readFile ./tree-sitter-ocaml_interface.json));
   tree-sitter-ocamllex = (builtins.fromJSON (builtins.readFile ./tree-sitter-ocamllex.json));
@@ -66,4 +68,5 @@
   tree-sitter-zig = (builtins.fromJSON (builtins.readFile ./tree-sitter-zig.json));
   tree-sitter-fortran = (builtins.fromJSON (builtins.readFile ./tree-sitter-fortran.json));
   tree-sitter-cmake = (builtins.fromJSON (builtins.readFile ./tree-sitter-cmake.json));
+  tree-sitter-vim = (builtins.fromJSON (builtins.readFile ./tree-sitter-vim.json));
 }

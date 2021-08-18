@@ -1,9 +1,9 @@
 {
   "url": "https://github.com/BonaBeavis/tree-sitter-sparql",
-  "rev": "abc8d7c4f837bfe927086580e461f9ee980d1244",
-  "date": "2021-06-06T11:01:45+02:00",
-  "path": "/nix/store/57m8ds8v7k3mxz355wmbl3zkngnb1rcz-tree-sitter-sparql-abc8d7c",
-  "sha256": "177vr1i2gj3ihprkffwyyckkpvyviv236mc6yrrp7v9k1h6aysiw",
+  "rev": "05f949d3c1c15e3261473a244d3ce87777374dec",
+  "date": "2021-08-16T15:50:03+02:00",
+  "path": "/nix/store/f9qn413c1qr007389770ysy6yz85k7hy-tree-sitter-sparql-05f949d",
+  "sha256": "012c1pi4vc6hkvllymvl2yah3ix8k4pi7997iydy949fc33aa5i8",
   "fetchSubmodules": false,
   "deepClone": false,
   "leaveDotGit": false

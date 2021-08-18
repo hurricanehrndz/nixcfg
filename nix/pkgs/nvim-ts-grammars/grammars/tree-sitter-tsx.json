@@ -1,9 +1,9 @@
 {
   "url": "https://github.com/tree-sitter/tree-sitter-typescript",
-  "rev": "fd08586b72f2ba8776d865b32aca561285c10cfd",
-  "date": "2021-07-15T15:58:14-07:00",
-  "path": "/nix/store/aryanriw5z4arfzhjjc67939jg555v57-tree-sitter-typescript-fd08586",
-  "sha256": "14kh3sl55g13x4yl5rzgia4fb0y3cd4i8gibhc5pg9287hsqn2hc",
+  "rev": "83816f563c8d9d2f1b9c921206a7944d0c5904ad",
+  "date": "2021-08-17T11:21:26-07:00",
+  "path": "/nix/store/cl0vwz2n3bk61phl45nckjlcnl09c4sk-tree-sitter-typescript-83816f5",
+  "sha256": "1w989z36pvfv7m4z9s9qq67l81p8rx37z53kqmsxsyc01wnpb4nr",
   "fetchSubmodules": false,
   "deepClone": false,
   "leaveDotGit": false
