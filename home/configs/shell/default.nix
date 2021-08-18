@@ -37,6 +37,12 @@ in {
         envExtra = zshenvExtra;
         initExtraBeforeCompInit = zshrcBeforeCompInit;
         shellAliases = zshAliases;
+        profileExtra = ''
+          # Nix setup (environment variables, etc.)
+          if [[ -e ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+            source ~/.nix-profile/etc/profile.d/nix.sh
+          fi
+        '';
       };
       programs.starship = {
         enable = true;
@@ -129,7 +135,7 @@ in {
     (mkIf stdenv.isLinux {
       home.file.".profile".text = ''
         if [ "$SHELL" = "/usr/bin/zsh" ]; then
-          . ~/.zshenv
+          . ~/.config/zsh/.zprofile
           return
         fi
       '';
