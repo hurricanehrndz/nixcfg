@@ -9,7 +9,7 @@ return require('packer').startup(function(use)
   -- Embrace the darkside
   use 'joshdick/onedark.vim'
   -- Use the guides
-  use {'lukas-reineke/indent-blankline.nvim', branch = "lua"}
+  use 'lukas-reineke/indent-blankline.nvim'
   -- Show me end of column
   use 'tjdevries/overlength.vim'
   -- But mind the (git) warning signs
