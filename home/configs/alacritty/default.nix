@@ -21,7 +21,7 @@ in {
         };
         font = {
           normal = {
-            family = "FiraCode Nerd Font Mono";
+            family = "SauceCodePro Nerd Font";
             style = "Light";
           };
           size = 12;
