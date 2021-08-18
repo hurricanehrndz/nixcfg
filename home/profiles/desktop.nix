@@ -10,5 +10,8 @@ in {
     hurricane.configs = {
       alacritty.enable = true;
     };
+    home.packages = [
+      (pkgs.nerdfonts.override { fonts = [ "FiraCode" "Hack" "FantasqueSansMono" "Meslo" "SourceCodePro" ]; })
+    ];
   };
 }
