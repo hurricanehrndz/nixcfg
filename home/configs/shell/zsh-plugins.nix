@@ -7,7 +7,7 @@
         owner = "romkatv";
         repo = "zsh-defer";
         rev = "master";
-        sha256 = "sha256-zMvVY2FojwuTXH+NFoUv7+b9zD1wsmB5D16EvXsk7vY";
+        sha256 = "sha256-j9aBoEIt21L7jMUALm7BGirNo3K7unRrewOTviXMOQg=";
       };
     }
     {
@@ -19,7 +19,7 @@
         owner = "jeffreytse";
         repo = "zsh-vi-mode";
         rev = "master";
-        sha256 = "sha256-+37toh6SBNSpn9tXRbJIbFINKKWuaGHM2PZQ2+DbpAg";
+        sha256 = "sha256-mWs08JtEG128sQcflKWHw+dA73T90swCis2mME5U32E=";
       };
     }
     {
