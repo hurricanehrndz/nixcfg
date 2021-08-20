@@ -23,6 +23,7 @@ in
     # Install cachix
     home.packages = with pkgs; [
       cachix
+      coreutils
     ];
 
     hurricane.configs = {
