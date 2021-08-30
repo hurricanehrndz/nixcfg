@@ -10,12 +10,17 @@ in {
   config = mkIf cfg.enable (mkMerge [
     {
       home.packages = with pkgs; [
+        awscli2
         nixfmt
         nix-direnv
         powershell
         powershell-es
         poetry
+        shellcheck
+        shfmt
         (python38.withPackages (ps: with ps; [ pip ]))
+        vagrant
+        ninja
       ];
 
       xdg.dataFile."pses".source =
