@@ -105,3 +105,26 @@ nvim_lsp.powershell_es.setup({
   on_attach = custom_attach,
   bundle_path = pwsh_bundle_path,
 })
+
+-- efm
+local shellcheck = {
+    LintCommand = 'shellcheck -f gcc -x',
+    lintFormats = {'%f:%l:%c: %trror: %m', '%f:%l:%c: %tarning: %m', '%f:%l:%c: %tote: %m'}
+}
+
+local shfmt = {
+  formatCommand = 'shfmt -ci -s -bn',
+  formatStdin = true
+}
+
+require"lspconfig".efm.setup {
+    -- init_options = {initializationOptions},
+    init_options = {documentFormatting = true, codeAction = false},
+    filetypes = {"sh"},
+    settings = {
+        rootMarkers = {".git/"},
+        languages = {
+            sh = {shellcheck, shfmt}
+        }
+    }
+}

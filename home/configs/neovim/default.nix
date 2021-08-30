@@ -53,10 +53,16 @@ in {
         nodePackages.vim-language-server
         nodePackages.yaml-language-server
 
+        efm-langserver
+
+        # Linters
+        shellcheck
+
         # Formatters
         nodePackages.prettier
         nixfmt
         rustfmt
+        shfmt
         terraform
       ];
     };
