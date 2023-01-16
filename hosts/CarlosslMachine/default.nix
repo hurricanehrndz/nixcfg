@@ -1,4 +1,5 @@
 { pkgs, ... }:
+
 {
 
   # Make sure the nix daemon always runs
@@ -14,4 +15,5 @@
   [ pkgs.vim
   ];
 
+  programs.zsh.enable = true;
 }

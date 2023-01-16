@@ -5,40 +5,33 @@
 
   inputs = {
     # Package sets
-    nixos-stable.url = "github:NixOS/nixpkgs/nixos-22.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
 
     # flake helpers
-    flake-utils.url = "github:numtide/flake-utils";
-    utils.url = "github:gytis-ivaskevicius/flake-utils-plus";
-    utils.inputs.flake-utils.follows = "flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-stable-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    { self
-    , darwin
-    , nixpkgs-stable-darwin
-    , flake-utils
-    , utils
-    , ...
-    } @inputs:
-    utils.lib.mkFlake {
-      inherit self inputs;
-
-      channelsConfig.allowUnfree = true;
-
-      channels.nixpkgs-stable-darwin = {};
-
-      hosts.CarlosslMachine = {
-        output = "darwinConfigurations";
-        builder = darwin.lib.darwinSystem;
-        system = "aarch64-darwin";
-        modules = [ ./hosts/CarlosslMachine ];
-        channelName = "nixpkgs-stable-darwin";
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      flake = {
+        darwinConfigurations.CarlosslMachine = inputs.darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            ./hosts/CarlosslMachine
+            {
+              nixpkgs.config.allowUnfree = true;
+            }
+          ];
+        };
       };
+      systems = [
+        # systems for which you want to build the `perSystem` attributes
+        "aarch64-darwin"
+      ];
     };
 }
