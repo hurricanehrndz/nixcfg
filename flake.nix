@@ -5,9 +5,10 @@
 
   inputs = {
     # Package sets
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixpkgs.follows = "nixos-unstable";
+    nixos-stable.url = "github:NixOS/nixpkgs/nixos-22.11";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
