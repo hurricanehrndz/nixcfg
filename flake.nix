@@ -12,27 +12,49 @@
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
+    digga = {
+      url = "github:divnix/digga/home-manager-22.11";
+      inputs.home-manager.follows = "home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      flake = {
-        darwinConfigurations.CarlosslMachine = inputs.darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          modules = [
-            ./hosts/CarlosslMachine
-            {
-              nixpkgs.config.allowUnfree = true;
-            }
-          ];
-        };
-      };
-      systems = [
-        # systems for which you want to build the `perSystem` attributes
-        "aarch64-darwin"
+  outputs = {
+    self,
+    flake-parts,
+    nixpkgs,
+    digga,
+    ...
+  } @ inputs: let
+      inherit (digga.lib) flattenTree rakeLeaves;
+    in flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        ./darwin/configurations.nix
       ];
+
+      systems = [ "aarch64-darwin" ];
+
+      perSystem = {
+        system,
+        inputs',
+        self',
+        ...
+      }: {
+        _module.args = {
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        };
+        formatter = inputs'.nixpkgs.legacyPackages.alejandra;
+      };
+
     };
 }
