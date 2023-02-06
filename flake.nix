@@ -33,13 +33,15 @@
     digga,
     ...
   } @ inputs: let
-      inherit (digga.lib) flattenTree rakeLeaves;
-    in flake-parts.lib.mkFlake { inherit inputs; } {
+    inherit (digga.lib) flattenTree rakeLeaves;
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./darwin/configurations.nix
+        ./packages
       ];
 
-      systems = [ "aarch64-darwin" ];
+      systems = ["aarch64-darwin"];
 
       perSystem = {
         system,
@@ -55,6 +57,5 @@
         };
         formatter = inputs'.nixpkgs.legacyPackages.alejandra;
       };
-
     };
 }

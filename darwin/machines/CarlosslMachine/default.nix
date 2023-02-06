@@ -1,7 +1,4 @@
-{ pkgs, ... }:
-
-{
-
+{pkgs, ...}: {
   # Make sure the nix daemon always runs
   services.nix-daemon.enable = true;
   nix = {
@@ -11,8 +8,8 @@
     '';
   };
 
-  environment.systemPackages =
-  [ pkgs.vim
+  environment.systemPackages = [
+    pkgs.vim
   ];
 
   programs.zsh.enable = true;
