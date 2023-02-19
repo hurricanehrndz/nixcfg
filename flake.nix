@@ -24,6 +24,30 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    gitsigns-src = {
+      url = "github:lewis6991/gitsigns.nvim";
+      flake = false;
+    };
+    nvim-colorizer-src = {
+      url = "github:NvChad/nvim-colorizer.lua";
+      flake = false;
+    };
+    nvim-window-src = {
+      url = "gitlab:yorickpeterse/nvim-window";
+      flake = false;
+    };
+    nvim-osc52-src = {
+      url = "github:ojroques/nvim-osc52";
+      flake = false;
+    };
+
+    # tmux
+    extrakto-src = {
+      url = "github:laktak/extrakto";
+      flake = false;
+    };
+
   };
 
   outputs = {
@@ -37,7 +61,10 @@
   in
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
+        ./flake-modules/homeConfigurations.nix
+
         ./darwin/configurations.nix
+        ./home/configuration.nix
         ./packages
       ];
 

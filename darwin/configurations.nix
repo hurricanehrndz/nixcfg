@@ -13,9 +13,16 @@
     rakeLeaves
     ;
 
+  inherit (self.nixosModules) homeManagerSettings;
+
   l = inputs.nixpkgs.lib // builtins;
 
   darwinMachines = rakeLeaves ./machines;
+
+  defaultModules = [
+    # homeManagerSettings
+    inputs.home-manager.darwinModules.home-manager
+  ];
 
   makeDarwinSystem = hostName: darwinArgs @ {system, ...}:
     withSystem system (
