@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   username = "carlos";
 in {
   # Make sure the nix daemon always runs

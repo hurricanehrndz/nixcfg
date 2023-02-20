@@ -72,10 +72,10 @@ in {
     # inherit homeModules;
     nixosModules.homeManagerSettings = settingsModule;
     darwinModules.homeManagerSettings = settingsModule;
-    # homeConfigurations = l.mkBefore (
-    #   (mkHomeConfigurations nixosConfigurations)
-    #   // (mkHomeConfigurations darwinConfigurations)
-    # );
+    homeConfigurations = l.mkBefore (
+      # (mkHomeConfigurations nixosConfigurations)
+      (mkHomeConfigurations darwinConfigurations)
+    );
   };
 
   perSystem = {

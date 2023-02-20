@@ -13,14 +13,14 @@
     rakeLeaves
     ;
 
-  inherit (self.nixosModules) homeManagerSettings;
+  inherit (self.darwinModules) homeManagerSettings;
 
   l = inputs.nixpkgs.lib // builtins;
 
   darwinMachines = rakeLeaves ./machines;
 
   defaultModules = [
-    # homeManagerSettings
+    homeManagerSettings
     inputs.home-manager.darwinModules.home-manager
   ];
 
@@ -35,18 +35,20 @@
         l.makeOverridable inputs.darwin.lib.darwinSystem {
           inherit system;
           pkgs = darwinArgs.pkgs or pkgs;
-          modules = [
-            {
-              _module.args = {
-                inherit inputs';
-                inherit (ctx.config) packages;
-                isNixos = false;
-              };
-              networking.hostName = hostName;
-              networking.computerName = hostName;
-            }
-            darwinMachines.${hostName}
-          ];
+          modules =
+            defaultModules
+            ++ [
+              {
+                _module.args = {
+                  inherit inputs';
+                  inherit (ctx.config) packages;
+                  isNixos = false;
+                };
+                networking.hostName = hostName;
+                networking.computerName = hostName;
+              }
+              darwinMachines.${hostName}
+            ];
           specialArgs = {
             inherit
               self
