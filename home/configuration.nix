@@ -88,7 +88,10 @@ in {
         inherit (pkgs.stdenv) hostPlatform;
         inherit (hostPlatform) isDarwin;
         inherit pkgs;
-        homePrefix = if isDarwin then "/Users" else "/home";
+        homePrefix =
+          if isDarwin
+          then "/Users"
+          else "/home";
       in (inputs.home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules =

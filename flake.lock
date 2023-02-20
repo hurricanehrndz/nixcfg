@@ -135,6 +135,22 @@
         "type": "github"
       }
     },
+    "extrakto-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1673301240,
+        "narHash": "sha256-KBt7XxOP54s7sju0bclPJdP9bXT8wjHucTpbE3WqY2w=",
+        "owner": "laktak",
+        "repo": "extrakto",
+        "rev": "efca89800293cbb8224463d82eeecffdb2f7036a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "laktak",
+        "repo": "extrakto",
+        "type": "github"
+      }
+    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -231,6 +247,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "gitsigns-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1676546567,
+        "narHash": "sha256-/ektWWpMhHTFxeUpWFc6w0Zv/ZFkqjits2IYhlpwodo=",
+        "owner": "lewis6991",
+        "repo": "gitsigns.nvim",
+        "rev": "f388995990aba04cfdc7c3ab870c33e280601109",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lewis6991",
+        "repo": "gitsigns.nvim",
         "type": "github"
       }
     },
@@ -368,18 +400,71 @@
         "type": "github"
       }
     },
+    "nvim-colorizer-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1667038244,
+        "narHash": "sha256-toNEfgZn2RNwyjI5FOyRU9Bdu6jFDZbSb1SjiY9sHH8=",
+        "owner": "NvChad",
+        "repo": "nvim-colorizer.lua",
+        "rev": "760e27df4dd966607e8fb7fd8b6b93e3c7d2e193",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NvChad",
+        "repo": "nvim-colorizer.lua",
+        "type": "github"
+      }
+    },
+    "nvim-osc52-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1676563360,
+        "narHash": "sha256-R8CAr0cJB8RwV7iL2YB5Ci/WtKUSTdCh1TBtqKMVKe8=",
+        "owner": "ojroques",
+        "repo": "nvim-osc52",
+        "rev": "358a2b4804c5f35b9ab6975cf68611afcbbc9b0d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ojroques",
+        "repo": "nvim-osc52",
+        "type": "github"
+      }
+    },
+    "nvim-window-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1648064093,
+        "narHash": "sha256-3nP/Dxl20g3Q1ojWTUxTE2NUrPq734HsxnzWhH2zttg=",
+        "owner": "yorickpeterse",
+        "repo": "nvim-window",
+        "rev": "dd0a6b230003ef35524853d71e5413f88fd2ba74",
+        "type": "gitlab"
+      },
+      "original": {
+        "owner": "yorickpeterse",
+        "repo": "nvim-window",
+        "type": "gitlab"
+      }
+    },
     "root": {
       "inputs": {
         "darwin": "darwin",
         "digga": "digga",
+        "extrakto-src": "extrakto-src",
         "flake-parts": "flake-parts",
+        "gitsigns-src": "gitsigns-src",
         "home-manager": "home-manager",
         "nixos-stable": "nixos-stable",
         "nixos-unstable": "nixos-unstable",
         "nixpkgs": [
           "nixos-unstable"
         ],
-        "nixpkgs-stable-darwin": "nixpkgs-stable-darwin"
+        "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
+        "nvim-colorizer-src": "nvim-colorizer-src",
+        "nvim-osc52-src": "nvim-osc52-src",
+        "nvim-window-src": "nvim-window-src"
       }
     },
     "utils": {

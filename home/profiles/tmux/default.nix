@@ -43,7 +43,8 @@
       # easily zoom
       bind-key -n 'M-z' resize-pane -Z
     '';
-    plugins = with pkgs; with tmuxPlugins; let
+    plugins = with pkgs;
+    with tmuxPlugins; let
       extrakto = mkTmuxPlugin {
         pluginName = "extrakto";
         version = "master";

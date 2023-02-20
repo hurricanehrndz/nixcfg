@@ -47,7 +47,6 @@
       url = "github:laktak/extrakto";
       flake = false;
     };
-
   };
 
   outputs = {
