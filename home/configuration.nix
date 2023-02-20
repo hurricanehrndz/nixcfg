@@ -46,6 +46,7 @@
       self
       inputs
       profiles
+      roles
       ;
     inherit
       (hostPlatform)
@@ -68,7 +69,7 @@
   });
 in {
   flake = {
-    inherit homeModules;
+    # inherit homeModules;
     nixosModules.homeManagerSettings = settingsModule;
     darwinModules.homeManagerSettings = settingsModule;
     # homeConfigurations = l.mkBefore (
@@ -98,7 +99,6 @@ in {
           defaultModules
           ++ [
             (moduleArgs: {
-              home.stateVersion = "22.11";
               home.username = username;
               home.homeDirectory = "${homePrefix}/${username}";
               _module.args = {
@@ -115,7 +115,13 @@ in {
       });
 
       traveller = makeHomeConfiguration "chernand" {
-        modules = with roles; base;
+        modules = with roles;
+          base
+          ++ [
+            {
+              home.stateVersion = "22.11";
+            }
+          ];
       };
     in {
       inherit traveller;
