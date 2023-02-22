@@ -8,11 +8,6 @@ in {
   # Make sure the nix daemon always runs
   services.nix-daemon.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    vim
-    ncurses
-  ];
-
   environment.shells = [pkgs.zsh];
 
   users.users.${username} = {
