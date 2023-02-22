@@ -57,31 +57,36 @@
     ...
   } @ inputs: let
     inherit (digga.lib) flattenTree rakeLeaves;
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [
-        ./flake-modules/homeConfigurations.nix
+  in (flake-parts.lib.mkFlake {inherit inputs;} {
+    imports = [
+      ./flake-modules/homeConfigurations.nix
+      ./flake-modules/sharedProfiles.nix
 
-        ./darwin/configurations.nix
-        ./home/configuration.nix
-        ./packages
-      ];
+      ./darwin/configurations.nix
+      ./home/configuration.nix
+      ./packages
+    ];
 
-      systems = ["aarch64-darwin"];
+    systems = ["aarch64-darwin"];
 
-      perSystem = {
-        system,
-        inputs',
-        self',
-        ...
-      }: {
-        _module.args = {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-          };
+    perSystem = {
+      system,
+      inputs',
+      self',
+      ...
+    }: {
+      _module.args = {
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
         };
-        formatter = inputs'.nixpkgs.legacyPackages.alejandra;
       };
+      formatter = inputs'.nixpkgs.legacyPackages.alejandra;
     };
+    flake = {
+      # shared importables :: may be used within system configurations for any
+      # supported operating system (e.g. nixos, nix-darwin).
+      sharedProfiles = rakeLeaves ./profiles;
+    };
+  });
 }
