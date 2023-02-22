@@ -59,9 +59,9 @@ in {
 
   programs.zsh = {
     enable = l.mkDefault true;
-    # shellInit = l.mkDefault "";
-    # loginShellInit = l.mkDefault "";
-    # interactiveShellInit = l.mkDefault "";
+    shellInit = l.mkDefault "";
+    loginShellInit = l.mkDefault "";
+    interactiveShellInit = l.mkDefault "";
 
     # Prompts/completions/widgets should never be initialised at the
     # system-level because it will need to be initialised a second time once the
