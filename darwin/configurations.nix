@@ -36,10 +36,14 @@
 
   l = inputs.nixpkgs.lib // builtins;
 
+  roles = import ./roles.nix {inherit sharedProfiles darwinProfiles;};
+
   darwinMachines = rakeLeaves ./machines;
+  darwinProfiles = rakeLeaves ./profiles;
 
   defaultModules = [
     sharedProfiles.core
+    darwinProfiles.core
     homeManagerSettings
     inputs.home-manager.darwinModules.home-manager
   ];
@@ -57,6 +61,7 @@
           pkgs = darwinArgs.pkgs or pkgs;
           modules =
             defaultModules
+            ++ roles.workstation
             ++ [
               {
                 _module.args = {
