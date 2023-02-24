@@ -25,6 +25,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # neovim
+    neovim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     gitsigns-src = {
       url = "github:lewis6991/gitsigns.nvim";
       flake = false;
@@ -39,6 +44,15 @@
     };
     nvim-osc52-src = {
       url = "github:ojroques/nvim-osc52";
+      flake = false;
+    };
+    # pypi packages
+    yamllint-src = {
+      url = "github:adrienverge/yamllint";
+      flake = false;
+    };
+    yamlfixer-src = {
+      url = "github:opt-nc/yamlfixer";
       flake = false;
     };
 

@@ -2,8 +2,10 @@
   pkgs,
   lib,
   inputs,
+  inputs',
   ...
 }: let
+  neovim-nightly = with inputs'.neovim-nightly.packages; neovim;
   # Function to override the source of a package
   withSrc = pkg: src: pkg.overrideAttrs (_: {inherit src;});
   yamllint = with pkgs.python3Packages;
@@ -79,11 +81,10 @@ in {
     vimdiffAlias = true;
     vimAlias = true;
     viAlias = true;
-    package = pkgs.neovim-nightly;
+    package = neovim-nightly;
     extraPackages = with pkgs; [
       # used to compile tree-sitter grammar
       tree-sitter
-      gcc
       # lsp
       rnix-lsp
       sumneko-lua-language-server

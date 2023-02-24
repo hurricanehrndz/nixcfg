@@ -3,13 +3,19 @@ with profiles; let
   base = [
     zsh
     shellAliases
-    direnv
-    git
     tmux
   ];
+  developer =
+    base
+    ++ [
+      direnv
+      git
+      nvim
+    ];
   roles = {
     inherit
       base
+      developer
       ;
   };
 in
