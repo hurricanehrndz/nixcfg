@@ -16,7 +16,6 @@ in {
   # Sets the level of font smoothing (sub-pixel font rendering).
   # 0 => none, 1 => light, 2 => medium, 3 => strong
   system.defaults.NSGlobalDomain.AppleFontSmoothing = 0;
-  system.defaults.universalaccess.reduceTransparency = true;
 
   ###: SOUND ==================================================================
 
@@ -63,7 +62,7 @@ in {
   system.defaults.dock.show-recents = false;
   system.defaults.dock.showhidden = true;
   system.defaults.dock.static-only = true;
-  system.defaults.dock.tilesize = 32;
+  system.defaults.dock.tilesize = 64;
 
   # system.defaults.spaces.spans-displays = !isYabaiEnabled;
 
