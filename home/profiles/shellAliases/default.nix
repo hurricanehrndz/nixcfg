@@ -9,7 +9,6 @@
     rg = "rg -i -L";
     vimdiff = "nvim -d";
     mkdir = "mkdir -p";
-    rm = "trash";
 
     # quick cd
     ".." = "cd ..";

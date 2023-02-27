@@ -31,7 +31,6 @@ in {
     sd
     tealdeer
     tmux
-    trashy
 
     (
       if stdenv.hostPlatform.isDarwin
