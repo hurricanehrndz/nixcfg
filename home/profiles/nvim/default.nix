@@ -33,7 +33,6 @@ in {
     nodePackages.markdownlint-cli
     nodePackages.prettier
     puppet-lint
-    ripgrep
     shellcheck
     shfmt
     stylua

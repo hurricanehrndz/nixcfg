@@ -10,6 +10,7 @@ with profiles; let
     ++ [
       direnv
       git
+      gpg
       nvim
     ];
   roles = {
