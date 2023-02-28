@@ -3,13 +3,12 @@
   darwinProfiles,
 }: let
   workstation =
-    # (with sharedProfiles; [
-    #   # fonts.common
-    #   # fonts.iosevka-variants
-    # ])
-    with darwinProfiles; [
+    (with sharedProfiles; [
+      fonts.common
+    ])
+    ++ (with darwinProfiles; [
       graphical
       system-defaults
       # virtualization
-    ];
+    ]);
 in {inherit workstation;}
