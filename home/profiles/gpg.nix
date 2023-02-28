@@ -14,18 +14,24 @@ with lib; let
   gpgPkg = config.programs.gpg.package;
   homedir = config.programs.gpg.homedir;
   gpg-agent-start = with pkgs;
-    writeShellScript "gpg-agent-start" ''
+    writeShellScriptBin "gpg-agent-start" ''
       ${gpgPkg}/bin/gpg-connect-agent /bye
-      sleep 3
-      ${pkgs.coreutils}/bin/ln "$(${gpgPkg}/bin/gpgconf --list-dir agent-ssh-socket)" "$SSH_AUTH_SOCK"
+      ${pkgs.coreutils}/bin/sleep 3
+      if [[ -S "$SSH_AUTH_SOCK" ]]; then
+        ${pkgs.coreutils}/bin/ln -sf "$(${gpgPkg}/bin/gpgconf --list-dir agent-ssh-socket)" "$SSH_AUTH_SOCK"
+      fi
     '';
   sockPathCmd = "$(${gpgPkg}/bin/gpgconf --list-dirs agent-ssh-socket)";
+  maxCacheTtl = "1800";
+  defaultCacheTtl = "600";
+  sshCacheTtl = "600";
 in {
   config = mkMerge [
     {
       home.packages = with pkgs; [
         gnupg
         gpgme
+        gpg-agent-start
 
         (writeShellScriptBin "gpg-agent-restart" ''
           pkill gpg-agent ; pkill ssh-agent ; pkill pinentry ; eval $(gpg-agent --daemon --enable-ssh-support)
@@ -67,21 +73,23 @@ in {
       launchd.agents.gpg-agent = {
         enable = true;
         config = {
-          ProgramArguments = ["${gpg-agent-start}"];
+          ProgramArguments = ["${gpg-agent-start}/bin/gpg-agent-start"];
           RunAtLoad = true;
-          EnvironmentVariables = {GNUPGHOME = homedir;};
+          EnvironmentVariables = {
+            GNUPGHOME = homedir;
+            PATH = "${gpg-agent-start}/bin";
+          };
           KeepAlive.SuccessfulExit = false;
+          StandardOutPath = "/tmp/gpg-agent.out";
+          StandardErrorPath = "/tmp/gpg-agent.err";
         };
       };
       home.file."${homedir}/gpg-agent.conf".text = ''
-        max-cache-ttl 1800
-        default-cache-ttl 600
-        max-cache-ttl-ssh 600
+        max-cache-ttl ${maxCacheTtl}
+        default-cache-ttl ${defaultCacheTtl}
+        max-cache-ttl-ssh ${sshCacheTtl}
         enable-ssh-support
         pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
-      '';
-      home.sessionVariablesExtra = ''
-        export SSH_AUTH_SOCK="${sockPathCmd}"
       '';
     })
   ];
