@@ -12,7 +12,7 @@ in {
   };
 
   home-manager.users.${username} = hmArgs: {
-    imports = with hmArgs.roles; developer;
+    imports = with hmArgs.roles; developer ++ graphical;
     home.stateVersion = "22.11";
   };
 

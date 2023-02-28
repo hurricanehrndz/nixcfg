@@ -13,10 +13,14 @@ with profiles; let
       gpg
       nvim
     ];
+  graphical = [
+    wezterm
+  ];
   roles = {
     inherit
       base
       developer
+      graphical
       ;
   };
 in
