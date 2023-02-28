@@ -8,7 +8,7 @@
     #   # fonts.iosevka-variants
     # ])
     with darwinProfiles; [
-      # graphical
+      graphical
       system-defaults
       # virtualization
     ];
