@@ -1,7 +1,7 @@
 {
   description = "Test Darwin Config";
 
-  nixConfig.extra-experimental-features = "nix-command flakes";
+  # nixConfig.extra-experimental-features = "nix-command flakes";
 
   inputs = {
     # Package sets
