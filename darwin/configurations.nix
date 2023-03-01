@@ -91,5 +91,9 @@ in {
       system = "aarch64-darwin";
       modules = [];
     };
+    VPXK04PX7G = makeDarwinSystem "VPXK04PX7G" {
+      system = "aarch64-darwin";
+      modules = [];
+    };
   };
 }
