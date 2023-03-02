@@ -30,6 +30,7 @@ in {
   environment.systemPackages = with pkgs; [
     m-cli
     mas
+    ncurses
   ];
 
   # Used for backwards compatibility, please read the changelog before changing.
