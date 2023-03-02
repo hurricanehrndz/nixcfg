@@ -38,6 +38,7 @@
 
   roles = import ./roles.nix {inherit sharedProfiles darwinProfiles;};
 
+  darwinModules = rakeLeaves ./modules;
   darwinMachines = rakeLeaves ./machines;
   darwinProfiles = rakeLeaves ./profiles;
 
@@ -61,6 +62,7 @@
           pkgs = darwinArgs.pkgs or pkgs;
           modules =
             defaultModules
+            ++ (l.attrValues (flattenTree darwinModules))
             ++ roles.workstation
             ++ [
               {
