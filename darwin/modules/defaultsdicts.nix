@@ -1,18 +1,17 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, inputs, pkgs, ... }:
 
+with import (inputs.darwin + "/modules/launchd/lib.nix")  { inherit lib; };
 with lib;
 
 let
   enabled = pkgs.hostPlatform.isDarwin;
-  cfg = config.targets.darwin.plists;
+  cfg = config.targets.darwin.defaultsdicts;
   mkActivationCmds = settings:
     let
-      toPlist = attrs: (lib.generators.toPlist { } attrs);
+      toPretty = attrs: builtins.replaceStrings ["\n"] [""] (pprExpr "" attrs);
 
       toDefaultsWriteDict = domain: key: attrs: ''
-        "$DRY_RUN_CMD /usr/bin/defaults write ${
-          escapeShellArg domain
-          } -dict-add ${key} '<dict>${toPlist attrs}</dict>'"
+        /usr/bin/defaults write ${escapeShellArg domain} AppleSymbolicHotKeys -dict-add ${key} "${toPretty attrs}"
       '';
 
       toActivationCmd = domain: attrs: mapAttrsToList (toDefaultsWriteDict domain) attrs;
@@ -23,7 +22,7 @@ let
 
       writableDefaults =
         filterAttrs (domain: attrs: attrs != { }) nonNullDefaults;
-    in mapAttrsToList toActivationCmd writableDefaults;
+    in flatten (mapAttrsToList toActivationCmd writableDefaults);
 
   activationCmds = mkActivationCmds cfg;
 in
@@ -37,7 +36,7 @@ in
   config = mkIf (enabled && cfg != {}) {
     system.activationScripts.postUserActivation.text = ''
       ${concatStringsSep "\n" activationCmds}
-      $DRY_RUN_CMD /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      # $DRY_RUN_CMD /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
     '';
   };
 }

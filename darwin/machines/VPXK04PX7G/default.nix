@@ -16,10 +16,20 @@ in {
     home.stateVersion = "22.11";
   };
 
-  targets.darwin.plists = {
-    # Disable Spotlight hotkey
-    "Library/Preferences/com.apple.symbolichotkeys.plist" = {
-      "AppleSymbolicHotKeys:64:enabled" = false;
+  targets.darwin.defaultsdicts = {
+    # Disable Spotlight hotkeys
+    "com.apple.symbolichotkeys" = {
+      "64" = {
+        enabled = 0;
+        value = {
+          type = "standard";
+          parameters = [
+            65535 # no ascii code
+            49 # 0x31 space key
+            1048576 # command key
+          ];
+        };
+      };
     };
   };
 
