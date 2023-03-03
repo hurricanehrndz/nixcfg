@@ -159,8 +159,8 @@ in {
   system.defaults.NSGlobalDomain.NSScrollAnimationEnabled = true;
   # Configures the trackpad tap behavior. Mode 1 enables tap to click.
   system.defaults.NSGlobalDomain."com.apple.mouse.tapBehavior" = 1;
-  # Disable "Natural" scrolling direction.
-  system.defaults.NSGlobalDomain."com.apple.swipescrolldirection" = false;
+  # Enable "Natural" scrolling direction.
+  system.defaults.NSGlobalDomain."com.apple.swipescrolldirection" = true;
   # Whether to enable trackpad secondary click.
   system.defaults.NSGlobalDomain."com.apple.trackpad.enableSecondaryClick" = true;
   # Configures the trackpad tracking speed (0 to 3). The default is 1.0.
@@ -176,7 +176,7 @@ in {
   # Configures the keyboard control behavior. Mode 3 enables full keyboard control.
   system.defaults.NSGlobalDomain.AppleKeyboardUIMode = 3;
   system.defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
-  system.defaults.NSGlobalDomain.InitialKeyRepeat = 10;
+  system.defaults.NSGlobalDomain.InitialKeyRepeat = 15;
   system.defaults.NSGlobalDomain.KeyRepeat = 2;
   system.defaults.NSGlobalDomain.NSAutomaticCapitalizationEnabled = false;
   system.defaults.NSGlobalDomain.NSAutomaticDashSubstitutionEnabled = false;
@@ -189,8 +189,8 @@ in {
 
   system.keyboard.enableKeyMapping = true;
   system.keyboard.nonUS.remapTilde = false;
-  system.keyboard.remapCapsLockToControl = true;
-  system.keyboard.remapCapsLockToEscape = false;
+  system.keyboard.remapCapsLockToControl = false;
+  system.keyboard.remapCapsLockToEscape = true;
   system.keyboard.swapLeftCommandAndLeftAlt = false;
 
   ###: PROCESSES / ACTIVITY MONITOR ========================================================
