@@ -35,7 +35,6 @@ in {
     "utm"
     "visual-studio-code"
     "vlc"
-    "wezterm-nightly"
   ];
 
   homebrew.masApps = {
