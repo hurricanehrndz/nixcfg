@@ -9,6 +9,7 @@
     ++ (with darwinProfiles; [
       graphical
       system-defaults
+      raycast
       # virtualization
     ]);
 in {inherit workstation;}

@@ -30,7 +30,6 @@ in {
     "keycastr"
     "powershell"
     "raindropio"
-    "raycast"
     "slack"
     "utm"
     "visual-studio-code"
