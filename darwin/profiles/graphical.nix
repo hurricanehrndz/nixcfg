@@ -26,7 +26,6 @@ in {
     "element"
     "eloston-chromium" #          <- aka "ungoogled-chromium" in nixpkgs
     "firefox-developer-edition"
-    "flameshot"
     "keycastr"
     "powershell"
     "raindropio"

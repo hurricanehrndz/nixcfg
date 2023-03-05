@@ -10,6 +10,7 @@
       graphical
       system-defaults
       raycast
+      flameshot
       # virtualization
     ]);
 in {inherit workstation;}
