@@ -11,6 +11,7 @@
       system-defaults
       raycast
       flameshot
+      tailscale
       # virtualization
     ]);
 in {inherit workstation;}
