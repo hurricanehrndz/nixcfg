@@ -4,7 +4,12 @@
   ...
 }: let
   l = inputs.nixpkgs.lib // builtins;
+
 in {
+  ##: Hostname
+  system.defaults.smb.NetBIOSName = config.networking.hostName;
+  system.defaults.smb.ServerDescription = config.networking.hostName;
+
   ###: APPEARANCE ==============================================================
 
   # `null`  => normal mode
@@ -16,6 +21,7 @@ in {
   # Sets the level of font smoothing (sub-pixel font rendering).
   # 0 => none, 1 => light, 2 => medium, 3 => strong
   system.defaults.NSGlobalDomain.AppleFontSmoothing = 0;
+  system.defaults.universalaccess.reduceTransparency = true;
 
   ###: SOUND ==================================================================
 
@@ -64,7 +70,7 @@ in {
   system.defaults.dock.static-only = true;
   system.defaults.dock.tilesize = 64;
 
-  # system.defaults.spaces.spans-displays = !isYabaiEnabled;
+  system.defaults.spaces.spans-displays = false;
 
   ##: Corner hot actions
   # 1 => Disabled
