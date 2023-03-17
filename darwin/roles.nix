@@ -9,6 +9,7 @@
     ++ (with darwinProfiles; [
       graphical
       system-defaults
+      yabi
       raycast
       flameshot
       tailscale

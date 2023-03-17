@@ -4,7 +4,6 @@
   ...
 }: let
   l = inputs.nixpkgs.lib // builtins;
-
 in {
   ##: Hostname
   system.defaults.smb.NetBIOSName = config.networking.hostName;
