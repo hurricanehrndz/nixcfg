@@ -11,6 +11,7 @@ with profiles; let
       direnv
       git
       gpg
+      lazygit
       nvim
     ];
   graphical = [
