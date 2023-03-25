@@ -22,6 +22,7 @@ in {
   # ];
 
   homebrew.casks = [
+    "amethyst"
     "discord"
     "element"
     "eloston-chromium" #          <- aka "ungoogled-chromium" in nixpkgs

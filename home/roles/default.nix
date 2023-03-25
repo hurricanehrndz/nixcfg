@@ -16,6 +16,8 @@ with profiles; let
     ];
   graphical = [
     wezterm
+    amethyst
+    # keyboard # yabai keybindings via skhdrc
   ];
   roles = {
     inherit
