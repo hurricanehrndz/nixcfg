@@ -32,6 +32,7 @@ in {
         gnupg
         gpgme
         gpg-agent-start
+        yubikey-manager
 
         (writeShellScriptBin "gpg-agent-restart" ''
           pkill gpg-agent ; pkill ssh-agent ; pkill pinentry ; eval $(gpg-agent --daemon --enable-ssh-support)
