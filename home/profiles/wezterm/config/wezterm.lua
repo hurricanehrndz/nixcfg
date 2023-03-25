@@ -3,6 +3,8 @@ local act = wezterm.action
 
 -- simple keybings
 local myKeys = {
+  -- window control
+  { key = 'm', mods = 'SUPER', action = wezterm.action.Hide },
   -- font sizing
   { key = "-", mods = "SUPER", action = act.DecreaseFontSize },
   { key = "=", mods = "SUPER", action = act.IncreaseFontSize },
