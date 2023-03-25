@@ -22,7 +22,8 @@ in {
         openCommand = "nvr -s -l {{filename}}";
       };
       git = {
-        autorefresh = false;
+        autoFetch = false;
+        autoRefresh = false;
       };
       keybinding = {
         files = {
