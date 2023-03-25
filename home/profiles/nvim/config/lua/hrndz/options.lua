@@ -63,7 +63,8 @@ local options = {
   -- >> buffer-scoped options <<--
   shiftwidth = 2, -- smarttab enable by default, ts sts ignored,
   expandtab = true,
-  smartindent = true,
+  smartindent = false,
+  autoindent = true,
 }
 
 for k, v in pairs(options) do
