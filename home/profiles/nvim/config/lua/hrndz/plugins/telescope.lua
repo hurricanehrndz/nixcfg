@@ -1,7 +1,4 @@
 local telescope = require("telescope")
-telescope.load_extension("fzf")
-telescope.load_extension("file_browser")
-
 -- override built-in filetypes
 local plenary_ft = require("plenary.filetype")
 plenary_ft.add_file("defs")
@@ -41,6 +38,8 @@ telescope.setup({
   },
 })
 
+telescope.load_extension("fzf")
+telescope.load_extension("file_browser")
 
 local find_files = function()
   ts_builtin.find_files()
