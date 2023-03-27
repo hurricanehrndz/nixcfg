@@ -14,9 +14,12 @@ M.setup = function(on_attach, capabilities)
       end
     end,
   })
-  lspconfig.sumneko_lua.setup({
+  lspconfig.lua_ls.setup({
     settings = {
       Lua = {
+        workspace = {
+          checkThirdParty = false,
+        },
         completion = {
           callSnippet = "Replace",
         },
