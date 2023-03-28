@@ -9,5 +9,5 @@ ts_configs.setup({
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-  rainbow = { enable = true, disable = {} },
+  -- rainbow = { enable = true, disable = {} },
 })
