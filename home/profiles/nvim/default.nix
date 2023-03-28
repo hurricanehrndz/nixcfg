@@ -131,7 +131,7 @@ in {
       }
       # Fuzzy finder
       {
-        plugin = telescope-nvim;
+        plugin = withSrc telescope-nvim inputs.telescope-nvim-src;
         type = "lua";
         config = ''
           require("hrndz.plugins.telescope")
@@ -143,9 +143,8 @@ in {
       telescope-file-browser-nvim
 
       # add some syntax highlighting
-      nvim-ts-rainbow
       {
-        plugin = nvim-treesitter.withPlugins (
+        plugin = (withSrc nvim-treesitter inputs.nvim-treesitter-src).withPlugins (
           plugins:
             with plugins; [
               tree-sitter-bash
