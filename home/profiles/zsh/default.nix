@@ -32,11 +32,11 @@
       }
       zle -N prepend-sudo
 
-      setopt interactivecomments	# Allow comments inside commands
-      setopt autopushd		            # Maintain directories in a heap
+      setopt interactivecomments      # Allow comments inside commands
+      setopt autopushd                # Maintain directories in a heap
       setopt pushdignoredups          # Remove duplicates from directory heap
       setopt pushdminus               # Invert + and - meanings
-      setopt autocd			              # Don't need to use `cd`
+      setopt autocd                   # Don't need to use `cd`
       setopt longlistjobs             # Display PID when using jobs
       setopt nobeep                   # Never beep
       setopt noflowcontrol            # Disable flow control for Zsh, enable ^S
