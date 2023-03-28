@@ -509,6 +509,22 @@
         "type": "github"
       }
     },
+    "nvim-treesitter-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679926838,
+        "narHash": "sha256-qO4O85Ryn8WAzRne4HcWG9gR9CP+RQFJZIkd9yH+QvE=",
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter",
+        "rev": "ac13230dddc1c5a86ee1f8008b89a05f7d95516f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-treesitter",
+        "repo": "nvim-treesitter",
+        "type": "github"
+      }
+    },
     "nvim-window-src": {
       "flake": false,
       "locked": {
@@ -542,9 +558,27 @@
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
         "nvim-colorizer-src": "nvim-colorizer-src",
         "nvim-osc52-src": "nvim-osc52-src",
+        "nvim-treesitter-src": "nvim-treesitter-src",
         "nvim-window-src": "nvim-window-src",
+        "telescope-nvim-src": "telescope-nvim-src",
         "yamlfixer-src": "yamlfixer-src",
         "yamllint-src": "yamllint-src"
+      }
+    },
+    "telescope-nvim-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679492995,
+        "narHash": "sha256-Kyw9ryb8YgAKFWLac9yl/fD3nNcu7mv7xzuNU6pDMkU=",
+        "owner": "nvim-telescope",
+        "repo": "telescope.nvim",
+        "rev": "942fe5faef47b21241e970551eba407bc10d9547",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nvim-telescope",
+        "repo": "telescope.nvim",
+        "type": "github"
       }
     },
     "utils": {

@@ -46,6 +46,14 @@
       url = "github:ojroques/nvim-osc52";
       flake = false;
     };
+    telescope-nvim-src = {
+      url = "github:nvim-telescope/telescope.nvim";
+      flake = false;
+    };
+    nvim-treesitter-src = {
+      url = "github:nvim-treesitter/nvim-treesitter";
+      flake = false;
+    };
     # pypi packages
     yamllint-src = {
       url = "github:adrienverge/yamllint";
