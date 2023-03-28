@@ -334,6 +334,22 @@
         "type": "github"
       }
     },
+    "mini-nvim-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679770258,
+        "narHash": "sha256-FS+hPANhfYSNnWeOW7RYcE3wP7YvTa14MNsTDS49j58=",
+        "owner": "echasnovski",
+        "repo": "mini.nvim",
+        "rev": "229b12cb2375ceb8412fb7529de92d9e4ca28b62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "echasnovski",
+        "repo": "mini.nvim",
+        "type": "github"
+      }
+    },
     "neovim-flake": {
       "inputs": {
         "flake-utils": "flake-utils_3",
@@ -549,6 +565,7 @@
         "flake-parts": "flake-parts",
         "gitsigns-src": "gitsigns-src",
         "home-manager": "home-manager",
+        "mini-nvim-src": "mini-nvim-src",
         "neovim-nightly": "neovim-nightly",
         "nixos-stable": "nixos-stable",
         "nixos-unstable": "nixos-unstable",

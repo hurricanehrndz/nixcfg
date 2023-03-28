@@ -54,6 +54,10 @@
       url = "github:nvim-treesitter/nvim-treesitter";
       flake = false;
     };
+    mini-nvim-src = {
+      url = "github:echasnovski/mini.nvim";
+      flake = false;
+    };
     # pypi packages
     yamllint-src = {
       url = "github:adrienverge/yamllint";

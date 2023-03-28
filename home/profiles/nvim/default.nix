@@ -90,6 +90,11 @@ in {
         src = inputs.nvim-osc52-src;
         version = "master";
       };
+      mini-nvim = pkgs.vimUtils.buildVimPluginFrom2Nix {
+        pname = "mini-nvim";
+        src = inputs.mini-nvim-src;
+        version = "master";
+      };
     in [
       # Theme
       {
@@ -249,10 +254,10 @@ in {
         '';
       }
       {
-        plugin = nvim-surround;
+        plugin = mini-nvim;
         type = "lua";
         config = ''
-          require("hrndz.plugins.surround")
+          require("hrndz.plugins.mini")
         '';
       }
       {
