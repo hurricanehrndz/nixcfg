@@ -1,4 +1,3 @@
-local api = vim.api
 local map = require("hrndz.utils").map
 
 local opts = { noremap = true }
