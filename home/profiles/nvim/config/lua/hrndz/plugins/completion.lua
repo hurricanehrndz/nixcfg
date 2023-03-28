@@ -41,7 +41,7 @@ local cmp_formatting = {
       buffer = "[buf]",
       nvim_lsp = "[LSP]",
       nvim_lua = "[api]",
-      -- zsh = "[zpty]",
+      zsh = "[zpty]",
       path = "[path]",
       luasnip = "[snip]",
       -- dictionary = "[dic]",
@@ -86,6 +86,10 @@ local cmp_keymaps = {
   ),
 }
 
+require("cmp_zsh").setup({
+  filetypes = { "zsh" }, -- Filetypes to enable cmp_zsh source. default: {"*"}
+})
+
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -97,6 +101,7 @@ cmp.setup({
     { name = "nvim_lua" },
     { name = "nvim_lsp" },
     { name = "path" },
+    { name = "zsh" },
     { name = "luasnip" },
     {
       name = "buffer",
@@ -134,19 +139,3 @@ cmp.setup.cmdline(":", {
     { name = "cmdline" },
   }),
 })
-
-_ = vim.cmd([[
-  augroup CmpZsh
-    au!
-    autocmd Filetype zsh lua require("cmp").setup.buffer({
-    \ sources = {
-    \   { name = "zsh" },
-    \   { name = 'path' },
-    \   {
-    \     name = 'buffer',
-    \     keyword_length = 3,
-    \     max_item_count = 5,
-    \   },
-    \ }})
-  augroup END
-]])

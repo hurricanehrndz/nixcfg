@@ -63,7 +63,7 @@ vim.diagnostic.config({
   severity_sort = true, -- default to false
 })
 
-local lsp_servers = { "lua_ls", "rnix", "sourcekit", "null-ls" }
+local lsp_servers = { "lua_ls", "rnix", "sourcekit", "bashls", "null-ls" }
 for _, server_name in ipairs(lsp_servers) do
   local has_custom_setup, server = pcall(require, "hrndz.lsp.servers." .. server_name)
   if has_custom_setup then

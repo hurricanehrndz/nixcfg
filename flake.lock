@@ -509,6 +509,22 @@
         "type": "github"
       }
     },
+    "nvim-lspconfig-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679873202,
+        "narHash": "sha256-qDkx+tNEy8sN+9vM9jRuyHcV1Y1vPX2EPUZxtV5otto=",
+        "owner": "neovim",
+        "repo": "nvim-lspconfig",
+        "rev": "c5505c70571b094663745167d40388edd40f6450",
+        "type": "github"
+      },
+      "original": {
+        "owner": "neovim",
+        "repo": "nvim-lspconfig",
+        "type": "github"
+      }
+    },
     "nvim-osc52-src": {
       "flake": false,
       "locked": {
@@ -574,6 +590,7 @@
         ],
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
         "nvim-colorizer-src": "nvim-colorizer-src",
+        "nvim-lspconfig-src": "nvim-lspconfig-src",
         "nvim-osc52-src": "nvim-osc52-src",
         "nvim-treesitter-src": "nvim-treesitter-src",
         "nvim-window-src": "nvim-window-src",

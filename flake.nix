@@ -58,6 +58,8 @@
       url = "github:echasnovski/mini.nvim";
       flake = false;
     };
+    nvim-lspconfig-src.url = "github:neovim/nvim-lspconfig";
+    nvim-lspconfig-src.flake = false;
     # pypi packages
     yamllint-src = {
       url = "github:adrienverge/yamllint";

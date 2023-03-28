@@ -29,9 +29,11 @@ in {
     cbfmt
     neovim-remote
     nixpkgs-fmt
+    nodePackages_latest.bash-language-server
     nodePackages.markdownlint-cli
     nodePackages.prettier
     puppet-lint
+    python310Packages.flake8
     shellcheck
     shfmt
     stylua
@@ -221,6 +223,8 @@ in {
       cmp-path
       cmp-buffer
       cmp-cmdline
+      cmp-zsh # next is required
+      deol-nvim
 
       # snippets
       luasnip
@@ -233,7 +237,7 @@ in {
 
       # add lsp config
       {
-        plugin = nvim-lspconfig;
+        plugin = withSrc nvim-lspconfig inputs.nvim-lspconfig-src;
         type = "lua";
         config = ''
           require("hrndz.lsp")
