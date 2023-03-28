@@ -245,7 +245,7 @@ in {
         plugin = feline-nvim;
         type = "lua";
         config = ''
-          require("hrndz.plugins.feline")
+          require("hrndz.plugins.statusline")
         '';
       }
       {
