@@ -71,17 +71,15 @@ in {
       rnix-lsp
       sumneko-lua-language-server
     ];
-    extraConfig = ''
-      lua << EOF
+    extraLuaConfig = ''
       -- Sensible defaults - mine
       require("hrndz.options")
 
       -- Key mappings
       require("hrndz.keymaps")
+
       -- Autocmds
       require("hrndz.autocmds")
-      EOF
-
 
     '';
     plugins = with pkgs.vimPlugins; let
