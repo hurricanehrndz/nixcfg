@@ -30,7 +30,7 @@ in {
     cbfmt
     neovim-remote
     nixpkgs-fmt
-    nodePackages_latest.bash-language-server
+    nodePackages.bash-language-server
     nodePackages.markdownlint-cli
     nodePackages.prettier
     nodePackages.pyright
