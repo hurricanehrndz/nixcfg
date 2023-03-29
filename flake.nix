@@ -20,61 +20,37 @@
 
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    home-manage.rurl = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # neovim
-    neovim-nightly = {
-      url = "github:nix-community/neovim-nightly-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    gitsigns-src = {
-      url = "github:lewis6991/gitsigns.nvim";
-      flake = false;
-    };
-    nvim-colorizer-src = {
-      url = "github:NvChad/nvim-colorizer.lua";
-      flake = false;
-    };
-    nvim-window-src = {
-      url = "gitlab:yorickpeterse/nvim-window";
-      flake = false;
-    };
-    nvim-osc52-src = {
-      url = "github:ojroques/nvim-osc52";
-      flake = false;
-    };
-    telescope-nvim-src = {
-      url = "github:nvim-telescope/telescope.nvim";
-      flake = false;
-    };
-    nvim-treesitter-src = {
-      url = "github:nvim-treesitter/nvim-treesitter";
-      flake = false;
-    };
-    mini-nvim-src = {
-      url = "github:echasnovski/mini.nvim";
-      flake = false;
-    };
+    neovim-nightl.yurl = "github:nix-community/neovim-nightly-overlay";
+    neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
+    gitsigns-sr.curl = "github:lewis6991/gitsigns.nvim";
+    gitsigns-src.flake = false;
+    nvim-colorizer-sr.curl = "github:NvChad/nvim-colorizer.lua";
+    nvim-colorizer-src.flake = false;
+    nvim-window-sr.curl = "gitlab:yorickpeterse/nvim-window";
+    nvim-window-src.flake = false;
+    nvim-osc52-src.url = "github:ojroques/nvim-osc52";
+    nvim-osc52-src.flake = false;
+    telescope-nvim-src.url = "github:nvim-telescope/telescope.nvim";
+    telescope-nvim-src.flake = false;
+    nvim-treesitter-src.url = "github:nvim-treesitter/nvim-treesitter";
+    nvim-treesitter-src.flake = false;
+    mini-nvim-src.url = "github:echasnovski/mini.nvim";
+    mini-nvim-src.flake = false;
     nvim-lspconfig-src.url = "github:neovim/nvim-lspconfig";
     nvim-lspconfig-src.flake = false;
     # pypi packages
-    yamllint-src = {
-      url = "github:adrienverge/yamllint";
-      flake = false;
-    };
-    yamlfixer-src = {
-      url = "github:opt-nc/yamlfixer";
-      flake = false;
-    };
+    yamllint-sr.curl = "github:adrienverge/yamllint";
+    yamllint-src.flake = false;
+    yamlfixer-sr.curl = "github:opt-nc/yamlfixer";
+    yamlfixer-src.flake = false;
 
     # tmux
-    extrakto-src = {
-      url = "github:laktak/extrakto";
-      flake = false;
-    };
+    extrakto-sr.curl = "github:laktak/extrakto";
+    extrakto-src.flake = false;
   };
 
   outputs = {
