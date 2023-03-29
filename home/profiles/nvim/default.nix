@@ -32,6 +32,8 @@ in {
     nodePackages_latest.bash-language-server
     nodePackages.markdownlint-cli
     nodePackages.prettier
+    nodePackages.pyright
+    poetry
     puppet-lint
     python310Packages.flake8
     shellcheck
