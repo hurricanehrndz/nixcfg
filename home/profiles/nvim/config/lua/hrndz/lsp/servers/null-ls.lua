@@ -71,9 +71,6 @@ local sources = {
   b.diagnostics.flake8,
   b.diagnostics.yamllint,
 
-  -- hover
-  b.hover.dictionary,
-
   -- custom
   yamlfixer
 }
