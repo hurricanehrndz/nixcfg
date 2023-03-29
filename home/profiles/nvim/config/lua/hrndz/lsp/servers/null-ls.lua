@@ -35,6 +35,7 @@ local yamlfixer = {
 
 local sources = {
   -- formatting
+  b.formatting.alejandra,
   b.formatting.prettier.with({
     disabled_filetypes = { "typescript", "typescriptreact", "yaml" },
     extra_args = { "--prose-wrap", "always" },
