@@ -5,7 +5,7 @@ local h = require("null-ls.helpers")
 local methods = require("null-ls.methods")
 
 local FORMATTING = methods.internal.FORMATTING
-
+local DIAGNOSTICS = methods.internal.DIAGNOSTICS
 
 local function match_conf(...)
   local patterns = ...
@@ -22,15 +22,43 @@ local function match_conf(...)
 end
 
 local yamlfixer = {
-  name = 'yamlfixer',
-  filetypes = {'yaml'},
-  method =  FORMATTING,
-  generator = h.formatter_factory {
-    command = 'yamlfixer',
+  name = "yamlfixer",
+  filetypes = { "yaml" },
+  method = FORMATTING,
+  generator = h.formatter_factory({
+    command = "yamlfixer",
     args = { "-" },
     to_stdin = true,
     -- ignore_stderr = false,
-  }
+  }),
+}
+
+local swiftlint = {
+  name = "swiftlint",
+  filetypes = { "swift" },
+  method = DIAGNOSTICS,
+  generator = null_ls.generator({
+    command = "swiftlint",
+    args = { "--reporter", "json", "--use-stdin", "--quiet" },
+    to_stdin = true,
+    from_stderr = true,
+    format = "json",
+    on_output = h.diagnostics.from_json({
+      attributes = {
+        severity = "severity",
+        col = "character",
+        code = "rule_id",
+        message = "reason",
+      },
+      severities = {
+        ["warning"] = "Warning",
+        ["error"] = "Error",
+      },
+    }),
+    cwd = h.cache.by_bufnr(function(params)
+      return u.root_pattern("Package.swift", ".git")(params.bufname)
+    end),
+  }),
 }
 
 local sources = {
@@ -71,10 +99,10 @@ local sources = {
   b.diagnostics.markdownlint,
   b.diagnostics.flake8,
   b.diagnostics.yamllint,
-  b.diagnostics.swiftlint,
 
   -- custom
-  yamlfixer
+  yamlfixer,
+  swiftlint,
 }
 
 local M = {}
@@ -84,8 +112,9 @@ M.setup = function(custom_on_attach, formatting_callback, _)
     return
   end
   null_ls.setup({
+    debug = true,
     sources = sources,
-    on_attach = function (client, bufnr)
+    on_attach = function(client, bufnr)
       formatting_callback(client, bufnr)
       custom_on_attach(client, bufnr)
     end,
