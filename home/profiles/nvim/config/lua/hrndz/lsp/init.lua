@@ -16,10 +16,16 @@ map("n", "<space>la", "<Cmd>CodeActionMenu<CR>", "Code Action")
 map("n", "<space>ld", "<Cmd>lua vim.diagnostic.open_float()<CR>", "Diagnostic float")
 map("n", "<space>lt", "<Cmd>TroubleToggle<CR>", "Diagnostics")
 map("n", "<space>lw", "<Cmd>Telescope diagnostics<CR>", "Workspace Diagnostics")
-map("n", "<space>lf", "<Cmd>lua vim.lsp.buf.format()<CR>", "Format")
 map("n", "<space>li", "<Cmd>LspInfo<CR>", "Info")
 map("n", "<space>ll", [[<Cmd>lua require("lsp_lines").toggle()<CR>]], "Toggle lsp lines")
-map("n", "<space>lm", "<Cmd>Mason<CR>", "Mason")
+
+local util = require 'vim.lsp.util'
+local formatting_callback = function(client, bufnr)
+  vim.keymap.set('n', '<space>lf', function()
+    local params = util.make_formatting_params({})
+    client.request('textDocument/formatting', params, nil, bufnr)
+  end, {buffer = bufnr, desc = "Format"})
+end
 
 local custom_attach = function(_, bufnr)
   local function bufmap(mode, l, r, desc)
@@ -63,13 +69,12 @@ vim.diagnostic.config({
   severity_sort = true, -- default to false
 })
 
--- rnix disable formatting
 local lsp_servers = { "lua_ls", "rnix", "sourcekit", "bashls", "null-ls", "pyright" }
 for _, server_name in ipairs(lsp_servers) do
   local has_custom_setup, server = pcall(require, "hrndz.lsp.servers." .. server_name)
   if has_custom_setup then
-    server.setup(custom_attach, capabilities)
+    server.setup(custom_attach, formatting_callback, capabilities)
   else
-    require("hrndz.lsp.servers.default").setup(custom_attach, capabilities, server_name)
+    require("hrndz.lsp.servers.default").setup(custom_attach, formatting_callback, capabilities, server_name)
   end
 end

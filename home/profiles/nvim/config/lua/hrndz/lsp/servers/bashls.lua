@@ -1,5 +1,5 @@
 local M = {
-  setup = function(on_attach, capabilities)
+  setup = function(custom_on_attach, formatting_callback, capabilities)
     local lspconfig = require("lspconfig")
 
     lspconfig.bashls.setup({
@@ -9,7 +9,10 @@ local M = {
           globPattern = "*@(.sh|.inc|.bash|.command|.zsh|zshrc|zsh_*)",
         },
       },
-      on_attach = on_attach,
+      on_attach = function (client, bufnr)
+        formatting_callback(client, bufnr)
+        custom_on_attach(client, bufnr)
+      end,
       capabilities = capabilities,
     })
   end,

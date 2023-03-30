@@ -76,14 +76,17 @@ local sources = {
 }
 
 local M = {}
-M.setup = function(on_attach, _)
+M.setup = function(custom_on_attach, formatting_callback, _)
   local has_null_ls, _ = pcall(require, "null-ls")
   if not has_null_ls then
     return
   end
   null_ls.setup({
     sources = sources,
-    on_attach = on_attach,
+    on_attach = function (client, bufnr)
+      formatting_callback(client, bufnr)
+      custom_on_attach(client, bufnr)
+    end,
   })
 end
 

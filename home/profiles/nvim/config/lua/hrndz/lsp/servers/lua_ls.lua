@@ -1,6 +1,6 @@
 local M = {}
 
-M.setup = function(on_attach, capabilities)
+M.setup = function(custom_on_attach, formatting_callback, capabilities)
   local lspconfig = require("lspconfig")
   local has_neodev, neodev = pcall(require, "neodev")
   if not has_neodev then
@@ -25,7 +25,10 @@ M.setup = function(on_attach, capabilities)
         },
       },
     },
-    on_attach = on_attach,
+    on_attach = function (client, bufnr)
+      formatting_callback(client, bufnr)
+      custom_on_attach(client, bufnr)
+    end,
     capabilities = capabilities,
   })
 end

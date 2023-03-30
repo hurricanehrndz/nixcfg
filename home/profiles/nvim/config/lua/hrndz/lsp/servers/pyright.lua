@@ -1,5 +1,5 @@
 local M = {
-  setup = function(on_attach, capabilities)
+  setup = function(custom_on_attach, _, capabilities)
     local lspconfig = require("lspconfig")
     lspconfig.pyright.setup({
       settings = {
@@ -14,7 +14,9 @@ local M = {
           },
         },
       },
-      on_attach = on_attach,
+      on_attach = function (client, bufnr)
+        custom_on_attach(client, bufnr)
+      end,
       capabilities = capabilities,
     })
   end,
