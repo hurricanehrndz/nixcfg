@@ -1,0 +1,127 @@
+{
+  "object": {
+    "artifacts": [],
+    "dependencies": [
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "collectionconcurrencykit",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/JohnSundell/CollectionConcurrencyKit.git",
+          "name": "CollectionConcurrencyKit"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "b4f23e24b5a1bff301efc5e70871083ca029ff95",
+            "version": "0.2.0"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "CollectionConcurrencyKit"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "sourcekitten",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/jpsim/SourceKitten.git",
+          "name": "SourceKitten"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "b6dc09ee51dfb0c66e042d2328c017483a1a5d56",
+            "version": "0.34.1"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "SourceKitten"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "swift-argument-parser",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/apple/swift-argument-parser.git",
+          "name": "swift-argument-parser"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "4ad606ba5d7673ea60679a61ff867cc1ff8c8e86",
+            "version": "1.2.1"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "swift-argument-parser"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "swift-syntax",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/apple/swift-syntax.git",
+          "name": "SwiftSyntax"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "013a48e2312e57b7b355db25bd3ea75282ebf274",
+            "version": "0.50900.0-swift-DEVELOPMENT-SNAPSHOT-2023-02-06-a"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "swift-syntax"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "swiftytexttable",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/scottrhoyt/SwiftyTextTable.git",
+          "name": "SwiftyTextTable"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "c6df6cf533d120716bff38f8ff9885e1ce2a4ac3",
+            "version": "0.9.0"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "SwiftyTextTable"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "swxmlhash",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/drmohundro/SWXMLHash.git",
+          "name": "SWXMLHash"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "4d0f62f561458cbe1f732171e625f03195151b60",
+            "version": "7.0.1"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "SWXMLHash"
+      },
+      {
+        "basedOn": null,
+        "packageRef": {
+          "identity": "yams",
+          "kind": "remoteSourceControl",
+          "location": "https://github.com/jpsim/Yams.git",
+          "name": "Yams"
+        },
+        "state": {
+          "checkoutState": {
+            "revision": "f47ba4838c30dbd59998a4e4c87ab620ff959e8a",
+            "version": "5.0.5"
+          },
+          "name": "sourceControlCheckout"
+        },
+        "subpath": "Yams"
+      }
+    ]
+  },
+  "version": 5
+}

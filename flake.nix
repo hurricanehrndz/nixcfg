@@ -42,6 +42,11 @@
     mini-nvim-src.flake = false;
     nvim-lspconfig-src.url = "github:neovim/nvim-lspconfig";
     nvim-lspconfig-src.flake = false;
+    swiftformat-src.url = "github:nicklockwood/SwiftFormat?rev=a5d58763da90d8240b2a0f7f2b57da29438a0530";
+    swiftformat-src.flake = false;
+    swiftlint-src.url = "github:realm/SwiftLint?rev=eb85125a5f293de3d3248af259980c98bc2b1faa";
+    swiftlint-src.flake = false;
+
     # pypi packages
     yamllint-src.url = "github:adrienverge/yamllint";
     yamllint-src.flake = false;

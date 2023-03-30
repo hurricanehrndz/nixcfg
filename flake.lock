@@ -594,9 +594,45 @@
         "nvim-osc52-src": "nvim-osc52-src",
         "nvim-treesitter-src": "nvim-treesitter-src",
         "nvim-window-src": "nvim-window-src",
+        "swiftformat-src": "swiftformat-src",
+        "swiftlint-src": "swiftlint-src",
         "telescope-nvim-src": "telescope-nvim-src",
         "yamlfixer-src": "yamlfixer-src",
         "yamllint-src": "yamllint-src"
+      }
+    },
+    "swiftformat-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679940983,
+        "narHash": "sha256-n8V+CPDngcKycpn8RW3FDpp+eFKIjoHmumhEQTDI/nY=",
+        "owner": "nicklockwood",
+        "repo": "SwiftFormat",
+        "rev": "a5d58763da90d8240b2a0f7f2b57da29438a0530",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nicklockwood",
+        "repo": "SwiftFormat",
+        "rev": "a5d58763da90d8240b2a0f7f2b57da29438a0530",
+        "type": "github"
+      }
+    },
+    "swiftlint-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679931887,
+        "narHash": "sha256-BjzjgkDQ0Ic1PV9XhQ8tYnxsFnXmre3PrPvqpKtAiag=",
+        "owner": "realm",
+        "repo": "SwiftLint",
+        "rev": "eb85125a5f293de3d3248af259980c98bc2b1faa",
+        "type": "github"
+      },
+      "original": {
+        "owner": "realm",
+        "repo": "SwiftLint",
+        "rev": "eb85125a5f293de3d3248af259980c98bc2b1faa",
+        "type": "github"
       }
     },
     "telescope-nvim-src": {

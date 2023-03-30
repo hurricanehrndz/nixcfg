@@ -1,5 +1,6 @@
 {
   pkgs,
+  packages,
   lib,
   inputs,
   inputs',
@@ -57,11 +58,11 @@ in {
     shellcheck
     shfmt
     stylua
-    swift
-    # swiftformat
     vale
     yamlfixer
     yamllint
+    packages.swiftformat
+    packages.swiftlint
   ];
 
   programs.zsh.initExtra = ''
@@ -86,6 +87,7 @@ in {
       # lsp
       rnix-lsp
       sumneko-lua-language-server
+      sourcekit-lsp
 
       # python
       nvimPython

@@ -49,6 +49,7 @@ local sources = {
     extra_args = { "--indent-size", "2" },
   }),
   b.formatting.stylua,
+  b.formatting.swiftformat,
   b.formatting.puppet_lint,
   b.formatting.black.with({ extra_args = { "--fast" } }),
   b.formatting.cbfmt.with({
@@ -70,6 +71,7 @@ local sources = {
   b.diagnostics.markdownlint,
   b.diagnostics.flake8,
   b.diagnostics.yamllint,
+  b.diagnostics.swiftlint,
 
   -- custom
   yamlfixer
