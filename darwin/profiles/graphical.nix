@@ -34,6 +34,7 @@ in {
     "utm"
     "visual-studio-code"
     "vlc"
+    "wezterm"
   ];
 
   homebrew.masApps = {
