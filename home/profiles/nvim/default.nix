@@ -22,6 +22,7 @@
       doCheck = false;
       propagatedBuildInputs = [setuptools yamllint];
     };
+  nvimPython = (pkgs.python3.withPackages(ps: with ps; [ debugpy flake8 ]));
 in {
   home.packages = with pkgs; [
     alejandra
@@ -36,7 +37,6 @@ in {
     nodePackages.pyright
     poetry
     puppet-lint
-    python310Packages.flake8
     shellcheck
     shfmt
     stylua
@@ -70,6 +70,9 @@ in {
       # lsp
       rnix-lsp
       sumneko-lua-language-server
+
+      # python
+      nvimPython
     ];
     extraLuaConfig = ''
       -- Sensible defaults - mine
@@ -149,6 +152,7 @@ in {
       popup-nvim
       telescope-fzf-native-nvim
       telescope-file-browser-nvim
+      telescope-dap-nvim
 
       # add some syntax highlighting
       {
@@ -275,6 +279,21 @@ in {
 
       # pictograms
       lspkind-nvim
+
+      # debugging
+      {
+        plugin = nvim-dap;
+        type = "lua";
+        config = ''
+          require("hrndz.plugins.dap")
+          local dap_python = require("dap-python")
+          ---@diagnostic disable-next-line: param-type-mismatch
+          dap_python.setup("${nvimPython}/bin/python")
+        '';
+      }
+      nvim-dap-ui
+      nvim-dap-virtual-text
+      nvim-dap-python
     ];
   };
   xdg.configFile = {

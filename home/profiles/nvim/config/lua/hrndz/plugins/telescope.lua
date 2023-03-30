@@ -40,6 +40,8 @@ telescope.setup({
 
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
+telescope.load_extension("dap")
+
 
 local find_files = function()
   ts_builtin.find_files()
