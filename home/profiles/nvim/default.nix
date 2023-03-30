@@ -22,7 +22,7 @@
       doCheck = false;
       propagatedBuildInputs = [setuptools yamllint];
     };
-  nvimPython = (pkgs.python3.withPackages(ps: with ps; [ debugpy flake8 ]));
+  nvimPython = pkgs.python3.withPackages (ps: with ps; [debugpy flake8]);
 in {
   home.packages = with pkgs; [
     alejandra
