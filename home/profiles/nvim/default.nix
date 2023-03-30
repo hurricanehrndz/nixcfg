@@ -23,6 +23,23 @@
       propagatedBuildInputs = [setuptools yamllint];
     };
   nvimPython = pkgs.python3.withPackages (ps: with ps; [debugpy flake8]);
+  treesitter-parsers = pkgs.symlinkJoin {
+    name = "treesitter-parsers";
+    paths =
+      (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [
+        p.bash
+        p.javascript
+        p.lua
+        p.make
+        p.markdown
+        p.nix
+        p.python
+        p.typescript
+        p.tsx
+        p.help
+      ]))
+      .dependencies;
+  };
 in {
   home.packages = with pkgs; [
     alejandra
@@ -41,6 +58,7 @@ in {
     shfmt
     stylua
     swift
+    # swiftformat
     vale
     yamlfixer
     yamllint
@@ -65,8 +83,6 @@ in {
     viAlias = true;
     package = neovim-nightly;
     extraPackages = with pkgs; [
-      # used to compile tree-sitter grammar
-      tree-sitter
       # lsp
       rnix-lsp
       sumneko-lua-language-server
@@ -75,6 +91,9 @@ in {
       nvimPython
     ];
     extraLuaConfig = ''
+      -- Add Treesitter Parsers Path
+      vim.opt.runtimepath:append("${treesitter-parsers}")
+
       -- Sensible defaults - mine
       require("hrndz.options")
 
@@ -100,6 +119,11 @@ in {
         pname = "mini-nvim";
         src = inputs.mini-nvim-src;
         version = "master";
+      };
+      nvim-treesitter-master = pkgs.vimUtils.buildVimPluginFrom2Nix {
+        pname = "nvim-treesitter";
+        version = "master";
+        src = inputs.nvim-treesitter-src;
       };
     in [
       # Theme
@@ -156,21 +180,7 @@ in {
 
       # add some syntax highlighting
       {
-        plugin = (withSrc nvim-treesitter inputs.nvim-treesitter-src).withPlugins (
-          plugins:
-            with plugins; [
-              tree-sitter-bash
-              tree-sitter-javascript
-              tree-sitter-lua
-              tree-sitter-make
-              tree-sitter-markdown
-              tree-sitter-nix
-              tree-sitter-python
-              tree-sitter-typescript
-              tree-sitter-tsx
-              tree-sitter-help
-            ]
-        );
+        plugin = nvim-treesitter-master;
         type = "lua";
         config = ''
           require("hrndz.plugins.treesitter")
