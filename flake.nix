@@ -23,6 +23,14 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    # devshell
+    flake-utils.url = "github:numtide/flake-utils";
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    devshell.url = "github:numtide/devshell";
+    devshell.inputs.flake-utils.follows = "flake-utils";
+    devshell.inputs.nixpkgs.follows = "nixpkgs";
+
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
@@ -74,6 +82,8 @@
       ./darwin/configurations.nix
       ./home/configuration.nix
       ./packages
+
+      inputs.devshell.flakeModule
     ];
 
     systems = ["aarch64-darwin"];
@@ -83,14 +93,33 @@
       inputs',
       self',
       ...
-    }: {
-      _module.args = {
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+    }: let
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [
+          inputs.agenix.overlays.default
+          inputs.devshell.overlays.default
+        ];
       };
+    in {
+      _module.args = {
+        inherit pkgs;
+      };
+
       formatter = inputs'.nixpkgs.legacyPackages.alejandra;
+
+      devShells = let
+        ls = builtins.readDir ./shells;
+        files = builtins.filter (name: ls.${name} == "regular") (builtins.attrNames ls);
+        shellNames = builtins.map (filename: builtins.head (builtins.split "\\." filename)) files;
+        nameToValue = name: import (./shells + "/${name}.nix") {inherit pkgs inputs;};
+      in
+        builtins.listToAttrs (builtins.map (name: {
+            inherit name;
+            value = nameToValue name;
+          })
+          shellNames);
     };
     flake = {
       # shared importables :: may be used within system configurations for any
