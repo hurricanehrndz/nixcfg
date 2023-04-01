@@ -33,6 +33,13 @@ in {
     ncurses
   ];
 
+  system.activationScripts.postUserActivation.text = ''
+    if [[ ! -d "$HOME/.terminfo" ]]; then
+      infocmp  -x tmux-256color > /tmp/tmux-256color.src
+      /usr/bin/tic -x /tmp/tmux-256color.src
+    fi
+  '';
+
   # Used for backwards compatibility, please read the changelog before changing.
   # https://daiderd.com/nix-darwin/manual/index.html#opt-system.stateVersion
   # $ darwin-rebuild changelog
