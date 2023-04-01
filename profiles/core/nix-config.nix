@@ -45,7 +45,7 @@ in {
   environment.etc = inputsToPaths inputs;
   nix = {
     package = pkgs.nix;
-    nixPath = [
+    nixPath = lib.mkForce [
       "nixpkgs=${pkgs.path}"
       "home-manager=${inputs.home-manager}"
       "darwin=${inputs.darwin}"
