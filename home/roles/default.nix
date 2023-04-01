@@ -9,6 +9,7 @@ with profiles; let
     base
     ++ [
       direnv
+      devenv
       git
       gpg
       lazygit
