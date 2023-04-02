@@ -301,6 +301,33 @@ in {
           local dap_python = require("dap-python")
           ---@diagnostic disable-next-line: param-type-mismatch
           dap_python.setup("${nvimPython}/bin/python")
+
+          local dap = require('dap')
+          local codelldb_path = vim.fn.expand("''$HOME") .. "/.local/share/codelldb"
+          local codelldb_bin = codelldb_path .. "/adapter/codelldb"
+          print(codelldb_bin)
+          dap.adapters.codelldb = {
+          type = 'server',
+          port = "''${port}",
+            executable = {
+              -- CHANGE THIS to your path!
+              command = codelldb_bin,
+              args = {"--port", "''${port}", "--liblldb", "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB"},
+            }
+          }
+          dap.configurations.cpp = {
+            {
+              name = "Launch file",
+              type = "codelldb",
+              request = "launch",
+              program = function()
+                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+              end,
+              cwd = "''${workspaceFolder}",
+              stopOnEntry = false,
+            },
+          }
+          dap.configurations.swift = dap.configurations.cpp
         '';
       }
       nvim-dap-ui
