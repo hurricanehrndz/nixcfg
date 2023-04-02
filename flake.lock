@@ -123,7 +123,7 @@
         "type": "github"
       }
     },
-    "devenv": {
+    "devenv_pr507": {
       "inputs": {
         "flake-compat": "flake-compat",
         "nix": "nix",
@@ -131,16 +131,17 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1680271030,
-        "narHash": "sha256-w1Y/S3TylKylTHCp+YkOJbiAE2LBBF1sKIKuLDW4fkU=",
-        "owner": "cachix",
+        "lastModified": 1679699135,
+        "narHash": "sha256-JW0oxRXRAiwgojBXo4oanzcX2ZhMc9tfhloQQX+jn6g=",
+        "owner": "thenonameguy",
         "repo": "devenv",
-        "rev": "52232ba41b7c531eacec4cf192d87241bef1a0d1",
+        "rev": "7bdefce1972365d4f077998769ce5ee82b610206",
         "type": "github"
       },
       "original": {
-        "owner": "cachix",
+        "owner": "thenonameguy",
         "repo": "devenv",
+        "rev": "7bdefce1972365d4f077998769ce5ee82b610206",
         "type": "github"
       }
     },
@@ -417,7 +418,7 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
-          "devenv",
+          "devenv_pr507",
           "pre-commit-hooks",
           "nixpkgs"
         ]
@@ -571,7 +572,7 @@
       "inputs": {
         "lowdown-src": "lowdown-src",
         "nixpkgs": [
-          "devenv",
+          "devenv_pr507",
           "nixpkgs"
         ],
         "nixpkgs-regression": "nixpkgs-regression"
@@ -819,13 +820,13 @@
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": [
-          "devenv",
+          "devenv_pr507",
           "flake-compat"
         ],
         "flake-utils": "flake-utils",
         "gitignore": "gitignore",
         "nixpkgs": [
-          "devenv",
+          "devenv_pr507",
           "nixpkgs"
         ],
         "nixpkgs-stable": "nixpkgs-stable"
@@ -848,7 +849,7 @@
       "inputs": {
         "agenix": "agenix",
         "darwin": "darwin_2",
-        "devenv": "devenv",
+        "devenv_pr507": "devenv_pr507",
         "devshell": "devshell",
         "digga": "digga",
         "extrakto-src": "extrakto-src",

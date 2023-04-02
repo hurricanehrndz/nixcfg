@@ -3,7 +3,7 @@
   inputs',
   ...
 }: let
-  inherit (inputs'.devenv.packages) devenv;
+  inherit (inputs'.devenv_pr507.packages) devenv;
 in {
   home.packages = [
     devenv
