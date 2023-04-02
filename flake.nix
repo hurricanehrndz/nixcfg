@@ -30,7 +30,7 @@
     devshell.url = "github:numtide/devshell";
     devshell.inputs.flake-utils.follows = "flake-utils";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
-    devenv_pr507.url = "github:thenonameguy/devenv/?rev=7bdefce1972365d4f077998769ce5ee82b610206";
+    devenv.url = "github:cachix/devenv";
 
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
@@ -85,7 +85,7 @@
       ./packages
 
       inputs.devshell.flakeModule
-      inputs.devenv_pr507.flakeModule
+      inputs.devenv.flakeModule
     ];
 
     systems = ["aarch64-darwin"];
