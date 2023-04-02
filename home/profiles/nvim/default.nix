@@ -303,14 +303,11 @@ in {
           dap_python.setup("${nvimPython}/bin/python")
 
           local dap = require('dap')
-          local codelldb_path = vim.fn.expand("''$HOME") .. "/.local/share/codelldb"
-          local codelldb_bin = codelldb_path .. "/adapter/codelldb"
-          print(codelldb_bin)
+          local codelldb_bin = "${packages.codelldb}/share/vscode/extensions/vadimcn.vscode-lldb/adapter/codelldb"
           dap.adapters.codelldb = {
           type = 'server',
           port = "''${port}",
             executable = {
-              -- CHANGE THIS to your path!
               command = codelldb_bin,
               args = {"--port", "''${port}", "--liblldb", "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB"},
             }
