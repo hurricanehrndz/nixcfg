@@ -52,10 +52,20 @@
     mini-nvim-src.flake = false;
     nvim-lspconfig-src.url = "github:neovim/nvim-lspconfig";
     nvim-lspconfig-src.flake = false;
+    nvim-guihua-src.url = "github:ray-x/guihua.lua";
+    nvim-guihua-src.flake = false;
     swiftformat-src.url = "github:nicklockwood/SwiftFormat?rev=a5d58763da90d8240b2a0f7f2b57da29438a0530";
     swiftformat-src.flake = false;
     swiftlint-src.url = "github:realm/SwiftLint?rev=eb85125a5f293de3d3248af259980c98bc2b1faa";
     swiftlint-src.flake = false;
+
+    # golang support tools
+    go-enum-src.url = "github:abice/go-enum";
+    go-enum-src.flake = false;
+    gomvp-src.url = "github:abenz1267/gomvp";
+    gomvp-src.flake = false;
+    json-to-struct-src.url = "github:tmc/json-to-struct";
+    json-to-struct-src.flake = false;
 
     # pypi packages
     yamllint-src.url = "github:adrienverge/yamllint";

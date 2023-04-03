@@ -23,46 +23,45 @@
       doCheck = false;
       propagatedBuildInputs = [setuptools yamllint];
     };
+  go-enum = pkgs.buildGoModule {
+    name = "go-enum";
+    src = inputs.go-enum-src;
+    vendorSha256 = "sha256-+iQCOUg7rGfOgNvmj+lMLYb4A749hDK/3hexEw9IRmI=";
+  };
+  gomvp = pkgs.buildGoModule {
+    name = "gomvp";
+    src = inputs.gomvp-src;
+    vendorSha256 = null;
+  };
+  json-to-struct = pkgs.buildGoModule rec {
+    name = "json-to-struct";
+    src = inputs.json-to-struct-src;
+    vendorSha256 = "sha256-JAVBrhec5NNWKK+ayICu57u8zXrL6JGhl6pEhYhC7lg=";
+    proxyVendor = true;
+  };
   nvimPython = pkgs.python3.withPackages (ps: with ps; [debugpy flake8]);
   treesitter-parsers = pkgs.symlinkJoin {
     name = "treesitter-parsers";
     paths =
       (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [
         p.bash
+        p.go
+        p.help
         p.javascript
         p.lua
         p.make
         p.markdown
         p.nix
         p.python
-        p.typescript
         p.tsx
-        p.help
+        p.typescript
       ]))
       .dependencies;
   };
 in {
   home.packages = with pkgs; [
-    alejandra
-    beautysh
-    black
-    cbfmt
     neovim-remote
-    nixpkgs-fmt
-    nodePackages.bash-language-server
-    nodePackages.markdownlint-cli
-    nodePackages.prettier
-    nodePackages.pyright
     poetry
-    puppet-lint
-    shellcheck
-    shfmt
-    stylua
-    vale
-    yamlfixer
-    yamllint
-    packages.swiftformat
-    packages.swiftlint
   ];
 
   programs.zsh.initExtra = ''
@@ -84,13 +83,65 @@ in {
     viAlias = true;
     package = neovim-nightly;
     extraPackages = with pkgs; [
-      # lsp
-      rnix-lsp
+      # go
+      gofumpt
+      golines
+      golangci-lint
+      gotools
+      gopls
+      reftools
+      gomodifytags
+      gotests
+      iferr
+      impl
+      delve
+      ginkgo
+      richgo
+      gotestsum
+      govulncheck
+      mockgen
+      go-enum
+      gomvp
+      json-to-struct
+
+
+      # lua
       sumneko-lua-language-server
+      stylua
+
+      # nix
+      rnix-lsp
+      alejandra
+      nixpkgs-fmt
+
+      # shell
+      beautysh
+      nodePackages.bash-language-server
+      shellcheck
+      shfmt
+
+      # markdwon
+      cbfmt
+      nodePackages.markdownlint-cli
+      vale
+
+      # swift
+      packages.swiftformat
+      packages.swiftlint
       sourcekit-lsp
 
+      # yaml
+      yamlfixer
+      yamllint
+
       # python
+      black
+      nodePackages.pyright
       nvimPython
+
+      # one-ofs
+      nodePackages.prettier
+      puppet-lint
     ];
     extraLuaConfig = ''
       -- Add Treesitter Parsers Path
@@ -126,6 +177,11 @@ in {
         pname = "nvim-treesitter";
         version = "master";
         src = inputs.nvim-treesitter-src;
+      };
+      nvim-guihua = pkgs.vimUtils.buildVimPluginFrom2Nix {
+        pname = "nvim-guihua";
+        version = "master";
+        src = inputs.nvim-guihua-src;
       };
     in [
       # Theme
@@ -242,6 +298,9 @@ in {
       cmp-cmdline
       cmp-zsh # next is required
       deol-nvim
+      go-nvim
+      nvim-guihua
+      lsp_lines-nvim
 
       # snippets
       luasnip
@@ -330,6 +389,7 @@ in {
       nvim-dap-ui
       nvim-dap-virtual-text
       nvim-dap-python
+
     ];
   };
   xdg.configFile = {

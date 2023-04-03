@@ -452,6 +452,38 @@
         "type": "github"
       }
     },
+    "go-enum-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1679866640,
+        "narHash": "sha256-epGtBHngAFClrU63y5QQ130Me/lrZw4J2ZDWEuOh8Uo=",
+        "owner": "abice",
+        "repo": "go-enum",
+        "rev": "97611fddaa414f53713597918c5e954646cb8623",
+        "type": "github"
+      },
+      "original": {
+        "owner": "abice",
+        "repo": "go-enum",
+        "type": "github"
+      }
+    },
+    "gomvp-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1666691794,
+        "narHash": "sha256-dXjI+nItJCAGKxyC9tX11hxWHCP+NgXtTYtm5+6dqDU=",
+        "owner": "abenz1267",
+        "repo": "gomvp",
+        "rev": "5b06c041c898822fd72cd245188e51d112adae74",
+        "type": "github"
+      },
+      "original": {
+        "owner": "abenz1267",
+        "repo": "gomvp",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -470,6 +502,22 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "json-to-struct-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1591427484,
+        "narHash": "sha256-kblsQD2Mbk5OT7MKNEH0w6yd959JLSjSC9LmvYp61AI=",
+        "owner": "tmc",
+        "repo": "json-to-struct",
+        "rev": "5576f9d7d2914ea7438f640762dd425ecf403b06",
+        "type": "github"
+      },
+      "original": {
+        "owner": "tmc",
+        "repo": "json-to-struct",
         "type": "github"
       }
     },
@@ -768,6 +816,22 @@
         "type": "github"
       }
     },
+    "nvim-guihua-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680128158,
+        "narHash": "sha256-C1vbbkUD7T7+xg0a2UL2n2vUqJdlC61hxBlleAl02iw=",
+        "owner": "ray-x",
+        "repo": "guihua.lua",
+        "rev": "0ad2612cd85457402005e252c39ca7b7c215dda0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ray-x",
+        "repo": "guihua.lua",
+        "type": "github"
+      }
+    },
     "nvim-lspconfig-src": {
       "flake": false,
       "locked": {
@@ -871,7 +935,10 @@
         "flake-parts": "flake-parts",
         "flake-utils": "flake-utils_4",
         "gitsigns-src": "gitsigns-src",
+        "go-enum-src": "go-enum-src",
+        "gomvp-src": "gomvp-src",
         "home-manager": "home-manager",
+        "json-to-struct-src": "json-to-struct-src",
         "mini-nvim-src": "mini-nvim-src",
         "neovim-nightly": "neovim-nightly",
         "nixos-stable": "nixos-stable",
@@ -882,6 +949,7 @@
         "nixpkgs-pr211321": "nixpkgs-pr211321",
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
         "nvim-colorizer-src": "nvim-colorizer-src",
+        "nvim-guihua-src": "nvim-guihua-src",
         "nvim-lspconfig-src": "nvim-lspconfig-src",
         "nvim-osc52-src": "nvim-osc52-src",
         "nvim-treesitter-src": "nvim-treesitter-src",

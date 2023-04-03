@@ -6,7 +6,7 @@ end
 
 local signs = {
   breakpoint = {
-    text = "",
+    text = "🧘",
     texthl = "LspDiagnosticsSignError",
     linehl = "",
     numhl = "",
@@ -18,7 +18,7 @@ local signs = {
     numhl = "",
   },
   stopped = {
-    text = "",
+    text = "🏃",
     texthl = "LspDiagnosticsSignInformation",
     linehl = "DiagnosticUnderlineInfo",
     numhl = "LspDiagnosticsSignInformation",
