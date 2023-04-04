@@ -13,6 +13,7 @@ with profiles; let
       gpg
       lazygit
       nvim
+      editorconfig
     ];
   graphical = [
     wezterm
