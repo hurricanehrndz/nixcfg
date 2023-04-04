@@ -468,6 +468,22 @@
         "type": "github"
       }
     },
+    "go-nvim-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1680609320,
+        "narHash": "sha256-Fo8GXceV+FsnPS9BK332Ra55yTJfCC+szEhj2nuHt2o=",
+        "owner": "ray-x",
+        "repo": "go.nvim",
+        "rev": "7302dc4a20f87bb5e04f6d2a4cf372929b59f720",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ray-x",
+        "repo": "go.nvim",
+        "type": "github"
+      }
+    },
     "gomvp-src": {
       "flake": false,
       "locked": {
@@ -936,6 +952,7 @@
         "flake-utils": "flake-utils_4",
         "gitsigns-src": "gitsigns-src",
         "go-enum-src": "go-enum-src",
+        "go-nvim-src": "go-nvim-src",
         "gomvp-src": "gomvp-src",
         "home-manager": "home-manager",
         "json-to-struct-src": "json-to-struct-src",

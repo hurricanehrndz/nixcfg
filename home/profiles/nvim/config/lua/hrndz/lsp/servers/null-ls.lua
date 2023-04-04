@@ -61,6 +61,10 @@ local swiftlint = {
   }),
 }
 
+local gotest = require("go.null_ls").gotest()
+local gotest_codeaction = require("go.null_ls").gotest_action()
+-- local golangci_lint = require("go.null_ls").golangci_lint()
+
 local sources = {
   -- formatting
   b.formatting.alejandra,
@@ -99,10 +103,15 @@ local sources = {
   b.diagnostics.markdownlint,
   b.diagnostics.flake8,
   b.diagnostics.yamllint,
+  b.diagnostics.revive,
 
   -- custom
   yamlfixer,
   swiftlint,
+
+  -- nivm go
+  gotest,
+  gotest_codeaction,
 }
 
 local M = {}
@@ -113,6 +122,8 @@ M.setup = function(custom_on_attach, formatting_callback, _)
   end
   null_ls.setup({
     debug = true,
+    debounce = 1000,
+    default_timeout = 5000,
     sources = sources,
     on_attach = function(client, bufnr)
       formatting_callback(client, bufnr)

@@ -104,6 +104,7 @@ in {
       go-enum
       gomvp
       json-to-struct
+      revive
 
 
       # lua
@@ -299,7 +300,7 @@ in {
       cmp-cmdline
       cmp-zsh # next is required
       deol-nvim
-      go-nvim
+      (withSrc go-nvim inputs.go-nvim-src)
       nvim-guihua
       lsp_lines-nvim
 

@@ -36,6 +36,8 @@
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
+    go-nvim-src.url = "github:ray-x/go.nvim";
+    go-nvim-src.flake = false;
     gitsigns-src.url = "github:lewis6991/gitsigns.nvim";
     gitsigns-src.flake = false;
     nvim-colorizer-src.url = "github:NvChad/nvim-colorizer.lua";
