@@ -45,6 +45,7 @@
     paths =
       (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [
         p.bash
+        p.comment
         p.go
         p.help
         p.javascript
