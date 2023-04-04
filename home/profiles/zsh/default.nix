@@ -57,6 +57,13 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    settings = {
+      aws.disabled = true;
+      cmd_duration.disabled = true;
+      directory = {
+        fish_style_pwd_dir_length = 1;
+      };
+    };
   };
   programs.fzf = {
     enable = true;
