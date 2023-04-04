@@ -24,10 +24,10 @@ local formatting_callback = function(client, bufnr)
   vim.keymap.set('n', '<space>lf', function()
     local params = util.make_formatting_params({})
     client.request('textDocument/formatting', params, nil, bufnr)
-  end, {buffer = bufnr, desc = "Format"})
+  end, { buffer = bufnr, desc = "Format" })
 end
 
-local custom_attach = function(_, bufnr)
+local custom_attach = function(client, bufnr)
   local function bufmap(mode, l, r, desc)
     local opts = {}
     opts.desc = desc
@@ -45,7 +45,10 @@ local custom_attach = function(_, bufnr)
   bufmap("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>", "Go to next diagnostic")
   bufmap("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>", "Go to prev diagnostic")
 
-  vim.lsp.codelens.refresh()
+  local codelens_enabled = (client.server_capabilities.codeLensProvider ~= false)
+  if not codelens_enabled then
+    vim.lsp.codelens.refresh()
+  end
 end
 
 local capabilities = cmp.default_capabilities()
