@@ -13,6 +13,6 @@
       raycast
       flameshot
       tailscale
-      # virtualization
+      virtualization
     ]);
 in {inherit workstation;}
