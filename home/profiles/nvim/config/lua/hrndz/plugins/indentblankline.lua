@@ -1,8 +1,11 @@
-local g = vim.g
-g.indent_blankline_space_char = " "
-g.indent_blankline_space_char_blankline = " "
-g.indent_blankline_char = "┊"
-g.indent_blankline_filetype_exclude = { "help", "packer" }
-g.indent_blankline_buftype_exclude = { "terminal", "nofile" }
-g.indent_blankline_char_highlight = "LineNr"
-g.indent_blankline_show_first_indent_level = false
+-- indentlines
+vim.opt.list = false
+vim.opt.listchars:append "space:⋅"
+vim.opt.listchars:append "eol:↴"
+vim.opt.listchars:append "tab:→ "
+
+require("indent_blankline").setup {
+  show_end_of_line = true,
+  space_char_blankline = " ",
+  show_first_indent_level = false,
+}

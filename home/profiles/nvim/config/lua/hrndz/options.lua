@@ -52,8 +52,6 @@ local options = {
   -- scrolling "bounding"
   scrolloff = 5,
   sidescrolloff = 10,
-  -- strings to use in list command for punctuation
-  listchars = [[tab:→ ,eol:↲,space:␣,trail:•,extends:⟩,precedes:⟨]],
   smartcase = true,
   -- enable undofile - persistent undo
   undofile = true,
