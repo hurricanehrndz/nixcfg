@@ -184,6 +184,11 @@ in {
         version = "master";
         src = inputs.nvim-guihua-src;
       };
+      nvim-retrail = pkgs.vimUtils.buildVimPluginFrom2Nix {
+        pname = "nvim-retrail";
+        version = "master";
+        src = inputs.nvim-retrail-src;
+      };
     in [
       # Theme
       {
@@ -342,7 +347,7 @@ in {
         '';
       }
       {
-        plugin = vim-better-whitespace;
+        plugin = nvim-retrail;
         type = "lua";
         config = ''
           require("hrndz.plugins.whitespace")
@@ -390,12 +395,25 @@ in {
       nvim-dap-ui
       nvim-dap-virtual-text
       nvim-dap-python
+      {
+        plugin = alpha-nvim;
+        type = "lua";
+        config = ''
+          require("hrndz.plugins.alpha")
+        '';
+      }
     ];
   };
   xdg.configFile = {
     "nvim" = {
       recursive = true;
       source = ./config;
+    };
+  };
+  xdg.dataFile = {
+    "art/thisisfine.sh" = {
+        source = ./thisisfine.sh;
+        executable = true;
     };
   };
 }

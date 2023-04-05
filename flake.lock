@@ -880,6 +880,22 @@
         "type": "github"
       }
     },
+    "nvim-retrail-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1677078000,
+        "narHash": "sha256-KMcaUPpdfExRv/QpNjv5xWjmkt6KPE52Um3iErcWFqk=",
+        "owner": "kaplanz",
+        "repo": "nvim-retrail",
+        "rev": "d04fdf1524057e9d8956a1f6aada9a23abd7a476",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kaplanz",
+        "repo": "nvim-retrail",
+        "type": "github"
+      }
+    },
     "nvim-treesitter-src": {
       "flake": false,
       "locked": {
@@ -969,6 +985,7 @@
         "nvim-guihua-src": "nvim-guihua-src",
         "nvim-lspconfig-src": "nvim-lspconfig-src",
         "nvim-osc52-src": "nvim-osc52-src",
+        "nvim-retrail-src": "nvim-retrail-src",
         "nvim-treesitter-src": "nvim-treesitter-src",
         "nvim-window-src": "nvim-window-src",
         "swiftformat-src": "swiftformat-src",

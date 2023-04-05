@@ -54,6 +54,8 @@
     mini-nvim-src.flake = false;
     nvim-lspconfig-src.url = "github:neovim/nvim-lspconfig";
     nvim-lspconfig-src.flake = false;
+    nvim-retrail-src.url = "github:kaplanz/nvim-retrail";
+    nvim-retrail-src.flake = false;
     nvim-guihua-src.url = "github:ray-x/guihua.lua";
     nvim-guihua-src.flake = false;
     swiftformat-src.url = "github:nicklockwood/SwiftFormat?rev=a5d58763da90d8240b2a0f7f2b57da29438a0530";

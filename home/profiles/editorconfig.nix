@@ -17,6 +17,10 @@
       max_line_length = 119;
       indent_size = 2;
     };
+    "*.nix" = {
+      max_line_length = 119;
+      indent_size = 2;
+    };
     "*.go" = {
       indent_style = "tab";
     };
