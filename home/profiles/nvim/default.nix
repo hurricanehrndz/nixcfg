@@ -184,11 +184,6 @@ in {
         version = "master";
         src = inputs.nvim-guihua-src;
       };
-      nvim-retrail = pkgs.vimUtils.buildVimPluginFrom2Nix {
-        pname = "nvim-retrail";
-        version = "master";
-        src = inputs.nvim-retrail-src;
-      };
     in [
       # Theme
       {
@@ -347,7 +342,7 @@ in {
         '';
       }
       {
-        plugin = nvim-retrail;
+        plugin = vim-better-whitespace;
         type = "lua";
         config = ''
           require("hrndz.plugins.whitespace")
