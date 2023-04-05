@@ -106,7 +106,6 @@ in {
       json-to-struct
       revive
 
-
       # lua
       sumneko-lua-language-server
       stylua
@@ -391,7 +390,6 @@ in {
       nvim-dap-ui
       nvim-dap-virtual-text
       nvim-dap-python
-
     ];
   };
   xdg.configFile = {
