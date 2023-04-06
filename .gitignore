@@ -2,3 +2,7 @@ result/
 result/*
 result
 .devenv/
+
+
+.direnv/
+.envrc
