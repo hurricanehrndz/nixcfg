@@ -33,6 +33,7 @@ in {
         gpgme
         gpg-agent-start
         yubikey-manager
+        gopass
 
         (writeShellScriptBin "gpg-agent-restart" ''
           pkill gpg-agent ; pkill ssh-agent ; pkill pinentry ; eval $(gpg-agent --daemon --enable-ssh-support)
@@ -42,13 +43,24 @@ in {
         enable = true;
         mutableKeys = false;
         mutableTrust = false;
-        # TODO: clean up the format/structure of these key files
-        publicKeys = [
-          {
-            source = keysDir + "/${pgpPublicKey}.asc";
-            trust = "ultimate";
-          }
-        ];
+        publicKeys =
+          [
+            {
+              source = keysDir + "/${pgpPublicKey}.asc";
+              trust = "ultimate";
+            }
+          ]
+          ++ (
+            let
+              ls = builtins.readDir keysDir;
+              files = builtins.filter (name: ls.${name} == "regular" && "${name}" != "${pgpPublicKey}.asc") (builtins.attrNames ls);
+            in
+              builtins.map (keyName: {
+                source = "${keysDir}/${keyName}";
+                trust = "full";
+              })
+              files
+          );
 
         # https://github.com/drduh/config/blob/master/gpg.conf
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
