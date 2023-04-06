@@ -8,7 +8,9 @@
 in {
   imports = [
     ./homebrew.nix
+    inputs.agenix.darwinModules.age
   ];
+
   # These should (must?) be enabled in any recent multi-user Nix installation,
   # and yet they remain disabled by default in nix-darwin...
   services.nix-daemon.enable = l.mkForce true;
@@ -35,7 +37,7 @@ in {
 
   system.activationScripts.postUserActivation.text = ''
     if [[ ! -d "$HOME/.terminfo" ]]; then
-      infocmp  -x tmux-256color > /tmp/tmux-256color.src
+      infocmp -x tmux-256color > /tmp/tmux-256color.src
       /usr/bin/tic -x /tmp/tmux-256color.src
     fi
   '';
