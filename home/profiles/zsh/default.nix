@@ -1,4 +1,21 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; {
+  home.extraOutputsToInstall = [
+    "/share/zsh"
+    # TODO: is this already implied by `/share/zsh`?
+    "/share/zsh/site-functions"
+  ];
+
+  home.packages = with pkgs; [
+    nix-zsh-completions
+    zsh-completions
+  ];
+
   programs.zsh = {
     enable = true;
     dotDir = ".config/zsh";
@@ -10,24 +27,15 @@
       extended = true;
       ignoreDups = true;
       ignorePatterns = ["rm *" "pkill *"];
+      ignoreSpace = true;
+      save = 10000;
+      share = true;
+      size = 10000;
     };
-    plugins = [
-      {
-        name = "forgit";
-        file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
-        src = pkgs.zsh-forgit;
-      }
-      {
-        name = "autosuggestions";
-        file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
-        src = pkgs.zsh-autosuggestions;
-      }
-      {
-        name = "fast-syntax-highlighting";
-        file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
-        src = pkgs.zsh-fast-syntax-highlighting;
-      }
-    ];
+    initExtraFirst = ''
+      # Initialise the builtin profiler -- run `zprof` to read results
+      zmodload zsh/zprof
+    '';
     initExtraBeforeCompInit = ''
       # ^X^S to insert sudo in front of command
       function prepend-sudo { # Insert "sudo " at the beginning of the line
@@ -58,9 +66,48 @@
       bindkey   -M   viins   '^P'      history-search-backward
       bindkey   -M   viins   '^N'      history-search-forward
 
+    '';
+    completionInit = ''
+      # %j is day of the year
+      autoload -Uz compinit
+      if [[ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ''${ZDOTDIR:-$HOME}/.zcompdump) ]]; then
+        compinit
+      else
+        compinit -C
+      fi
+      {
+        # Compile zcompdump, if modified, to increase startup speed.
+        zcompdump="''${ZDOTDIR:-$HOME}/.zcompdump"
+        if [[ -s "$zcompdump" && (! -s "''${zcompdump}.zwc" || "$zcompdump" -nt "''${zcompdump}.zwc") ]]; then
+          zcompile "$zcompdump"
+        fi
+      } &!
+    '';
+    plugins = [
+      {
+        name = "forgit";
+        file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
+        src = pkgs.zsh-forgit;
+      }
+      {
+        name = "autosuggestions";
+        file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
+        src = pkgs.zsh-autosuggestions;
+      }
+      {
+        name = "fast-syntax-highlighting";
+        file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
+        src = pkgs.zsh-fast-syntax-highlighting;
+      }
+    ];
+    initExtra = ''
       # FZF opts
       export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
       export FORGIT_FZF_DEFAULT_OPTS=" --exact --cycle --height '80%' "
+
+      source $HOME/.config/zsh/zsh_vars
+
+      # PATH
       path=($XDG_BIN_HOME $path)
     '';
   };
@@ -83,4 +130,8 @@
     enable = true;
     enableZshIntegration = true;
   };
+  home.activation.zsh_compile = lib.hm.dag.entryAfter ["installPackages"] ''
+    rm -f "${config.xdg.configHome}/zsh/.zshrc.zwc"
+    ${pkgs.zsh}/bin/zsh -c 'zcompile "${config.xdg.configHome}/zsh/.zshrc"'
+  '';
 }
