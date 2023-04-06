@@ -46,6 +46,12 @@
       core = {
         whitespace = "-indent-with-non-tab,trailing-space,cr-at-eol";
       };
+      diff.tool = "difftastic";
+      difftool = {
+        prompt = false;
+        "difftastic".cmd = "difft \"$LOCAL\" \"$REMOTE\"" ;
+      };
+      pager.difftool = true;
       merge = {
         tool = "vimdiff";
         log = true;

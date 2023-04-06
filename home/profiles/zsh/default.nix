@@ -13,6 +13,11 @@
     };
     plugins = [
       {
+        name = "forgit";
+        file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
+        src = pkgs.zsh-forgit;
+      }
+      {
         name = "autosuggestions";
         file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
         src = pkgs.zsh-autosuggestions;
@@ -52,6 +57,11 @@
       bindkey   -M   viins   '^X^E'    edit-command-line
       bindkey   -M   viins   '^P'      history-search-backward
       bindkey   -M   viins   '^N'      history-search-forward
+
+      # FZF opts
+      export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+      export FORGIT_FZF_DEFAULT_OPTS=" --exact --cycle --height '80%' "
+      path=($XDG_BIN_HOME $path)
     '';
   };
   programs.starship = {
