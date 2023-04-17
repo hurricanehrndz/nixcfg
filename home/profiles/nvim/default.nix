@@ -47,7 +47,6 @@
         p.bash
         p.comment
         p.go
-        p.help
         p.javascript
         p.lua
         p.make
