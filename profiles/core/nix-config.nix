@@ -53,7 +53,7 @@ in {
     ];
     registry = l.mapAttrs (_: flake: {inherit flake;}) inputFlakes;
     settings = {
-      auto-optimise-store = true;
+      auto-optimise-store = false;
       experimental-features = ["nix-command" "flakes"];
       sandbox = l.mkDefault (!isDarwin);
       allowed-users = ["*"];
