@@ -8,12 +8,13 @@ with profiles; let
   developer =
     base
     ++ [
+      aws
       direnv
+      editorconfig
       git
       gpg
       lazygit
       nvim
-      editorconfig
     ];
   graphical = [
     wezterm
