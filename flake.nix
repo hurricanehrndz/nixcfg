@@ -37,6 +37,10 @@
     poetry2nix.url = "github:hurricanehrndz/poetry2nix";
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    # others
+    git-fat.url = "github:hurricanehrndz/git-fat";
+    git-fat.inputs.nixpkgs.follows = "nixpkgs";
+
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
