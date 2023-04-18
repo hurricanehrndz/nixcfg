@@ -33,6 +33,10 @@
     devshell.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:cachix/devenv";
 
+    # python
+    poetry2nix.url = "github:hurricanehrndz/poetry2nix";
+    poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
     neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
@@ -117,6 +121,7 @@
         overlays = [
           inputs.agenix.overlays.default
           inputs.devshell.overlays.default
+          inputs.poetry2nix.overlay
         ];
       };
     in {
