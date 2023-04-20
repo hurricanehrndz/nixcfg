@@ -62,6 +62,10 @@ in {
               files
           );
 
+        scdaemonSettings = {
+          disable-ccid = true;
+        };
+
         # https://github.com/drduh/config/blob/master/gpg.conf
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Esoteric-Options.html
