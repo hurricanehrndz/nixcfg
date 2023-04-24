@@ -4,29 +4,32 @@ with profiles; let
     zsh
     shellAliases
     tmux
+    direnv
+    gpg
   ];
-  developer =
+  neovim =
     base
     ++ [
-      aws
-      direnv
       editorconfig
       git
-      gpg
       lazygit
       nvim
+    ];
+  developer =
+    neovim
+    ++ [
+      aws
     ];
   graphical = [
     wezterm
     amethyst
     # keyboard # yabai keybindings via skhdrc
   ];
-  roles = {
-    inherit
-      base
-      developer
-      graphical
-      ;
-  };
-in
-  roles
+in {
+  inherit
+    base
+    neovim
+    developer
+    graphical
+    ;
+}

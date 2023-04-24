@@ -4,6 +4,12 @@
   ...
 }: let
   inherit (pkgs.stdenv) isDarwin;
+  darwinAliases = {
+     nrb = "darwin-rebuild switch --flake";
+  };
+  nixosAliases = {
+    nrb = "nixos-rebuild switch --use-remote-sudo";
+  };
 in {
   home.shellAliases =
     {
@@ -68,7 +74,5 @@ in {
       virsh = "virsh --connect='qemu:///system'";
       virt-install = "virt-install --connect 'qemu:///system'";
     }
-    // lib.optionals isDarwin {
-      nrb = "darwin-rebuild switch --flake";
-    };
+    // (if isDarwin then darwinAliases else nixosAliases);
 }

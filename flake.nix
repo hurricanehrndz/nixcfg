@@ -34,12 +34,16 @@
     devenv.url = "github:cachix/devenv";
 
     # python
-    poetry2nix.url = "github:hurricanehrndz/poetry2nix";
+    poetry2nix.url = "github:nix-community/poetry2nix";
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
     git-fat.inputs.nixpkgs.follows = "nixpkgs";
+
+    # System tools
+    snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
+    snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
 
     # neovim
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
@@ -104,6 +108,7 @@
       ./flake-modules/sharedProfiles.nix
 
       ./darwin/configurations.nix
+      ./nixos/configurations.nix
       ./home/configuration.nix
       ./packages
 
@@ -111,7 +116,7 @@
       inputs.devenv.flakeModule
     ];
 
-    systems = ["aarch64-darwin"];
+    systems = ["aarch64-darwin" "x86_64-linux"];
 
     perSystem = {
       system,
@@ -125,6 +130,7 @@
         overlays = [
           inputs.agenix.overlays.default
           inputs.devshell.overlays.default
+          inputs.snapraid-runner.overlays.default
           inputs.poetry2nix.overlay
         ];
       };

@@ -74,11 +74,10 @@ local sources = {
   }),
   -- google style
   b.formatting.shfmt.with({
-    extra_args = { "-i", "2", "-ci", "-bn", "-o" },
+    extra_args = { "-i", "4", "-ci", "-bn", "-o" },
   }),
   b.formatting.beautysh.with({
     filetypes = { "zsh" },
-    extra_args = { "--indent-size", "2" },
   }),
   b.formatting.stylua,
   b.formatting.swiftformat,

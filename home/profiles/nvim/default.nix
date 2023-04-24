@@ -126,9 +126,9 @@ in {
       vale
 
       # swift
-      packages.swiftformat
-      packages.swiftlint
-      sourcekit-lsp
+      # packages.swiftformat
+      # packages.swiftlint
+      # sourcekit-lsp
 
       # yaml
       yamlfixer

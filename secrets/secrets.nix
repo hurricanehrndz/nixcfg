@@ -25,4 +25,7 @@ in
   "darwin/env/zsh_vars.age".publicKeys = VPXK04PX7G_Keys;
   "darwin/aws/sso_config.age".publicKeys = VPXK04PX7G_Keys;
   "darwin/aws/auth_config.age".publicKeys = VPXK04PX7G_Keys;
+
+  "services/snapraid-runner/apprise.yaml.age".publicKeys = deepKeys;
+  "services/traefik/env.age".publicKeys = deepKeys;
 }
