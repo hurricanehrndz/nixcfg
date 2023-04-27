@@ -2,8 +2,8 @@
 # shellcheck shell=bash
 
 args=("$@")
-if [[ "${args[1]}" =~ [0-9]+ ]]; then
-    uid="${args[1]}"
+if [[ "${args[0]}" =~ [0-9]+ ]]; then
+    uid="${args[0]}"
     args=("${args[@]:1}")
 else
     uid=1000
