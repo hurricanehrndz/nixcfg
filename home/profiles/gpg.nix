@@ -63,7 +63,9 @@ in {
           );
 
         scdaemonSettings = {
-          disable-ccid = true;
+          disable-ccid = false;
+          debug-level = "guru";
+          # reader-port = "Yubico Yubikey";
         };
 
         # https://github.com/drduh/config/blob/master/gpg.conf

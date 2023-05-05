@@ -145,7 +145,7 @@
         ls = builtins.readDir ./shells;
         files = builtins.filter (name: ls.${name} == "regular") (builtins.attrNames ls);
         shellNames = builtins.map (filename: builtins.head (builtins.split "\\." filename)) files;
-        nameToValue = name: import (./shells + "/${name}.nix") {inherit pkgs inputs;};
+        nameToValue = name: import (./shells + "/${name}.nix") {inherit pkgs inputs inputs';};
       in
         builtins.listToAttrs (builtins.map (name: {
             inherit name;
