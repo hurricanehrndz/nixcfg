@@ -103,6 +103,7 @@ local sources = {
   b.diagnostics.flake8,
   b.diagnostics.yamllint,
   b.diagnostics.revive,
+  b.diagnostics.puppet_lint,
 
   -- custom
   yamlfixer,
