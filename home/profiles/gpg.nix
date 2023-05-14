@@ -63,8 +63,7 @@ in {
           );
 
         scdaemonSettings = {
-          disable-ccid = false;
-          debug-level = "guru";
+          disable-ccid = true;
           # reader-port = "Yubico Yubikey";
         };
 
