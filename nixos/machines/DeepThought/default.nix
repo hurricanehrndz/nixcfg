@@ -26,7 +26,6 @@
     enable = true;
   };
 
-  # systemd.services.podman-scrutiny.serviceConfig.User = "hurricane";
   networking = {
     nat = {
       enable = true;

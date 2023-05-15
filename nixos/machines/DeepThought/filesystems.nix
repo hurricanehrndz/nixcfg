@@ -85,12 +85,19 @@ in {
   };
 
   # smart monitoring reporting
+  # systemd.services.podman-scrutiny.serviceConfig.User = "hurricane";
   virtualisation.oci-containers.containers = {
     scrutiny = {
       image = "ghcr.io/analogj/scrutiny:master-omnibus";
       ports = [
         "127.0.0.1:1080:1080"
       ];
+      environment = {
+        COLLECTOR_API_ENDPOINT = "http://localhost:1080/storage";
+        COLLECTOR_CRON_SCHEDULE = "0 0 * * *";
+        DEBUG = "true";
+        SCRUTINY_LOG_FILE = "/tmp/web.log";
+      };
       volumes = [
         "/opt/scrutiny/config:/opt/scrutiny/config"
         "/opt/scrutiny/influxdb:/opt/scrutiny/influxdb"
@@ -120,7 +127,7 @@ in {
       };
       http.routers = {
         "scrutiny" = with config.networking; {
-          rule = "Host(`${hostName}.${domain}`) && PathPrefix(`/scrutiny`)";
+          rule = "Host(`${hostName}.${domain}`) && PathPrefix(`/storage`)";
           entryPoints = [
             "websecure"
           ];
