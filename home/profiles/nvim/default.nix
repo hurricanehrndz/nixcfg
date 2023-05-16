@@ -6,7 +6,7 @@
   inputs',
   ...
 }: let
-  neovim-nightly = with inputs'.neovim-nightly.packages; neovim;
+  neovim-nightly = packages.neovim;
   # Function to override the source of a package
   withSrc = pkg: src: pkg.overrideAttrs (_: {inherit src;});
   yamllint = with pkgs.python3Packages;

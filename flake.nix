@@ -29,7 +29,6 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
-    devshell.inputs.flake-utils.follows = "flake-utils";
     devshell.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:cachix/devenv";
 
@@ -46,8 +45,8 @@
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
 
     # neovim
-    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
-    neovim-nightly.inputs.nixpkgs.follows = "nixpkgs";
+    # see: https://github.com/nix-community/neovim-nightly-overlay/issues/176
+    neovim-flake = { url = "github:neovim/neovim?dir=contrib"; inputs.nixpkgs.follows = "nixpkgs"; };
     go-nvim-src.url = "github:ray-x/go.nvim";
     go-nvim-src.flake = false;
     gitsigns-src.url = "github:lewis6991/gitsigns.nvim";
