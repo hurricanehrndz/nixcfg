@@ -32,7 +32,7 @@ lib.mkMerge [
       window-max-count = 3;
       floating = [
         "com.apple.systempreferences"
-        "com.tinyspeck.slackmacgap"
+        # "com.tinyspeck.slackmacgap"
       ];
     };
   })
