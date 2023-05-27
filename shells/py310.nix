@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  inputs',
   ...
 }:
 with pkgs;
@@ -9,5 +10,9 @@ with pkgs;
       "-I${lib.getDev libcxx}/include/c++/v1"
     ];
 
-    nativeBuildInputs = [poetry python310 libffi];
+    packages = [
+      pre-commit
+    ];
+
+    nativeBuildInputs = [libffi python310];
   }

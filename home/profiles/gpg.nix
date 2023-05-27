@@ -64,7 +64,12 @@ in {
 
         scdaemonSettings = {
           disable-ccid = true;
+          verbose = true;
+          debug-level = "advanced";
+          log-file = "$HOME/.gnupg/gpg-agent.log";
+          debug-ccid-driver = true;
           # reader-port = "Yubico Yubikey";
+          card-timeout = "1";
         };
 
         # https://github.com/drduh/config/blob/master/gpg.conf
