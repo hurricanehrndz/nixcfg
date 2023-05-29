@@ -108,7 +108,9 @@ in {
         inherit (hostPlatform) isDarwin;
         inherit pkgs;
         homePrefix =
-          if isDarwin
+          if builtins.hasAttr providedhomePrefix hmArgs.providedhomePrefix
+          then "${hmArgs.providedhomePrefix}"
+          else if isDarwin
           then "/Users"
           else "/home";
       in (inputs.home-manager.lib.homeManagerConfiguration {
@@ -133,6 +135,7 @@ in {
       });
 
       traveller = makeHomeConfiguration "chernand" {
+        providedhomePrefix = "/nail/home";
         modules = with roles;
           base
           ++ [
