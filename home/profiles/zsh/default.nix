@@ -7,6 +7,17 @@
   sshf-src = builtins.readFile ./sshf.sh;
   sshf =
     pkgs.writeScriptBin "sshf" sshf-src;
+  my-zsh-completions = pkgs.zsh-completions.overrideAttrs (f: p: {
+    installPhase = ''
+      install -D --target-directory=$out/share/zsh/site-functions src/*
+
+      # tmuxp install it so avoid collision
+      rm $out/share/zsh/site-functions/_tmuxp
+
+      # trash-cli install it so avoid collision
+      rm $out/share/zsh/site-functions/_trash*
+    '';
+  });
 in
   with lib; {
     home.extraOutputsToInstall = [
@@ -16,8 +27,8 @@ in
     ];
 
     home.packages = with pkgs; [
+      my-zsh-completions
       nix-zsh-completions
-      zsh-completions
       sshf
     ];
 
@@ -106,7 +117,6 @@ in
       ];
       initExtra = ''
         # FZF opts
-        export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
         export FORGIT_FZF_DEFAULT_OPTS=" --exact --cycle --height '80%' "
 
         if [[ -f  $HOME/.config/zsh/zsh_vars ]]; then
@@ -128,10 +138,7 @@ in
         };
       };
     };
-    programs.fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
+    programs.fzf.enableZshIntegration = true;
     programs.zoxide = {
       enable = true;
       enableZshIntegration = true;

@@ -5,7 +5,7 @@
 }: let
   inherit (pkgs.stdenv) isDarwin;
   darwinAliases = {
-     nrb = "darwin-rebuild switch --flake";
+    nrb = "darwin-rebuild switch --flake";
   };
   nixosAliases = {
     nrb = "nixos-rebuild switch --use-remote-sudo";
@@ -64,7 +64,7 @@ in {
       gcl = "git clone --recursive-submodules";
 
       # Git rebase sign commits
-      grsc = "git rebase --exec 'git --amend --no-edit -n -S' -i";
+      grsc = "git rebase --exec 'git commit --amend --no-edit -n -S' -i";
 
       gl = "git log --topo-order --pretty=format:'%C(bold)Commit:%C(reset) %C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'";
       glb = "git log --topo-order --pretty=format:'%C(green)%h%C(reset) %s%n%C(blue)(%ar by %an)%C(red)%d%C(reset)%n'";
@@ -74,5 +74,9 @@ in {
       virsh = "virsh --connect='qemu:///system'";
       virt-install = "virt-install --connect 'qemu:///system'";
     }
-    // (if isDarwin then darwinAliases else nixosAliases);
+    // (
+      if isDarwin
+      then darwinAliases
+      else nixosAliases
+    );
 }

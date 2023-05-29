@@ -108,7 +108,7 @@ in {
         inherit (hostPlatform) isDarwin;
         inherit pkgs;
         homePrefix =
-          if builtins.hasAttr providedhomePrefix hmArgs.providedhomePrefix
+          if l.hasAttr "providedhomePrefix" hmArgs
           then "${hmArgs.providedhomePrefix}"
           else if isDarwin
           then "/Users"
@@ -137,7 +137,7 @@ in {
       traveller = makeHomeConfiguration "chernand" {
         providedhomePrefix = "/nail/home";
         modules = with roles;
-          base
+          remote
           ++ [
             {
               home.stateVersion = "22.11";

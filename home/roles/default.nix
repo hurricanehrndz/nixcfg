@@ -1,8 +1,10 @@
 {profiles}:
 with profiles; let
   base = [
+    core
     zsh
     shellAliases
+    fzf
     tmux
     direnv
     gpg
@@ -14,6 +16,13 @@ with profiles; let
       git
       lazygit
       nvim
+    ];
+  remote =
+    base
+    ++ [
+      editorconfig
+      git
+      lazygit
     ];
   developer =
     neovim
@@ -29,6 +38,8 @@ in {
   inherit
     base
     neovim
+    remote
+    nvim-only
     developer
     graphical
     ;
