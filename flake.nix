@@ -1,5 +1,5 @@
 {
-  description = "Living decription of personal dev environment and life support systems";
+  description = "Living description of personal dev environment and life support systems";
 
   # nixConfig.extra-experimental-features = "nix-command flakes";
 
