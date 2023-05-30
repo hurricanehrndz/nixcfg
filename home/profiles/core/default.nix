@@ -37,5 +37,8 @@ in {
     # Rust
     CARGO_HOME = "$XDG_DATA_HOME/cargo";
     RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+
+    # xdg bin home
+    XDG_BIN_HOME = "$HOME/.local/bin";
   };
 }

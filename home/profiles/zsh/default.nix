@@ -49,6 +49,9 @@ in
         size = 10000;
       };
       initExtraFirst = ''
+        # xdg bin home
+        path=("$HOME/.local/bin" $path)
+
         # Initialise the builtin profiler -- run `zprof` to read results
         zmodload zsh/zprof
       '';
