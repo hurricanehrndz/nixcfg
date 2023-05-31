@@ -463,11 +463,11 @@
         "poetry2nix": "poetry2nix"
       },
       "locked": {
-        "lastModified": 1685200294,
-        "narHash": "sha256-/jwMTBvQxxZlpyRrvD7Vo+KED/smTst7ZlFB00OgVDE=",
+        "lastModified": 1685567728,
+        "narHash": "sha256-409uyTqOe9pEo0i4S7rosITiVgwURuoAEXPQixyXM8s=",
         "owner": "hurricanehrndz",
         "repo": "git-fat",
-        "rev": "2cf28de8a61c9311aa60674e9b1a607b10ac8575",
+        "rev": "93337be957ee8414c47c1fd1b3ba815c7f44b52c",
         "type": "github"
       },
       "original": {

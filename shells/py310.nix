@@ -10,9 +10,5 @@ with pkgs;
       "-I${lib.getDev libcxx}/include/c++/v1"
     ];
 
-    packages = [
-      pre-commit
-    ];
-
     nativeBuildInputs = [libffi python310];
   }

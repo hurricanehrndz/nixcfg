@@ -58,7 +58,7 @@
       };
       mergetool = {
         keepBackup = false;
-        vimdiff = "nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"";
+        vimdiff = "nvim -c DiffviewOpen";
       };
       status = {
         showStash = true;

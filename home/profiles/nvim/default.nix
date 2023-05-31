@@ -396,6 +396,13 @@ in {
           require("hrndz.plugins.alpha")
         '';
       }
+      {
+        plugin = diffview-nvim;
+        type = "lua";
+        config = ''
+          require("diffview").setup({})
+        '';
+      }
     ];
   };
   xdg.configFile = {
@@ -406,8 +413,8 @@ in {
   };
   xdg.dataFile = {
     "art/thisisfine.sh" = {
-        source = ./thisisfine.sh;
-        executable = true;
+      source = ./thisisfine.sh;
+      executable = true;
     };
   };
 }
