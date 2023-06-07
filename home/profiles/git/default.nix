@@ -53,12 +53,14 @@
       };
       pager.difftool = true;
       merge = {
-        tool = "vimdiff";
+        tool = "diffview";
         log = true;
       };
       mergetool = {
+        "diffview" = {
+          cmd = "nvim -f -c 'DiffviewOpen'";
+        };
         keepBackup = false;
-        vimdiff = "nvim -c DiffviewOpen";
       };
       status = {
         showStash = true;
