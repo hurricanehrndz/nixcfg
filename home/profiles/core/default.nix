@@ -32,11 +32,11 @@ in {
     # https://superuser.com/questions/1607527/tab-completion-in-zsh-makes-duplicate-characters
     LC_CTYPE = "C.UTF-8";
     # Go
-    GOPATH = "$XDG_DATA_HOME/go";
+    GOPATH = "${config.xdg.dataHome}/go";
 
     # Rust
-    CARGO_HOME = "$XDG_DATA_HOME/cargo";
-    RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+    CARGO_HOME = "${config.xdg.dataHome}/cargo";
+    RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
 
     # xdg bin home
     XDG_BIN_HOME = "$HOME/.local/bin";
