@@ -32,11 +32,11 @@ in {
     tealdeer
     tmux
 
-    (
-      if stdenv.hostPlatform.isDarwin
-      then clang
-      else gcc
-    )
+    # (
+    #   if stdenv.hostPlatform.isDarwin
+    #   then clang
+    #   else gcc
+    # )
 
     ## === Network ===
 

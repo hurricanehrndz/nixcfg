@@ -32,5 +32,9 @@ in {
     enable = true;
     # Use the nix-darwin brewfile when invoking `brew bundle` imperatively.
     global.brewfile = true;
+    brews = [
+      "rbenv"
+      "ruby-install"
+    ];
   };
 }

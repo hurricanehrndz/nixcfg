@@ -26,7 +26,7 @@
   go-enum = pkgs.buildGoModule {
     name = "go-enum";
     src = inputs.go-enum-src;
-    vendorSha256 = "sha256-c3mErVYUpUWjwK94mCR8dJV47v/CFwL3D+Cxnq5lChc=";
+    vendorSha256 = "sha256-tIY3CJnb6QuHBSDjfsxRZRUm1n3NTWLSEE1YruNksU4=";
   };
   gomvp = pkgs.buildGoModule {
     name = "gomvp";
@@ -45,13 +45,15 @@
     paths =
       (pkgs.vimPlugins.nvim-treesitter.withPlugins (p: [
         p.bash
-        p.comment
+        p.c
+        p.cpp
         p.go
         p.javascript
         p.lua
         p.make
         p.markdown
         p.nix
+        p.puppet
         p.python
         p.tsx
         p.typescript
@@ -61,7 +63,6 @@
 in {
   home.packages = with pkgs; [
     neovim-remote
-    poetry
   ];
 
   programs.zsh.initExtra = ''
@@ -389,6 +390,7 @@ in {
       nvim-dap-ui
       nvim-dap-virtual-text
       nvim-dap-python
+      vim-puppet
       {
         plugin = alpha-nvim;
         type = "lua";

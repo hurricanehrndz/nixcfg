@@ -2,14 +2,8 @@
   pkgs,
   inputs,
   ...
-}: let
-  inherit (inputs.devenv.lib) mkShell;
-in
+}:
+with pkgs;
   mkShell {
-    inherit inputs pkgs;
-    modules = [
-      ({pkgs, ...}: {
-        languages.go.enable = true;
-      })
-    ];
+    buildInputs = [go];
   }
