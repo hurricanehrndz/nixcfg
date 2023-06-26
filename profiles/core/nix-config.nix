@@ -39,6 +39,7 @@ in {
   imports = [
     ./substituters/common.nix
     ./substituters/nix-community.nix
+    ./substituters/hurricanehrndz.nix
     ./substituters/nixpkgs-update.nix
   ];
 

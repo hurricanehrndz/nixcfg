@@ -38,8 +38,8 @@ in {
       if pkgs.stdenv.isDarwin
       then "darwin"
       else "linux";
+    LC_ALL = "en_US.UTF-8";
     LANG = "en_US.UTF-8";
-    # LC_ALL = "en_US.UTF-8";
   };
 
   environment.shells = with pkgs; [

@@ -15,7 +15,7 @@ with profiles; let
       editorconfig
       git
       lazygit
-      nvim
+      pdenv
     ];
   remote =
     base
