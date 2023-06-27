@@ -22,10 +22,6 @@ in {
       rg = "rg -i -L";
       vimdiff = "nvim -d";
       mkdir = "mkdir -p";
-      vim = "nvim";
-      v = "nvim";
-      vi = "nvim";
-
 
       # quick cd
       ".." = "cd ..";
