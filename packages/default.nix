@@ -7,5 +7,6 @@
   }: {
     _module.args.packages = ctx.config.packages;
     packages.aws-sso = pkgs.callPackage ./aws-sso {};
+    packages.pdenv = inputs'.pdenv.packages.pdenv;
   };
 }

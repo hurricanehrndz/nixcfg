@@ -1,12 +1,12 @@
 {
   pkgs,
-  inputs',
+  packages,
   ...
 }: let
-  inherit (inputs'.pdenv.packages) pdenv;
+  nvim-pdenv = packages.pdenv;
 in {
   home.packages = with pkgs; [
-    pdenv
+    nvim-pdenv
     neovim-remote
   ];
   programs.zsh.initExtra = ''
