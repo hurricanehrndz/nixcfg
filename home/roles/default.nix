@@ -23,6 +23,7 @@ with profiles; let
       editorconfig
       git
       lazygit
+      pdenv
     ];
   developer =
     neovim
