@@ -560,15 +560,16 @@
     "go-enum-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1687960883,
-        "narHash": "sha256-uDqo4e//ikdsyHe4Z0tM/nhhRsptYo8o69NGgeNoCJY=",
+        "lastModified": 1679866640,
+        "narHash": "sha256-epGtBHngAFClrU63y5QQ130Me/lrZw4J2ZDWEuOh8Uo=",
         "owner": "abice",
         "repo": "go-enum",
-        "rev": "9438fdbd5323448c9b5fff26f2afc7badb5b1f73",
+        "rev": "97611fddaa414f53713597918c5e954646cb8623",
         "type": "github"
       },
       "original": {
         "owner": "abice",
+        "ref": "v0.5.6",
         "repo": "go-enum",
         "type": "github"
       }
@@ -1108,11 +1109,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1687972161,
-        "narHash": "sha256-qp3E6l4bA6I2CFpM4TfYQQ1mrftIzocogq/mE9CcjAQ=",
+        "lastModified": 1687980316,
+        "narHash": "sha256-JPeo0rznz4T56T2tSiip1/fo5/sXCdejMjtJ4zVvVp0=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "669603a39f232834081664def6b4ac43bc7f9413",
+        "rev": "e4ebf861f3bf8a36839e9f9977ad0ddc30468053",
         "type": "github"
       },
       "original": {
