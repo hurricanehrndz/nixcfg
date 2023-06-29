@@ -73,6 +73,7 @@ in {
       # virsh
       virsh = "virsh --connect='qemu:///system'";
       virt-install = "virt-install --connect 'qemu:///system'";
+      ssh = "TERM=xterm-256color ssh";
     }
     // (
       if isDarwin

@@ -9,4 +9,4 @@ else
     uid=1000
 fi
 extra_socket="$(gpgconf --list-dirs agent-extra-socket)"
-ssh -R /run/user/"$uid"/gnupg/S.gpg-agent:"$extra_socket" -A "${args[@]}"
+TERM=xterm-256color $(command -v ssh) -R /run/user/"$uid"/gnupg/S.gpg-agent:"$extra_socket" -A "${args[@]}"
