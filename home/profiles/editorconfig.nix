@@ -13,6 +13,10 @@
     "*.py" = {
       max_line_length = 119;
     };
+    "*.pp" = {
+      max_line_length = 140;
+      indent_size = 2;
+    };
     "*.lua" = {
       max_line_length = 119;
       indent_size = 2;
