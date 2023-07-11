@@ -43,8 +43,8 @@
   services.openssh = {
     enable = lib.mkForce true;
     openFirewall = true;
-    settings.passwordAuthentication = false;
-    settings.permitRootLogin = "no";
+    settings.PasswordAuthentication = false;
+    settings.PermitRootLogin = "no";
     extraConfig = ''
       StreamLocalBindUnlink yes
     '';
