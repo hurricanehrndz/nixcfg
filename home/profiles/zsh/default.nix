@@ -72,6 +72,8 @@ in
         setopt longlistjobs             # Display PID when using jobs
         setopt nobeep                   # Never beep
         setopt noflowcontrol            # Disable flow control for Zsh, enable ^S
+        setopt incappendhistory
+        setopt share_history
 
         bindkey -M vicmd '^X^S' prepend-sudo
         bindkey -M viins '^X^S' prepend-sudo

@@ -78,10 +78,18 @@ in {
   flake.nixosConfigurations = {
     DeepThought = makeNixosSystem "DeepThought" {
       system = x86_64-linux;
-      modules = (with roles; mediaserver)
+      modules =
+        (with roles; mediaserver)
         ++ [
           inputs.snapraid-runner.nixosModules.snapraid-runner
         ];
+    };
+    Hal9000 = makeNixosSystem "Hal9000" {
+      system = x86_64-linux;
+      # modules =
+      #   (with roles; mediaserver)
+      #   ++ [
+      #   ];
     };
   };
 }
