@@ -42,12 +42,8 @@
     };
   };
 
-  services.logind.extraConfig = ''
-    # don’t shutdown when power button is short-pressed
-    HandlePowerKey=ignore
-    # don’t shutdown when lid is closed
-    HandleLidSwitch=ignore
-  '';
+  services.upower.ignoreLid = true;
+  services.logind.lidSwitch = "ignore";
 
   networking.firewall.allowedTCPPorts = [8123 8091];
 
