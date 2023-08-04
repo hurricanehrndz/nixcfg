@@ -166,7 +166,7 @@ in
 
         '' + (concatStringsSep "\n" dynamicConfigs_symlink_cmds);
       } // optionalAttrs (cfg.environmentFile != null) {
-        serviceConfig.EnvironmentFile = cfg.environmentFile;
+        serviceConfig.EnvironmentFile = [ cfg.environmentFile ];
       };
   };
 }
