@@ -7,7 +7,7 @@
   l = inputs.nixpkgs.lib // builtins;
 in {
   fonts.fontDir.enable = true;
-  fonts.packages =
+  fonts.fonts =
     (with pkgs; [
       # <https://bboxtype.com/typefaces/FiraSans/>
       fira
