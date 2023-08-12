@@ -32,6 +32,9 @@ in {
     enable = true;
     # Use the nix-darwin brewfile when invoking `brew bundle` imperatively.
     global.brewfile = true;
+    caskArgs.no_quarantine = true;
+    onActivation.cleanup = "zap";
+    onActivation.upgrade = true;
     brews = [
       "rbenv"
       "ruby-install"
