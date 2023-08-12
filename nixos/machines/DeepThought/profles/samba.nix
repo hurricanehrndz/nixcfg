@@ -36,6 +36,17 @@
         "force user" = "hurricane";
         "force group" = "users";
       };
+      backups = {
+        path = "/volumes/storage/backups";
+        comment = "Backups";
+        "guest ok" = "yes";
+        "read only" = "yes";
+        "write list" = "@users";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "hurricane";
+        "force group" = "users";
+      };
     };
   };
 
