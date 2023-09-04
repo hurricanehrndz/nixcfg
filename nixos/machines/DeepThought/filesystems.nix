@@ -9,6 +9,10 @@
       "/volumes/${diskLabel}" = {
         device = "/dev/disk/by-label/${diskLabel}";
         fsType = "ext4";
+        options = [
+          "defaults"
+          "nofail"
+        ];
       };
     };
   in
@@ -28,12 +32,19 @@ in {
       "/volumes/cache" = {
         device = "/dev/disk/by-label/cache";
         fsType = "btrfs";
-        options = ["compress=zstd" "noatime"];
+        options = [
+          "defaults"
+          "noatime"
+          "nofail"
+          "compress=zstd"
+        ];
       };
       "/volumes/storage" = {
         device = "/volumes/cache:/volumes/data*";
         fsType = "fuse.mergerfs";
         options = [
+          "defaults"
+          "nofail"
           "nonempty"
           "allow_other"
           "use_ino"
@@ -50,6 +61,7 @@ in {
         fsType = "fuse.mergerfs";
         options = [
           "defaults"
+          "nofail"
           "nonempty"
           "allow_other"
           "use_ino"
