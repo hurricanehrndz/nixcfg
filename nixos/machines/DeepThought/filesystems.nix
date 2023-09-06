@@ -118,6 +118,7 @@ in {
         "/run/udev:/run/udev:ro"
       ];
       extraOptions = [
+        "--pull=newer"
         "--cap-add=SYS_RAWIO"
         "--device=/dev/sda"
         "--device=/dev/sdb"
@@ -126,7 +127,6 @@ in {
         "--device=/dev/sde"
         "--device=/dev/sdf"
         "--device=/dev/nvme0n1"
-        "--pull=newer"
       ];
     };
   };
