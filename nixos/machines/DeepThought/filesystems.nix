@@ -44,7 +44,6 @@ in {
         fsType = "fuse.mergerfs";
         options = [
           "defaults"
-          "nofail"
           "nonempty"
           "allow_other"
           "use_ino"
@@ -61,7 +60,6 @@ in {
         fsType = "fuse.mergerfs";
         options = [
           "defaults"
-          "nofail"
           "nonempty"
           "allow_other"
           "use_ino"
@@ -87,6 +85,10 @@ in {
       }
       {
         device = "/dev/disk/by-id/ata-ST12000VN0008-2PH103_ZTN18K65";
+        options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
+      }
+      {
+        device = "/dev/disk/by-id/ata-ST12000VN0008-2PH103_ZL2PSACH";
         options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
       }
       {
@@ -124,6 +126,7 @@ in {
         "--device=/dev/sde"
         "--device=/dev/sdf"
         "--device=/dev/nvme0n1"
+        "--pull=newer"
       ];
     };
   };
