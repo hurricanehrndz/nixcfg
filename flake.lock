@@ -78,7 +78,7 @@
     "darwin_2": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "nixpkgs-master"
         ]
       },
       "locked": {
@@ -915,6 +915,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-master": {
+      "locked": {
+        "lastModified": 1694124764,
+        "narHash": "sha256-j3pPpMub7SAQYnZgXqIKQnDGFPxOXY+m455n3sQwWpA=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1b359ec9f365aab6ea1ba4a6bc2cb43b4755f8b5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-pr211321": {
       "locked": {
         "lastModified": 1680536213,
@@ -1302,6 +1318,7 @@
         "nixpkgs": [
           "nixos-unstable"
         ],
+        "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-pr211321": "nixpkgs-pr211321",
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable_2",

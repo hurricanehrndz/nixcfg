@@ -8,7 +8,7 @@
   find = packageCommand pkgs.fd;
   findFiles = args: find (args // {type = "f";});
   findDirs = args: find (args // {type = "d";});
-  dirPreviewCommand = l.getExe pkgs.exa + " --tree {} | head -n 200";
+  dirPreviewCommand = "${l.getBin pkgs.eza}/bin/eza --tree {} | head -n 200";
 in {
   programs.fzf = {
     enable = true;
