@@ -11,9 +11,9 @@ in {
   home.packages =
     [
       pkgs.awscli
-      git-fat
-    ]
-    ++ lib.optionals isDarwin [
-      packages.aws-sso
+      # git-fat
     ];
+  #   ++ lib.optionals isDarwin [
+  #     packages.aws-sso
+  #   ];
 }

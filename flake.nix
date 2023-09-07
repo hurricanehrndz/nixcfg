@@ -52,7 +52,7 @@
 
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
-    git-fat.inputs.nixpkgs.follows = "nixpkgs";
+    # git-fat.inputs.nixpkgs.follows = "nixpkgs";
 
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
