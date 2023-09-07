@@ -12,10 +12,10 @@
       install -D --target-directory=$out/share/zsh/site-functions src/*
 
       # tmuxp install it so avoid collision
-      rm $out/share/zsh/site-functions/_tmuxp
+      rm -f $out/share/zsh/site-functions/_tmuxp
 
       # trash-cli install it so avoid collision
-      rm $out/share/zsh/site-functions/_trash*
+      rm -f $out/share/zsh/site-functions/_trash*
     '';
   });
 in
