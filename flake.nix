@@ -20,6 +20,7 @@
     nixpkgs.follows = "nixos-unstable";
     nixos-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-pr211321.url = "github:mstone/nixpkgs/darwin-fix-vscode-lldb";
     nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-23.05-darwin";
 
@@ -32,7 +33,7 @@
     };
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
