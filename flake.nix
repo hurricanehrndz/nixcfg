@@ -18,10 +18,12 @@
   inputs = {
     # Package sets
     nixpkgs.follows = "nixos-unstable";
-    nixos-stable.url = "github:NixOS/nixpkgs/nixos-22.11";
+    nixos-stable.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-pr211321.url = "github:mstone/nixpkgs/darwin-fix-vscode-lldb";
-    nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-22.11-darwin";
+    nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-23.05-darwin";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -32,7 +34,7 @@
     };
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-master";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -50,7 +52,7 @@
 
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
-    git-fat.inputs.nixpkgs.follows = "nixpkgs";
+    # git-fat.inputs.nixpkgs.follows = "nixpkgs";
 
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";

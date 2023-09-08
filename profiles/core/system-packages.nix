@@ -9,7 +9,7 @@ in {
     coreutils
     ddrescue
     direnv
-    exa
+    eza
     fd
     findutils
     fzf

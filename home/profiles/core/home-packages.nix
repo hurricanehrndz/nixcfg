@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     bottom
-    exa
+    eza
     fd #        <- faster projectile indexing
     sd
     fx #        <- interactive terminal json viewer                  => <https://github.com/antonmedv/fx>
