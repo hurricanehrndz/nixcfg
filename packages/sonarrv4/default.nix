@@ -7,12 +7,12 @@ let
   }."${stdenv.hostPlatform.system}" or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
 
   hash = {
-    x64-linux_hash = "sha256-VuZTcRG5JhUy1qY4xK+raBywIVZZlb7dXpI8u4bVcoY=";
+    x64-linux_hash = "sha256-twUmB9+egNSFFUOx0Ko0GARr/6hX/xBzjRfmLt7icIE=";
   }."${arch}-${os}_hash";
 
 in stdenv.mkDerivation rec {
   pname = "sonarr";
-  version = "4.0.0.665";
+  version = "4.0.0.682";
 
   src = fetchurl {
     url = "http://download.sonarr.tv/v4/develop/${version}/Sonarr.develop.${version}.${os}-${arch}.tar.gz";
