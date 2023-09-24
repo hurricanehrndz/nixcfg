@@ -34,6 +34,12 @@
     };
   };
 
+  environment = {
+    systemPackages = with pkgs; [
+      recyclarr
+    ];
+  };
+
   system.stateVersion = "22.05";
 }
 # vim: set et sw=2 :
