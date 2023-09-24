@@ -39,7 +39,6 @@ in {
 
   homebrew.masApps = {
     "Tailscale" = 1475387142;
-    "Xcode" = 497799835;
     "Microsoft Remote Desktop" = 1295203466;
   };
 }
