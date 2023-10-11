@@ -1,3 +1,3 @@
 *.age filter=git-crypt
-packages/aws-sso/** filter=git-crypt diff=git-crypt
-nixos/modules/services/networking/data-access/** filter=git-crypt diff=git-crypt
+packages/aws-sso/** filter=git-crypt
+nixos/modules/services/networking/data-access/** filter=git-crypt
