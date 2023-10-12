@@ -38,6 +38,9 @@ in {
     brews = [
       "rbenv"
       "ruby-install"
+      # "lima"
+      # "docker"
+      # "docker-compose"
     ];
   };
 }

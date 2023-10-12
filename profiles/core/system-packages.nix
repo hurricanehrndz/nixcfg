@@ -45,7 +45,7 @@ in {
     dnsutils
     nmap
     wget
-    whois
+    # whois
 
     ## === Monitoring ===
 
