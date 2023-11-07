@@ -42,5 +42,8 @@ in {
       # "docker"
       # "docker-compose"
     ];
+    casks = [
+      "tuist"
+    ];
   };
 }
