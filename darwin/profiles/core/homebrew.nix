@@ -38,9 +38,10 @@ in {
     brews = [
       "rbenv"
       "ruby-install"
-      # "lima"
-      # "docker"
-      # "docker-compose"
+      "lima"
+      "docker"
+      "docker-compose"
+      "poetry"
     ];
     casks = [
       "tuist"

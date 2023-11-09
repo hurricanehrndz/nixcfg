@@ -103,7 +103,7 @@
           inputs.agenix.overlays.default
           inputs.devshell.overlays.default
           inputs.snapraid-runner.overlays.default
-          inputs.poetry2nix.overlay
+          inputs.poetry2nix.overlays.default
         ];
       };
     in {
