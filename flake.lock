@@ -937,11 +937,11 @@
     },
     "nixpkgs-master": {
       "locked": {
-        "lastModified": 1699629390,
-        "narHash": "sha256-dO1vWCEz4DPnyp2IeJ1ZL6+9r1a9yoLScgoWVxOM0zo=",
+        "lastModified": 1699633603,
+        "narHash": "sha256-pwLmD40Sq8wA5Opz+Ir7O1QwSZq/xoBfaeIon/pD5J0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "2e6aa8fc5dc11a704305e5c4357b02924347d680",
+        "rev": "982816eaeefe3b7c5d51afc2ba777e627a98c4ac",
         "type": "github"
       },
       "original": {
@@ -1250,7 +1250,7 @@
         "nvim-retrail-src": "nvim-retrail-src",
         "nvim-treesitter-src": "nvim-treesitter-src",
         "nvim-window-src": "nvim-window-src",
-        "rainbow-delimiters_src": "rainbow-delimiters_src",
+        "rainbow-delimiters-src": "rainbow-delimiters-src",
         "swiftformat-src": "swiftformat-src",
         "swiftlint-src": "swiftlint-src",
         "telescope-nvim-src": "telescope-nvim-src",
@@ -1258,11 +1258,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1699631355,
-        "narHash": "sha256-N2EKBzJ2k90fEReea7YQSYq0cW8G0VIqFNrYqeSE9y0=",
+        "lastModified": 1699633410,
+        "narHash": "sha256-91s3+10352rxJZ6TccrYpO/hl2WcNLzv8niz5vUw59Q=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "4807e7aeb4ded3d7dcfcf4bde557f81531315a01",
+        "rev": "d66c5402a78100b3e10e3b9454e6373fbda0a5f0",
         "type": "github"
       },
       "original": {
@@ -1347,7 +1347,7 @@
         "type": "github"
       }
     },
-    "rainbow-delimiters_src": {
+    "rainbow-delimiters-src": {
       "flake": false,
       "locked": {
         "lastModified": 1698573782,
