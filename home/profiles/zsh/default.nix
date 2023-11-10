@@ -74,6 +74,7 @@ in
         setopt noflowcontrol            # Disable flow control for Zsh, enable ^S
         setopt incappendhistory
         setopt share_history
+        setopt completealiases
 
         bindkey -M vicmd '^X^S' prepend-sudo
         bindkey -M viins '^X^S' prepend-sudo
@@ -95,6 +96,8 @@ in
         else
           compinit -C
         fi
+        compdef _eza la
+        compdef _eza l
         {
           # Compile zcompdump, if modified, to increase startup speed.
           zcompdump="''${ZDOTDIR:-$HOME}/.zcompdump"
