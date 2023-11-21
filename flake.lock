@@ -983,22 +983,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-pr211321_2": {
-      "locked": {
-        "lastModified": 1680536213,
-        "narHash": "sha256-z8M162lOQ6A6PFQLwnUjvZhCl/7OdZEObmuD0Xp02aI=",
-        "owner": "mstone",
-        "repo": "nixpkgs",
-        "rev": "fa70e7499b08524a4a02e7ce9e39847b9d3c95df",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mstone",
-        "ref": "darwin-fix-vscode-lldb",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-regression": {
       "locked": {
         "lastModified": 1643052045,
@@ -1241,7 +1225,7 @@
           "nixpkgs-master"
         ],
         "nixpkgs-master": "nixpkgs-master_2",
-        "nixpkgs-pr211321": "nixpkgs-pr211321_2",
+        "nixpkgs-pr211321": "nixpkgs-pr211321",
         "nvim-colorizer-src": "nvim-colorizer-src",
         "nvim-guihua-src": "nvim-guihua-src",
         "nvim-lightbulb-src": "nvim-lightbulb-src",
@@ -1381,7 +1365,6 @@
           "nixos-unstable"
         ],
         "nixpkgs-master": "nixpkgs-master",
-        "nixpkgs-pr211321": "nixpkgs-pr211321",
         "nixpkgs-stable-darwin": "nixpkgs-stable-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable_2",
         "pdenv": "pdenv",

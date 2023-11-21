@@ -25,20 +25,16 @@ in {
     "amethyst"
     "discord"
     "element"
-    "eloston-chromium" #          <- aka "ungoogled-chromium" in nixpkgs
     "firefox-developer-edition"
     "keycastr"
     "powershell"
     "raindropio"
-    "slack"
     "utm"
-    "visual-studio-code"
     "vlc"
     "wezterm"
   ];
 
   homebrew.masApps = {
     "Tailscale" = 1475387142;
-    "Microsoft Remote Desktop" = 1295203466;
   };
 }

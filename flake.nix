@@ -22,7 +22,6 @@
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-pr211321.url = "github:mstone/nixpkgs/darwin-fix-vscode-lldb";
     nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-23.05-darwin";
 
     # flake helpers
