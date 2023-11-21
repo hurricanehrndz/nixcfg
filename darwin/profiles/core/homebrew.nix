@@ -36,6 +36,7 @@ in {
     onActivation.cleanup = "zap";
     onActivation.upgrade = true;
     brews = [
+      "shellcheck"
       "rbenv"
       "ruby-install"
       "lima"

@@ -2,6 +2,7 @@
   home.packages = with pkgs; [
     git-crypt
     difftastic
+    delta
   ];
 
   programs.git = {
@@ -33,18 +34,16 @@
       clean-all = "clean -dfq";
     };
 
-    delta = {
-      enable = true;
-    };
-
-    signing = {
-      key = "0D2565B7C6058A69";
-      signByDefault = true;
-    };
-
     extraConfig = {
+      user = {
+        signingKey = "0D2565B7C6058A69";
+      };
       core = {
         whitespace = "-indent-with-non-tab,trailing-space,cr-at-eol";
+        pager = "delta";
+      };
+      interactive = {
+        diffFilter = "delta --color-only";
       };
       diff.tool = "difftastic";
       difftool = {
@@ -70,6 +69,7 @@
       };
       commit = {
         verbose = true;
+        # gpgSign= true;
       };
       url = {
         "git@github.com:" = {
