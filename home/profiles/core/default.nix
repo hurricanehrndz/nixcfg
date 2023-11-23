@@ -24,6 +24,7 @@ in {
 
   # more manpages
   programs.man.generateCaches = l.mkDefault true;
+  home.enableNixpkgsReleaseCheck = false;
   home.sessionVariables = {
     # fix dobule chars
 

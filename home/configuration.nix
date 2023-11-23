@@ -19,81 +19,46 @@
 {
   self,
   moduleWithSystem,
+  pkgs,
   ...
 }: let
-  inherit
-    (self)
-    inputs
-    nixosConfigurations
-    darwinConfigurations
-    ;
-  inherit
-    (inputs.digga.lib)
-    flattenTree
-    mkHomeConfigurations
-    rakeLeaves
-    ;
-  l = inputs.nixpkgs.lib // builtins;
+  inherit (self) inputs;
+  inherit (inputs) haumea;
+  l = inputs.nixpkgs.lib // builtins // self.lib;
 
-  homeModules = flattenTree (rakeLeaves ./modules);
-  profiles = rakeLeaves ./profiles;
+  homeModules = l.rakeLeaves ./modules;
+  profiles = l.rakeLeaves ./profiles;
   roles = import ./roles {inherit profiles;};
 
   defaultModules =
-    (l.attrValues homeModules)
+    (l.recAttrValues homeModules)
     ++ roles.base
     ++ [
-      (moduleWithSystem (
-        {
-          inputs',
-          packages,
-          ...
-        }: args: {
-          _module.args = {
-            inherit
-              inputs'
-              packages
-              ;
-          };
-        }
-      ))
+      (moduleWithSystem ({
+        inputs',
+        packages,
+        ...
+      }: agrs: {
+        _module.args = {inherit inputs' packages;};
+      }))
     ];
 
-  platformSpecialArgs = hostPlatform: {
-    inherit
-      self
-      inputs
-      profiles
-      roles
-      ;
-    inherit
-      (hostPlatform)
-      isDarwin
-      isLinux
-      isMacOS
-      system
-      ;
-  };
+  extraSpecialArgs = {inherit self inputs profiles roles;};
 
-  settingsModule = moduleWithSystem ({pkgs, ...}: osArgs: let
-    inherit ((osArgs.pkgs or pkgs).stdenv) hostPlatform;
-  in {
-    home-manager = {
-      extraSpecialArgs = platformSpecialArgs hostPlatform;
-      sharedModules = defaultModules;
-      useGlobalPkgs = true;
-      useUserPackages = true;
-    };
-  });
+  settingsModule.home-manager = {
+    inherit extraSpecialArgs;
+    sharedModules = defaultModules;
+    useGlobalPkgs = true;
+    useUserPackages = true;
+  };
 in {
   flake = {
-    # inherit homeModules;
-    nixosModules.homeManagerSettings = settingsModule;
+    #
+    # make roles and poriles available to nixos configs and darwin configs
+    #
+
+    # nixosModules.homeManagerSettings = settingsModule;
     darwinModules.homeManagerSettings = settingsModule;
-    homeConfigurations = l.mkBefore (
-      # (mkHomeConfigurations nixosConfigurations)
-      (mkHomeConfigurations darwinConfigurations)
-    );
   };
 
   perSystem = {
@@ -101,51 +66,36 @@ in {
     inputs',
     system,
     ...
-  }: {
-    homeConfigurations = let
-      makeHomeConfiguration = username: hmArgs: let
-        inherit (pkgs.stdenv) hostPlatform;
-        inherit (hostPlatform) isDarwin;
-        inherit pkgs;
-        homePrefix =
-          if l.hasAttr "providedhomePrefix" hmArgs
-          then "${hmArgs.providedhomePrefix}"
-          else if isDarwin
-          then "/Users"
-          else "/home";
-      in (inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules =
-          defaultModules
-          ++ [
-            (moduleArgs: {
-              home.username = username;
-              home.homeDirectory = "${homePrefix}/${username}";
-              _module.args = {
-                inherit inputs';
-                isNixos =
-                  (moduleArgs.nixosConfig ? hardware)
-                  # We only care if the option exists -- its value doesn't matter.
-                  && (moduleArgs.nixosConfig.hardware.enableRedistributableFirmware -> true);
-              };
-            })
-          ]
-          ++ (hmArgs.modules or []);
-        extraSpecialArgs = platformSpecialArgs hostPlatform;
-      });
-
+  }: let
+    makeHomeConfiguration = username: hmArgs: let
+      homePrefix = hmArgs.providedhomePrefix or (l.homePrefix system);
+    in (inputs.home-manager.lib.homeManagerConfiguration {
+      inherit pkgs;
+      modules =
+        defaultModules
+        ++ [
+          (moduleArgs: {
+            home.username = username;
+            home.homeDirectory = "${homePrefix}/${username}";
+            _module.args = {
+              inherit inputs';
+              isNixos =
+                (moduleArgs.nixosConfig ? hardware)
+                # We only care if the option exists -- its value doesn't matter.
+                && (moduleArgs.nixosConfig.hardware.enableRedistributableFirmware
+                  -> true);
+            };
+          })
+        ]
+        ++ (hmArgs.modules or []);
+      inherit extraSpecialArgs;
+    });
+  in {
+    homeConfigurations = {
       traveller = makeHomeConfiguration "chernand" {
         providedhomePrefix = "/nail/home";
-        modules = with roles;
-          remote
-          ++ [
-            {
-              home.stateVersion = "22.11";
-            }
-          ];
+        modules = with roles; remote ++ [{home.stateVersion = "22.11";}];
       };
-    in {
-      inherit traveller;
     };
   };
 }

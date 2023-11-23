@@ -21,26 +21,16 @@
   withSystem,
   ...
 }: let
-  inherit
-    (self)
-    inputs
-    sharedProfiles
-    ;
-  inherit
-    (inputs.digga.lib)
-    flattenTree
-    rakeLeaves
-    ;
-
+  inherit (self) inputs sharedProfiles;
   inherit (self.darwinModules) homeManagerSettings;
 
-  l = inputs.nixpkgs.lib // builtins;
+  l = inputs.nixpkgs.lib // builtins // self.lib;
+
+  darwinModules = l.rakeLeaves ./modules;
+  darwinMachines = l.rakeLeaves ./machines;
+  darwinProfiles = l.rakeLeaves ./profiles;
 
   roles = import ./roles.nix {inherit sharedProfiles darwinProfiles;};
-
-  darwinModules = rakeLeaves ./modules;
-  darwinMachines = rakeLeaves ./machines;
-  darwinProfiles = rakeLeaves ./profiles;
 
   defaultModules = [
     sharedProfiles.core
@@ -62,7 +52,7 @@
           pkgs = darwinArgs.pkgs or pkgs;
           modules =
             defaultModules
-            ++ (l.attrValues (flattenTree darwinModules))
+            ++ (l.recAttrValues darwinModules)
             ++ roles.workstation
             ++ [
               {

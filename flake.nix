@@ -1,6 +1,5 @@
 {
-  description = "Living description of personal dev environment and life support systems";
-
+  description = "Living description of personal life support systems";
 
   nixConfig = {
     extra-substituters = [
@@ -22,13 +21,11 @@
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-stable-darwin.url = "github:NixOS/nixpkgs/nixpkgs-23.05-darwin";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
-    digga = {
-      url = "github:divnix/digga/home-manager-22.11";
-      inputs.home-manager.follows = "home-manager";
+    haumea = {
+      url = "github:nix-community/haumea/v0.2.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -38,16 +35,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # devshell
-    flake-utils.url = "github:numtide/flake-utils";
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
-    devshell.inputs.nixpkgs.follows = "nixpkgs";
     devenv.url = "github:cachix/devenv";
-
-    # python
-    poetry2nix.url = "github:nix-community/poetry2nix";
-    poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
 
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
@@ -65,69 +56,63 @@
     extrakto-src.flake = false;
   };
 
-  outputs = {
+  outputs = inputs @ {
     self,
     flake-parts,
     nixpkgs,
-    digga,
+    haumea,
     ...
-  } @ inputs: let
-    inherit (digga.lib) flattenTree rakeLeaves;
-  in (flake-parts.lib.mkFlake {inherit inputs;} {
-    imports = [
-      ./flake-modules/homeConfigurations.nix
-      ./flake-modules/sharedProfiles.nix
+  }:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = [
+        ./flake-modules/homeConfigurations.nix
+        ./flake-modules/sharedProfiles.nix
 
-      ./darwin/configurations.nix
-      ./nixos/configurations.nix
-      ./home/configuration.nix
-      ./packages
+        ./darwin/configurations.nix
+        ./nixos/configurations.nix
+        ./home/configuration.nix
+        ./packages
+        ./lib
 
-      inputs.devshell.flakeModule
-      inputs.devenv.flakeModule
-    ];
+        inputs.devshell.flakeModule
+        inputs.devenv.flakeModule
+      ];
 
-    systems = ["aarch64-darwin" "x86_64-linux"];
+      systems = ["aarch64-darwin" "x86_64-linux"];
 
-    perSystem = {
-      system,
-      inputs',
-      self',
-      ...
-    }: let
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [
-          inputs.agenix.overlays.default
-          inputs.devshell.overlays.default
-          inputs.snapraid-runner.overlays.default
-          inputs.poetry2nix.overlays.default
-        ];
+      perSystem = {
+        system,
+        inputs',
+        self',
+        ...
+      }: let
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          overlays = [
+            inputs.agenix.overlays.default
+            inputs.devshell.overlays.default
+            inputs.snapraid-runner.overlays.default
+          ];
+        };
+      in {
+        _module.args = {
+          inherit pkgs;
+        };
+
+        formatter = inputs'.nixpkgs.legacyPackages.alejandra;
+
+        devShells = haumea.lib.load {
+          src = ./shells;
+          inputs = {
+            inherit inputs inputs' pkgs;
+          };
+        };
       };
-    in {
-      _module.args = {
-        inherit pkgs;
+      flake = {
+        # shared importables :: may be used within system configurations for any
+        # supported operating system (e.g. nixos, nix-darwin).
+        sharedProfiles = self.lib.rakeLeaves ./profiles;
       };
-
-      formatter = inputs'.nixpkgs.legacyPackages.alejandra;
-
-      devShells = let
-        ls = builtins.readDir ./shells;
-        files = builtins.filter (name: ls.${name} == "regular") (builtins.attrNames ls);
-        shellNames = builtins.map (filename: builtins.head (builtins.split "\\." filename)) files;
-        nameToValue = name: import (./shells + "/${name}.nix") {inherit pkgs inputs inputs';};
-      in
-        builtins.listToAttrs (builtins.map (name: {
-            inherit name;
-            value = nameToValue name;
-          })
-          shellNames);
     };
-    flake = {
-      # shared importables :: may be used within system configurations for any
-      # supported operating system (e.g. nixos, nix-darwin).
-      sharedProfiles = rakeLeaves ./profiles;
-    };
-  });
 }

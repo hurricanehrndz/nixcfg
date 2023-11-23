@@ -9,6 +9,10 @@
     enable = true;
     userName = "Carlos Hernandez";
     userEmail = "carlos@hrndz.ca";
+    signing = {
+      key = "0D2565B7C6058A69";
+      signByDefault = true;
+    };
     extraConfig = {
       pull.ff = "only";
       safe.directory = "/etc/nixos";
@@ -35,9 +39,9 @@
     };
 
     extraConfig = {
-      user = {
-        signingKey = "0D2565B7C6058A69";
-      };
+      # user = {
+      #   signingKey = "0D2565B7C6058A69";
+      # };
       core = {
         whitespace = "-indent-with-non-tab,trailing-space,cr-at-eol";
         pager = "delta";
@@ -48,7 +52,7 @@
       diff.tool = "difftastic";
       difftool = {
         prompt = false;
-        "difftastic".cmd = "difft \"$LOCAL\" \"$REMOTE\"" ;
+        "difftastic".cmd = "difft \"$LOCAL\" \"$REMOTE\"";
       };
       pager.difftool = true;
       merge = {

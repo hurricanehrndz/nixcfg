@@ -3,25 +3,15 @@
   self,
   ...
 }: let
-  inherit
-    (self)
-    inputs
-    sharedProfiles
-    ;
+  inherit (self) inputs sharedProfiles ;
   inherit (self.nixosModules) homeManagerSettings;
-  inherit
-    (inputs.digga.lib)
-    flattenTree
-    rakeLeaves
-    ;
-  inherit (inputs.flake-utils.lib.system) x86_64-linux;
-  l = inputs.nixpkgs.lib // builtins;
+  l = inputs.nixpkgs.lib // builtins // self.lib;
 
   roles = import ./roles {inherit sharedProfiles nixosProfiles;};
 
-  nixosModules = rakeLeaves ./modules;
-  nixosMachines = rakeLeaves ./machines;
-  nixosProfiles = rakeLeaves ./profiles;
+  nixosModules = l.rakeLeaves ./modules;
+  nixosMachines = l.rakeLeaves ./machines;
+  nixosProfiles = l.rakeLeaves ./profiles;
 
   defaultModules = [
     sharedProfiles.core
@@ -43,7 +33,7 @@
           inherit system;
           modules =
             defaultModules
-            ++ (l.attrValues (flattenTree nixosModules))
+            ++ (l.recAttrValues  nixosModules)
             ++ (nixosArgs.modules or [])
             ++ [
               nixosMachines.${hostname}
@@ -77,7 +67,7 @@ in {
   flake.nixosModules = nixosModules;
   flake.nixosConfigurations = {
     DeepThought = makeNixosSystem "DeepThought" {
-      system = x86_64-linux;
+      system = "x86_64-linux";
       modules =
         (with roles; mediaserver)
         ++ [
@@ -85,7 +75,7 @@ in {
         ];
     };
     Hal9000 = makeNixosSystem "Hal9000" {
-      system = x86_64-linux;
+      system = "x86_64-linux";
       # modules =
       #   (with roles; mediaserver)
       #   ++ [
