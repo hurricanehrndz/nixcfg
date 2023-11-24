@@ -42,7 +42,7 @@ in {
       "lima"
       "docker"
       "docker-compose"
-      "poetry"
+      "pipx"
     ];
     casks = [
       "tuist"

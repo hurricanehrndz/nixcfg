@@ -87,5 +87,9 @@ in {
       system = "aarch64-darwin";
       modules = [];
     };
+    HX7YG952H5 = makeDarwinSystem "HX7YG952H5" {
+      system = "aarch64-darwin";
+      modules = [];
+    };
   };
 }
