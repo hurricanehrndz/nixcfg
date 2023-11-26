@@ -28,7 +28,7 @@ return {
   adjust_window_size_when_changing_font_size = false,
 
   -- color settings
-  color_scheme = 'Catppuccin Latte (Gogh)',
+  color_scheme = 'Catppuccin Latte',
 
   -- cursor config, invert color
   force_reverse_video_cursor = true,

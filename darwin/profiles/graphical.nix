@@ -26,6 +26,7 @@ in {
     "discord"
     "element"
     "firefox-developer-edition"
+    "logseq"
     "keycastr"
     "powershell"
     "raindropio"
