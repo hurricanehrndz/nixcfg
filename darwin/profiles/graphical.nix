@@ -25,7 +25,6 @@ in {
     "amethyst"
     "discord"
     "element"
-    "firefox-developer-edition"
     "logseq"
     "keycastr"
     "powershell"

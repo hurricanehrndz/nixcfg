@@ -23,8 +23,8 @@ return {
   -- bell
   audible_bell = "Disabled",
   -- font settings
-  font = wezterm.font("SauceCodePro Nerd Font"),
-  font_size = 14.0,
+  font = wezterm.font("FiraCode Nerd Font"),
+  font_size = 12.0,
   adjust_window_size_when_changing_font_size = false,
 
   -- color settings

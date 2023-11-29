@@ -8,11 +8,11 @@ lib.mkMerge [
     services.amethyst.enable = true;
     services.amethyst.settings = {
       layouts = [
-        "tall"
+        "tall-right"
         "middle-wide"
         "fullscreen"
       ];
-      select-tall-layout = {
+      select-tall-right-layout = {
         mod = "mod1";
         key = "a";
       };
