@@ -54,6 +54,9 @@
     # tmux
     extrakto-src.url = "github:laktak/extrakto";
     extrakto-src.flake = false;
+
+    tmux-catppuccin-src.url = "github:catppuccin/tmux";
+    tmux-catppuccin-src.flake = false;
   };
 
   outputs = inputs @ {

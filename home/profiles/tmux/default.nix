@@ -2,7 +2,11 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  catppuccin_theme = pkgs.tmuxPlugins.catppuccin.overrideAttrs (_: {
+    src = inputs.tmux-catppuccin-src;
+  });
+in {
   programs.tmux = {
     enable = true;
     shortcut = "a";
@@ -59,7 +63,7 @@
       };
     in [
       {
-        plugin = catppuccin;
+        plugin = catppuccin_theme;
         extraConfig = ''
           set -g @catppuccin_flavour 'latte'
           set -g @catppuccin_window_left_separator ""
@@ -78,7 +82,7 @@
           set -g @catppuccin_status_right_separator ""
           set -g @catppuccin_status_right_separator_inverse "no"
           set -g @catppuccin_status_fill "icon"
-          set -g @catppuccin_status_connect_separator "no"
+          set -g @catppuccin_status_connect_separator "yes"
 
           set -g @catppuccin_directory_text "#{pane_current_path}"
         '';
