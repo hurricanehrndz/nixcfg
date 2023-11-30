@@ -7,6 +7,7 @@ local myKeys = {
   { key = "T", mods = "SUPER", action = act.SpawnTab("DefaultDomain") },
   { key = "T", mods = "SUPER|SHIFT", action = act.DisableDefaultAssignment },
   { key = "w", mods = "CTRL|SHIFT", action = act.DisableDefaultAssignment },
+  { key = "^", mods = "CTRL|SHIFT", action = act.DisableDefaultAssignment },
 }
 -- Disabled keys
 for i = 1, 9 do
@@ -14,7 +15,7 @@ for i = 1, 9 do
   table.insert(myKeys, {
     key = tostring(i),
     mods = 'CTRL|SHIFT',
-    action = wezterm.action.DisableDefaultAssignment,
+    action = act.DisableDefaultAssignment,
   })
 end
 
