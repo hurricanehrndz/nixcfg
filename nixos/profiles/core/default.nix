@@ -44,7 +44,7 @@
     enable = lib.mkForce true;
     openFirewall = true;
     settings.PasswordAuthentication = false;
-    settings.PermitRootLogin = "no";
+    settings.PermitRootLogin = lib.mkForce "no";
     extraConfig = ''
       StreamLocalBindUnlink yes
     '';

@@ -6,13 +6,13 @@
   ...
 }: {
   imports = [
-    # ./hardware-configuration.nix
+    ./hardware-configuration.nix
     ./users.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.timeout = 1;
+  boot.loader.timeout = lib.mkDefault 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   networking.domain = "hrndz.ca";
 

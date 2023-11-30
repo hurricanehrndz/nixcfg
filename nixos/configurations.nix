@@ -3,7 +3,7 @@
   self,
   ...
 }: let
-  inherit (self) inputs sharedProfiles ;
+  inherit (self) inputs sharedProfiles;
   inherit (self.nixosModules) homeManagerSettings;
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
@@ -19,6 +19,7 @@
     nixosProfiles.core
     inputs.home-manager.nixosModules.home-manager
     inputs.agenix.nixosModules.age
+    inputs.nixos-generators.nixosModules.all-formats
   ];
 
   makeNixosSystem = hostname: nixosArgs @ {system, ...}:
@@ -33,7 +34,7 @@
           inherit system;
           modules =
             defaultModules
-            ++ (l.recAttrValues  nixosModules)
+            ++ (l.recAttrValues nixosModules)
             ++ (nixosArgs.modules or [])
             ++ [
               nixosMachines.${hostname}
@@ -76,10 +77,11 @@ in {
     };
     Hal9000 = makeNixosSystem "Hal9000" {
       system = "x86_64-linux";
-      # modules =
-      #   (with roles; mediaserver)
-      #   ++ [
-      #   ];
+    };
+    Lucy = makeNixosSystem "Lucy" {
+      system = "x86_64-linux";
+      formatConfigs.install-iso.nix = {config, ...}: {
+      };
     };
   };
 }

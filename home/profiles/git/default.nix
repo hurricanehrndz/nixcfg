@@ -46,6 +46,12 @@
         whitespace = "-indent-with-non-tab,trailing-space,cr-at-eol";
         pager = "delta";
       };
+      delta = {
+        light = true;
+        line-numbers = true;
+        features = "OneHalfLight";
+        syntax-theme = "OneHalfLight";
+      };
       interactive = {
         diffFilter = "delta --color-only";
       };
