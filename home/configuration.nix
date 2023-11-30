@@ -57,7 +57,7 @@ in {
     # make roles and poriles available to nixos configs and darwin configs
     #
 
-    # nixosModules.homeManagerSettings = settingsModule;
+    nixosModules.homeManagerSettings = settingsModule;
     darwinModules.homeManagerSettings = settingsModule;
   };
 
