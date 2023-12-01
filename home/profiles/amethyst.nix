@@ -72,6 +72,7 @@ lib.mkMerge [
       window-max-count = 5;
       floating = [
         "com.apple.systempreferences"
+        "remote-viewer"
         # "com.tinyspeck.slackmacgap"
       ];
     };
