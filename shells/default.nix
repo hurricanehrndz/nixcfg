@@ -16,7 +16,6 @@ in
       nixpkgs-fmt
       git-crypt
       nix
-      home-manager
     ];
     commands = [
       (pkgWithCategory "secrets" agenix)
