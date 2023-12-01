@@ -43,9 +43,13 @@ in {
       "docker"
       "docker-compose"
       "pipx"
+      "virt-viewer"
     ];
     casks = [
       "tuist"
+    ];
+    taps = [
+      "jeffreywildman/homebrew-virt-manager"
     ];
   };
 }
