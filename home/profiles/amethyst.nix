@@ -73,6 +73,7 @@ lib.mkMerge [
       floating = [
         "com.apple.systempreferences"
         "remote-viewer"
+        "com.microsoft.rdc.macos"
         # "com.tinyspeck.slackmacgap"
       ];
     };
