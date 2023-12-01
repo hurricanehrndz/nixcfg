@@ -80,6 +80,9 @@ in {
     };
     Lucy = makeNixosSystem "Lucy" {
       system = "x86_64-linux";
+      modules = [
+        nixosProfiles.hardware.opengl
+      ];
       formatConfigs.install-iso.nix = {config, ...}: {
       };
     };
