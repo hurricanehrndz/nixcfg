@@ -42,4 +42,7 @@ in {
     # xdg bin home
     XDG_BIN_HOME = "$HOME/.local/bin";
   };
+  home.packages = with pkgs; [
+    yq
+  ];
 }
