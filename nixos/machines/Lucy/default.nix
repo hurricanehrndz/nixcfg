@@ -4,7 +4,10 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  username = "hurricane";
+in {
+  _module.args.username = username;
   imports = [
     ./hardware-configuration.nix
     ./users.nix
@@ -23,12 +26,6 @@
   };
   security.polkit.enable = true;
 
-  environment = {
-    systemPackages = with pkgs; [
-      quickemu
-    ];
-  };
-
   # Wake on LAN
   systemd.network = {
     links = {
@@ -41,6 +38,11 @@
         };
       };
     };
+  };
+
+  services.gnomeDesktop = {
+    enable = true;
+    inherit username;
   };
 
   networking.firewall.allowedTCPPorts = [43389 5901];

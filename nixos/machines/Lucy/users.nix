@@ -2,10 +2,9 @@
   self,
   pkgs,
   inputs,
+  username,
   ...
-}: let
-  username = "hurricane";
-in {
+}: {
   users.users."${username}" = {
     description = "Carlos Hernandez";
     isNormalUser = true;
@@ -20,7 +19,7 @@ in {
 
   security.sudo.extraRules = [
     {
-      users = ["hurricane"];
+      users = ["${username}"];
       commands = [
         {
           command = "ALL";
