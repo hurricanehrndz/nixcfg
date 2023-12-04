@@ -82,6 +82,7 @@ in {
       system = "x86_64-linux";
       modules = [
         nixosProfiles.hardware.opengl
+        nixosProfiles.desktop.virtualization
       ];
       formatConfigs.install-iso.nix = {config, ...}: {
       };
