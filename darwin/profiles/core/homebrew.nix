@@ -44,6 +44,7 @@ in {
       "docker-compose"
       "pipx"
       "virt-viewer"
+      "gost"
     ];
     casks = [
       "tuist"
