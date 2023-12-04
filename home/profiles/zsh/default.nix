@@ -118,9 +118,9 @@ in
           src = pkgs.zsh-autosuggestions;
         }
         {
-          name = "fast-syntax-highlighting";
-          file = "share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh";
-          src = pkgs.zsh-fast-syntax-highlighting;
+          name = "zsh-syntax-highlighting";
+          src = pkgs.zsh-syntax-highlighting;
+          file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
         }
       ];
       initExtra = ''

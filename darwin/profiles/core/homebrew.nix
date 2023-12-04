@@ -43,14 +43,11 @@ in {
       "docker"
       "docker-compose"
       "pipx"
-      "virt-viewer"
       "gost"
     ];
     casks = [
       "tuist"
-    ];
-    taps = [
-      "jeffreywildman/homebrew-virt-manager"
+      "remoteviewer"
     ];
   };
 }
