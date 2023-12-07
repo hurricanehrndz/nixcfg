@@ -3,6 +3,8 @@
   config,
   lib,
   pkgs,
+  system,
+  inputs,
   ...
 }: let
   username = "hurricane";
@@ -21,23 +23,9 @@ in {
   boot.kernelParams = ["kvm.ignore_msrs=1"];
   networking.domain = "hrndz.ca";
 
-  virtualisation.libvirtd = {
+  services.WakeOnLan = {
     enable = true;
-  };
-  security.polkit.enable = true;
-
-  # Wake on LAN
-  systemd.network = {
-    links = {
-      "50-wired" = {
-        matchConfig.MACAddress = "b8:85:84:b1:6a:eb";
-        linkConfig = {
-          NamePolicy = "kernel database onboard slot path";
-          MACAddressPolicy = "persistent";
-          WakeOnLan = "magic";
-        };
-      };
-    };
+    macAddress = "b8:85:84:b1:6a:eb";
   };
 
   services.gnomeDesktop = {
@@ -45,7 +33,9 @@ in {
     inherit username;
   };
 
-  networking.firewall.allowedTCPPorts = [43389 5901];
+  services.flatpak.enable = true;
+
+  networking.firewall.allowedTCPPorts = [43389];
 
   system.stateVersion = "23.11";
 }

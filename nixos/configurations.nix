@@ -48,6 +48,7 @@
                 };
                 nixpkgs.pkgs = nixosArgs.pkgs or pkgs;
                 networking.hostName = hostname;
+                users.mutableUsers = false;
                 home-manager.sharedModules = [{_module.args.isNixos = true;}];
               }
             ];
