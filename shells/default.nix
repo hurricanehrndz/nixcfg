@@ -1,12 +1,12 @@
 {
   pkgs,
   inputs,
+  flake,
   ...
 }: let
-  inherit
-    (pkgs)
-    agenix
-    ;
+  inherit (pkgs) agenix lib;
+  inherit (flake.packages) nixos-install-init;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   pkgWithCategory = category: package: {inherit package category;};
 in
   pkgs.devshell.mkShell {
@@ -16,9 +16,10 @@ in
       nixpkgs-fmt
       git-crypt
       nix
-    ];
+    ] ++ (lib.optionals isLinux [ flake.packages.nixos-install-init ]);
     commands = [
       (pkgWithCategory "secrets" agenix)
+      (pkgWithCategory "install" nixos-install-init)
       {
         name = "format-all";
         category = "general commands";

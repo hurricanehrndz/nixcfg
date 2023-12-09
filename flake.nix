@@ -114,6 +114,7 @@
           src = ./shells;
           inputs = {
             inherit inputs inputs' pkgs;
+            flake = self';
           };
         };
       };
