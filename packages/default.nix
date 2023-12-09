@@ -7,6 +7,5 @@
   }: {
     _module.args.packages = ctx.config.packages;
     packages.sonarrv4 = pkgs.callPackage ./sonarrv4 {};
-    packages.pdenv = inputs'.pdenv.packages.pdenv;
   };
 }

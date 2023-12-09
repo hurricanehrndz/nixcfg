@@ -1,9 +1,9 @@
 {
+  inputs',
   pkgs,
-  packages,
   ...
 }: let
-  nvim-pdenv = packages.pdenv;
+  nvim-pdenv = inputs'.pdenv.packages.pdenv;
 in {
   home.packages = with pkgs; [
     nvim-pdenv
