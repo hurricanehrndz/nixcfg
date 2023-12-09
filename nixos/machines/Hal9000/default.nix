@@ -47,6 +47,6 @@
 
   networking.firewall.allowedTCPPorts = [8123 8091];
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "23.11";
 }
 # vim: set et sw=2 :
