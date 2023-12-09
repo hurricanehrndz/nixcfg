@@ -21,6 +21,7 @@
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-pr259776.url = "github:Leixb/nixpkgs/rustdesk-123";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";

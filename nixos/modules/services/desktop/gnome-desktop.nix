@@ -28,9 +28,31 @@ in {
         # disable suspend on login screen
         autoSuspend = false;
       };
+      displayManager.autoLogin.enable = true;
+      displayManager.autoLogin.user = "hurricane";
+
       # mouse and/or touchbad driver
       libinput.enable = true;
     };
+
+    # fix autologin stop crash
+    # https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+    systemd.services."autovt@tty1".enable = lib.mkForce false;
+    systemd.services."getty@tty1".enable = lib.mkForce false;
+
+    # see: https://discourse.nixos.org/t/why-is-my-new-nixos-install-suspending/19500/2
+    # https://discourse.nixos.org/t/disable-suspend-if-ssh-sessions-are-active/11655
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+          if (action.id == "org.freedesktop.login1.suspend" ||
+              action.id == "org.freedesktop.login1.suspend-multiple-sessions" ||
+              action.id == "org.freedesktop.login1.hibernate" ||
+              action.id == "org.freedesktop.login1.hibernate-multiple-sessions")
+          {
+              return polkit.Result.NO;
+          }
+      });
+    '';
 
     # Gnome packages
     environment.gnome.excludePackages =
@@ -56,6 +78,7 @@ in {
     programs.dconf.enable = true;
     environment.systemPackages = with pkgs; [
       gnome.gnome-tweaks
+      libsecret
     ];
 
     # audio
@@ -76,8 +99,19 @@ in {
       };
     };
 
+    security.polkit.enable = true;
+    networking.firewall.allowedTCPPorts = [3389];
+
     home-manager.users.${cfg.username} = {pkgs, ...}: {
       dconf.settings = {
+        "org/gnome/shell" = {
+          disable-user-extensions = false;
+
+          # `gnome-extensions list` for a list
+          enabled-extensions = [
+            "allowlockedremotedesktop@kamens.us"
+          ];
+        };
         "org/gnome/desktop/interface" = {
           color-scheme = "default";
           enable-hot-corners = false;
@@ -93,6 +127,9 @@ in {
           remove-old-tash-files = true;
         };
       };
+      home.packages = with pkgs; [
+        gnomeExtensions.allow-locked-remote-desktop
+      ];
     };
   };
 }
