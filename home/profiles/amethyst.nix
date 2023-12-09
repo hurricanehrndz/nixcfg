@@ -29,6 +29,10 @@ lib.mkMerge [
         key = "t";
       };
       # disabled keys
+      select-tall-layout = {
+        mod = "mod4";
+        key = "a";
+      };
       select-wide-layout = {
         mod = "mod4";
         key = "s";
@@ -54,7 +58,7 @@ lib.mkMerge [
         key = "q";
       };
       throw-screen-1 = {
-        mod = "mod3";
+        mod = "mod4";
         key = "w";
       };
       throw-screen-2 = {
