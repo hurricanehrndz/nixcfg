@@ -14,59 +14,59 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@" "compress=zstd" "noatime" ];
+      options = [ "noatime" "compress=zstd" ];
     };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@home" "compress=zstd" "noatime" ];
+      options = [ "subvol=@home" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/var" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@var" "compress=zstd" "noatime" ];
+      options = [ "subvol=@var" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@nix" "compress=zstd" "noatime" ];
+      options = [ "subvol=@nix" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/tmp" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@tmp" "compress=zstd" "noatime" ];
+      options = [ "subvol=@tmp" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/srv" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@srv" "compress=zstd" "noatime" ];
+      options = [ "subvol=@srv" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/opt" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@opt" "compress=zstd" "noatime" ];
+      options = [ "subvol=@opt" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/root" =
-    { device = "/dev/disk/by-uuid/fca5c6fc-ca87-42af-b524-06ca29fa9d2e";
+    { device = "/dev/disk/by-uuid/8a339334-3ec6-4e7e-9a56-b822f8295672";
       fsType = "btrfs";
-      options = [ "subvol=@root" "compress=zstd" "noatime" ];
+      options = [ "subvol=@root" "noatime" "compress=zstd" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/C07C-2A06";
+    { device = "/dev/disk/by-uuid/4E46-A069";
       fsType = "vfat";
     };
 
-  swapDevices = [ { device = "/dev/disk/by-uuid/7bf4ec90-4f63-459d-8d17-2a129e26ec90"; } ];
+  swapDevices = [ { device = /dev/disk/by-uuid/5855c2b0-5915-4e7a-bb63-5477a7a474b8; } ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
