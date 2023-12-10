@@ -37,8 +37,8 @@ if [[ "$(basename "${device}")" =~ "nvme" ]]; then
     part_prefix="p"
 fi
 
-echo -e "${Red}Warning:${NC} ${Yellow}continuing will erase all data on: ${device}"
-read -r -p "Are you sure you want to continue? [y/N]${NC}" response
+echo -e "${Red}Warning:${NC} ${Yellow}continuing will erase all data on: ${device}${NC}"
+read -r -p "Are you sure you want to continue? [y/N]" response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     true
@@ -91,15 +91,14 @@ mount "${boot_part}" /mnt/boot
 
 echo "Starting nixos install"
 nixos-generate-config --root /mnt
-mv /mnt/etc/nixos ~/generated-config
-git clone https://github.com/hurricanehrndz/nixcfg.git ~/nixcfg
-# fix btrfs compression mounting
-sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ]; %' \
-    "$HOME/generated-config/hardware-configuration.nix" > "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
-
+mv /mnt/etc/nixos "${HOME}/generated-config"
+git clone https://github.com/hurricanehrndz/nixcfg.git "${HOME}/nixcfg"
 pushd "${HOME}/nixcfg" || exit 1
 git-crypt unlock
 popd || exit 1
+# fix btrfs compression mounting
+sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ]; %' \
+    "$HOME/generated-config/hardware-configuration.nix" > "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
 
 read -r -p "About to start nixos-install, press any key to continue" response
 
