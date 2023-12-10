@@ -17,7 +17,7 @@ Within the default development shell, run, modifying the arguments to specific
 device.
 
 ```console
-sudo nixos-install-init /dev/sda Lucy
+sudo nix run --accept-flake-config github:hurricanehrndz/nixcfg\#nixos-install-init /dev/sda Lucy
 
 ```
 

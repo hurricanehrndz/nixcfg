@@ -37,8 +37,8 @@ if [[ "$(basename "${device}")" =~ "nvme" ]]; then
     part_prefix="p"
 fi
 
-echo -e "${Yellow}${device} will be erase any valuable data will unrecoverrable..."
-read -r -p "Are you sure you want to continue? [y/N] " response
+echo -e "${Red}Warning:${NC} ${Yellow}continuing will erase all data on: ${device}"
+read -r -p "Are you sure you want to continue? [y/N]${NC}" response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]
 then
     true
@@ -59,7 +59,7 @@ boot_part="${device}${part_prefix}3"
 echo -e "${Green}Formatting partitions${device}${NC}"
 mkswap -L swap "${device}${part_prefix}2"
 mkfs.fat -F 32 -n BOOT "${device}${part_prefix}3"
-mkfs.btrfs -L nixos "${device}${part_prefix}1"
+mkfs.btrfs -f -L nixos "${device}${part_prefix}1"
 
 
 echo -e "${Green}Mounting partitions and creating BTRFS subvolumes${NC}"
@@ -73,7 +73,7 @@ done
 echo "Disable Copy on Write on var subvol"
 chattr +C /mnt/@var
 
-default_subvol_id=$(btrfs subvol list /mnt | awk '/@$/{print $2}')
+default_subvol_id=$(btrfs subvol list /mnt | awk '/@$/{print $2; exit}')
 echo "Setting @ with vol id ${default_subvol_id} to default subvol"
 btrfs subvolume set-default "${default_subvol_id}" /mnt
 
@@ -92,7 +92,7 @@ mount "${boot_part}" /mnt/boot
 echo "Starting nixos install"
 nixos-generate-config --root /mnt
 mv /mnt/etc/nixos ~/generated-config
-git clone https://github.com/hurricanehrndz/nixcfg.git ~/nixcfg.git
+git clone https://github.com/hurricanehrndz/nixcfg.git ~/nixcfg
 # fix btrfs compression mounting
 sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ]; %' \
     "$HOME/generated-config/hardware-configuration.nix" > "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
@@ -100,4 +100,7 @@ sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ]; %' \
 pushd "${HOME}/nixcfg" || exit 1
 git-crypt unlock
 popd || exit 1
+
+read -r -p "About to start nixos-install, press any key to continue" response
+
 nixos-install --root /mnt --no-root-passwd --flake "${HOME}/nixcfg#${flake_host}"
