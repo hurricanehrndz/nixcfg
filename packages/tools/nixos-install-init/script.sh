@@ -95,9 +95,14 @@ pushd "${HOME}/nixcfg" || exit 1
 git-crypt unlock
 popd || exit 1
 # fix btrfs compression mounting
-sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ]; %' \
+sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ];%' \
     "$HOME/generated-config/hardware-configuration.nix" > "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
-
-read -r -p "About to start nixos-install, press any key to continue" response
+# fix swap
+swap_uuid=$(sudo blkid "${swap_part}" | awk 'match($0, /UUID="(\S+)"/, m) {print m[1]}')
+sed -i -e "s%swapDevices.*%swapDevices = [ { device = "/dev/disk/by-uuid/${swap_uuid}"; } ];%" \
+    "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
+# fix options for root
+echo "${Red}Check hardware-configuration for machine, make sure swap and root are correct${NC}"
+read -r -p "About to start nixos-install, press enter when ready to continue" response
 
 sudo nixos-install --root /mnt --no-root-passwd --flake "${HOME}/nixcfg#${flake_host}"
