@@ -47,6 +47,7 @@ else
 fi
 
 echo -e "${Green}Creating partition table on a ${device}${NC}"
+dd if=/dev/zero of="${device}" bs=4M count=10
 parted "${device}" -- mklabel gpt
 parted "${device}" -- mkpart primary 1GB -8GB
 parted "${device}" -- mkpart primary linux-swap -8GB 100%

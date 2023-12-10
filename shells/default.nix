@@ -19,12 +19,11 @@ in
     ] ++ (lib.optionals isLinux [ flake.packages.nixos-install-init ]);
     commands = [
       (pkgWithCategory "secrets" agenix)
-      (pkgWithCategory "install" nixos-install-init)
       {
         name = "format-all";
         category = "general commands";
         help = "Format all nix files in the project";
         command = "alejandra $PRJ_ROOT";
       }
-    ];
+    ] ++ (lib.optionals isLinux [(pkgWithCategory "install" nixos-install-init)]);
   }
