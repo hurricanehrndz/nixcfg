@@ -11,6 +11,7 @@ lib.mkMerge [
         "tall-right"
         "middle-wide"
         "fullscreen"
+        "floating"
       ];
       select-tall-right-layout = {
         mod = "mod1";
@@ -27,6 +28,10 @@ lib.mkMerge [
       select-fullscreen-layout = {
         mod = "mod1";
         key = "t";
+      };
+      select-floating-layout = {
+        mod = "mod1";
+        key = "w";
       };
       # disabled keys
       select-tall-layout = {

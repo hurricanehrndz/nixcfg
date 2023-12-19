@@ -44,6 +44,9 @@ in {
       "docker-compose"
       "pipx"
       "gost"
+      "python@3.10"
+      "wakeonlan"
+      "swiftformat"
     ];
     casks = [
       "tuist"
