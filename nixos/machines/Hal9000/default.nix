@@ -42,6 +42,12 @@
     };
   };
 
+  system.activationScripts.zwaveDirs = ''
+    mkdir -p /var/lib/{zwavejs,home-assistant}
+  '';
+
+  systemd.services."systemd-backlight@".enable = false;
+
   services.upower.ignoreLid = true;
   services.logind.lidSwitch = "ignore";
 
