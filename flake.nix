@@ -23,6 +23,10 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-pr259776.url = "github:Leixb/nixpkgs/rustdesk-123";
 
+    # software
+    flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
+    flatpaks.inputs.nixpkgs.follows = "nixpkgs";
+
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
     haumea = {
