@@ -19,6 +19,11 @@ in {
       set -g set-clipboard on
       set-option -sa terminal-overrides ',*256col*:RGB'
       bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
+      bind k resize-pane -U 5
+      bind j resize-pane -D 5
+      bind h resize-pane -L 5
+      bind l resize-pane -R 5
+
 
       # begin selection with v, yank with y
       bind-key -T copy-mode-vi v send-keys -X begin-selection
