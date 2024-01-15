@@ -34,6 +34,7 @@
     (l.recAttrValues homeModules)
     ++ roles.base
     ++ [
+      inputs.flatpaks.homeManagerModules.default
       (moduleWithSystem ({
         inputs',
         packages,

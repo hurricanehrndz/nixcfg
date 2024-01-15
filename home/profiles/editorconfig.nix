@@ -34,9 +34,6 @@
     "Makefile" = {
       indent_style = "tab";
     };
-    "*.md" = {
-      trim_trailing_whitespace = false;
-    };
     "*.{yaml,yml}" = {
       indent_size = 2;
       max_line_length = 120;
