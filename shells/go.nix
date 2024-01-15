@@ -5,7 +5,6 @@
   ...
 }: let
   inherit (inputs.devenv.lib) mkShell;
-  inherit (inputs'.pdenv) packages;
 in
   mkShell {
     inherit inputs pkgs;
@@ -20,9 +19,8 @@ in
             revive
             gopls
             gofumpt
-            golangci-lint
+            revive
             gomodifytags
-            packages.goimports-reviser
           ];
           languages.go.enable = true;
         }
