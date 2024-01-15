@@ -11,7 +11,6 @@ in {
   environment.shellAliases."brew" = "${brewPrefix}/brew";
 
   homebrew.taps = [
-    "homebrew/cask"
     "homebrew/cask-versions"
   ];
 
@@ -23,6 +22,7 @@ in {
 
   homebrew.casks = [
     "amethyst"
+    "apparency"
     "discord"
     "element"
     "logseq"

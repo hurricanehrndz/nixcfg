@@ -1,15 +1,16 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: let
+{ inputs
+, pkgs
+, ...
+}:
+let
   l = inputs.nixpkgs.lib // builtins;
   inherit (pkgs.stdenv.hostPlatform) isAarch64;
   brewPrefix =
     if isAarch64
     then "/opt/homebrew"
     else "/usr/local";
-in {
+in
+{
   # <https://github.com/LnL7/nix-darwin/issues/596>
   #
   # $ brew shellenv
@@ -19,7 +20,7 @@ in {
   # export PATH="/opt/homebrew/bin:/opt/homebrew/sbin${PATH+:$PATH}";
   # export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:";
   # export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-  environment.systemPath = l.mkBefore ["${brewPrefix}/bin" "${brewPrefix}/sbin"];
+  environment.systemPath = l.mkBefore [ "${brewPrefix}/bin" "${brewPrefix}/sbin" ];
   environment.variables = {
     HOMEBREW_PREFIX = brewPrefix;
     HOMEBREW_CELLAR = "${brewPrefix}/Cellar";
@@ -36,6 +37,7 @@ in {
     onActivation.cleanup = "zap";
     onActivation.upgrade = true;
     brews = [
+      "pre-commit"
       "shellcheck"
       "rbenv"
       "ruby-install"
@@ -47,6 +49,7 @@ in {
       "python@3.10"
       "wakeonlan"
       "swiftformat"
+      "carthage"
     ];
     casks = [
       "tuist"
