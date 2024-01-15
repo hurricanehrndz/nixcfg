@@ -3,7 +3,7 @@
   editorconfig.settings = {
     "*" = {
       charset = "utf-8";
-      trim_trailing_whitespace = true;
+      trim_trailing_whitespace = false;
       insert_final_newline = true;
       end_of_line = "lf";
       max_line_width = 78;
