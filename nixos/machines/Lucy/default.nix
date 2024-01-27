@@ -35,7 +35,7 @@ in {
 
   services.flatpak.enable = true;
 
-  networking.firewall.allowedTCPPorts = [43389];
+  networking.firewall.allowedTCPPorts = [43389 5901];
 
   system.stateVersion = "23.11";
 }

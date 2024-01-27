@@ -60,7 +60,7 @@ in {
         gnome-photos
         gnome-tour
       ])
-      ++ (with pkgs.gnome; [
+      ++ (with pkgs.gnome; with pkgs; [
         cheese # webcam tool
         gnome-music
         gedit # text editor
