@@ -8,6 +8,8 @@ in {
   home.packages = with pkgs; [
     nvim-pdenv
     neovim-remote
+    shfmt
+    nodePackages_latest.prettier
   ];
   programs.zsh.initExtra = ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
