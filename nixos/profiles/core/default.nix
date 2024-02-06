@@ -51,7 +51,7 @@
   };
 
   # Allow passwordless sudo within an SSH session.
-  security.pam.enableSSHAgentAuth = true;
+  security.pam.sshAgentAuth.enable = true;
 
   hardware.enableRedistributableFirmware = lib.mkDefault true;
 

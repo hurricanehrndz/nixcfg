@@ -1,14 +1,15 @@
-{
-  self,
-  config,
-  lib,
-  pkgs,
-  system,
-  inputs,
-  ...
-}: let
+{ self
+, config
+, lib
+, pkgs
+, system
+, inputs
+, ...
+}:
+let
   username = "hurricane";
-in {
+in
+{
   _module.args.username = username;
   imports = [
     ./hardware-configuration.nix
@@ -19,8 +20,8 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = lib.mkDefault 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelModules = ["kvm-intel" "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio"];
-  boot.kernelParams = ["kvm.ignore_msrs=1"];
+  boot.kernelModules = [ "kvm-intel" "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
+  boot.kernelParams = [ "kvm.ignore_msrs=1" ];
   networking.domain = "hrndz.ca";
 
   services.WakeOnLan = {
@@ -33,9 +34,15 @@ in {
     inherit username;
   };
 
+  environment = {
+    systemPackages = with pkgs; [
+      virt-viewer
+    ];
+  };
+
   services.flatpak.enable = true;
 
-  networking.firewall.allowedTCPPorts = [43389];
+  networking.firewall.allowedTCPPorts = [ 43389 5901 ];
 
   system.stateVersion = "23.11";
 }
