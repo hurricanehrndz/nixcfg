@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   home.packages = with pkgs; [
     git-crypt
     difftastic
@@ -12,10 +12,6 @@
     signing = {
       key = "0D2565B7C6058A69";
       signByDefault = true;
-    };
-    extraConfig = {
-      pull.ff = "only";
-      safe.directory = "/etc/nixos";
     };
 
     aliases = {
@@ -39,9 +35,11 @@
     };
 
     extraConfig = {
-      # user = {
-      #   signingKey = "0D2565B7C6058A69";
-      # };
+      init = {
+        defaultBranch = "main";
+      };
+      pull.ff = "only";
+      safe.directory = "/etc/nixos";
       core = {
         whitespace = "-indent-with-non-tab,trailing-space,cr-at-eol";
         pager = "delta";

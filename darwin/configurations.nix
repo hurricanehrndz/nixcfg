@@ -26,7 +26,7 @@
 
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
-  darwinModules = l.rakeLeaves ./modules;
+  # darwinModules = l.rakeLeaves ./modules;
   darwinMachines = l.rakeLeaves ./machines;
   darwinProfiles = l.rakeLeaves ./profiles;
 
@@ -52,7 +52,7 @@
           pkgs = darwinArgs.pkgs or pkgs;
           modules =
             defaultModules
-            ++ (l.recAttrValues darwinModules)
+            # ++ (l.recAttrValues darwinModules)
             ++ roles.workstation
             ++ [
               {
