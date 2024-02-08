@@ -10,6 +10,8 @@ in {
     neovim-remote
     shfmt
     nodePackages_latest.prettier
+    ruff
+    ruff-lsp
   ];
   programs.zsh.initExtra = ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
