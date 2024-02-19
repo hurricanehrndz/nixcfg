@@ -52,6 +52,7 @@
 
   # Allow passwordless sudo within an SSH session.
   security.pam.sshAgentAuth.enable = true;
+  security.pam.sshAgentAuth.authorizedKeysFiles = lib.mkForce [ "/etc/ssh/authorized_keys.d/%u" ];
 
   hardware.enableRedistributableFirmware = lib.mkDefault true;
 
