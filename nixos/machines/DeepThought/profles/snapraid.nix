@@ -18,7 +18,7 @@
   };
 
   # enable snapraid
-  snapraid = {
+  services.snapraid = {
     enable = true;
     extraConfig = ''
       nohidden
