@@ -52,8 +52,8 @@ in
       "carthage"
     ];
     casks = [
-      "tuist"
       "remoteviewer"
+      "devpod"
     ];
   };
 }
