@@ -50,6 +50,15 @@ in
       "wakeonlan"
       "swiftformat"
       "carthage"
+      "bumpversion"
+      "makensis"
+      "go"
+      "sponge"
+      "goreleaser"
+      "swift-protobuf"
+      "grpc-swift"
+      "evans"
+      "knot"
     ];
     casks = [
       "remoteviewer"

@@ -90,6 +90,9 @@
         "https://github.com/" = {
           insteadOf = "github:";
         };
+        "git@github.yelpcorp.com:" = {
+          insteadOf = "https://github.yelpcorp.com/";
+        };
       };
     };
   };

@@ -11,7 +11,6 @@
       system-defaults
       # yabi
       raycast
-      flameshot
       tailscale
       virtualization
     ]);

@@ -12,6 +12,7 @@ in {
 
   homebrew.taps = [
     "homebrew/cask-versions"
+    "ktr0731/evans"
   ];
 
   # $ networksetup -listallnetworkservices
