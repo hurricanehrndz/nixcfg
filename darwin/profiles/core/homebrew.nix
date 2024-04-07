@@ -63,6 +63,7 @@ in
     casks = [
       "remoteviewer"
       "devpod"
+      "postman"
     ];
   };
 }
