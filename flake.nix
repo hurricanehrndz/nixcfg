@@ -47,7 +47,7 @@
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
-    devenv.url = "github:cachix/devenv";
+    # devenv.url = "github:cachix/devenv";
 
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
@@ -87,7 +87,7 @@
         ./lib
 
         inputs.devshell.flakeModule
-        inputs.devenv.flakeModule
+        # inputs.devenv.flakeModule
       ];
 
       systems = ["aarch64-darwin" "x86_64-linux"];

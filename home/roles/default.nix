@@ -29,7 +29,7 @@ with profiles; let
     neovim
     ++ [
       aws
-      devenv
+      # devenv
     ];
   graphical = [
     wezterm
