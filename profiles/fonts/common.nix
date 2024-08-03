@@ -1,6 +1,7 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
 }: let
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
@@ -25,11 +26,5 @@
     terminus_font # broken on aarch64-darwin
   ];
 in {
-  fonts = {
-    fontDir.enable = true;
-  } // (if isLinux then {
-    packages = commonFonts ++ linuxFonts;
-  } else {
-    fonts = commonFonts;
-  });
-}
+    fonts.packages = commonFonts ++ (lib.optional isLinux linuxFonts);
+  }
