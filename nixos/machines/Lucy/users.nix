@@ -30,7 +30,7 @@
   ];
 
   home-manager.users.${username} = hmArgs: {
-    imports = with hmArgs.roles; neovim;
+    imports = with hmArgs.roles; developer;
     home.stateVersion = "23.11";
 
     services.flatpak = {
