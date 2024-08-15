@@ -59,6 +59,12 @@ in
       "grpc-swift"
       "evans"
       "knot"
+      "7zip"
+      "mingw-w64"
+      "mtr"
+      "wireguard-tools"
+      "fswatch"
+      "7zip"
     ];
     casks = [
       "remoteviewer"
