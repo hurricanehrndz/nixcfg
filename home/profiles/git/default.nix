@@ -14,6 +14,11 @@
       signByDefault = true;
     };
 
+    ignores = [
+      ".direnv/"
+      ".envrc"
+    ];
+
     aliases = {
       # logging
       plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'";
