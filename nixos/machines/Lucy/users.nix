@@ -33,17 +33,17 @@
     imports = with hmArgs.roles; developer;
     home.stateVersion = "23.11";
 
-    services.flatpak = {
-      enableModule = true;
-      remotes = {
-        "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-        "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
-      };
-      packages = [
-        "flathub:app/de.shorsh.discord-screenaudio//stable"
-        # "flathub-beta:app/org.chromium.Chromium//beta"
-        # "flathub:app/com.usebottles.bottles//stable"
-      ];
-    };
+    # services.flatpak = {
+    #   enableModule = true;
+    #   remotes = {
+    #     "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+    #     "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
+    #   };
+    #   packages = [
+    #     "flathub:app/de.shorsh.discord-screenaudio//stable"
+    #     # "flathub-beta:app/org.chromium.Chromium//beta"
+    #     # "flathub:app/com.usebottles.bottles//stable"
+    #   ];
+    # };
   };
 }
