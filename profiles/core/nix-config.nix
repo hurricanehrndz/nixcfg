@@ -52,7 +52,7 @@ in {
       "darwin=${inputs.darwin}"
       "/etc/nix/inputs"
     ];
-    registry = l.mapAttrs (_: flake: {inherit flake;}) inputFlakes;
+    # registry = l.mapAttrs (_: flake: {inherit flake;}) inputFlakes;
     settings = {
       # Builds have recently become unusably interrupted on Darwin
       # <https://github.com/NixOS/nix/issues/7273>
