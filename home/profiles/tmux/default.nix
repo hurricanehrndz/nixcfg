@@ -70,7 +70,7 @@ in {
       {
         plugin = catppuccin_theme;
         extraConfig = ''
-          set -g @catppuccin_flavour 'latte'
+          set -g @catppuccin_flavor 'latte'
           set -g @catppuccin_window_left_separator ""
           set -g @catppuccin_window_right_separator " "
           set -g @catppuccin_window_middle_separator " █"
