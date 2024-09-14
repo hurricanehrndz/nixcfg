@@ -48,6 +48,7 @@ in
       "gost"
       "python@3.10"
       "wakeonlan"
+      "swiftlint"
       "swiftformat"
       "carthage"
       "bumpversion"
