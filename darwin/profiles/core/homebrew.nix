@@ -36,6 +36,7 @@ in
     caskArgs.no_quarantine = true;
     onActivation.cleanup = "zap";
     onActivation.upgrade = true;
+    onActivation.autoUpdate = true;
     brews = [
       "pre-commit"
       "shellcheck"
