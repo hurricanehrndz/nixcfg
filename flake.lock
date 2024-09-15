@@ -1345,11 +1345,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1726356123,
-        "narHash": "sha256-Knbmgys5K3VPMX1kyGA4k3BlmJ9dENg58Lr+YK5qPQc=",
+        "lastModified": 1726367015,
+        "narHash": "sha256-0FUoI5z7yHGxhCqwHvpVklFsWp8PDsXloVnUm6PH6yM=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "88b0e6ce480158b31e52436b23058245399d4c8a",
+        "rev": "81957ca74804c2ddb2d5aef4383a3fb5c5f17b0d",
         "type": "github"
       },
       "original": {
