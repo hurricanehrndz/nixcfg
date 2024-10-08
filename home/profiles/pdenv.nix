@@ -12,6 +12,7 @@ in {
     nodePackages_latest.prettier
     ruff
     ruff-lsp
+    gitlint
   ];
   programs.zsh.initExtra = ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
@@ -22,6 +23,7 @@ in {
       alias nvim="nvr -l"
       alias v="nvr -l"
     fi
+    alias gitlint="gitlint --contrib=CT1 --ignore body-is-missing,T3 -c T1.line-length=50 -c B1.line-length=72"
     alias v="nvim"
   '';
 }
