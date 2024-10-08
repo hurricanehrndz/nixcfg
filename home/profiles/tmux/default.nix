@@ -51,6 +51,21 @@ in {
 
       # easily zoom
       bind-key -n 'M-z' resize-pane -Z
+
+      # Theme
+      set -g @catppuccin_flavor 'latte'
+      # Disable catppuccin styling windows.
+      set -g @catppuccin_window_status_style "rounded"
+      # leave this unset to let applications set the window title
+      set -g @catppuccin_window_default_text " #W"
+      set -g @catppuccin_window_current_text " #W"
+      set -g @catppuccin_window_status "icon"
+      set -g @catppuccin_window_current_background "#{@thm_mauve}"
+
+      run ${catppuccin_theme}/share/tmux-plugins/catppuccin/catppuccin.tmux
+
+      set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
+      set -g status-left ""
     '';
     plugins = with pkgs;
     with tmuxPlugins; let
@@ -67,31 +82,6 @@ in {
         '';
       };
     in [
-      {
-        plugin = catppuccin_theme;
-        extraConfig = ''
-          set -g @catppuccin_flavor 'latte'
-          set -g @catppuccin_window_left_separator ""
-          set -g @catppuccin_window_right_separator " "
-          set -g @catppuccin_window_middle_separator " █"
-          set -g @catppuccin_window_number_position "right"
-
-          set -g @catppuccin_window_default_fill "number"
-          set -g @catppuccin_window_default_text "#W"
-
-          set -g @catppuccin_window_current_fill "number"
-          set -g @catppuccin_window_current_text "#W"
-
-          set -g @catppuccin_status_modules_right "directory user host session"
-          set -g @catppuccin_status_left_separator  " "
-          set -g @catppuccin_status_right_separator ""
-          set -g @catppuccin_status_right_separator_inverse "no"
-          set -g @catppuccin_status_fill "icon"
-          set -g @catppuccin_status_connect_separator "yes"
-
-          set -g @catppuccin_directory_text "#{pane_current_path}"
-        '';
-      }
       {
         plugin = extrakto;
         extraConfig = ''
