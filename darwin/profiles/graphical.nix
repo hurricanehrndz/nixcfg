@@ -13,6 +13,7 @@ in {
   homebrew.taps = [
     "homebrew/cask-versions"
     "ktr0731/evans"
+    "nikitabobko/tap"
   ];
 
   # $ networksetup -listallnetworkservices
@@ -22,7 +23,7 @@ in {
   # ];
 
   homebrew.casks = [
-    "amethyst"
+    "aerospace"
     "apparency"
     "discord"
     "element"

@@ -32,7 +32,7 @@ with profiles; let
     ];
   graphical = [
     wezterm
-    amethyst
+    tillingwm
     # keyboard # yabai keybindings via skhdrc
   ];
 in {
