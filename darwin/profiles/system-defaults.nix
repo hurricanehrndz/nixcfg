@@ -56,7 +56,7 @@ in {
   system.defaults.dock.dashboard-in-overlay = false;
   system.defaults.dock.enable-spring-load-actions-on-all-items = false;
   system.defaults.dock.expose-animation-duration = 0.1;
-  system.defaults.dock.expose-group-by-app = false;
+  system.defaults.dock.expose-group-by-app = true;
   system.defaults.dock.launchanim = false;
   system.defaults.dock.mineffect = "genie";
   system.defaults.dock.minimize-to-application = true;
@@ -69,7 +69,7 @@ in {
   system.defaults.dock.static-only = true;
   system.defaults.dock.tilesize = 64;
 
-  system.defaults.spaces.spans-displays = false;
+  system.defaults.spaces.spans-displays = true;
 
   ##: Corner hot actions
   # 1 => Disabled
