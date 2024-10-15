@@ -66,6 +66,8 @@ in {
 
       set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
       set -g status-left ""
+      set -gu default-command
+      set -g default-shell "$SHELL"
     '';
     plugins = with pkgs;
     with tmuxPlugins; let
