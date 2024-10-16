@@ -67,7 +67,7 @@ in {
       run ${catppuccin_theme}/share/tmux-plugins/catppuccin/catppuccin.tmux
 
       set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
-      set -g status-left "#[bg=#{@thm_surface_1},fg=#{@thm_fg}] #{=4:client_key_table} #[fg=#{@thm_teal},bg=#{@thm_crust}]█ "
+      set -g status-left "#[bg=#{@thm_surface_1},fg=#{@thm_fg}] #{=4:client_key_table} #[fg=#{@thm_teal},bg=#{@thm_bg}]█ "
       set -gu default-command
       set -g default-shell "$SHELL"
     '';
