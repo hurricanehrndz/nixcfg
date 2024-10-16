@@ -1414,11 +1414,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1729035426,
-        "narHash": "sha256-sOOctMdcXPGkWRmc/Wj9NAk+94rKBp+MvuotfLuvnv8=",
+        "lastModified": 1729095036,
+        "narHash": "sha256-WIGoMCzfsGWfPznb7GiUE73xJQTUVmTRvDgO0/O4zBE=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "67b076de3e2788122dbf84a4e043f143d56665a8",
+        "rev": "ac14193d0feef723cd00b54ac59bae6d66a565a0",
         "type": "github"
       },
       "original": {
