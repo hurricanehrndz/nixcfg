@@ -16,7 +16,6 @@ in {
     aggressiveResize = true;
     escapeTime = 10;
     extraConfig = ''
-      set -s extended-keys on
       set -g set-clipboard on
       set-option -sa terminal-overrides ',*256col*:RGB'
       bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
