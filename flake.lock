@@ -583,11 +583,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1728092656,
-        "narHash": "sha256-eMeCTJZ5xBeQ0f9Os7K8DThNVSo9gy4umZLDfF5q6OM=",
+        "lastModified": 1728778939,
+        "narHash": "sha256-WybK5E3hpGxtCYtBwpRj1E9JoiVxe+8kX83snTNaFHE=",
         "owner": "cachix",
         "repo": "git-hooks.nix",
-        "rev": "1211305a5b237771e13fcca0c51e60ad47326a9a",
+        "rev": "ff68f91754be6f3427e4986d7949e6273659be1d",
         "type": "github"
       },
       "original": {
@@ -804,11 +804,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1728538929,
-        "narHash": "sha256-eqXPMh+CJwsXTBhtKDsPJ/J5kM3OaBC4kuAXlIuo+pE=",
+        "lastModified": 1728972634,
+        "narHash": "sha256-FrJPsAhfn3xRzzAgVrwriY0ROUIQ6pDsSy2U7nVkYFQ=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "b81db43451a3f157a6570f9515fce6866ae70dab",
+        "rev": "3454a11f09673a73649b5e8d9be5547f03320780",
         "type": "github"
       },
       "original": {
@@ -820,11 +820,11 @@
     "neovim-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1728496950,
-        "narHash": "sha256-O9QVBuELfqwwymt6C4DZJhYZbSJnK6A41ahqehhyodo=",
+        "lastModified": 1728948853,
+        "narHash": "sha256-IfCfZ4k8foOFOqSHxC0QW7NZx8bXDH2ruySZN4Gqqng=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "cd8e15e3373dc9544d582640f043d3dee83a953d",
+        "rev": "4846bf05dc639592c73135fb6f1a69f410c1c40f",
         "type": "github"
       },
       "original": {
@@ -836,11 +836,11 @@
     "neovim-src_2": {
       "flake": false,
       "locked": {
-        "lastModified": 1728553203,
-        "narHash": "sha256-kPKXu4vJpsqXKz/3bEvQOGzT858gVUtv77X2+X8vgWY=",
+        "lastModified": 1729018221,
+        "narHash": "sha256-xwFqmvrzzymfE/6NE1g/E2TOOou23Ok08bzLeftfdow=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "b3109084c2c3675aa886bf16ff15f50025f30096",
+        "rev": "82b02ae2f2af439a8c678ed6b55a43121055f279",
         "type": "github"
       },
       "original": {
@@ -1029,11 +1029,11 @@
         "poetry2nix": "poetry2nix_3"
       },
       "locked": {
-        "lastModified": 1728570173,
-        "narHash": "sha256-4LHKqLuvkj5OVcaAeTRFJYuQbgAlX5WuobgehREMzOk=",
+        "lastModified": 1728829310,
+        "narHash": "sha256-Bwy4gh8b8ZXuiTAsveY93sMlEpfCLA2ciI3AoLpp03Q=",
         "owner": "jooooscha",
         "repo": "nixpkgs-vim-extra-plugins",
-        "rev": "236eefcc4de6b3a5888da69cc4a4034143b69121",
+        "rev": "747a6da6950ee5a04beeea7ac0c53b78bd54c2ae",
         "type": "github"
       },
       "original": {
@@ -1169,11 +1169,11 @@
     },
     "nixpkgs-master_2": {
       "locked": {
-        "lastModified": 1728578844,
-        "narHash": "sha256-NszPaT3J8P6OOCuDU1YuNOBtwUMnCDj3xAgUxgS47ZI=",
+        "lastModified": 1729018389,
+        "narHash": "sha256-Orpx6Y8LCiIxbQwbkUd/37W9MQZhyp4M6T0qog8fi8g=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "51666317f496aed4b86dda778f91b8d4a09b209b",
+        "rev": "62c003b0cca3949d5cf5597b218863f65fde7f4e",
         "type": "github"
       },
       "original": {
@@ -1362,11 +1362,11 @@
     "nvim-treesitter-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1728543226,
-        "narHash": "sha256-vtYsWNn9lS3THsfWYHarXdhpfiKbtW78ZN5nvILEaUM=",
+        "lastModified": 1729017815,
+        "narHash": "sha256-lTSvIUfsc+ekR1DinsY8dQjgZIqw7OBLJ8l1yBzOzAA=",
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter",
-        "rev": "9b1e607298dd5fc2ee6549488324cc92dafb99c0",
+        "rev": "da926103921117cc6dc8a518bc9b949c90d1c70c",
         "type": "github"
       },
       "original": {
@@ -1414,11 +1414,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1728580456,
-        "narHash": "sha256-zoA8+e5Oz9xxuOGT2ZWUhB1JeK5ODP1Ajq7X5GqO2lk=",
+        "lastModified": 1729035426,
+        "narHash": "sha256-sOOctMdcXPGkWRmc/Wj9NAk+94rKBp+MvuotfLuvnv8=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "a41e74989c3e27faace06f806464b6a95b96adc0",
+        "rev": "67b076de3e2788122dbf84a4e043f143d56665a8",
         "type": "github"
       },
       "original": {
