@@ -5,7 +5,6 @@
   ...
 }:
 with lib; let
-  tomlFormat = pkgs.formats.toml {};
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
   cfg = config.services.tillingwm;
 in {
@@ -17,13 +16,11 @@ in {
     };
 
     services.tillingwm.settings = mkOption {
-      type = tomlFormat.type;
-      default = {};
-      defaultText = literalExpression "{ }";
+      type = types.str;
       example = literalExpression ''
-        {
-          start-at-login = false;
-        }
+          start-at-login = false
+          [key-mapping]
+          preset = 'qwerty'
       '';
       description = ''
         Configuration written to
@@ -46,7 +43,7 @@ in {
 
     (mkIf cfg.enable {
         xdg.configFile."aerospace/aerospace.toml" = {
-        source = tomlFormat.generate "tillingwm-config" cfg.settings;
+        text = cfg.settings;
       };
 
       # launchd.agents.amethyst = {
