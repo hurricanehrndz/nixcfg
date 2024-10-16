@@ -16,30 +16,30 @@ in {
     aggressiveResize = true;
     escapeTime = 10;
     extraConfig = ''
+      set -s extended-keys on
       set -g set-clipboard on
       set-option -sa terminal-overrides ',*256col*:RGB'
       bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
-      bind k resize-pane -U 5
-      bind j resize-pane -D 5
-      bind h resize-pane -L 5
-      bind l resize-pane -R 5
+      bind k 'select-pane -U'
+      bind j 'select-pane -D'
+      bind h 'select-pane -L'
+      bind l 'select-pane -R'
 
+      bind-key Z switch-client -T size
+
+      bind-key -T size k resize-pane -U \; switch-client -T size
+      bind-key -T size j resize-pane -D \; switch-client -T size
+      bind-key -T size h resize-pane -L \; switch-client -T size
+      bind-key -T size l resize-pane -R \; switch-client -T size
+
+      bind-key -T size K resize-pane -U 5 \; switch-client -T size
+      bind-key -T size J resize-pane -D 5 \; switch-client -T size
+      bind-key -T size H resize-pane -L 5 \; switch-client -T size
+      bind-key -T size L resize-pane -R 5 \; switch-client -T size
 
       # begin selection with v, yank with y
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
-
-      is_vim="ps -o state= -o comm= -t '#{pane_tty}' \
-        | grep -iqE '^[^TXZ ]+ +(\\S+\\/)?g?(view|n?vim?x?)(diff)?$'"
-      bind-key -n 'C-h' if-shell "$is_vim" 'send-keys M-h' 'select-pane -L'
-      bind-key -n 'C-j' if-shell "$is_vim" 'send-keys M-j' 'select-pane -D'
-      bind-key -n 'C-k' if-shell "$is_vim" 'send-keys M-k' 'select-pane -U'
-      bind-key -n 'C-l' if-shell "$is_vim" 'send-keys M-l' 'select-pane -R'
-
-      bind-key -T copy-mode-vi 'C-h' select-pane -L
-      bind-key -T copy-mode-vi 'C-j' select-pane -D
-      bind-key -T copy-mode-vi 'C-k' select-pane -U
-      bind-key -T copy-mode-vi 'C-l' select-pane -R
 
       # fix clear screen
       bind C-l send-keys 'C-l'
@@ -68,7 +68,7 @@ in {
       run ${catppuccin_theme}/share/tmux-plugins/catppuccin/catppuccin.tmux
 
       set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
-      set -g status-left ""
+      set -g status-left "#[bg=#{@thm_surface_1},fg=#{@thm_fg}] #{=4:client_key_table} #[fg=#{@thm_teal},bg=#{@thm_crust}]█ "
       set -gu default-command
       set -g default-shell "$SHELL"
     '';
