@@ -45,7 +45,7 @@ in {
     }
 
     (mkIf cfg.enable {
-      home.file.".aerospace.toml" = {
+        xdg.configFile."aerospace/aerospace.toml" = {
         source = tomlFormat.generate "tillingwm-config" cfg.settings;
       };
 
