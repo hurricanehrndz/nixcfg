@@ -59,10 +59,9 @@ in {
       # Disable catppuccin styling windows.
       set -g @catppuccin_window_status_style "rounded"
       # leave this unset to let applications set the window title
-      set -g @catppuccin_window_default_text " #W"
+      set -g @catppuccin_window_text " #W"
       set -g @catppuccin_window_current_text " #W"
-      set -g @catppuccin_window_status "icon"
-      set -g @catppuccin_window_current_background "#{@thm_mauve}"
+      set -g @catppuccin_window_flags "icon"
 
       run ${catppuccin_theme}/share/tmux-plugins/catppuccin/catppuccin.tmux
 
