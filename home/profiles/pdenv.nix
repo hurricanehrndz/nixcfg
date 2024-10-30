@@ -1,6 +1,7 @@
 {
   inputs',
   pkgs,
+  packages,
   ...
 }: let
   nvim-pdenv = inputs'.pdenv.packages.pdenv;
@@ -13,6 +14,8 @@ in {
     ruff
     ruff-lsp
     gitlint
+    packages.keg
+    gh
   ];
   programs.zsh.initExtra = ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
@@ -25,5 +28,6 @@ in {
     fi
     alias gitlint="gitlint --contrib=CT1 --ignore body-is-missing,T3 -c T1.line-length=50 -c B1.line-length=72"
     alias v="nvim"
+    alias pdenv="~/src/me/pdenv/result/bin/nvim"
   '';
 }

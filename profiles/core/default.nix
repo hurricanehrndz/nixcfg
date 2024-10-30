@@ -40,6 +40,8 @@ in {
       else "linux";
     LC_ALL = "en_US.UTF-8";
     LANG = "en_US.UTF-8";
+    PAGER = "less";
+    LESS = "-R";
   };
 
   environment.shells = with pkgs; [
