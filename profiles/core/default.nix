@@ -42,6 +42,7 @@ in {
     LANG = "en_US.UTF-8";
     PAGER = "less";
     LESS = "-R";
+    ZK_NOTEBOOK_DIR = "$HOME/zet";
   };
 
   environment.shells = with pkgs; [
