@@ -16,6 +16,9 @@ in {
     gitlint
     packages.keg
     gh
+    zk
+    glow
+    slides
   ];
   programs.zsh.initExtra = ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
