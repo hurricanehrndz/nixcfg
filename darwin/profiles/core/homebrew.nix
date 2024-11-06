@@ -67,6 +67,8 @@ in
       "wireguard-tools"
       "fswatch"
       "7zip"
+      "aspell"
+      "hunspell"
     ];
     casks = [
       "remoteviewer"
