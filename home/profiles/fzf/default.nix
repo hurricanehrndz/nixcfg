@@ -12,12 +12,16 @@
 in {
   programs.fzf = {
     enable = true;
-    defaultOptions = ["--height=40%" "--layout=reverse" "--border"];
+    defaultOptions = ["--height=40%" "--layout=reverse" "--border" "--bind" "ctrl-f:preview-page-down,ctrl-b:preview-page-up"];
+
     fileWidgetCommand = findFiles {
       hidden = true;
       follow = true;
       exclude = [".git" ".devenv" ".direnv" ".std" "node_modules" "vendor"];
     };
+    fileWidgetOptions = [
+      "--preview 'bat -n --color=always {}'"
+    ];
 
     changeDirWidgetCommand = findDirs {};
     changeDirWidgetOptions = [
