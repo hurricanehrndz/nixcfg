@@ -17,7 +17,6 @@ in {
     packages.keg
     gh
     zk
-    glow
     slides
   ];
   programs.zsh.initExtra = ''

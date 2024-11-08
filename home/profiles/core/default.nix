@@ -15,7 +15,7 @@ in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   xdg.enable = true;
-  manual.json.enable = true;
+  # manual.json.enable = true;
 
   ##: essential tools
   programs.command-not-found.enable = true;
