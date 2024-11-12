@@ -69,6 +69,7 @@ in
       "7zip"
       "aspell"
       "hunspell"
+      "cloudflare-wrangler2"
     ];
     casks = [
       "remoteviewer"
