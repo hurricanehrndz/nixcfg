@@ -30,6 +30,5 @@ in {
     fi
     alias gitlint="gitlint --contrib=CT1 --ignore body-is-missing,T3 -c T1.line-length=50 -c B1.line-length=72"
     alias v="nvim"
-    alias pdenv="~/src/me/pdenv/result/bin/nvim"
   '';
 }
