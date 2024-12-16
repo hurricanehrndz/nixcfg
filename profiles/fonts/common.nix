@@ -9,13 +9,9 @@
   commonFonts = with pkgs; [
     fira
     inter
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "SourceCodePro"
-        "NerdFontsSymbolsOnly"
-      ];
-    })
+    nerd-fonts.fira-code
+    nerd-fonts.sauce-code-pro
+    nerd-fonts.symbols-only
   ];
   linuxFonts = with pkgs; [
     bakoma_ttf

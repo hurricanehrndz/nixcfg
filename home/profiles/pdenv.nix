@@ -14,7 +14,6 @@ in {
     ruff
     ruff-lsp
     gitlint
-    packages.keg
     gh
     zk
     slides

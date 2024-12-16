@@ -49,10 +49,6 @@
     devshell.url = "github:numtide/devshell";
     devenv.url = "github:cachix/devenv";
 
-    # go packages/modules
-    keg-src.url = "github:rwxrob/keg";
-    keg-src.flake = false;
-
     # others
     git-fat.url = "github:hurricanehrndz/git-fat";
     # git-fat.inputs.nixpkgs.follows = "nixpkgs";

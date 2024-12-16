@@ -56,7 +56,7 @@ in {
   system.defaults.dock.dashboard-in-overlay = false;
   system.defaults.dock.enable-spring-load-actions-on-all-items = false;
   system.defaults.dock.expose-animation-duration = 0.1;
-  system.defaults.dock.expose-group-by-app = true;
+  system.defaults.dock.expose-group-apps = true;
   system.defaults.dock.launchanim = false;
   system.defaults.dock.mineffect = "genie";
   system.defaults.dock.minimize-to-application = true;
