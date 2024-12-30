@@ -18,6 +18,7 @@ in {
     extraConfig = ''
       set -g set-clipboard on
       set-option -sa terminal-overrides ',*256col*:RGB'
+      set-option -g focus-events on
       bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
       bind k 'select-pane -U'
       bind j 'select-pane -D'
