@@ -3,18 +3,18 @@
   services.samba = {
     enable = true;
     openFirewall = true;
-    securityType = "user";
-    extraConfig = ''
-      workgroup = WORKGROUP
-      smbd profiling level = on
-      server string = DeepThought
-      server role = standalone server
-      guest account = nobody
-      map to guest = Bad User
-      min protocol = SMB3
-      ea support = yes
-    '';
-    shares = {
+    settings = {
+      global = {
+        "workgroup" = "WORKGROUP";
+        "server string" = "DeepThought";
+        "server role" = "standalone server";
+        "security" = "user";
+        "guest account" = "nobody";
+        "map to guest" = "Bad User";
+        "min protocol" = "SMB3";
+        "ea support" = "yes";
+        "smbd profiling level" = "on";
+      };
       public = {
         path = "/shares/public";
         comment = "Public Share";
@@ -53,7 +53,7 @@
   # mDNS
   services.avahi = {
     enable = true;
-    nssmdns = true;
+    nssmdns4 = true;
     publish = {
       enable = true;
       addresses = true;
