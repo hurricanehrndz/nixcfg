@@ -110,9 +110,9 @@
             inputs.agenix.overlays.default
             inputs.devshell.overlays.default
             inputs.snapraid-runner.overlays.default
-            (final: prev: {
-              pam_ssh_agent_auth = inputs.nixpkgs-master.legacyPackages.${system}.pam_ssh_agent_auth;
-            })
+            # (final: prev: {
+            #   pam_ssh_agent_auth = inputs.nixpkgs-master.legacyPackages.${system}.pam_ssh_agent_auth;
+            # })
           ];
         };
       in {
