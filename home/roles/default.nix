@@ -27,9 +27,7 @@ with profiles; let
     ];
   developer =
     neovim
-    ++ [
-      aws
-    ];
+    ++ [];
   graphical = [
     wezterm
     tillingwm

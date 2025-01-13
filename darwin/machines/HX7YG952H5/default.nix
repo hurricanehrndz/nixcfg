@@ -11,11 +11,6 @@ in {
    owner = "${username}";
    group = "staff";
  in {
-   "darwin/aws_sso_config" = {
-     inherit owner group;
-     file = "${self}/secrets/darwin/aws/sso_config.age";
-     path = "${home}/.aws/sso_config.yaml";
-   };
    "darwin/aws_auth_config" = {
      inherit owner group;
      file = "${self}/secrets/darwin/aws/auth_config.age";

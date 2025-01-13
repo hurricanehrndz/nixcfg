@@ -25,7 +25,6 @@ let
 in
 {
   "darwin/env/zsh_vars.age".publicKeys = darwin_Keys;
-  "darwin/aws/sso_config.age".publicKeys = darwin_Keys;
   "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
 
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepKeys;
