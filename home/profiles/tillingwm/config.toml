@@ -128,11 +128,11 @@ ctrl-shift-alt-s = 'workspace S' # study notes
 ctrl-shift-alt-t = 'workspace T' # terminal
 ctrl-shift-alt-v = 'workspace V' # video
 ctrl-shift-alt-c = 'workspace C' # code (vs)
-ctrl-shift-alt-c = 'workspace B' # books
-ctrl-shift-alt-c = 'workspace D' # docs
-ctrl-shift-alt-c = 'workspace F' # firefox
-ctrl-shift-alt-c = 'workspace P' #
-ctrl-shift-alt-c = 'workspace G' #
+ctrl-shift-alt-b = 'workspace B' # books
+ctrl-shift-alt-d = 'workspace D' # docs
+ctrl-shift-alt-f = 'workspace F' # firefox
+ctrl-shift-alt-p = 'workspace P' #
+ctrl-shift-alt-g = 'workspace G' #
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
 ctrl-shift-alt-cmd-1 = 'move-node-to-workspace 1'
@@ -151,11 +151,11 @@ ctrl-shift-alt-cmd-s = 'move-node-to-workspace S' # study
 ctrl-shift-alt-cmd-t = 'move-node-to-workspace T' # terminal
 ctrl-shift-alt-cmd-v = 'move-node-to-workspace V' # video
 ctrl-shift-alt-cmd-c = 'move-node-to-workspace C' # code (vs)
-ctrl-shift-alt-cmd-c = 'move-node-to-workspace B' # books
-ctrl-shift-alt-cmd-c = 'move-node-to-workspace D' # docs
-ctrl-shift-alt-cmd-c = 'move-node-to-workspace F' # firefox
-ctrl-shift-alt-cmd-c = 'move-node-to-workspace P' #
-ctrl-shift-alt-cmd-c = 'move-node-to-workspace G' #
+ctrl-shift-alt-cmd-b = 'move-node-to-workspace B' # books
+ctrl-shift-alt-cmd-d = 'move-node-to-workspace D' # docs
+ctrl-shift-alt-cmd-f = 'move-node-to-workspace F' # firefox
+ctrl-shift-alt-cmd-p = 'move-node-to-workspace P' #
+ctrl-shift-alt-cmd-g = 'move-node-to-workspace G' #
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
@@ -198,7 +198,7 @@ run = "move-node-to-workspace W"
 
 [[on-window-detected]]
 if.app-id = 'org.mozilla.firefox'
-run = "move-node-to-workspace W"
+run = "move-node-to-workspace F"
 
 [[on-window-detected]]
 if.app-id = 'com.electron.logseq'
