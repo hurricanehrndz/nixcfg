@@ -16,7 +16,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1;
-  boot.kernelParams = ["i915.force_probe=4692"];
+  # boot.kernelParams = ["i915.force_probe=4692"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
   # boot.extraModulePackages = with config.boot.kernelPackages; [ it87 ];
   boot.kernelModules = ["coretemp" "nct6775"];
