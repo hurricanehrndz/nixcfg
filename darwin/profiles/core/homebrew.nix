@@ -70,6 +70,7 @@ in
       "aspell"
       "hunspell"
       "cloudflare-wrangler2"
+      "mods"
     ];
     casks = [
       "remoteviewer"
