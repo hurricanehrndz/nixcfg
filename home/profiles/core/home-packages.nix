@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  packages,
+  ...
+}: {
   home.packages = with pkgs; [
     bottom
     eza
@@ -8,9 +12,14 @@
     glow #      <- charmbracelet's markdown cli renderer
     (ripgrep.override {withPCRE2 = true;})
     trash-cli
+    yq
 
     # TODO: joy ride
     lsd
     grex
+
+    # AI
+    mods
+    packages.gpt
   ];
 }

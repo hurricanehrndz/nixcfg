@@ -29,7 +29,11 @@ return {
   adjust_window_size_when_changing_font_size = false,
 
   -- color settings
-  color_scheme = 'Catppuccin Latte',
+  -- color_scheme = 'Catppuccin Latte',
+  -- color_scheme = 'Bluloco Zsh Light (Gogh)',
+  -- color_scheme = 'Everforest Light (Gogh)',
+  -- color_scheme = 'Rosé Pine Dawn (Gogh)',
+  color_scheme = 'Catppuccin Latte (Gogh)',
 
   -- cursor config, invert color
   force_reverse_video_cursor = true,
