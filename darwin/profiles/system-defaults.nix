@@ -56,7 +56,7 @@ in {
   system.defaults.dock.dashboard-in-overlay = false;
   system.defaults.dock.enable-spring-load-actions-on-all-items = false;
   system.defaults.dock.expose-animation-duration = 0.1;
-  system.defaults.dock.expose-group-apps = true;
+  system.defaults.dock.expose-group-apps = true; # aerospace setting
   system.defaults.dock.launchanim = false;
   system.defaults.dock.mineffect = "genie";
   system.defaults.dock.minimize-to-application = true;
@@ -69,7 +69,7 @@ in {
   system.defaults.dock.static-only = true;
   system.defaults.dock.tilesize = 64;
 
-  system.defaults.spaces.spans-displays = true;
+  system.defaults.spaces.spans-displays = true; # aerospace
 
   ##: Corner hot actions
   # 1 => Disabled
@@ -84,7 +84,7 @@ in {
   # 12 => Notification Center
   # 13 => Lock Screen
   # 14 => Quick Note
-  system.defaults.dock.wvous-bl-corner = 5;
+  system.defaults.dock.wvous-bl-corner = 1;
   system.defaults.dock.wvous-br-corner = 1;
   system.defaults.dock.wvous-tl-corner = 1;
   system.defaults.dock.wvous-tr-corner = 1;
@@ -92,7 +92,7 @@ in {
   ###: WINDOW MANAGER / FINDER =================================================
 
   system.defaults.finder.AppleShowAllExtensions = true;
-  system.defaults.finder.AppleShowAllFiles = true;
+  system.defaults.finder.AppleShowAllFiles = false;
   # Whether to display icons on the desktop.
   system.defaults.finder.CreateDesktop = false;
   system.defaults.finder.FXDefaultSearchScope = null;
@@ -110,7 +110,7 @@ in {
   system.defaults.NSGlobalDomain.NSDocumentSaveNewDocumentsToCloud = false;
   system.defaults.NSGlobalDomain.NSNavPanelExpandedStateForSaveMode = true;
   system.defaults.NSGlobalDomain.NSNavPanelExpandedStateForSaveMode2 = true;
-  # Set the size of the finder sidebar icons
+  # Set the size of the finder sidebar icons 
   # 1 => small; 2 => medium; 3 => large
   system.defaults.NSGlobalDomain.NSTableViewDefaultSizeMode = 1;
   system.defaults.NSGlobalDomain.NSTextShowsControlCharacters = true;
@@ -226,7 +226,18 @@ in {
   ###: MISC ====================================================================
 
   system.defaults.CustomSystemPreferences = {};
-  system.defaults.CustomUserPreferences = {};
+
+  system.defaults.CustomUserPreferences = {
+    # spotlight search items
+    "com.apple.spotlight" = {
+      orderedItems = [
+        {"enabled" = 1;"name" = "APPLICATIONS";}
+        {"enabled" = 1;"name" = "MENU_EXPRESSION";}
+        {"enabled" = 1;"name" = "MENU_DEFINITION";}
+        {"enabled" = 1;"name" = "SYSTEM_PREFS";}
+      ];
+    };
+  };
 
   system.defaults.screencapture.disable-shadow = false;
   # The filesystem path to which screencaptures should be written.
