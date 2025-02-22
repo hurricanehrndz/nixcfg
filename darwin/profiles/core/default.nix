@@ -11,11 +11,6 @@ in {
     inputs.agenix.darwinModules.age
   ];
 
-  # These should (must?) be enabled in any recent multi-user Nix installation,
-  # and yet they remain disabled by default in nix-darwin...
-  services.nix-daemon.enable = l.mkForce true;
-  nix.configureBuildUsers = l.mkForce true;
-
   # Administrative users on Darwin systems are part of the admin group.
   nix.settings.trusted-users = ["@admin"];
 
@@ -45,5 +40,5 @@ in {
   # Used for backwards compatibility, please read the changelog before changing.
   # https://daiderd.com/nix-darwin/manual/index.html#opt-system.stateVersion
   # $ darwin-rebuild changelog
-  system.stateVersion = 4;
+  system.stateVersion = l.mkDefault 4;
 }
