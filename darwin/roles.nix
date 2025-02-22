@@ -9,8 +9,6 @@
     ++ (with darwinProfiles; [
       graphical
       system-defaults
-      # yabi
-      raycast
       tailscale
       virtualization
     ]);
