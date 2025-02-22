@@ -181,6 +181,13 @@ f = 'fullscreen'
 cmd-f = 'layout floating tiling' # Toggle between floating and tiling layout
 
 [[on-window-detected]]
+if.app-id="com.mitchellh.ghostty"
+run= [
+  "layout floating",
+  "move-node-to-workspace T",
+]
+
+[[on-window-detected]]
 if.app-id = 'com.github.wez.wezterm'
 run = "move-node-to-workspace T"
 
@@ -207,3 +214,7 @@ run = "move-node-to-workspace S"
 [[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
 run = "move-node-to-workspace C"
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = ['layout floating', 'move-node-to-workspace S']  # The callback itself
