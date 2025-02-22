@@ -1,5 +1,4 @@
 {
-  pkgs,
   config,
   ...
 }: let
@@ -11,7 +10,6 @@ in {
   environment.shellAliases."brew" = "${brewPrefix}/brew";
 
   homebrew.taps = [
-    "homebrew/cask-versions"
     "ktr0731/evans"
     "nikitabobko/tap"
   ];
@@ -25,12 +23,9 @@ in {
   homebrew.casks = [
     "aerospace"
     "apparency"
-    "discord"
-    "element"
-    "logseq"
+    "ghostty"
     "keycastr"
     "powershell"
-    "raindropio"
     "utm"
     "vlc"
     "wezterm"
