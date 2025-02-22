@@ -13,7 +13,7 @@
 in {
   home.shellAliases =
     {
-      "?" = "gpt";
+      "?" = "gpt -C";
       l = "eza -lh --group-directories-first -F --icons";
       la = "eza -aalhF --group-directories-first --icons";
       lt = "eza --tree --icons -d -a --ignore-glob '**/.git'";
