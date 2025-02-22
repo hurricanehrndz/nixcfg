@@ -46,16 +46,6 @@ in {
         text = cfg.settings;
       };
 
-      # launchd.agents.amethyst = {
-      #   enable = lib.mkDefault true;
-      #   config = {
-      #     ProgramArguments = [
-      #       "/Applications/Amethyst.app/Contents/MacOS/Amethyst"
-      #     ];
-      #     KeepAlive = true;
-      #     ProcessType = "Interactive";
-      #   };
-      # };
     })
   ];
 }
