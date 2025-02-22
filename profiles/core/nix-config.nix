@@ -60,7 +60,7 @@ in {
       experimental-features = ["nix-command" "flakes"];
       sandbox = l.mkDefault (!isDarwin);
       allowed-users = ["*"];
-      trusted-users = ["root" "@wheel"];
+      trusted-users = ["@wheel"];
     };
 
     gc.automatic = true;
