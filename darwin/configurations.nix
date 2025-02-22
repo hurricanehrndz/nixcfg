@@ -79,15 +79,11 @@
     );
 in {
   flake.darwinConfigurations = {
-    CarlosslMachine = makeDarwinSystem "CarlosslMachine" {
-      system = "aarch64-darwin";
-      modules = [];
-    };
-    VPXK04PX7G = makeDarwinSystem "VPXK04PX7G" {
-      system = "aarch64-darwin";
-      modules = [];
-    };
     HX7YG952H5 = makeDarwinSystem "HX7YG952H5" {
+      system = "aarch64-darwin";
+      modules = [];
+    };
+    LH9KCR6DJX = makeDarwinSystem "LH9KCR6DJX" {
       system = "aarch64-darwin";
       modules = [];
     };

@@ -1,20 +1,21 @@
 {
   pkgs,
-  inputs,
+  lib,
   ...
 }: let
-  username = "carlos";
+  username = "chernand";
+  home = "/Users/${username}";
 in {
   users.users.${username} = {
-    home = "/Users/${username}";
+    inherit home;
     isHidden = false;
     shell = pkgs.zsh;
   };
 
   home-manager.users.${username} = hmArgs: {
     imports = with hmArgs.roles; developer ++ graphical;
-    home.stateVersion = "22.11";
+    home.stateVersion = "25.05";
   };
 
-  system.stateVersion = 4;
+  system.stateVersion = lib.mkForce 6;
 }
