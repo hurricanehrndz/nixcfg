@@ -4,7 +4,7 @@
   ...
 }: let
   l = lib // builtins;
-  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
+  inherit (pkgs.stdenv.hostPlatform) isLinux ;
 in {
   xdg.configFile."wezterm/wezterm.lua".source = ./config/wezterm.lua;
   home.packages =
