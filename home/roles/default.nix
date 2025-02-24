@@ -8,6 +8,7 @@ with profiles; let
     tmux
     direnv
     gpg
+    ssh
   ];
   neovim =
     base
