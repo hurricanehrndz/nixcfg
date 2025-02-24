@@ -21,6 +21,11 @@ in {
      file = "${self}/secrets/darwin/env/zsh_vars.age";
      path = "${home}/.config/zsh/zsh_vars";
    };
+   "darwin/mods/conf.yml" = {
+     inherit owner group;
+     file = "${self}/secrets/darwin/mods/conf.yml.age";
+     path = "${home}/.config/mods/mods.yml";
+    };
  };
   users.users.${username} = {
     inherit home;
