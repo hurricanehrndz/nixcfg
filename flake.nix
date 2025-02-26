@@ -57,6 +57,10 @@
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
 
+    # encryption tools
+    strongbox-src.url = "github:uw-labs/strongbox";
+    strongbox-src.flake = false;
+
     # personal dev environment
     pdenv.url = "github:hurricanehrndz/pdenv";
 

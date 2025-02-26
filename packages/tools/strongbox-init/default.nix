@@ -1,19 +1,18 @@
 {pkgs, ...}: let
-  name = "strongbox-init";
-  script = pkgs.writeShellScriptBin name ''
-    DATE=$(ddate +'the %e of %B%, %Y')
-    cowsay Hello, world! Today is $DATE.
-  '';
+  script-name = "strongbox-init";
+  script-src = builtins.readFile ./script.sh;
+  script = pkgs.writeShellScriptBin script-name script-src;
   nativeBuildInputs = with pkgs; [
-    cowsay ddate
+    coreutils
+    gawk
   ];
 in
   pkgs.symlinkJoin {
-    inherit name;
+    name = script-name;
 
     paths = [script] ++ nativeBuildInputs;
 
     buildInputs = [pkgs.makeWrapper];
 
-    postBuild = "wrapProgram $out/bin/${name} --prefix PATH : $out/bin";
+    postBuild = "wrapProgram $out/bin/${script-name} --prefix PATH : $out/bin";
   }
