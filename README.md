@@ -29,7 +29,7 @@ the secrets configuration with host's new ssh public key and rekey the secrets.
 This method is not recommend, but it is here for documentation and reference
 purposes.
 
-Copy user private id_ed25519 age key to bootstrap instance, place in the usual
+Copy user private id_ed25519 age key to bootstrap instance, place it in the usual
 place `/home/hurricane/.ssh`.
 
 ```console
