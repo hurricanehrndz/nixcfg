@@ -28,7 +28,9 @@ with profiles; let
     ];
   developer =
     neovim
-    ++ [];
+    ++ [
+      encryption
+    ];
   graphical = [
     wezterm
     tillingwm

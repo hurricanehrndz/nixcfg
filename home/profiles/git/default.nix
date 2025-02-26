@@ -88,15 +88,25 @@
         "git@github.com:" = {
           pushInsteadOf = [
             "github:"
+            "gh:"
             "git://github.com/"
             "https://github.com/"
           ];
         };
         "https://github.com/" = {
-          insteadOf = "github:";
+          insteadOf = [
+            "github:"
+            "gh:"
+          ];
+        };
+        "git@github.com:hurricanehrndz/" = {
+          insteadOf = "me:";
         };
         "git@github.yelpcorp.com:" = {
-          insteadOf = "https://github.yelpcorp.com/";
+          insteadOf = [
+            "y:"
+            "https://github.yelpcorp.com/"
+          ];
         };
       };
     };
