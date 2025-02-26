@@ -7,5 +7,6 @@
     sops
     age
     packages.strongbox
+    packages.strongbox-init
   ];
 }
