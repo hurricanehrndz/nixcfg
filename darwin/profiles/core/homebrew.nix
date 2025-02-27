@@ -59,6 +59,7 @@ in
       "pipx"
       "pre-commit"
       "python@3.12"
+      "python@3.10"
       "rbenv"
       "ruby-install"
       "shellcheck"
