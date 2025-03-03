@@ -7,7 +7,7 @@ let
     HX7YG952H5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJx4/mWsYx2CEjDrffAW0UqlFzkG7Kz7NIIb28KSrHxd";
   };
   userKeys = {
-    hurricane = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPFyXsPXbWMk433W+o+VwH7PasFbReJAEjHxcgUKhJ4P";
+    hurricane = "age1vagysxgt3udd2ctpvpcn7sm04dg382tvzmn9ss83v9apg450pu4skplnde";
   };
   lucyKeys = [
     machineKeys.lucy
