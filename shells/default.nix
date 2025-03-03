@@ -1,6 +1,5 @@
 {
   pkgs,
-  inputs,
   flake,
   ...
 }: let
@@ -14,7 +13,8 @@ in
     packages = with pkgs;[
       alejandra
       nixpkgs-fmt
-      git-crypt
+      flake.packages.strongbox
+      flake.packages.strongbox-init
       nix
     ] ++ (lib.optionals isLinux [ flake.packages.nixos-install-init ]);
     commands = [
