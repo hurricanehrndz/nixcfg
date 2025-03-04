@@ -28,6 +28,7 @@ in {
     "utm"
     "vlc"
     "wezterm"
+    "superkey"
   ];
 
   homebrew.masApps = {
