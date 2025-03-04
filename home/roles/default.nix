@@ -8,7 +8,6 @@ with profiles; let
     tmux
     gpg
     ssh
-    keyboard
   ];
   neovim =
     base
@@ -35,9 +34,7 @@ with profiles; let
     ];
   graphical = [
     wezterm
-    tillingwm
     ghostty
-    # keyboard # yabai keybindings via skhdrc
   ];
 in {
   inherit

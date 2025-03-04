@@ -8,7 +8,6 @@
 in {
   imports = [
     ./homebrew.nix
-    inputs.agenix.darwinModules.age
   ];
 
   # Administrative users on Darwin systems are part of the admin group.

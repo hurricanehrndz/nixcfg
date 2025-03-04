@@ -4,7 +4,7 @@
   ...
 }: let
   inherit (self) inputs sharedProfiles;
-  inherit (self.nixosModules) homeManagerSettings;
+  inherit (self.homeModules) homeManagerSettings;
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
   roles = import ./roles {inherit sharedProfiles nixosProfiles;};

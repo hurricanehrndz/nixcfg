@@ -39,7 +39,7 @@
         inputs',
         packages,
         ...
-      }: agrs: {
+      }: args: {
         _module.args = {inherit inputs' packages;};
       }))
     ];
@@ -58,8 +58,7 @@ in {
     # make roles and poriles available to nixos configs and darwin configs
     #
 
-    nixosModules.homeManagerSettings = settingsModule;
-    darwinModules.homeManagerSettings = settingsModule;
+    homeModules.homeManagerSettings = settingsModule;
   };
 
   perSystem = {

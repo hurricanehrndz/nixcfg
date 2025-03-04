@@ -22,11 +22,11 @@
   ...
 }: let
   inherit (self) inputs sharedProfiles;
-  inherit (self.darwinModules) homeManagerSettings;
+  inherit (self.homeModules) homeManagerSettings;
 
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
-  # darwinModules = l.rakeLeaves ./modules;
+  darwinModules = l.rakeLeaves ./modules;
   darwinMachines = l.rakeLeaves ./machines;
   darwinProfiles = l.rakeLeaves ./profiles;
 
@@ -37,6 +37,7 @@
     darwinProfiles.core
     homeManagerSettings
     inputs.home-manager.darwinModules.home-manager
+    inputs.agenix.darwinModules.age
   ];
 
   makeDarwinSystem = hostName: darwinArgs @ {system, ...}:
@@ -52,8 +53,9 @@
           pkgs = darwinArgs.pkgs or pkgs;
           modules =
             defaultModules
-            # ++ (l.recAttrValues darwinModules)
+            ++ (l.recAttrValues darwinModules)
             ++ roles.workstation
+            ++ (darwinArgs.modules or [])
             ++ [
               {
                 _module.args = {
@@ -78,6 +80,7 @@
         }
     );
 in {
+  flake.darwinModules = darwinModules;
   flake.darwinConfigurations = {
     HX7YG952H5 = makeDarwinSystem "HX7YG952H5" {
       system = "aarch64-darwin";

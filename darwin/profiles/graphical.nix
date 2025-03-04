@@ -20,7 +20,6 @@ in {
   # ];
 
   homebrew.casks = [
-    "aerospace"
     "apparency"
     "ghostty"
     "keycastr"
@@ -28,8 +27,11 @@ in {
     "utm"
     "vlc"
     "wezterm"
-    "superkey"
   ];
+
+  programs.superkey.enable = true;
+  programs.aerospace.enable = true;
+  programs.aerospace.settings = builtins.readFile ./aerospace.toml;
 
   homebrew.masApps = {
     "Tailscale" = 1475387142;
