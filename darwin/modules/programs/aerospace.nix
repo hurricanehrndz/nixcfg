@@ -49,7 +49,6 @@ in {
             "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace"
           ];
           RunAtLoad = true;
-          KeepAlive.SuccessfulExit = false;
         };
       };
     };

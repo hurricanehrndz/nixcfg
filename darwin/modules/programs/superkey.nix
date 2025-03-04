@@ -30,7 +30,6 @@ in {
             "/Applications/Superkey.app/Contents/MacOS/Superkey"
           ];
           RunAtLoad = true;
-          KeepAlive.SuccessfulExit = false;
         };
       };
     };
