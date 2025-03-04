@@ -10,7 +10,6 @@ in {
   environment.shellAliases."brew" = "${brewPrefix}/brew";
 
   homebrew.taps = [
-    "ktr0731/evans"
     "nikitabobko/tap"
   ];
 

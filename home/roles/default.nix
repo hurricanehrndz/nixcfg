@@ -6,7 +6,6 @@ with profiles; let
     shellAliases
     fzf
     tmux
-    direnv
     gpg
     ssh
   ];
@@ -30,6 +29,8 @@ with profiles; let
     neovim
     ++ [
       encryption
+      direnv
+      misc
     ];
   graphical = [
     wezterm

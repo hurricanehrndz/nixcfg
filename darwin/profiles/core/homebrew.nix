@@ -44,7 +44,6 @@ in
       "cloudflare-wrangler2"
       "docker"
       "docker-compose"
-      "evans" # grpc
       "fswatch"
       "go"
       "goreleaser"
@@ -64,8 +63,6 @@ in
       "ruby-install"
       "shellcheck"
       "sponge"
-      "swiftformat"
-      "swiftlint"
       "wakeonlan"
       "wireguard-tools"
     ];

@@ -11,7 +11,7 @@
     fx #        <- interactive terminal json viewer                  => <https://github.com/antonmedv/fx>
     glow #      <- charmbracelet's markdown cli renderer
     (ripgrep.override {withPCRE2 = true;})
-    trash-cli
+    gtrash
     yq
 
     # TODO: joy ride
@@ -21,5 +21,8 @@
     # AI
     mods
     packages.gpt
+
+    # grpc
+    evans
   ];
 }
