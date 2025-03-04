@@ -26,4 +26,8 @@ in
         command = "alejandra $PRJ_ROOT";
       }
     ] ++ (lib.optionals isLinux [(pkgWithCategory "install" nixos-install-init)]);
+
+    devshell.startup.git-config.text = ''
+      ${flake.packages.strongbox-init}/bin/strongbox-init
+    '';
   }
