@@ -45,6 +45,7 @@ in {
 
   environment.etc = inputsToPaths inputs;
   nix = {
+    enable = true;
     package = pkgs.nix;
     nixPath = lib.mkForce [
       "nixpkgs=${pkgs.path}"
