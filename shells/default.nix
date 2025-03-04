@@ -9,9 +9,15 @@
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
   pkgWithCategory = category: package: {inherit package category;};
   aliases =
-    if isDarwin
-    then "alias nrb='darwin-rebuild switch --flake'"
-    else "";
+    ''
+      alias age='age -i $HOME/.strongbox_identity'
+      alias agenix='agenix -i $HOME/.strongbox_identity'
+    ''
+    + (
+      if isDarwin
+      then "alias nrb='darwin-rebuild switch --flake'"
+      else ""
+    );
 in
   pkgs.devshell.mkShell {
     name = "default";
