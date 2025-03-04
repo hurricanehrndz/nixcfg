@@ -4,12 +4,18 @@
   ...
 }:
 lib.mkMerge [
-  {
-    home.packages = with pkgs; [];
-  }
   # enable skhd here, because it autoreloads config on changes
   (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-    services.skhd.enable = true;
-    services.skhd.configPath = ./skhdrc;
+    launchd.agents.superkey = {
+      enable = true;
+      config = {
+        Program = "/Applications/Superkey.app/Contents/MacOS/Superkey";
+        ProgramArguments = [
+          "/Applications/Superkey.app/Contents/MacOS/Superkey"
+        ];
+        RunAtLoad = true;
+        KeepAlive.SuccessfulExit = false;
+      };
+    };
   })
 ]
