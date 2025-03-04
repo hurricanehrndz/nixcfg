@@ -49,5 +49,9 @@ in
       ${flake.packages.strongbox-init}/bin/strongbox-init
       export PRIVATE_KEY=$HOME/.strongbox_identity
     '';
+    devshell.startup.agenix-req.text = ''
+      mkdir -p $HOME/.config/zsh
+      mkdir -p $HOME/.config/mods
+    '';
     devshell.startup.alias.text = aliases;
   }

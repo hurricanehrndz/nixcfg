@@ -1,7 +1,6 @@
 {
   self,
   pkgs,
-  inputs,
   ...
 }: let
   username = "chernand";
