@@ -41,6 +41,7 @@ in
 
     devshell.startup.git-config.text = ''
       ${flake.packages.strongbox-init}/bin/strongbox-init
+      export PRIVATE_KEY=$HOME/.strongbox_identity
     '';
     devshell.startup.alias.text = aliases;
   }
