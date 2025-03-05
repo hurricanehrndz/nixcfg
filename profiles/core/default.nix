@@ -35,7 +35,7 @@ in {
   environment.variables = {
     EDITOR = "vim";
     KERNEL_NAME =
-      if pkgs.stdenv.isDarwin
+      if isDarwin
       then "darwin"
       else "linux";
     LC_ALL = "en_US.UTF-8";
