@@ -1207,11 +1207,11 @@
         "yamllint-src": "yamllint-src"
       },
       "locked": {
-        "lastModified": 1740413109,
-        "narHash": "sha256-nbWusvUBun3hx1H3Qt9mZ86uvIhJFCN8Qh1W9ySQFAU=",
+        "lastModified": 1741371359,
+        "narHash": "sha256-ZFL6g9x3fr21DMqIvsrSV0g2XY24uEvi+pIAt5sDSL0=",
         "owner": "hurricanehrndz",
         "repo": "pdenv",
-        "rev": "bd52b03244b1f656be18e2d7061ae49f06f5f370",
+        "rev": "c016df3c25431496ffb64309c6aeca8cf9b2c89d",
         "type": "github"
       },
       "original": {

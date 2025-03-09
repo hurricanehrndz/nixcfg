@@ -60,7 +60,7 @@ in
       "python@3.12"
       "python@3.10"
       "rbenv"
-      "ruby-install"
+      "ruby@3.2"
       "shellcheck"
       "sponge"
       "wakeonlan"
