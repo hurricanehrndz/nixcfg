@@ -57,6 +57,7 @@ in
       "mtr"
       "pipx"
       "pre-commit"
+      "virtualenv"
       "python@3.12"
       "python@3.10"
       "rbenv"

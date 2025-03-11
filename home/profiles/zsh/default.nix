@@ -49,9 +49,6 @@ in
         size = 10000;
       };
       initExtraFirst = ''
-        # xdg bin home
-        path=("$HOME/.local/bin" $path)
-
         # Initialise the builtin profiler -- run `zprof` to read results
         zmodload zsh/zprof
       '';
@@ -132,6 +129,9 @@ in
         fi
 
         # PATH
+        if [[ -d "/usr/local/munki" ]]; then
+          path=(/usr/local/munki $path)
+        fi
         path=($XDG_BIN_HOME $path)
       '';
     };
