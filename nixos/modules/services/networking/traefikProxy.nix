@@ -39,6 +39,7 @@ in
         };
         serversTransport.forwardingTimeouts.idleConnTimeout = "5s";
         api = {
+          basePath = "/traefik";
           insecure = true;
         };
         entryPoints = {
@@ -127,13 +128,11 @@ in
           http.routers = {
             # Route internal api
             traefik = with config.networking; {
-              rule = "Host(`${hostName}.${domain}`) && (PathPrefix(`/traefik`) || PathPrefix(`/api`))";
+              rule = "Host(`${hostName}.${domain}`) && PathPrefix(`/traefik`)";
               entryPoints = [
                 "websecure"
               ];
-              middlewares = [
-                "traefik-stripprefix"
-              ];
+              middlewares = [];
               service = "api@internal";
               tls.certResolver = "dnsResolver";
             };
