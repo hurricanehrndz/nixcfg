@@ -12,7 +12,6 @@ in {
     shfmt
     nodePackages_latest.prettier
     ruff
-    ruff-lsp
     gitlint
     gh
     zk
