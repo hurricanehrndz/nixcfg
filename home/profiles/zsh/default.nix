@@ -63,9 +63,11 @@ in
       localVariables = {
         ZSH_AUTOSUGGEST_USE_ASYNC = 1;
         ZSH_AUTOSUGGEST_MANUAL_REBIND = 1;
-        FORGIT_FZF_DEFAULT_OPTS = " --exact --cycle --height '80%' ";
       };
       envExtra = ''
+        # forgit
+        export FORGIT_FZF_DEFAULT_OPTS = " --exact --cycle --height '80%' ";
+
         if [[ -f  $HOME/.config/zsh/zsh_vars ]]; then
           source $HOME/.config/zsh/zsh_vars
         fi
