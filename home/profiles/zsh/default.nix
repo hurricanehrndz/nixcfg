@@ -36,22 +36,21 @@ in
       enable = true;
       dotDir = ".config/zsh";
       defaultKeymap = "viins";
-      enableCompletion = true;
       autocd = true;
       history = {
+        append = true;
         expireDuplicatesFirst = true;
         extended = true;
+        findNoDups = true;
+        saveNoDups = true;
         ignoreDups = true;
+        ignoreAllDups = true;
         ignorePatterns = ["rm *" "pkill *"];
         ignoreSpace = true;
-        save = 10000;
         share = true;
-        size = 10000;
+        save = 9000;
+        size = 9999;
       };
-      initExtraFirst = ''
-        # Initialise the builtin profiler -- run `zprof` to read results
-        zmodload zsh/zprof
-      '';
       initExtraBeforeCompInit = ''
         # ^X^S to insert sudo in front of command
         function prepend-sudo { # Insert "sudo " at the beginning of the line
@@ -69,8 +68,8 @@ in
         setopt longlistjobs             # Display PID when using jobs
         setopt nobeep                   # Never beep
         setopt noflowcontrol            # Disable flow control for Zsh, enable ^S
-        setopt incappendhistory
-        setopt share_history
+        setopt histreduceblanks         # compact consecutive white space chars (cool)
+        setopt histnostore              # don't store history related functio
         setopt completealiases
 
         bindkey -M vicmd '^X^S' prepend-sudo
@@ -146,9 +145,10 @@ in
         };
       };
     };
-    programs.fzf.enableZshIntegration = true;
+    programs.fzf.enableZshIntegration = false;
+    programs.direnv.enableZshIntegration = false;
     programs.zoxide = {
-      enable = true;
+      enable = false;
       enableZshIntegration = true;
     };
     home.activation.zsh_compile = lib.hm.dag.entryAfter ["installPackages"] ''
