@@ -51,6 +51,7 @@
     sharedModules = defaultModules;
     useGlobalPkgs = true;
     useUserPackages = true;
+    backupFileExtension = "bak";
   };
 in {
   flake = {
