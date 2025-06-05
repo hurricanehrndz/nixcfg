@@ -19,6 +19,7 @@
     '';
   });
   atuin-init = pkgs.writeText "atuin-init" (builtins.readFile ./atuin-init.zsh);
+  omp-config = pkgs.writeText "omp.zen.toml" (builtins.readFile ./omp.zen.toml);
 in
   with lib; {
     home.extraOutputsToInstall = [
@@ -106,6 +107,13 @@ in
           bindkey -M viins '^[OA' atuin-up-search-viins
           bindkey -M vicmd 'k' atuin-up-search-vicmd
         '')
+        (lib.mkOrder 890 ''
+          # omz settings
+          zstyle ':omz:plugins:eza' 'dirs-first' yes
+          zstyle ':omz:plugins:eza' 'git-status' yes
+          zstyle ':omz:plugins:eza' 'header' yes
+          zstyle ':omz:plugins:eza' 'icons' yes
+        '')
         # https://github.com/rweng/.zsh/blob/master/options.zsh
         (lib.mkOrder 910 ''
           setopt histreduceblanks         # compact consecutive white space chars (cool)
@@ -141,6 +149,12 @@ in
         '')
         # other plugins
         (lib.mkOrder 915 ''
+          # omz cpv
+          cpv() {
+            rsync -pogbr -hhh --backup-dir="/tmp/rsync-''${USERNAME}" -e /dev/null --progress "$@"
+          }
+          compdef _files cpv
+
           # fzf
           source ${config.programs.fzf.package}/share/fzf/completion.zsh
           source ${config.programs.fzf.package}/share/fzf/key-bindings.zsh
@@ -166,7 +180,21 @@ in
         '')
         (lib.mkOrder 1200 ''
           source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh
+
+          # starship
+          source ${
+            pkgs.runCommand "starship-init" {} ''
+              ${lib.getExe config.programs.starship.package} init zsh > $out
+            ''
+          }
         '')
+          # if [[ "$TERM_PROGRAM" != "Apple_Terminal" ]]; then
+          #   source ${
+          #     pkgs.runCommand "omp-init" {} ''
+          #       ${lib.getExe config.programs.oh-my-posh.package} init zsh --config ${omp-config} > $out
+          #     ''
+          #   }
+          # fi
       ];
       completionInit = ''
         autoload -Uz compinit
@@ -190,6 +218,16 @@ in
           file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
           src = pkgs.zsh-forgit;
         }
+        {
+          name = "omz-eza";
+          file = "share/oh-my-zsh/plugins/eza/eza.plugin.zsh";
+          src = pkgs.oh-my-zsh;
+        }
+        {
+          name = "omz-git";
+          file = "share/oh-my-zsh/plugins/git/git.plugin.zsh";
+          src = pkgs.oh-my-zsh;
+        }
       ];
     };
     programs.starship = {
@@ -207,11 +245,15 @@ in
     programs.direnv.enableZshIntegration = false;
     programs.zoxide.enable = true;
     programs.zoxide.enableZshIntegration = false;
-    programs.atuin.enable = true;
-    programs.atuin.enableZshIntegration = false;
-    programs.atuin.settings = {
-      auto_sync = false;
-      search_mode = "fuzzy";
+    programs.oh-my-posh.enable = true;
+    programs.oh-my-posh.enableZshIntegration = false;
+    programs.atuin = {
+      enable = true;
+      enableZshIntegration = false;
+      settings = {
+        auto_sync = false;
+        search_mode = "fuzzy";
+      };
     };
     home.activation.zsh_compile = lib.hm.dag.entryAfter ["installPackages"] ''
       rm -f "${config.xdg.configHome}/zsh/.zshrc.zwc"
