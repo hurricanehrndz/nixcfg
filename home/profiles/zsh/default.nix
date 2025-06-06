@@ -66,7 +66,7 @@ in
       };
       envExtra = ''
         # forgit
-        export FORGIT_FZF_DEFAULT_OPTS = " --exact --cycle --height '80%' ";
+        export FORGIT_FZF_DEFAULT_OPTS=" --exact --cycle --height '80%' "
 
         if [[ -f  $HOME/.config/zsh/zsh_vars ]]; then
           source $HOME/.config/zsh/zsh_vars
@@ -223,6 +223,11 @@ in
         {
           name = "omz-eza";
           file = "share/oh-my-zsh/plugins/eza/eza.plugin.zsh";
+          src = pkgs.oh-my-zsh;
+        }
+        {
+          name = "omz-lib-git";
+          file = "share/oh-my-zsh/lib/git.zsh";
           src = pkgs.oh-my-zsh;
         }
         {
