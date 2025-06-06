@@ -4,20 +4,10 @@
   flake,
   ...
 }: let
-  inherit (pkgs) agenix lib;
+  inherit (pkgs) age agenix lib;
   inherit (flake.packages) nixos-install-init;
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
   pkgWithCategory = category: package: {inherit package category;};
-  aliases =
-    ''
-      alias age='age -i $HOME/.strongbox_identity'
-      alias agenix='agenix -i $HOME/.strongbox_identity'
-    ''
-    + (
-      if isDarwin
-      then "alias nrb='darwin-rebuild switch --flake'"
-      else ""
-    );
 in
   pkgs.devshell.mkShell {
     name = "default";
@@ -36,6 +26,7 @@ in
     commands =
       [
         (pkgWithCategory "secrets" agenix)
+        (pkgWithCategory "secrets" age)
         {
           name = "format-all";
           category = "general commands";
@@ -53,5 +44,4 @@ in
       mkdir -p $HOME/.config/zsh
       mkdir -p $HOME/.config/mods
     '';
-    devshell.startup.alias.text = aliases;
   }

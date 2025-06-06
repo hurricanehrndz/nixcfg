@@ -38,5 +38,6 @@ in {
     home.stateVersion = "25.05";
   };
 
+  system.primaryUser = "${username}";
   system.stateVersion = lib.mkForce 6;
 }

@@ -2,6 +2,7 @@
   inputs',
   pkgs,
   packages,
+  lib,
   ...
 }: let
   nvim-pdenv = inputs'.pdenv.packages.pdenv;
@@ -12,13 +13,12 @@ in {
     shfmt
     nodePackages_latest.prettier
     ruff
-    ruff-lsp
     gitlint
     gh
     zk
     slides
   ];
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = lib.mkOrder 1090 ''
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
       export EDITOR="nvr -l"
       export VISUAL="nvr --remote-tab-silent"

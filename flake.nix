@@ -58,7 +58,7 @@
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
 
     # encryption tools
-    strongbox-src.url = "github:uw-labs/strongbox";
+    strongbox-src.url = "github:uw-labs/strongbox/v2.1.0";
     strongbox-src.flake = false;
 
     # personal dev environment

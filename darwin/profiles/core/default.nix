@@ -1,6 +1,5 @@
 {
   inputs,
-  config,
   pkgs,
   ...
 }: let
@@ -29,8 +28,8 @@ in {
     ncurses
   ];
 
-  system.activationScripts.postUserActivation.text = ''
-    if [[ ! -d "$HOME/.terminfo" ]]; then
+  system.activationScripts.postActivation.text = ''
+    if [[ -z "$(find /usr/share/terminfo -name "tmux")" ]]; then
       infocmp -x tmux-256color > /tmp/tmux-256color.src
       /usr/bin/tic -x /tmp/tmux-256color.src
     fi

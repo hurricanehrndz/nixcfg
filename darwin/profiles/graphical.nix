@@ -27,6 +27,7 @@ in {
     "utm"
     "vlc"
     "wezterm"
+    "windows-app"
   ];
 
   programs.superkey.enable = true;
