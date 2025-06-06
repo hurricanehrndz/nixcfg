@@ -130,6 +130,22 @@ in {
       ];
     };
   };
+  systemd.timers.update-scrutiny = {
+    timerConfig = {
+      Unit = "update-scrutiny.service";
+      OnCalendar = "Mon 02:00";
+    };
+    wantedBy = [ "timers.target" ];
+  };
+  systemd.services.update-scrutiny = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = lib.getExe (pkgs.writeShellScriptBin "update-scrutiny" ''
+          ${pkgs.podman}/bin/podman pull "ghcr.io/analogj/scrutiny"
+          ${pkgs.systemd}/bin/systemctl try-restart podman-scrutiny.service
+      '');
+    };
+  };
   services.traefikProxy.dynamicConfigOptions."scrutiny" = {
     enable = true;
     value = {
