@@ -41,6 +41,7 @@ in
         api = {
           basePath = "/traefik";
           insecure = true;
+          dashboard = true;
         };
         entryPoints = {
           web = {
@@ -103,11 +104,6 @@ in
         enable = true;
         value = {
           http.middlewares = {
-            traefik-stripprefix = {
-              stripPrefix.prefixes = [
-                "/traefik"
-              ];
-            };
             add-permanent-slash = {
               redirectregex = {
                 permanent = true;
