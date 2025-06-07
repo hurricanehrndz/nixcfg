@@ -74,6 +74,7 @@ in {
         (with roles; mediaserver)
         ++ [
           inputs.snapraid-runner.nixosModules.snapraid-runner
+          nixosProfiles.networking.homarr
           nixosProfiles.autoUpdateContainers
         ];
     };

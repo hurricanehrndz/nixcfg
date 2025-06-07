@@ -30,4 +30,5 @@ in
 
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepKeys;
   "services/traefik/env.age".publicKeys = deepKeys;
+  "services/homarr/env.age".publicKeys = deepKeys;
 }
