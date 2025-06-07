@@ -74,6 +74,7 @@ in {
         (with roles; mediaserver)
         ++ [
           inputs.snapraid-runner.nixosModules.snapraid-runner
+          nixosProfiles.autoUpdateContainers
         ];
     };
     Hal9000 = makeNixosSystem "Hal9000" {
