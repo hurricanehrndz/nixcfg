@@ -63,7 +63,7 @@
     ];
   };
 
-  snapraid-runner = {
+  services.snapraid-runner = {
     enable = true;
     notification = {
       enable = true;
