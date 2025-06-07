@@ -10,7 +10,7 @@
       hardware.opengl
       networking.dhcp-all
       networking.reverse-proxy
-      networking.monitoring
+      services.monitoring
       plex
     ]);
 in {
