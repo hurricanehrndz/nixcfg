@@ -61,7 +61,7 @@ sudo mkfs.btrfs -f -L nixos "${btrfs_part}"
 echo -e "${Green}Mounting partitions and creating BTRFS subvolumes${NC}"
 subvols=(home var nix tmp srv opt root)
 sudo mount "${btrfs_part}" /mnt
-btrfs subvolume create /mnt/@
+sudo btrfs subvolume create /mnt/@
 for subvol in "${subvols[@]}"; do
   echo "Creating subvol: ${subvol}..."
   sudo btrfs subvolume create "/mnt/@${subvol}"
@@ -69,7 +69,7 @@ done
 echo "Disable Copy on Write on var subvol"
 sudo chattr +C /mnt/@var
 
-default_subvol_id=$(btrfs subvol list /mnt | awk '/@$/{print $2; exit}')
+default_subvol_id=$(sudo btrfs subvol list /mnt | awk '/@$/{print $2; exit}')
 echo "Setting @ with vol id ${default_subvol_id} to default subvol"
 sudo btrfs subvolume set-default "${default_subvol_id}" /mnt
 
@@ -89,20 +89,21 @@ echo "Starting nixos install"
 sudo nixos-generate-config --root /mnt
 sudo mv /mnt/etc/nixos "${HOME}/generated-config"
 
-echo "Cloning nixcfg and updating hardware configuration"
-git clone https://github.com/hurricanehrndz/nixcfg.git "${HOME}/nixcfg"
-pushd "${HOME}/nixcfg" || exit 1
-git-crypt unlock
-popd || exit 1
+if [[ ! -d "${HOME}/nixcfg" ]]; then
+    echo -e "${Red} nixcfg missing${NC}"
+    exit 1
+fi
+
 # fix btrfs compression mounting
-sed -e 's%\(subvol=@\w\+"\).*%\1 "noatime" "compress=zstd" ];%' \
-    "$HOME/generated-config/hardware-configuration.nix" > "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
+sed -e 's%\(subvol=@\w*"\).*%\1 "noatime" "compress=zstd" ];%' \
+    "$HOME/generated-config/hardware-configuration.nix" >|"${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
+
 # fix swap
 swap_uuid=$(sudo blkid "${swap_part}" | awk 'match($0, /UUID="(\S+)"/, m) {print m[1]}')
-sed -i -e "s%swapDevices.*%swapDevices = [ { device = "/dev/disk/by-uuid/${swap_uuid}"; } ];%" \
+sed -i -e "s%swapDevices.*%swapDevices = [ { device = \"/dev/disk/by-uuid/${swap_uuid}\"; } ];%" \
     "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
-# fix options for root
-echo "${Red}Check hardware-configuration for machine, make sure swap and root are correct${NC}"
+
+echo -e "${Red}Check hardware-configuration for machine, make sure swap and root are correct${NC}"
 read -r -p "About to start nixos-install, press enter when ready to continue" response
 
 sudo nixos-install --root /mnt --no-root-passwd --flake "${HOME}/nixcfg#${flake_host}"
