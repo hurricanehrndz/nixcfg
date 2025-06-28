@@ -80,6 +80,10 @@ in {
     };
     Hal9000 = makeNixosSystem "Hal9000" {
       system = "x86_64-linux";
+      modules = [
+        nixosProfiles.autoUpdateContainers
+        nixosProfiles.networking.reverse-proxy
+      ];
     };
     Lucy = makeNixosSystem "Lucy" {
       system = "x86_64-linux";
