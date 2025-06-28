@@ -45,6 +45,7 @@ in {
     dnsutils
     nmap
     wget
+    ethtool
     # whois
 
     ## === Monitoring ===
@@ -60,6 +61,8 @@ in {
     file #     <- a program that shows the type of files
     glow #     <- charmbracelet's markdown cli renderer
     unzip #    <- *.zip archive extraction utility
+    exfat
+    exfatprogs
 
     ## === nix ===
     nix-index
