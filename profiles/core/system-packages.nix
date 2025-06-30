@@ -46,6 +46,7 @@ in {
     nmap
     wget
     ethtool
+    speedtest-cli
     # whois
 
     ## === Monitoring ===
