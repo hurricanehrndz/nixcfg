@@ -1233,6 +1233,22 @@
         "type": "github"
       }
     },
+    "realtek-r8152-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749324735,
+        "narHash": "sha256-ZgZ62auLwd0LjvQUGg7uT3fMThGEArd2D4KDxj82LFc=",
+        "owner": "wget",
+        "repo": "realtek-r8152-linux",
+        "rev": "63a7f995b6476fa9a9fc9d466ed8149f690280cb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wget",
+        "repo": "realtek-r8152-linux",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -1254,6 +1270,7 @@
         "nixpkgs-pr259776": "nixpkgs-pr259776",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pdenv": "pdenv",
+        "realtek-r8152-src": "realtek-r8152-src",
         "snapraid-runner": "snapraid-runner",
         "strongbox-src": "strongbox-src",
         "tmux-catppuccin-src": "tmux-catppuccin-src"
