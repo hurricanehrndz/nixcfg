@@ -1,8 +1,6 @@
 {
-  self,
-  config,
-  lib,
   pkgs,
+  config,
   ...
 }: {
   imports = [
@@ -10,49 +8,85 @@
     ./users.nix
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
   boot.loader.timeout = 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   networking.domain = "hrndz.ca";
 
-  virtualisation.oci-containers = {
-    backend = "podman";
-    containers.homeassistant = {
-      volumes = ["/var/lib/home-assistant:/config"];
-      environment.TZ = "America/Edmonton";
-      image = "ghcr.io/home-assistant/home-assistant:stable"; # Warning: if the tag does not change, the image will not be updated
-      extraOptions = [
-        "--network=host"
-        "--pull=always"
-      ];
-    };
-    containers.zwavejs = {
-      volumes = ["/var/lib/zwavejs:/usr/src/app/store"];
-      ports = [
-        "8091:8091"
-        "3000:3000"
-      ];
-      environment.TZ = "America/Edmonton";
-      image = "zwavejs/zwave-js-ui:latest";
-      extraOptions = [
-        "--pull=always"
-        "--device=/dev/serial/by-id/usb-Silicon_Labs_Zooz_ZST10_700_Z-Wave_Stick_9a08dfb2ac21ec11bb06be942c86906c-if00-port0:/dev/zwave:rw" # Example, change this to match your own hardware
-      ];
+  virtualisation = {
+    podman = {
+      enable = true;
+
+      # Create a `docker` alias for podman, to use it as a drop-in replacement
+      dockerCompat = true;
+
+      # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork.settings.dns_enabled = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+        flags = ["--all"];
+      };
     };
   };
 
-  system.activationScripts.zwaveDirs = ''
-    mkdir -p /var/lib/{zwavejs,home-assistant}
-  '';
+  virtualisation.oci-containers.containers = {
+    omada-controller = {
+      image = "docker.io/mbentley/omada-controller:latest";
+      environment = {
+        TZ = "America/Edmonton";
+      };
+      ports = [
+        "8043:8043" # management UI
+        "127.0.0.1:8843:8843" # captive portal
+        "29810:29810/udp"
+        "29811-29816:29811-29816"
+      ];
+      volumes = [
+        "omada-data:/opt/tplink/EAPController/data"
+        "omada-logs:/opt/tplink/EAPController/logs"
+      ];
+      extraOptions = [
+        "--ulimit=nofile=4096:8192"
+      ];
+    };
+  };
+  systemd.services."podman-omada-controller".serviceConfig.LimitNOFILE = "4096:8192";
 
-  systemd.services."systemd-backlight@".enable = false;
+  services.traefikProxy.dynamicConfigOptions."omada" = {
+    enable = true;
+    value = {
+      http.services = {
+        "omada" = {
+          loadbalancer.servers = [
+            {url = "https://localhost:8043/";}
+          ];
+        };
+      };
+      http.routers = {
+        "omada" = {
+          rule = "Host(`omada.${config.networking.domain}`)";
+          entryPoints = [
+            "websecure"
+          ];
+          service = "omada";
+          tls.certResolver = "dnsResolver";
+        };
+      };
+    };
+  };
 
-  services.upower.ignoreLid = true;
-  services.logind.lidSwitch = "ignore";
+  networking.firewall.allowedTCPPorts = [8043];
+  networking.firewall.allowedUDPPorts = [29810];
+  networking.firewall. allowedTCPPortRanges = [
+    {
+      from = 29811;
+      to = 29816;
+    }
+  ];
 
-  networking.firewall.allowedTCPPorts = [8123 8091];
-
-  system.stateVersion = "23.11";
+  system.stateVersion = "25.05";
 }
 # vim: set et sw=2 :
+

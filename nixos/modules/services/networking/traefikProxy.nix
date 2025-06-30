@@ -38,6 +38,7 @@ in
           level = "DEBUG";
         };
         serversTransport.forwardingTimeouts.idleConnTimeout = "5s";
+        serversTransport.insecureSkipVerify = true;
         api = {
           basePath = "/traefik";
           insecure = true;

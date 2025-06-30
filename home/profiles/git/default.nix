@@ -1,5 +1,10 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  packages,
+  ...
+}: {
   home.packages = with pkgs; [
+    packages.strongbox
     git-crypt
     difftastic
     delta
@@ -91,7 +96,7 @@
         # https://github.com/bphenriques/dotfiles/blob/4fce72c08e7d2b1c9eadbaefb8db3d2b8ac99eb9/bin/sops-git-filter.sh
         # alt: https://github.com/uw-labs/strongbox?tab=readme-ov-file#existing-project
         strongbox = {
-          clean  = "strongbox -clean %f";
+          clean = "strongbox -clean %f";
           smudge = "strongbox -smudge %f";
           required = true;
         };
