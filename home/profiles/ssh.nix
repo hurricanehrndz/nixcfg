@@ -7,19 +7,8 @@
     serverAliveCountMax = 2;
     serverAliveInterval = 300;
     matchBlocks = {
-      "lucy" = {
-        hostname = "172.28.250.16";
-        user = "hurricane";
-        forwardAgent = true;
-        remoteForwards = [
-          {
-            host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
-            bind.address = "/run/user/1000/gnupg/S.gpg-agent";
-          }
-        ];
-      };
       "deepthought" = {
-        hostname = "172.28.250.15";
+        hostname = "172.24.224.15";
         user = "hurricane";
         forwardAgent = true;
         remoteForwards = [
@@ -29,7 +18,7 @@
           }
         ];
       };
-      "172.28.*" = {
+      "172.24.*" = {
         user = "hurricane";
         forwardAgent = true;
         remoteForwards = [
