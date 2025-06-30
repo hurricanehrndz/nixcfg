@@ -88,8 +88,20 @@ in {
     (mkIf isLinux {
       services.gpg-agent = {
         enable = true;
-        enableSshSupport = true;
+        enableSshSupport = false;
+        enableZshIntegration = false;
+        extraConfig = ''
+          enable-ssh-support
+        '';
       };
+      home.sessionVariablesExtra = ''
+        # only set SSH_AUTH_SOCK if not SSH session
+        if [[ -z "''${SSH_CLIENT}" ]]; then
+          export GPG_TTY=$TTY
+          ${gpgPkg}/bin/gpg-connect-agent --quiet updatestartuptty /bye > /dev/null
+          export SSH_AUTH_SOCK="$(${gpgPkg}/bin/gpgconf --list-dirs agent-ssh-socket)"
+        fi
+      '';
     })
 
     (mkIf isDarwin {
