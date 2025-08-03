@@ -70,10 +70,6 @@
 
     tmux-catppuccin-src.url = "github:catppuccin/tmux";
     tmux-catppuccin-src.flake = false;
-
-    # drivers
-    realtek-r8152-src.url = "github:wget/realtek-r8152-linux";
-    realtek-r8152-src.flake = false;
   };
 
   outputs = inputs @ {
