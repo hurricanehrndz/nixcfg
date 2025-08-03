@@ -36,7 +36,7 @@ in
 
     programs.zsh = {
       enable = true;
-      dotDir = ".config/zsh";
+      dotDir = "${config.xdg.configHome}/zsh";
       defaultKeymap = "viins";
       autocd = true;
       # zprof.enable = true;
