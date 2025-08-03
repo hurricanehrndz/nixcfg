@@ -14,7 +14,6 @@
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "mpt3sas" "nvme" "usb_storage" "usbhid" "sd_mod"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
-  boot.extraModulePackages = [];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/c92e4a99-1f39-4d9b-b22b-03e656189ba5";
@@ -75,9 +74,29 @@
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
+  # networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault false;
+  # networking.interfaces.enp0s20f0u3.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
+
+  systemd.network.enable = true;
+  systemd.services."systemd-networkd".environment.SYSTEMD_LOG_LEVEL = "debug";
+
+  systemd.network.networks."10-enp0s31f6" = {
+    matchConfig.Name = "enp0s31f6";
+    networkConfig = {
+      DHCP = "ipv6";
+      IPv6PrivacyExtensions = false;
+      Address = "172.24.224.15/23";
+      Gateway = "172.24.224.1";
+      DNS = "172.24.224.1";
+    };
+
+    dhcpV6Config.UseDNS = "yes";
+
+    # this port is not always connected and not required to be online
+    # linkConfig.RequiredForOnline = "no";
+  };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

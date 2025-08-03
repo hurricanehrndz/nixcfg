@@ -4,7 +4,7 @@
     nrb = "sudo darwin-rebuild switch --flake";
   };
   nixosAliases = {
-    nrb = "nixos-rebuild switch --use-remote-sudo";
+    nrb = "nixos-rebuild switch --sudo";
   };
 in {
   home.shellAliases =
