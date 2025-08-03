@@ -47,6 +47,8 @@ in {
     wget
     ethtool
     speedtest-cli
+    fast-cli
+    iperf3
     # whois
 
     ## === Monitoring ===
@@ -68,5 +70,8 @@ in {
     ## === nix ===
     nix-index
     manix
+
+    ## hardware info
+    dmidecode
   ];
 }
