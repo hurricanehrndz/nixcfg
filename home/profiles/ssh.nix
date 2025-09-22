@@ -1,12 +1,20 @@
 {
   programs.ssh = {
     enable = true;
-    addKeysToAgent = "yes";
-    controlPersist = "10m";
-    controlPath = "~/.ssh/master-%r@%n:%p";
-    serverAliveCountMax = 2;
-    serverAliveInterval = 300;
+    enableDefaultConfig = false;
     matchBlocks = {
+      "*" = {
+        forwardAgent = false;
+        addKeysToAgent = "yes";
+        compression = false;
+        serverAliveCountMax = 2;
+        serverAliveInterval = 300;
+        hashKnownHosts = false;
+        userKnownHostsFile = "~/.ssh/known_hosts";
+        controlMaster = "yes";
+        controlPersist = "10m";
+        controlPath = "~/.ssh/master-%r@%n:%p";
+      };
       "deepthought" = {
         hostname = "172.24.224.15";
         user = "hurricane";
