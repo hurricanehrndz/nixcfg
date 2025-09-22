@@ -42,11 +42,6 @@ in {
   system.defaults.SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
   # Prevent nagging when opening downloaded apps.
   # system.defaults.LaunchServices.LSQuarantine = false;
-  system.defaults.alf.allowdownloadsignedenabled = 0;
-  system.defaults.alf.allowsignedenabled = 0;
-  system.defaults.alf.globalstate = 0;
-  system.defaults.alf.loggingenabled = 0;
-  system.defaults.alf.stealthenabled = 0;
 
   ###: DESKTOPS/SPACES/DOCK ====================================================
 
