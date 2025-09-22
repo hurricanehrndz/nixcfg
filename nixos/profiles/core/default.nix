@@ -18,14 +18,24 @@
   };
 
   environment.systemPackages = with pkgs; [
-    dosfstools
-    gptfdisk
-    inetutils
-    iputils
+    # system info
+    dmidecode
     pciutils
     sysstat
     usbutils
     util-linux
+
+    # networking
+    inetutils
+    iputils
+    ethtool
+    fast-cli
+
+    # filesystems
+    exfat
+    exfatprogs
+    dosfstools
+    gptfdisk
   ];
 
   programs.git.enable = true;
