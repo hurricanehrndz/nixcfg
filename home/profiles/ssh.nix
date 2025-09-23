@@ -11,9 +11,9 @@
         serverAliveInterval = 300;
         hashKnownHosts = false;
         userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "yes";
+        controlMaster = "auto";
         controlPersist = "10m";
-        controlPath = "~/.ssh/master-%r@%n:%p";
+        controlPath = "~/.ssh/controlmasters/%r@%n:%p";
       };
       "deepthought" = {
         hostname = "172.24.224.15";
