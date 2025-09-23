@@ -11,5 +11,6 @@
       system-defaults
       tailscale
       virtualization
+      tinygo
     ]);
 in {inherit workstation;}
