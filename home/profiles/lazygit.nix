@@ -17,9 +17,9 @@ in {
     settings = {
       promptToReturnFromSubprocess = false;
       os = {
-        editCommand = "nvr -s -l"; # see 'Configuring File Editing' section
-        editCommandTemplate = "{{editor}} +{{line}} -- {{filename}}";
-        openCommand = "nvr -s -l {{filename}}";
+        edit = "nvr -s -l"; # see 'Configuring File Editing' section
+        editAtLine = "nvr -s -l +{{line}} -- {{filename}}";
+        open = "nvr -s -l {{filename}}";
       };
       git = {
         autoFetch = false;
