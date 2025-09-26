@@ -1,4 +1,4 @@
-{
+{pkgs, ...}: {
   homebrew.brews = [
     "tinygo"
     # required for tinyGO
@@ -6,5 +6,8 @@
   ];
   homebrew.taps = [
     "tinygo-org/tools"
+  ];
+  environment.systemPackages = with pkgs; [
+    esptool
   ];
 }
