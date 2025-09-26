@@ -17,7 +17,7 @@ in {
     settings = {
       promptToReturnFromSubprocess = false;
       os = {
-        edit = "nvr -s -l"; # see 'Configuring File Editing' section
+        edit = "nvr -s -l {{filename}}"; # see 'Configuring File Editing' section
         editAtLine = "nvr -s -l +{{line}} -- {{filename}}";
         open = "nvr -s -l {{filename}}";
       };
