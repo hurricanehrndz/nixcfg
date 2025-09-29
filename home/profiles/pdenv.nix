@@ -18,15 +18,15 @@ in {
     slides
   ];
   programs.zsh.initContent = lib.mkOrder 1090 ''
+    alias v="nvim"
     if [[ -n "$NVIM" || -n "$NVIM_LISTEN_ADDRESS" ]]; then
-      export EDITOR="nvr -l"
-      export VISUAL="nvr --remote-tab-silent"
-      alias vi="nvr -l"
-      alias vim="nvr -l"
-      alias nvim="nvr -l"
-      alias v="nvr -l"
+      export EDITOR="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
+      export VISUAL="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
+      alias vi="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
+      alias vim="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
+      alias nvim="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
+      alias v="nvr -s --remote-expr 'execute("LazygitCloseFocusLargest")' &&  nvr"
     fi
     alias gitlint="gitlint --contrib=CT1 --ignore body-is-missing,T3 -c T1.line-length=50 -c B1.line-length=72"
-    alias v="nvim"
   '';
 }
