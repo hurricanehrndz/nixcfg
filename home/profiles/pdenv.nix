@@ -7,15 +7,18 @@
   nvim-pdenv = inputs'.pdenv.packages.pdenv;
 in {
   home.packages = with pkgs; [
-    nvim-pdenv
-    neovim-remote
-    shfmt
-    nodePackages_latest.prettier
-    ruff
-    gitlint
     gh
-    zk
+    ghostscript
+    gitlint
+    imagemagick
+    neovim-remote
+    nodePackages_latest.prettier
+    nvim-pdenv
+    ruff
+    shfmt
     slides
+    zig
+    zk
   ];
   programs.zsh.initContent = lib.mkOrder 1090 ''
     alias v="nvim"
