@@ -16,10 +16,12 @@ in {
     enable = true;
     settings = {
       promptToReturnFromSubprocess = false;
-      os = {
-        edit = "nvr -s -l {{filename}}"; # see 'Configuring File Editing' section
-        editAtLine = "nvr -s -l +{{line}} -- {{filename}}";
-        open = "nvr -s -l {{filename}}";
+      # os = {
+      #   edit = "nvr -s -l {{filename}}"; # see 'Configuring File Editing' section
+      #   editAtLine = "nvr -s -l +{{line}} -- {{filename}}";
+      # };
+      gui = {
+        nerdFontsVersion = "3";
       };
       git = {
         autoFetch = false;
