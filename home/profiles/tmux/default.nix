@@ -9,13 +9,17 @@
 in {
   programs.tmux = {
     enable = true;
-    shortcut = "a";
     baseIndex = 1;
     keyMode = "vi";
     terminal = "tmux-256color";
     aggressiveResize = true;
     escapeTime = 10;
     extraConfig = ''
+      unbind C-b
+      set-option -g prefix C-a
+      bind-key C-a last-window
+      bind-key -N "Send the prefix key through to the application" a send-prefix
+
       set -g set-clipboard on
       set-option -sa terminal-overrides ',*256col*:RGB'
       set-option -g focus-events on
