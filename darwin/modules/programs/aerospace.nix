@@ -33,9 +33,17 @@ in {
     };
   };
   config = mkIf cfg.enable {
-    homebrew.casks = [
-      "aerospace"
-    ];
+    homebrew = {
+      taps = [
+        "nikitabobko/tap"
+      ];
+      casks = [
+        "aerospace"
+      ];
+      brews = [
+        "brew-install-path"
+      ];
+    };
     home-manager.users.${cfg.username} = {pkgs, ...}: {
       xdg.configFile."aerospace/aerospace.toml" = {
         text = cfg.settings;

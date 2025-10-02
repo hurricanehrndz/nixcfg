@@ -9,9 +9,6 @@ in {
   # Allow for usage of `brew` CLI without adding to `PATH`
   environment.shellAliases."brew" = "${brewPrefix}/brew";
 
-  homebrew.taps = [
-    "nikitabobko/tap"
-  ];
 
   # $ networksetup -listallnetworkservices
   # networking.knownNetworkServices = [
