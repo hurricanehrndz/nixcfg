@@ -119,7 +119,7 @@ in {
   system.defaults.NSGlobalDomain.NSWindowResizeTime = 0.001;
   system.defaults.NSGlobalDomain.PMPrintingExpandedStateForPrint = true;
   system.defaults.NSGlobalDomain.PMPrintingExpandedStateForPrint2 = true;
-  system.defaults.NSGlobalDomain._HIHideMenuBar = l.mkDefault false;
+  system.defaults.NSGlobalDomain._HIHideMenuBar = true;
   # Set the spring loading delay for directories. The default is the float `1.0`.
   system.defaults.NSGlobalDomain."com.apple.springing.delay" = 0.1;
   # Enable spring loading (expose) for directories.
