@@ -42,6 +42,7 @@ in
       "aspell"
       "carthage"
       "cloudflare-wrangler2"
+      "crush"
       "docker"
       "docker-compose"
       "fswatch"
@@ -68,6 +69,9 @@ in
       "wireguard-tools"
     ];
     casks = [
+    ];
+    taps = [
+      "charmbracelet/tap"
     ];
   };
 }
