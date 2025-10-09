@@ -35,6 +35,7 @@ with profiles; let
   graphical = [
     wezterm
     ghostty
+    sketchybar
   ];
 in {
   inherit
