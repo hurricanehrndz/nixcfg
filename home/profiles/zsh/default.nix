@@ -246,6 +246,7 @@ in
         directory = {
           fish_style_pwd_dir_length = 1;
         };
+        git.use_git_executable = true;
       };
     };
     programs.fzf.enableZshIntegration = false;
