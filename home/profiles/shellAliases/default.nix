@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   inherit (pkgs.stdenv) isDarwin;
   darwinAliases = {
-    nrb = "sudo darwin-rebuild switch --flake";
+    nrb = "sudo darwin-rebuild switch --flake ~/src/me/nixcfg";
   };
   nixosAliases = {
     nrb = "nixos-rebuild switch --sudo";
@@ -44,8 +44,8 @@ in {
       type = "type -a";
       rg = "rg -i -L";
       vimdiff = "nvim -d";
-
-      # Git
+      tree = "eza --icons=auto -T --header";
+      lt = "eza --icons=auto -T --header ";
 
       # virsh
       virsh = "virsh --connect='qemu:///system'";
