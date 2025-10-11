@@ -112,15 +112,15 @@ ctrl-shift-alt-minus = 'resize smart -50'
 ctrl-shift-alt-equal = 'resize smart +50'
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-ctrl-shift-alt-1 = 'workspace 1'
-ctrl-shift-alt-2 = 'workspace 2'
-ctrl-shift-alt-3 = 'workspace 3'
-ctrl-shift-alt-4 = 'workspace 4'
-ctrl-shift-alt-5 = 'workspace 5'
-ctrl-shift-alt-6 = 'workspace 6'
-ctrl-shift-alt-7 = 'workspace 7'
-ctrl-shift-alt-8 = 'workspace 8'
-ctrl-shift-alt-9 = 'workspace 9'
+# ctrl-shift-alt-1 = 'workspace 1'
+# ctrl-shift-alt-2 = 'workspace 2'
+# ctrl-shift-alt-3 = 'workspace 3'
+# ctrl-shift-alt-4 = 'workspace 4'
+# ctrl-shift-alt-5 = 'workspace 5'
+# ctrl-shift-alt-6 = 'workspace 6'
+# ctrl-shift-alt-7 = 'workspace 7'
+# ctrl-shift-alt-8 = 'workspace 8'
+# ctrl-shift-alt-9 = 'workspace 9'
 ctrl-shift-alt-w = 'workspace W' # web
 ctrl-shift-alt-a = 'workspace A' # audio
 ctrl-shift-alt-r = 'workspace R' # ramblings (chat)
@@ -131,19 +131,8 @@ ctrl-shift-alt-c = 'workspace C' # code (vs)
 ctrl-shift-alt-b = 'workspace B' # books
 ctrl-shift-alt-d = 'workspace D' # docs
 ctrl-shift-alt-f = 'workspace F' # firefox
-ctrl-shift-alt-p = 'workspace P' #
-ctrl-shift-alt-g = 'workspace G' #
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-ctrl-shift-alt-cmd-1 = 'move-node-to-workspace 1'
-ctrl-shift-alt-cmd-2 = 'move-node-to-workspace 2'
-ctrl-shift-alt-cmd-3 = 'move-node-to-workspace 3'
-ctrl-shift-alt-cmd-4 = 'move-node-to-workspace 4'
-ctrl-shift-alt-cmd-5 = 'move-node-to-workspace 5'
-ctrl-shift-alt-cmd-6 = 'move-node-to-workspace 6'
-ctrl-shift-alt-cmd-7 = 'move-node-to-workspace 7'
-ctrl-shift-alt-cmd-8 = 'move-node-to-workspace 8'
-ctrl-shift-alt-cmd-9 = 'move-node-to-workspace 9'
 ctrl-shift-alt-cmd-w = 'move-node-to-workspace W' # web
 ctrl-shift-alt-cmd-r = 'move-node-to-workspace R' # ramblings (chat)
 ctrl-shift-alt-cmd-a = 'move-node-to-workspace A' # audio
@@ -154,8 +143,6 @@ ctrl-shift-alt-cmd-c = 'move-node-to-workspace C' # code (vs)
 ctrl-shift-alt-cmd-b = 'move-node-to-workspace B' # books
 ctrl-shift-alt-cmd-d = 'move-node-to-workspace D' # docs
 ctrl-shift-alt-cmd-f = 'move-node-to-workspace F' # firefox
-ctrl-shift-alt-cmd-p = 'move-node-to-workspace P' #
-ctrl-shift-alt-cmd-g = 'move-node-to-workspace G' #
 
 # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
 alt-tab = 'workspace-back-and-forth'
