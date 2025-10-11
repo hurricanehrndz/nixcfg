@@ -1,6 +1,5 @@
 {profiles}:
 with profiles; let
-  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   base = [
     core
     zsh
@@ -37,10 +36,8 @@ with profiles; let
     [
       wezterm
       ghostty
-    ]
-    ++ (lib.optionals isDarwin [
       sketchybar
-    ]);
+    ];
 in {
   inherit
     base
