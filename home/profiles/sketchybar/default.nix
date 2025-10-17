@@ -14,4 +14,7 @@ in {
       recursive = true;
     };
   };
+  xdg.configFile = {
+    "sketchybar/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
+  };
 }

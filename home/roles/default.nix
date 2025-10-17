@@ -36,7 +36,7 @@ with profiles; let
     [
       wezterm
       ghostty
-      sketchybar
+      # sketchybar
     ];
 in {
   inherit
