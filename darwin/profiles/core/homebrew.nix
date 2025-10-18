@@ -56,6 +56,7 @@ in
       "makensis"
       "mingw-w64"
       "mtr"
+      "opencode"
       "pipx"
       "pre-commit"
       "python@3.10"
@@ -72,6 +73,7 @@ in
     ];
     taps = [
       "charmbracelet/tap"
+      "sst/tap"
     ];
   };
 }
