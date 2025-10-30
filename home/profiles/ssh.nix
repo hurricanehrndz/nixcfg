@@ -9,11 +9,8 @@
         compression = false;
         serverAliveCountMax = 2;
         serverAliveInterval = 300;
-        hashKnownHosts = false;
+        hashKnownHosts = true;
         userKnownHostsFile = "~/.ssh/known_hosts";
-        controlMaster = "auto";
-        controlPersist = "10m";
-        controlPath = "~/.ssh/controlmasters/%r@%n:%p";
       };
       "deepthought" = {
         hostname = "172.24.224.15";

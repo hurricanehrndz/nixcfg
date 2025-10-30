@@ -58,7 +58,7 @@ in {
 
     ## === Files ===
 
-    du-dust #  <- like du but more intuitive
+    dust #  <- like du but more intuitive
     file #     <- a program that shows the type of files
     glow #     <- charmbracelet's markdown cli renderer
     unzip #    <- *.zip archive extraction utility
