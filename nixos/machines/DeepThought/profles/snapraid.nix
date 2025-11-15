@@ -2,7 +2,6 @@
   self,
   config,
   pkgs,
-  inputs',
   ...
 }: {
   environment = {
@@ -26,7 +25,6 @@
       autosave 500
     '';
     contentFiles = [
-      "/var/snapraid/snapraid.content"
       "/volumes/data1/snapraid.content"
       "/volumes/data2/snapraid.content"
       "/volumes/data3/snapraid.content"
@@ -84,7 +82,7 @@
 
         CACHE="/volumes/cache/media"
         BACKING="/volumes/backing_storage/media"
-        PERCENTAGE=40
+        PERCENTAGE=75
 
         set -o errexit
         while [[ "$(${pkgs.coreutils}/bin/df --output=pcent "''${CACHE}" | ${pkgs.gnugrep}/bin/grep -v Use | ${pkgs.coreutils}/bin/cut -d'%' -f1)" -gt ''${PERCENTAGE} ]]; do
