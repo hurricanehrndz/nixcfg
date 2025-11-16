@@ -10,7 +10,6 @@
       graphical
       system-defaults
       tailscale
-      virtualization
       microdev
     ]);
 in {inherit workstation;}
