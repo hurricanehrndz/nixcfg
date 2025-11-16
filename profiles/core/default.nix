@@ -26,7 +26,7 @@
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
 in {
   imports = [
-    ./nix-config.nix
+    ./nix-settings.nix
     ./system-packages.nix
   ];
 

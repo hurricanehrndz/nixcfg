@@ -9,12 +9,6 @@ in {
     ./homebrew.nix
   ];
 
-  # Administrative users on Darwin systems are part of the admin group.
-  nix.settings.trusted-users = ["@admin"];
-
-  # FIXME: needs flake-compat
-  # nix.nixPath = mkBefore ["darwin-config=${self}"];
-
   # These UI-enhancement plugins come at an even higher performance cost than
   # completion and do not belong in system configuration at all.
   programs.zsh.enableFzfCompletion = l.mkForce false;

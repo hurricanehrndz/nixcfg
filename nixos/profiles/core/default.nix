@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -8,14 +7,6 @@
   documentation.info.enable = false;
 
   i18n.defaultLocale = "en_US.UTF-8";
-
-  nix = {
-    settings = {
-      system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
-    };
-    gc.dates = "weekly";
-    optimise.automatic = true;
-  };
 
   environment.systemPackages = with pkgs; [
     # system info

@@ -38,6 +38,7 @@
     homeManagerSettings
     inputs.home-manager.darwinModules.home-manager
     inputs.agenix.darwinModules.age
+    inputs.determinate.darwinModules.default
   ];
 
   makeDarwinSystem = hostName: darwinArgs @ {system, ...}:

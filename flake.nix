@@ -15,6 +15,9 @@
   };
 
   inputs = {
+    # determinate nix
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+
     # Package sets
     nixpkgs.follows = "nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
