@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.programs.aerospace;
-in {
+in
+{
   options.programs.aerospace = {
     enable = mkEnableOption "Enable aerospace.";
 
@@ -44,21 +46,23 @@ in {
         "brew-install-path"
       ];
     };
-    home-manager.users.${cfg.username} = {pkgs, ...}: {
-      xdg.configFile."aerospace/aerospace.toml" = {
-        text = cfg.settings;
-      };
+    home-manager.users.${cfg.username} =
+      { pkgs, ... }:
+      {
+        xdg.configFile."aerospace/aerospace.toml" = {
+          text = cfg.settings;
+        };
 
-      launchd.agents.aerospace = {
-        enable = true;
-        config = {
-          Program = "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace";
-          ProgramArguments = [
-            "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace"
-          ];
-          RunAtLoad = true;
+        launchd.agents.aerospace = {
+          enable = true;
+          config = {
+            Program = "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace";
+            ProgramArguments = [
+              "/Applications/AeroSpace.app/Contents/MacOS/AeroSpace"
+            ];
+            RunAtLoad = true;
+          };
         };
       };
-    };
   };
 }

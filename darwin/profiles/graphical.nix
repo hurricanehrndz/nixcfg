@@ -1,14 +1,15 @@
 {
   config,
   ...
-}: let
+}:
+let
   inherit (config.homebrew) brewPrefix;
-in {
+in
+{
   # security.pam.enableSudoTouchIdAuth = true;
 
   # Allow for usage of `brew` CLI without adding to `PATH`
   environment.shellAliases."brew" = "${brewPrefix}/brew";
-
 
   # $ networksetup -listallnetworkservices
   # networking.knownNetworkServices = [

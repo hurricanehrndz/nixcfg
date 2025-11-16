@@ -10,4 +10,3 @@
     environmentFile = config.age.secrets."traefik.env".path;
   };
 }
-

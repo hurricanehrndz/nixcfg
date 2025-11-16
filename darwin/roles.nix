@@ -1,7 +1,8 @@
 {
   sharedProfiles,
   darwinProfiles,
-}: let
+}:
+let
   workstation =
     (with sharedProfiles; [
       fonts.common
@@ -12,4 +13,7 @@
       tailscale
       microdev
     ]);
-in {inherit workstation;}
+in
+{
+  inherit workstation;
+}

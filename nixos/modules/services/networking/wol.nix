@@ -5,9 +5,11 @@
   options,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.WakeOnLan;
-in {
+in
+{
   options.services.WakeOnLan = {
     enable = mkEnableOption "Enable wake-on-lan";
 

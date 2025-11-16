@@ -2,7 +2,8 @@
   pkgs,
   config,
   ...
-}: {
+}:
+{
   imports = [
     ./hardware-configuration.nix
     ./users.nix
@@ -26,7 +27,7 @@
       autoPrune = {
         enable = true;
         dates = "weekly";
-        flags = ["--all"];
+        flags = [ "--all" ];
       };
     };
   };
@@ -60,7 +61,7 @@
       http.services = {
         "omada" = {
           loadbalancer.servers = [
-            {url = "https://localhost:8043/";}
+            { url = "https://localhost:8043/"; }
           ];
         };
       };
@@ -77,9 +78,9 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [8043];
-  networking.firewall.allowedUDPPorts = [29810];
-  networking.firewall. allowedTCPPortRanges = [
+  networking.firewall.allowedTCPPorts = [ 8043 ];
+  networking.firewall.allowedUDPPorts = [ 29810 ];
+  networking.firewall.allowedTCPPortRanges = [
     {
       from = 29811;
       to = 29816;
@@ -89,4 +90,3 @@
   system.stateVersion = "25.05";
 }
 # vim: set et sw=2 :
-

@@ -3,21 +3,25 @@
   lib,
   config,
   ...
-}: let
-  mkFileSystems = let
-    mkFileSystemEntry = diskLabel: {
-      "/volumes/${diskLabel}" = {
-        device = "/dev/disk/by-label/${diskLabel}";
-        fsType = "ext4";
-        options = [
-          "defaults"
-          "nofail"
-        ];
+}:
+let
+  mkFileSystems =
+    let
+      mkFileSystemEntry = diskLabel: {
+        "/volumes/${diskLabel}" = {
+          device = "/dev/disk/by-label/${diskLabel}";
+          fsType = "ext4";
+          options = [
+            "defaults"
+            "nofail"
+          ];
+        };
       };
-    };
-  in
-    diskLabelList: lib.fold (attrset: acc: lib.recursiveUpdate acc attrset) {} (map mkFileSystemEntry diskLabelList);
-in {
+    in
+    diskLabelList:
+    lib.fold (attrset: acc: lib.recursiveUpdate acc attrset) { } (map mkFileSystemEntry diskLabelList);
+in
+{
   environment = {
     systemPackages = with pkgs; [
       lm_sensors
@@ -27,7 +31,13 @@ in {
   };
 
   fileSystems =
-    (mkFileSystems ["parity" "data1" "data2" "data3" "data4"])
+    (mkFileSystems [
+      "parity"
+      "data1"
+      "data2"
+      "data3"
+      "data4"
+    ])
     // {
       "/volumes/cache" = {
         device = "/dev/disk/by-label/cache";
@@ -136,7 +146,7 @@ in {
       http.services = {
         "scrutiny" = {
           loadbalancer.servers = [
-            {url = "http://localhost:1080/";}
+            { url = "http://localhost:1080/"; }
           ];
         };
       };

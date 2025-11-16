@@ -1,7 +1,8 @@
 {
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./hardware-configuration.nix
     ./filesystems.nix
@@ -16,7 +17,10 @@
   # boot.kernelParams = ["i915.force_probe=4692"];
   boot.kernelPackages = pkgs.linuxPackages_latest;
   # boot.extraModulePackages = with config.boot.kernelPackages; [ it87 ];
-  boot.kernelModules = ["coretemp" "nct6775"];
+  boot.kernelModules = [
+    "coretemp"
+    "nct6775"
+  ];
   networking.domain = "hrndz.ca";
 
   # services.data-access = {
@@ -26,7 +30,7 @@
   networking = {
     nat = {
       enable = true;
-      internalInterfaces = ["ve-+"];
+      internalInterfaces = [ "ve-+" ];
       externalInterface = "enp0s31f6";
     };
   };

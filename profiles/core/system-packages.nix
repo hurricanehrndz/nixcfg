@@ -1,6 +1,8 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
-in {
+in
+{
   # Selection of sysadmin tools that can come in handy
   environment.systemPackages = with pkgs; [
     bashInteractive
@@ -26,7 +28,7 @@ in {
     moreutils
     openssh
     openssl
-    (ripgrep.override {withPCRE2 = true;})
+    (ripgrep.override { withPCRE2 = true; })
     rsync
     sd
     tealdeer
@@ -51,17 +53,17 @@ in {
 
     ## === Monitoring ===
 
-    dua #      <- learn about the disk usage of directories, fast!
-    lnav #     <- log file navigator
-    procs #    <- a "modern" replacement for ps
-    bottom #    <- a "modern" replacement for ps
+    dua # <- learn about the disk usage of directories, fast!
+    lnav # <- log file navigator
+    procs # <- a "modern" replacement for ps
+    bottom # <- a "modern" replacement for ps
 
     ## === Files ===
 
-    dust #  <- like du but more intuitive
-    file #     <- a program that shows the type of files
-    glow #     <- charmbracelet's markdown cli renderer
-    unzip #    <- *.zip archive extraction utility
+    dust # <- like du but more intuitive
+    file # <- a program that shows the type of files
+    glow # <- charmbracelet's markdown cli renderer
+    unzip # <- *.zip archive extraction utility
 
     ## === nix ===
     nix-index

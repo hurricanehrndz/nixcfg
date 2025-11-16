@@ -2,11 +2,13 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   catppuccin_theme = pkgs.tmuxPlugins.catppuccin.overrideAttrs (_: {
     src = inputs.tmux-catppuccin-src;
   });
-in {
+in
+{
   programs.tmux = {
     enable = true;
     baseIndex = 1;
@@ -86,30 +88,40 @@ in {
       set -gu default-command
       set -g default-shell "$SHELL"
     '';
-    plugins = with pkgs;
-    with tmuxPlugins; let
-      extrakto = mkTmuxPlugin {
-        pluginName = "extrakto";
-        version = "master";
-        src = inputs.extrakto-src;
-        nativeBuildInputs = [pkgs.makeWrapper];
-        postInstall = ''
-          for f in extrakto.sh open.sh; do
-            wrapProgram $target/scripts/$f \
-              --prefix PATH : ${with pkgs; lib.makeBinPath [pkgs.fzf pkgs.python3 pkgs.xclip]}
-          done
-        '';
-      };
-    in [
-      {
-        plugin = extrakto;
-        extraConfig = ''
-          set -g @extrakto_clip_tool_run "tmux_osc52"
-          set -g @extrakto_clip_tool "tmux_osc52"
-          set -g @extrakto_popup_size "65%"
-          set -g @extrakto_grab_area "window 500"
-        '';
-      }
-    ];
+    plugins =
+      with pkgs;
+      with tmuxPlugins;
+      let
+        extrakto = mkTmuxPlugin {
+          pluginName = "extrakto";
+          version = "master";
+          src = inputs.extrakto-src;
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postInstall = ''
+            for f in extrakto.sh open.sh; do
+              wrapProgram $target/scripts/$f \
+                --prefix PATH : ${
+                  with pkgs;
+                  lib.makeBinPath [
+                    pkgs.fzf
+                    pkgs.python3
+                    pkgs.xclip
+                  ]
+                }
+            done
+          '';
+        };
+      in
+      [
+        {
+          plugin = extrakto;
+          extraConfig = ''
+            set -g @extrakto_clip_tool_run "tmux_osc52"
+            set -g @extrakto_clip_tool "tmux_osc52"
+            set -g @extrakto_popup_size "65%"
+            set -g @extrakto_grab_area "window 500"
+          '';
+        }
+      ];
   };
 }

@@ -21,10 +21,12 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   l = lib // builtins;
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
-in {
+in
+{
   imports = [
     ./nix-settings.nix
     ./system-packages.nix
@@ -34,10 +36,7 @@ in {
 
   environment.variables = {
     EDITOR = "vim";
-    KERNEL_NAME =
-      if isDarwin
-      then "darwin"
-      else "linux";
+    KERNEL_NAME = if isDarwin then "darwin" else "linux";
     LC_ALL = "en_US.UTF-8";
     LANG = "en_US.UTF-8";
     PAGER = "less";
@@ -51,9 +50,10 @@ in {
   ];
 
   # Install completions for system packages.
-  environment.pathsToLink =
-    ["/share/bash-completion"]
-    ++ (l.optional config.programs.zsh.enable "/share/zsh");
+  environment.pathsToLink = [
+    "/share/bash-completion"
+  ]
+  ++ (l.optional config.programs.zsh.enable "/share/zsh");
 
   programs.zsh = {
     enable = l.mkDefault true;

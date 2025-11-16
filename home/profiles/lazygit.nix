@@ -4,10 +4,12 @@
   lib,
   ...
 }:
-with lib; let
-  yamlFormat = pkgs.formats.yaml {};
+with lib;
+let
+  yamlFormat = pkgs.formats.yaml { };
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
-in {
+in
+{
   home.packages = with pkgs; [
     lazygit
   ];

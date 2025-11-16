@@ -2,9 +2,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (pkgs.stdenv.hostPlatform) isLinux;
-  myFontPkgs = with pkgs;
+  myFontPkgs =
+    with pkgs;
     [
       sketchybar-app-font
       fira
@@ -23,6 +25,7 @@
       liberation_ttf
       terminus_font # broken on aarch64-darwin
     ]);
-in {
+in
+{
   fonts.packages = myFontPkgs;
 }

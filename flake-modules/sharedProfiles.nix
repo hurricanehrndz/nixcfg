@@ -20,22 +20,22 @@
   lib,
   flake-parts-lib,
   ...
-}: let
-  inherit
-    (lib)
+}:
+let
+  inherit (lib)
     mkOption
     types
     ;
-  inherit
-    (flake-parts-lib)
+  inherit (flake-parts-lib)
     mkSubmoduleOptions
     ;
-in {
+in
+{
   options = {
     flake = mkSubmoduleOptions {
       sharedProfiles = mkOption {
         type = types.lazyAttrsOf types.unspecified;
-        default = {};
+        default = { };
         description = ''
           Importable cross-OS configuration-only modules.
         '';

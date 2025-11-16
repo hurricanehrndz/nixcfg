@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.programs.superkey;
-in {
+in
+{
   options.programs.superkey = {
     enable = mkEnableOption "Enable superkey.";
 
@@ -21,18 +23,20 @@ in {
     homebrew.casks = [
       "superkey"
     ];
-    home-manager.users.${cfg.username} = {pkgs, ...}: {
-      launchd.agents.superkey = {
-        enable = true;
-        config = {
-          Program = "/Applications/Superkey.app/Contents/MacOS/Superkey";
-          ProgramArguments = [
-            "/Applications/Superkey.app/Contents/MacOS/Superkey"
-          ];
-          RunAtLoad = true;
+    home-manager.users.${cfg.username} =
+      { pkgs, ... }:
+      {
+        launchd.agents.superkey = {
+          enable = true;
+          config = {
+            Program = "/Applications/Superkey.app/Contents/MacOS/Superkey";
+            ProgramArguments = [
+              "/Applications/Superkey.app/Contents/MacOS/Superkey"
+            ];
+            RunAtLoad = true;
+          };
         };
       };
-    };
     system.defaults.CustomUserPreferences = {
       "com.knollsoft.Superkey" = {
         "NSWindow Frame EntryBarWindow" = "1720 1151 400 40 0 0 3840 1575 ";

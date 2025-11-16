@@ -21,30 +21,41 @@
   moduleWithSystem,
   pkgs,
   ...
-}: let
+}:
+let
   inherit (self) inputs;
   inherit (inputs) haumea;
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
   homeModules = l.rakeLeaves ./modules;
   profiles = l.rakeLeaves ./profiles;
-  roles = import ./roles {inherit profiles;};
+  roles = import ./roles { inherit profiles; };
 
   defaultModules =
     (l.recAttrValues homeModules)
     ++ roles.base
     ++ [
       # inputs.flatpaks.homeManagerModules.default
-      (moduleWithSystem ({
-        inputs',
-        packages,
-        ...
-      }: args: {
-        _module.args = {inherit inputs' packages;};
-      }))
+      (moduleWithSystem (
+        {
+          inputs',
+          packages,
+          ...
+        }:
+        args: {
+          _module.args = { inherit inputs' packages; };
+        }
+      ))
     ];
 
-  extraSpecialArgs = {inherit self inputs profiles roles;};
+  extraSpecialArgs = {
+    inherit
+      self
+      inputs
+      profiles
+      roles
+      ;
+  };
 
   settingsModule.home-manager = {
     inherit extraSpecialArgs;
@@ -53,7 +64,8 @@
     useUserPackages = true;
     backupFileExtension = "bak";
   };
-in {
+in
+{
   flake = {
     #
     # make roles and poriles available to nixos configs and darwin configs
@@ -62,41 +74,46 @@ in {
     homeModules.homeManagerSettings = settingsModule;
   };
 
-  perSystem = {
-    pkgs,
-    inputs',
-    system,
-    ...
-  }: let
-    makeHomeConfiguration = username: hmArgs: let
-      homePrefix = hmArgs.providedhomePrefix or (l.homePrefix system);
-    in (inputs.home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
-      modules =
-        defaultModules
-        ++ [
-          (moduleArgs: {
-            home.username = username;
-            home.homeDirectory = "${homePrefix}/${username}";
-            _module.args = {
-              inherit inputs';
-              isNixos =
-                (moduleArgs.nixosConfig ? hardware)
-                # We only care if the option exists -- its value doesn't matter.
-                && (moduleArgs.nixosConfig.hardware.enableRedistributableFirmware
-                  -> true);
-            };
-          })
-        ]
-        ++ (hmArgs.modules or []);
-      inherit extraSpecialArgs;
-    });
-  in {
-    homeConfigurations = {
-      traveller = makeHomeConfiguration "chernand" {
-        providedhomePrefix = "/nail/home";
-        modules = with roles; remote ++ [{home.stateVersion = "22.11";}];
+  perSystem =
+    {
+      pkgs,
+      inputs',
+      system,
+      ...
+    }:
+    let
+      makeHomeConfiguration =
+        username: hmArgs:
+        let
+          homePrefix = hmArgs.providedhomePrefix or (l.homePrefix system);
+        in
+        (inputs.home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules =
+            defaultModules
+            ++ [
+              (moduleArgs: {
+                home.username = username;
+                home.homeDirectory = "${homePrefix}/${username}";
+                _module.args = {
+                  inherit inputs';
+                  isNixos =
+                    (moduleArgs.nixosConfig ? hardware)
+                    # We only care if the option exists -- its value doesn't matter.
+                    && (moduleArgs.nixosConfig.hardware.enableRedistributableFirmware -> true);
+                };
+              })
+            ]
+            ++ (hmArgs.modules or [ ]);
+          inherit extraSpecialArgs;
+        });
+    in
+    {
+      homeConfigurations = {
+        traveller = makeHomeConfiguration "chernand" {
+          providedhomePrefix = "/nail/home";
+          modules = with roles; remote ++ [ { home.stateVersion = "22.11"; } ];
+        };
       };
     };
-  };
 }

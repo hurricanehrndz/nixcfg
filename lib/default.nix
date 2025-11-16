@@ -1,5 +1,6 @@
-{inputs, ...}:
-with builtins; let
+{ inputs, ... }:
+with builtins;
+let
   haumea = inputs.haumea.lib;
   lib = haumea.load {
     src = ./src;
@@ -7,6 +8,7 @@ with builtins; let
       inherit inputs haumea;
     };
   };
-in {
+in
+{
   flake.lib = lib;
 }

@@ -1,6 +1,7 @@
 {
   ...
-}: {
+}:
+{
   networking.useDHCP = false;
   networking.useNetworkd = true;
   systemd.network = {

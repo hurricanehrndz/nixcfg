@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   homebrew.brews = [
     "tinygo"
     # required for tinyGO

@@ -6,14 +6,16 @@
   self,
   ...
 }:
-with lib; let
+with lib;
+let
   inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
   l = inputs.nixpkgs.lib // builtins;
   pgpPublicKey = "0x0D2565B7C6058A69";
   keysDir = self + "/secrets/keys";
   gpgPkg = config.programs.gpg.package;
   homedir = config.programs.gpg.homedir;
-  gpg-agent-start = with pkgs;
+  gpg-agent-start =
+    with pkgs;
     writeShellScriptBin "gpg-agent-start" ''
       ${gpgPkg}/bin/gpg-connect-agent /bye
       ${pkgs.coreutils}/bin/sleep 3
@@ -25,7 +27,8 @@ with lib; let
   maxCacheTtl = "1800";
   defaultCacheTtl = "600";
   sshCacheTtl = "600";
-in {
+in
+{
   config = mkMerge [
     {
       home.packages = with pkgs; [
@@ -43,24 +46,24 @@ in {
         enable = true;
         mutableKeys = true;
         mutableTrust = true;
-        publicKeys =
-          [
-            {
-              source = keysDir + "/${pgpPublicKey}.asc";
-              trust = "ultimate";
-            }
-          ]
-          ++ (
-            let
-              ls = builtins.readDir keysDir;
-              files = builtins.filter (name: ls.${name} == "regular" && "${name}" != "${pgpPublicKey}.asc") (builtins.attrNames ls);
-            in
-              builtins.map (keyName: {
-                source = "${keysDir}/${keyName}";
-                trust = "full";
-              })
-              files
-          );
+        publicKeys = [
+          {
+            source = keysDir + "/${pgpPublicKey}.asc";
+            trust = "ultimate";
+          }
+        ]
+        ++ (
+          let
+            ls = builtins.readDir keysDir;
+            files = builtins.filter (name: ls.${name} == "regular" && "${name}" != "${pgpPublicKey}.asc") (
+              builtins.attrNames ls
+            );
+          in
+          builtins.map (keyName: {
+            source = "${keysDir}/${keyName}";
+            trust = "full";
+          }) files
+        );
 
         scdaemonSettings = {
           disable-ccid = true;
@@ -108,7 +111,7 @@ in {
       launchd.agents.gpg-agent = {
         enable = true;
         config = {
-          ProgramArguments = ["${gpg-agent-start}/bin/gpg-agent-start"];
+          ProgramArguments = [ "${gpg-agent-start}/bin/gpg-agent-start" ];
           RunAtLoad = true;
           EnvironmentVariables = {
             GNUPGHOME = homedir;

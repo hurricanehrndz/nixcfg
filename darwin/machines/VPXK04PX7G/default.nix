@@ -3,25 +3,29 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   username = "chernand";
   home = "/Users/${username}";
-in {
-  age.secrets = let
-    owner = "${username}";
-    group = "staff";
-  in {
-    "darwin/aws_auth_config" = {
-      inherit owner group;
-      file = "${self}/secrets/darwin/aws/auth_config.age";
-      path = "${home}/.aws/credentials";
+in
+{
+  age.secrets =
+    let
+      owner = "${username}";
+      group = "staff";
+    in
+    {
+      "darwin/aws_auth_config" = {
+        inherit owner group;
+        file = "${self}/secrets/darwin/aws/auth_config.age";
+        path = "${home}/.aws/credentials";
+      };
+      "darwin/env/zsh_vars" = {
+        inherit owner group;
+        file = "${self}/secrets/darwin/env/zsh_vars.age";
+        path = "${home}/.config/zsh/zsh_vars";
+      };
     };
-    "darwin/env/zsh_vars" = {
-      inherit owner group;
-      file = "${self}/secrets/darwin/env/zsh_vars.age";
-      path = "${home}/.config/zsh/zsh_vars";
-    };
-  };
 
   users.users.${username} = {
     inherit home;

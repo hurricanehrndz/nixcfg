@@ -2,7 +2,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   # If this were enabled, rebuilds will take... a very long time.
   documentation.info.enable = false;
 

@@ -1,5 +1,6 @@
-{profiles}:
-with profiles; let
+{ profiles }:
+with profiles;
+let
   base = [
     core
     zsh
@@ -9,36 +10,30 @@ with profiles; let
     gpg
     ssh
   ];
-  neovim =
-    base
-    ++ [
-      editorconfig
-      git
-      lazygit
-      pdenv
-    ];
-  remote =
-    base
-    ++ [
-      editorconfig
-      git
-      lazygit
-      pdenv
-    ];
-  developer =
-    neovim
-    ++ [
-      encryption
-      direnv
-      misc
-    ];
-  graphical =
-    [
-      wezterm
-      ghostty
-      # sketchybar
-    ];
-in {
+  neovim = base ++ [
+    editorconfig
+    git
+    lazygit
+    pdenv
+  ];
+  remote = base ++ [
+    editorconfig
+    git
+    lazygit
+    pdenv
+  ];
+  developer = neovim ++ [
+    encryption
+    direnv
+    misc
+  ];
+  graphical = [
+    wezterm
+    ghostty
+    # sketchybar
+  ];
+in
+{
   inherit
     base
     neovim

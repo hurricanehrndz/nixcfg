@@ -5,10 +5,11 @@
 
   launchd.user.agents.raycast.serviceConfig = {
     Disabled = false;
-    ProgramArguments = [ "/Applications/Raycast.app/Contents/Library/LoginItems/RaycastLauncher.app/Contents/MacOS/RaycastLauncher" ];
+    ProgramArguments = [
+      "/Applications/Raycast.app/Contents/Library/LoginItems/RaycastLauncher.app/Contents/MacOS/RaycastLauncher"
+    ];
     RunAtLoad = true;
   };
-
 
   # disable problematic hotkeys
   # https://apple.stackexchange.com/questions/91679/is-there-a-way-to-set-an-application-shortcut-in-the-keyboard-preference-pane-vi

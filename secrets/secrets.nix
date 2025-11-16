@@ -19,12 +19,13 @@ let
     machineKeys.HX7YG952H5
     userKeys.hurricane
   ];
-in {
+in
+{
   "darwin/env/zsh_vars.age".publicKeys = darwin_Keys;
   "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
   "darwin/mods/conf.yml.age".publicKeys = darwin_Keys;
 
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepKeys;
-  "services/traefik/env.age".publicKeys = deepKeys ++ [machineKeys.hal9000];
+  "services/traefik/env.age".publicKeys = deepKeys ++ [ machineKeys.hal9000 ];
   "services/homarr/env.age".publicKeys = deepKeys;
 }

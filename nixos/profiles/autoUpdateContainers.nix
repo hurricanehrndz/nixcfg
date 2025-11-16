@@ -3,25 +3,29 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   containers = config.virtualisation.oci-containers.containers;
   updateScript = lib.concatMapStringsSep "\n" (
-    containerName: let
+    containerName:
+    let
       container = containers.${containerName};
       image = container.image;
-    in ''
+    in
+    ''
       echo "Updating ${containerName}..."
       ${pkgs.podman}/bin/podman pull "${image}" || true
       ${pkgs.systemd}/bin/systemctl try-restart podman-${containerName}.service || true
     ''
   ) (builtins.attrNames containers);
-in {
+in
+{
   systemd.timers.update-containers = {
     timerConfig = {
       Unit = "update-containers.service";
       OnCalendar = "Mon 02:00";
     };
-    wantedBy = ["timers.target"];
+    wantedBy = [ "timers.target" ];
   };
   systemd.services.update-containers = {
     serviceConfig = {

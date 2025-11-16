@@ -2,9 +2,11 @@
   inputs,
   pkgs,
   ...
-}: let
+}:
+let
   l = inputs.nixpkgs.lib // builtins;
-in {
+in
+{
   imports = [
     ./homebrew.nix
   ];

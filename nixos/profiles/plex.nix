@@ -3,9 +3,11 @@
   lib,
   config,
   ...
-}: let
+}:
+let
   pidFile = "${config.services.plex.dataDir}/Plex Media Server/plexmediaserver.pid";
-in {
+in
+{
   services.plex = {
     enable = true;
     openFirewall = true;

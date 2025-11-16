@@ -20,7 +20,8 @@
   self,
   withSystem,
   ...
-}: let
+}:
+let
   inherit (self) inputs sharedProfiles;
   inherit (self.homeModules) homeManagerSettings;
 
@@ -30,7 +31,7 @@
   darwinMachines = l.rakeLeaves ./machines;
   darwinProfiles = l.rakeLeaves ./profiles;
 
-  roles = import ./roles.nix {inherit sharedProfiles darwinProfiles;};
+  roles = import ./roles.nix { inherit sharedProfiles darwinProfiles; };
 
   defaultModules = [
     sharedProfiles.core
@@ -41,55 +42,58 @@
     inputs.determinate.darwinModules.default
   ];
 
-  makeDarwinSystem = hostName: darwinArgs @ {system, ...}:
+  makeDarwinSystem =
+    hostName:
+    darwinArgs@{ system, ... }:
     withSystem system (
-      ctx @ {
+      ctx@{
         inputs',
         packages,
         pkgs,
         ...
       }:
-        l.makeOverridable inputs.darwin.lib.darwinSystem {
-          inherit system;
-          pkgs = darwinArgs.pkgs or pkgs;
-          modules =
-            defaultModules
-            ++ (l.recAttrValues darwinModules)
-            ++ roles.workstation
-            ++ (darwinArgs.modules or [])
-            ++ [
-              {
-                _module.args = {
-                  inherit inputs';
-                  inherit (ctx.config) packages;
-                  isNixos = false;
-                };
-                networking.hostName = hostName;
-                networking.computerName = hostName;
-              }
-              darwinMachines.${hostName}
-            ];
-          specialArgs = {
-            inherit
-              self
-              inputs
-              packages
-              system
-              ;
-            inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
-          };
-        }
+      l.makeOverridable inputs.darwin.lib.darwinSystem {
+        inherit system;
+        pkgs = darwinArgs.pkgs or pkgs;
+        modules =
+          defaultModules
+          ++ (l.recAttrValues darwinModules)
+          ++ roles.workstation
+          ++ (darwinArgs.modules or [ ])
+          ++ [
+            {
+              _module.args = {
+                inherit inputs';
+                inherit (ctx.config) packages;
+                isNixos = false;
+              };
+              networking.hostName = hostName;
+              networking.computerName = hostName;
+            }
+            darwinMachines.${hostName}
+          ];
+        specialArgs = {
+          inherit
+            self
+            inputs
+            packages
+            system
+            ;
+          inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
+        };
+      }
     );
-in {
+in
+{
   flake.darwinModules = darwinModules;
   flake.darwinConfigurations = {
     HX7YG952H5 = makeDarwinSystem "HX7YG952H5" {
       system = "aarch64-darwin";
-      modules = [];
+      modules = [ ];
     };
     LH9KCR6DJX = makeDarwinSystem "LH9KCR6DJX" {
       system = "aarch64-darwin";
-      modules = [];
+      modules = [ ];
     };
   };
 }

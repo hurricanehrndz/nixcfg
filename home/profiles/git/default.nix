@@ -2,7 +2,8 @@
   pkgs,
   packages,
   ...
-}: {
+}:
+{
   home.packages = with pkgs; [
     packages.strongbox
     git-crypt

@@ -2,9 +2,11 @@
   pkgs,
   inputs',
   ...
-}: let
+}:
+let
   inherit (inputs'.devenv.packages) devenv;
-in {
+in
+{
   home.packages = [
     devenv
   ];

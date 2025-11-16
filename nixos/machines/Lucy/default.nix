@@ -1,10 +1,11 @@
-{ self
-, config
-, lib
-, pkgs
-, system
-, inputs
-, ...
+{
+  self,
+  config,
+  lib,
+  pkgs,
+  system,
+  inputs,
+  ...
 }:
 let
   username = "hurricane";
@@ -20,7 +21,13 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = lib.mkDefault 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelModules = [ "kvm-intel" "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
+  boot.kernelModules = [
+    "kvm-intel"
+    "vfio_virqfd"
+    "vfio_pci"
+    "vfio_iommu_type1"
+    "vfio"
+  ];
   boot.kernelParams = [ "kvm.ignore_msrs=1" ];
   networking.domain = "hrndz.ca";
 
@@ -42,7 +49,10 @@ in
 
   services.flatpak.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 43389 5901 ];
+  networking.firewall.allowedTCPPorts = [
+    43389
+    5901
+  ];
 
   system.stateVersion = "23.11";
 }

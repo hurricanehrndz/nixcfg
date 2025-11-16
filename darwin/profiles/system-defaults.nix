@@ -2,9 +2,11 @@
   config,
   inputs,
   ...
-}: let
+}:
+let
   l = inputs.nixpkgs.lib // builtins;
-in {
+in
+{
   ##: Hostname
   system.defaults.smb.NetBIOSName = config.networking.hostName;
   system.defaults.smb.ServerDescription = config.networking.hostName;
@@ -225,7 +227,7 @@ in {
 
   ###: MISC ====================================================================
 
-  system.defaults.CustomSystemPreferences = {};
+  system.defaults.CustomSystemPreferences = { };
 
   system.defaults.CustomUserPreferences = {
     # spotlight search items

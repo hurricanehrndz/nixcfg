@@ -1,4 +1,10 @@
-{ config, lib, pkgs, options, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  options,
+  ...
+}:
 
 with lib;
 # Wrapper for nixpkgs traefik module with cook in personal defaults
@@ -71,17 +77,19 @@ in
       description = ''
         Dynamic configurations for Traefik.
       '';
-      type = with types; attrsOf (submodule {
-        options = {
-          enable = mkOption {
-            type = types.bool;
-            default = true;
+      type =
+        with types;
+        attrsOf (submodule {
+          options = {
+            enable = mkOption {
+              type = types.bool;
+              default = true;
+            };
+            value = mkOption {
+              type = settingsFormat.type;
+            };
           };
-          value = mkOption {
-            type = settingsFormat.type;
-          };
-        };
-      });
+        });
     };
   };
 
@@ -129,7 +137,7 @@ in
               entryPoints = [
                 "websecure"
               ];
-              middlewares = [];
+              middlewares = [ ];
               service = "api@internal";
               tls.certResolver = "dnsResolver";
             };
@@ -138,12 +146,16 @@ in
       };
     };
 
-    networking.firewall.allowedTCPPorts = [ 80 443 ];
+    networking.firewall.allowedTCPPorts = [
+      80
+      443
+    ];
     systemd.services.traefik =
       let
         dynamicConfigs_symlink_cmds =
           let
-            buildConfigFile = key: configFile:
+            buildConfigFile =
+              key: configFile:
               let
                 name = "${key}.yml";
                 file = settingsFormat.generate name configFile.value;
@@ -160,10 +172,11 @@ in
         preStart = ''
           find ${dynamicConfDir} -type l -delete
 
-        '' + (concatStringsSep "\n" dynamicConfigs_symlink_cmds);
-      } // optionalAttrs (cfg.environmentFile != null) {
+        ''
+        + (concatStringsSep "\n" dynamicConfigs_symlink_cmds);
+      }
+      // optionalAttrs (cfg.environmentFile != null) {
         serviceConfig.EnvironmentFile = [ cfg.environmentFile ];
       };
   };
 }
-

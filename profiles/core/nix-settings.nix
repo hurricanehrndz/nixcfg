@@ -2,7 +2,8 @@
   pkgs,
   inputs,
   ...
-}: let
+}:
+let
   l = inputs.nixpkgs.lib // builtins;
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
@@ -12,7 +13,10 @@
     accept-flake-config = true;
     auto-optimise-store = true;
     builders-use-substitutes = true;
-    experimental-features = ["nix-command" "flakes"];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     fallback = true;
     keep-derivations = true;
     keep-outputs = true;
@@ -33,22 +37,19 @@
       "https://hurricanehrndz.cachix.org"
     ];
 
-    trusted-users =
-      if isDarwin
-      then ["@admin"]
-      else ["@wheel"];
+    trusted-users = if isDarwin then [ "@admin" ] else [ "@wheel" ];
   };
-in {
+in
+{
   config = l.mkMerge [
     {
-      nix.registry = l.mkForce (l.mapAttrs (_: flake: {inherit flake;}) inputFlakes);
-      nix.nixPath =
-        [
-          "nixpkgs=${pkgs.path}"
-          "home-manager=${inputs.home-manager}"
-          "/etc/nix/inputs"
-        ]
-        ++ (l.optional isDarwin "darwin=${inputs.darwin}");
+      nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
+      nix.nixPath = [
+        "nixpkgs=${pkgs.path}"
+        "home-manager=${inputs.home-manager}"
+        "/etc/nix/inputs"
+      ]
+      ++ (l.optional isDarwin "darwin=${inputs.darwin}");
     }
     (l.mkIf isLinux {
       nix.settings = customNixSettings;

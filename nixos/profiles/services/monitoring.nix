@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   virtualisation.oci-containers.containers = {
     dashdot = {
       image = " mauricenino/dashdot";
@@ -27,7 +28,7 @@
       http.services = {
         "dashdot" = {
           loadbalancer.servers = [
-            {url = "http://localhost:3001/";}
+            { url = "http://localhost:3001/"; }
           ];
         };
       };

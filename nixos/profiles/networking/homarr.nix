@@ -2,7 +2,8 @@
   self,
   config,
   ...
-}: {
+}:
+{
   # homarr
   age.secrets = {
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
@@ -27,7 +28,7 @@
       http.services = {
         "homarr" = {
           loadbalancer.servers = [
-            {url = "http://localhost:7575/";}
+            { url = "http://localhost:7575/"; }
           ];
         };
       };

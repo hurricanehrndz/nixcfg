@@ -10,7 +10,7 @@ buildGoModule rec {
   version = "master";
   src = strongbox-src;
 
-  nativeBuildInputs = with pkgs; [coreutils];
+  nativeBuildInputs = with pkgs; [ coreutils ];
 
   checkFlags = [
     "-skip=^TestGitIntegration_Filtering$"

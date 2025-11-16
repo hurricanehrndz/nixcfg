@@ -1,7 +1,8 @@
 {
   sharedProfiles,
   nixosProfiles,
-}: let
+}:
+let
   mediaserver =
     (with sharedProfiles; [
       fonts.common
@@ -14,7 +15,8 @@
       services.monitoring
       plex
     ]);
-in {
+in
+{
   inherit
     mediaserver
     ;

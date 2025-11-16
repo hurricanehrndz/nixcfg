@@ -3,9 +3,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   nvim-pdenv = inputs'.pdenv.packages.pdenv;
-in {
+in
+{
   home.packages = with pkgs; [
     gh
     ghostscript

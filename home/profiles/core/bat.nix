@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   home.shellAliases."man" = "${pkgs.bat-extras.batman}/bin/batman";
 
   home.packages = with pkgs; [
@@ -6,9 +7,9 @@
     # https://github.com/eth-p/bat-extras/
     # bat-extras.batman #     <- Read system manual pages (man) using bat as the manual page formatter.
     # bat-extras.batgrep #    <- Quickly search through and highlight files using ripgrep.
-    bat-extras.batdiff #    <- Diff a file against the current git index, or display the diff between two files.
-    bat-extras.batwatch #   <- Watch for changes in files or command output, and print them with bat.
-    bat-extras.prettybat #  <- Pretty-print source code and highlight it with bat.
+    bat-extras.batdiff # <- Diff a file against the current git index, or display the diff between two files.
+    bat-extras.batwatch # <- Watch for changes in files or command output, and print them with bat.
+    bat-extras.prettybat # <- Pretty-print source code and highlight it with bat.
   ];
 
   programs.bat = {

@@ -20,10 +20,14 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # Package sets
-    nixpkgs.follows = "nixos-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    fh-nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
+    fh-nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+
+    # default pkg set
+    nixpkgs.follows = "nixpkgs-unstable";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -37,7 +41,7 @@
     };
 
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -66,14 +70,15 @@
     tmux-catppuccin-src.flake = false;
   };
 
-  outputs = inputs @ {
-    self,
-    flake-parts,
-    nixpkgs,
-    haumea,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{
+      self,
+      flake-parts,
+      nixpkgs,
+      haumea,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         ./flake-modules/homeConfigurations.nix
         ./flake-modules/sharedProfiles.nix
@@ -87,47 +92,51 @@
         inputs.devshell.flakeModule
       ];
 
-      systems = ["aarch64-darwin" "x86_64-linux"];
+      systems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
 
-      perSystem = {
-        system,
-        inputs',
-        self',
-        ...
-      }: let
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          config.permittedInsecurePackages = [
-            "aspnetcore-runtime-6.0.36"
-            "aspnetcore-runtime-wrapped-6.0.36"
-            "dotnet-sdk-6.0.428"
-            "dotnet-sdk-wrapped-6.0.428"
-          ];
-          overlays = [
-            inputs.agenix.overlays.default
-            inputs.devshell.overlays.default
-            inputs.snapraid-runner.overlays.default
-            # (final: prev: {
-            #   pam_ssh_agent_auth = inputs.nixpkgs-master.legacyPackages.${system}.pam_ssh_agent_auth;
-            # })
-          ];
-        };
-      in {
-        _module.args = {
-          inherit pkgs;
-        };
+      perSystem =
+        {
+          config,
+          system,
+          inputs',
+          self',
+          ...
+        }:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+            config.permittedInsecurePackages = [
+              "aspnetcore-runtime-6.0.36"
+              "aspnetcore-runtime-wrapped-6.0.36"
+              "dotnet-sdk-6.0.428"
+              "dotnet-sdk-wrapped-6.0.428"
+            ];
+            overlays = [
+              inputs.agenix.overlays.default
+              inputs.devshell.overlays.default
+              inputs.snapraid-runner.overlays.default
+            ];
+          };
+        in
+        {
+          _module.args = {
+            inherit pkgs;
+          };
 
-        formatter = inputs'.nixpkgs.legacyPackages.alejandra;
+          formatter = config.packages.treefmt;
 
-        devShells = haumea.lib.load {
-          src = ./shells;
-          inputs = {
-            inherit inputs inputs' pkgs;
-            flake = self';
+          devShells = haumea.lib.load {
+            src = ./shells;
+            inputs = {
+              inherit inputs inputs' pkgs;
+              flake = self';
+            };
           };
         };
-      };
       flake = {
         # shared importables :: may be used within system configurations for any
         # supported operating system (e.g. nixos, nix-darwin).

@@ -5,9 +5,11 @@
   options,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.services.gnomeDesktop;
-in {
+in
+{
   options.services.gnomeDesktop = {
     enable = mkEnableOption "Enable GNOME desktop environment.";
 
@@ -60,21 +62,25 @@ in {
         gnome-photos
         gnome-tour
       ])
-      ++ (with pkgs.gnome; with pkgs; [
-        cheese # webcam tool
-        gnome-music
-        gedit # text editor
-        epiphany # web browser
-        geary # email reader
-        gnome-characters
-        tali # poker game
-        iagno # go game
-        hitori # sudoku game
-        atomix # puzzle game
-        yelp # Help view
-        gnome-contacts
-        gnome-initial-setup
-      ]);
+      ++ (
+        with pkgs.gnome;
+        with pkgs;
+        [
+          cheese # webcam tool
+          gnome-music
+          gedit # text editor
+          epiphany # web browser
+          geary # email reader
+          gnome-characters
+          tali # poker game
+          iagno # go game
+          hitori # sudoku game
+          atomix # puzzle game
+          yelp # Help view
+          gnome-contacts
+          gnome-initial-setup
+        ]
+      );
     programs.dconf.enable = true;
     environment.systemPackages = with pkgs; [
       gnome.gnome-tweaks
@@ -89,7 +95,7 @@ in {
     };
     hardware.pulseaudio.enable = false;
 
-    services.udev.packages = with pkgs; [gnome.gnome-settings-daemon];
+    services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
     xdg = {
       portal = {
         enable = true;
@@ -100,36 +106,38 @@ in {
     };
 
     security.polkit.enable = true;
-    networking.firewall.allowedTCPPorts = [3389];
+    networking.firewall.allowedTCPPorts = [ 3389 ];
 
-    home-manager.users.${cfg.username} = {pkgs, ...}: {
-      dconf.settings = {
-        "org/gnome/shell" = {
-          disable-user-extensions = false;
+    home-manager.users.${cfg.username} =
+      { pkgs, ... }:
+      {
+        dconf.settings = {
+          "org/gnome/shell" = {
+            disable-user-extensions = false;
 
-          # `gnome-extensions list` for a list
-          enabled-extensions = [
-            "allowlockedremotedesktop@kamens.us"
-          ];
-        };
-        "org/gnome/desktop/interface" = {
-          color-scheme = "default";
-          enable-hot-corners = false;
-        };
+            # `gnome-extensions list` for a list
+            enabled-extensions = [
+              "allowlockedremotedesktop@kamens.us"
+            ];
+          };
+          "org/gnome/desktop/interface" = {
+            color-scheme = "default";
+            enable-hot-corners = false;
+          };
 
-        "org/gnome/desktop/interface" = {
-          show-battery-percentage = false;
-        };
+          "org/gnome/desktop/interface" = {
+            show-battery-percentage = false;
+          };
 
-        "org/gnome/desktop/privacy" = {
-          old-files-age = 30;
-          remove-old-temp-files = true;
-          remove-old-tash-files = true;
+          "org/gnome/desktop/privacy" = {
+            old-files-age = 30;
+            remove-old-temp-files = true;
+            remove-old-tash-files = true;
+          };
         };
+        home.packages = with pkgs; [
+          gnomeExtensions.allow-locked-remote-desktop
+        ];
       };
-      home.packages = with pkgs; [
-        gnomeExtensions.allow-locked-remote-desktop
-      ];
-    };
   };
 }

@@ -2,9 +2,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
-in {
+in
+{
   programs.sketchybar = lib.mkIf isDarwin {
     enable = true;
     configType = "lua";
@@ -15,6 +17,7 @@ in {
     };
   };
   xdg.configFile = {
-    "sketchybar/icon_map.lua".source = "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
+    "sketchybar/icon_map.lua".source =
+      "${pkgs.sketchybar-app-font}/lib/sketchybar-app-font/icon_map.lua";
   };
 }

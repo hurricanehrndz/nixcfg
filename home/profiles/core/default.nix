@@ -4,9 +4,11 @@
   inputs,
   packages,
   ...
-}: let
+}:
+let
   l = inputs.nixpkgs.lib // builtins;
-in {
+in
+{
   imports = [
     ./bat.nix
     ./home-packages.nix

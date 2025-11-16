@@ -1,6 +1,8 @@
-{config, ...}: let
+{ config, ... }:
+let
   inherit (config) xdg;
-in {
+in
+{
   programs.tealdeer.enable = true;
   programs.tealdeer.settings = {
     display = {
