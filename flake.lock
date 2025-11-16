@@ -1340,7 +1340,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-unstable": "nixos-unstable",
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "fh-nixpkgs-unstable"
         ],
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-unstable": "nixpkgs-unstable",
