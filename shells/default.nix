@@ -17,7 +17,7 @@ in
         nixpkgs-fmt
         flake.packages.strongbox
         flake.packages.strongbox-init
-        nix
+        inputs'.determinate-nix.packages.default
       ]
       ++ (lib.optionals isLinux [flake.packages.nixos-install-init])
       ++ (lib.optionals isDarwin [

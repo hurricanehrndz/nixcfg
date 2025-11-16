@@ -16,6 +16,7 @@
 
   inputs = {
     # determinate nix
+    determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # Package sets
