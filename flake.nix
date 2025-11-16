@@ -17,15 +17,9 @@
   inputs = {
     # Package sets
     nixpkgs.follows = "nixos-unstable";
-    nixos-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-pr259776.url = "github:Leixb/nixpkgs/rustdesk-123";
-
-    # software
-    # flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
-    # flatpaks.inputs.nixpkgs.follows = "nixpkgs";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -48,10 +42,6 @@
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
     devenv.url = "github:cachix/devenv";
-
-    # others
-    git-fat.url = "github:hurricanehrndz/git-fat";
-    # git-fat.inputs.nixpkgs.follows = "nixpkgs";
 
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
