@@ -20,6 +20,7 @@
     inputs.home-manager.nixosModules.home-manager
     inputs.agenix.nixosModules.age
     inputs.nixos-generators.nixosModules.all-formats
+    inputs.determinate.nixosModules.default
   ];
 
   makeNixosSystem = hostname: nixosArgs @ {system, ...}:
@@ -74,7 +75,6 @@ in {
         (with roles; mediaserver)
         ++ [
           inputs.snapraid-runner.nixosModules.snapraid-runner
-          nixosProfiles.networking.homarr
           nixosProfiles.autoUpdateContainers
         ];
     };

@@ -19,9 +19,9 @@
   boot.kernelModules = ["coretemp" "nct6775"];
   networking.domain = "hrndz.ca";
 
-  services.data-access = {
-    enable = true;
-  };
+  # services.data-access = {
+  #   enable = true;
+  # };
 
   networking = {
     nat = {
@@ -37,6 +37,6 @@
     ];
   };
 
-  system.stateVersion = "22.05";
+  system.stateVersion = "25.11";
 }
 # vim: set et sw=2 :

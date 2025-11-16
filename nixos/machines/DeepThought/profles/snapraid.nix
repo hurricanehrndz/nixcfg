@@ -12,9 +12,9 @@
   };
 
   # secrets
-  age.secrets = {
-    "snapraid-runner.apprise.yaml".file = "${self}/secrets/services/snapraid-runner/apprise.yaml.age";
-  };
+  # age.secrets = {
+  #   "snapraid-runner.apprise.yaml".file = "${self}/secrets/services/snapraid-runner/apprise.yaml.age";
+  # };
 
   # enable snapraid
   services.snapraid = {
@@ -63,10 +63,10 @@
 
   services.snapraid-runner = {
     enable = true;
-    notification = {
-      enable = true;
-      config = config.age.secrets."snapraid-runner.apprise.yaml".path;
-    };
+    # notification = {
+    #   enable = true;
+    #   config = config.age.secrets."snapraid-runner.apprise.yaml".path;
+    # };
     scrub.enabled = true;
     snapraid.touch = true;
   };

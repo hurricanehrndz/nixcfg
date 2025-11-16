@@ -9,7 +9,8 @@
     ++ (with nixosProfiles; [
       hardware.opengl
       networking.dhcp-all
-      networking.reverse-proxy
+      # networking.reverse-proxy
+      # networking.homarr
       services.monitoring
       plex
     ]);

@@ -1,7 +1,4 @@
 {
-  config,
-  lib,
-  self,
   ...
 }: {
   networking.useDHCP = false;
