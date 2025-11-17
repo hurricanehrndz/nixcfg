@@ -88,6 +88,9 @@ in
     defaults.monitored = "-a -o on -S on -T permissive -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
     devices = [
       {
+        device = "/dev/disk/by-id/ata-CT2000BX500SSD1_2533E9C916E0";
+      }
+      {
         device = "/dev/disk/by-id/ata-ADATA_SU800_2I5020042202";
       }
       {
@@ -123,8 +126,8 @@ in
         SCRUTINY_LOG_FILE = "/tmp/web.log";
       };
       volumes = [
-        "/opt/scrutiny/config:/opt/scrutiny/config"
-        "/opt/scrutiny/influxdb:/opt/scrutiny/influxdb"
+        "/var/lib/scrutiny/config:/opt/scrutiny/config"
+        "/var/lib/scrutiny/influxdb:/opt/scrutiny/influxdb"
         "/run/udev:/run/udev:ro"
       ];
       extraOptions = [
@@ -136,6 +139,7 @@ in
         "--device=/dev/sdd"
         "--device=/dev/sde"
         "--device=/dev/sdf"
+        "--device=/dev/sdg"
         "--device=/dev/nvme0n1"
       ];
     };

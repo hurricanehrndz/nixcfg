@@ -5,7 +5,6 @@
   isBootstrap ? false,
   ...
 }:
-
 lib.mkIf (!isBootstrap) {
   age.secrets = {
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
@@ -17,7 +16,7 @@ lib.mkIf (!isBootstrap) {
         "127.0.0.1:7575:7575"
       ];
       volumes = [
-        "/opt/homarr:/appdata"
+        "/var/lib/homarr:/appdata"
       ];
       environmentFiles = [
         config.age.secrets."homarr.env".path
@@ -30,7 +29,7 @@ lib.mkIf (!isBootstrap) {
       http.services = {
         "homarr" = {
           loadbalancer.servers = [
-            { url = "http://localhost:7575/"; }
+            {url = "http://localhost:7575/";}
           ];
         };
       };
