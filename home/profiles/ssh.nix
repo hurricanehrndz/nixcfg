@@ -18,7 +18,7 @@
         forwardAgent = true;
         remoteForwards = [
           {
-            host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
+            host.address = "/Users/chernand/.gnupg/S.gpg-agent";
             bind.address = "/run/user/1000/gnupg/S.gpg-agent";
           }
         ];
