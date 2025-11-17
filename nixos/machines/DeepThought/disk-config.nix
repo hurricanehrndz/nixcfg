@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   disko.devices = {
     disk = {
       main = {
@@ -28,12 +29,18 @@
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
-                    mountOptions = ["compress=zstd" "noatime"];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                   "@nix" = {
                     mountpoint = "/nix";
                     # Snapshotting /nix is generally redundant as it's reproducible
-                    mountOptions = ["compress=zstd" "noatime"];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                   "@swap" = {
                     mountpoint = "/.swapvol";
@@ -55,7 +62,10 @@
                 subvolumes = {
                   "@home" = {
                     mountpoint = "/home";
-                    mountOptions = ["compress=zstd" "noatime"];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                 };
               };
@@ -71,7 +81,10 @@
                 subvolumes = {
                   "@var" = {
                     mountpoint = "/var";
-                    mountOptions = ["compress=zstd" "noatime"];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                 };
               };
@@ -84,7 +97,10 @@
                 subvolumes = {
                   "@backups" = {
                     mountpoint = "/backups";
-                    mountOptions = ["compress=zstd" "noatime"];
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
                   };
                 };
               };

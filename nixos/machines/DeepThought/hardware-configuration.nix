@@ -39,9 +39,6 @@
   # networking.interfaces.enp0s20f0u3.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
 
-  systemd.network.enable = true;
-  systemd.services."systemd-networkd".environment.SYSTEMD_LOG_LEVEL = "debug";
-
   systemd.network.networks."10-enp0s31f6" = {
     matchConfig.Name = "enp0s31f6";
     networkConfig = {

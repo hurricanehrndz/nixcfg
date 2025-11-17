@@ -43,7 +43,6 @@
   networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
 
   # satic IP for enp1s0
-  systemd.network.enable = true;
   systemd.network.networks."50-enp1s0" = {
     matchConfig.Name = "enp1s0";
 
