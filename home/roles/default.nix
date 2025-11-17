@@ -25,7 +25,6 @@ let
   developer = neovim ++ [
     encryption
     direnv
-    misc
   ];
   graphical = [
     wezterm
