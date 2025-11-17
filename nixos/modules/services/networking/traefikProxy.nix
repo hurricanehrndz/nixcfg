@@ -59,6 +59,7 @@ in
             };
           };
           websecure.address = ":443";
+          traefik.address = "127.0.0.1:48080";
         };
         certificatesResolvers.dnsResolver.acme = {
           dnschallenge = {
