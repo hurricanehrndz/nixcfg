@@ -32,7 +32,7 @@ The bootstrap process uses a special flag to disable agenix secrets during the i
 3. **Deploy with nixos-anywhere:**
 
    ```console
-   nixos-anywhere --flake .#<hostname> --override-input bootstrap path:./bootstrap-flags/true root@<target-ip>
+   nix run github:nix-community/nixos-anywhere -- --flake .#<hostname> --override-input bootstrap path:./bootstrap-flags/true root@<target-ip>
    ```
 
    Replace `<hostname>` with your machine name (e.g., DeepThought) and `<target-ip>` with the target machine's IP address.
