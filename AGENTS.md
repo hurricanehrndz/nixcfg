@@ -5,6 +5,7 @@
 - Check flake: `nix flake check`
 - Build darwin config: `darwin-rebuild switch --flake .#<hostname>`
 - Build nixos config: `nixos-rebuild switch --flake .#<hostname>`
+- Build nixos bootstrap config (initial install): `nixos-rebuild switch --flake .#<hostname> --override-input bootstrap path:./bootstrap-flags/true`
 - Show flake outputs: `nix flake show`
 - Update flake inputs: `nix flake update`
 
