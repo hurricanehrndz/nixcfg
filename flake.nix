@@ -84,6 +84,7 @@
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
+        ./flake-modules/darwinConfigurations.nix
         ./flake-modules/homeConfigurations.nix
         ./flake-modules/sharedProfiles.nix
 
