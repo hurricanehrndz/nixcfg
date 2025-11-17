@@ -1,6 +1,5 @@
 {
   pkgs,
-  packages,
   ...
 }:
 {
@@ -18,10 +17,6 @@
     # TODO: joy ride
     lsd
     grex
-
-    # AI
-    mods
-    packages.gpt
 
     # grpc
     evans
