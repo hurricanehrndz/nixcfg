@@ -10,9 +10,6 @@ let
 in
 {
   home.shellAliases = {
-    # mods - cli gpt client
-    "?" = "gpt -C";
-
     # quick cd
     ".." = "cd ..";
     "..." = "cd ../..";

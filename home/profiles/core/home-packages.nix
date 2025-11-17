@@ -19,10 +19,6 @@
     lsd
     grex
 
-    # AI
-    mods
-    packages.gpt
-
     # grpc
     evans
   ];
