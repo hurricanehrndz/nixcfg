@@ -65,6 +65,9 @@
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ];
+                postMountHook = ''
+                  chattr +C /mnt/var
+                '';
                 subvolumes = {
                   "@var" = {
                     mountpoint = "/var";
