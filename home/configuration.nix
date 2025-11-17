@@ -19,12 +19,10 @@
 {
   self,
   moduleWithSystem,
-  pkgs,
   ...
 }:
 let
   inherit (self) inputs;
-  inherit (inputs) haumea;
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
   homeModules = l.rakeLeaves ./modules;
