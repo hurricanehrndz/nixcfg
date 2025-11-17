@@ -104,6 +104,10 @@ sed -i -e "s%swapDevices.*%swapDevices = [ { device = \"/dev/disk/by-uuid/${swap
     "${HOME}/nixcfg/nixos/machines/${flake_host}/hardware-configuration.nix"
 
 echo -e "${Red}Check hardware-configuration for machine, make sure swap and root are correct${NC}"
-read -r -p "About to start nixos-install, press enter when ready to continue" response
-
-sudo nixos-install --root /mnt --no-root-passwd --flake "${HOME}/nixcfg#${flake_host}"
+echo ""
+echo -e "${Yellow}Run the following command to complete installation:${NC}"
+echo ""
+echo -e "${Green}sudo nixos-install --root /mnt --no-root-passwd --flake \"${HOME}/nixcfg#${flake_host}\" --override-input bootstrap path:./bootstrap-flags/true${NC}"
+echo ""
+echo -e "${Yellow}The --override-input bootstrap flag disables agenix secrets during initial install.${NC}"
+echo -e "${Yellow}After first boot, run: sudo nixos-rebuild switch --flake .#${flake_host}${NC}"

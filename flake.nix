@@ -65,6 +65,9 @@
 
     tmux-catppuccin-src.url = "github:catppuccin/tmux";
     tmux-catppuccin-src.flake = false;
+
+    # bootstrap flag
+    bootstrap.url = "path:./bootstrap-flags/false";
   };
 
   outputs =

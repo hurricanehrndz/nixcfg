@@ -1,10 +1,12 @@
 {
   self,
   config,
+  lib,
+  isBootstrap ? false,
   ...
 }:
-{
-  # homarr
+
+lib.mkIf (!isBootstrap) {
   age.secrets = {
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
   };

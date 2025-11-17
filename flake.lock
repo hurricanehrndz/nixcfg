@@ -43,6 +43,17 @@
         "type": "github"
       }
     },
+    "bootstrap": {
+      "locked": {
+        "path": "./bootstrap-flags/false",
+        "type": "path"
+      },
+      "original": {
+        "path": "./bootstrap-flags/false",
+        "type": "path"
+      },
+      "parent": []
+    },
     "cachix": {
       "inputs": {
         "devenv": [
@@ -1326,6 +1337,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "bootstrap": "bootstrap",
         "darwin": "darwin_2",
         "determinate": "determinate",
         "determinate-nix": "determinate-nix",

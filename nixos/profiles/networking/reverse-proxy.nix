@@ -1,6 +1,12 @@
-{ self, config, ... }:
-
 {
+  self,
+  config,
+  lib,
+  isBootstrap ? false,
+  ...
+}:
+
+lib.mkIf (!isBootstrap) {
   age.secrets = {
     "traefik.env".file = "${self}/secrets/services/traefik/env.age";
   };

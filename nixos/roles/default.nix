@@ -1,6 +1,7 @@
 {
   sharedProfiles,
   nixosProfiles,
+  isBootstrap ? false,
 }:
 let
   mediaserver =
@@ -10,8 +11,8 @@ let
     ++ (with nixosProfiles; [
       hardware.opengl
       networking.dhcp-all
-      # networking.reverse-proxy
-      # networking.homarr
+      networking.reverse-proxy
+      networking.homarr
       services.monitoring
       plex
     ]);

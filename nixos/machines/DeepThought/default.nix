@@ -1,5 +1,6 @@
 {
   pkgs,
+  isBootstrap ? false,
   ...
 }:
 {
@@ -23,9 +24,9 @@
   ];
   networking.domain = "hrndz.ca";
 
-  # services.data-access = {
-  #   enable = true;
-  # };
+  services.data-access = {
+    enable = !isBootstrap;
+  };
 
   networking = {
     nat = {

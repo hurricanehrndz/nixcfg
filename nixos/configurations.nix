@@ -8,7 +8,9 @@ let
   inherit (self.homeModules) homeManagerSettings;
   l = inputs.nixpkgs.lib // builtins // self.lib;
 
-  roles = import ./roles { inherit sharedProfiles nixosProfiles; };
+  isBootstrap = inputs.bootstrap.value;
+
+  roles = import ./roles { inherit sharedProfiles nixosProfiles isBootstrap; };
 
   nixosModules = l.rakeLeaves ./modules;
   nixosMachines = l.rakeLeaves ./machines;
@@ -64,6 +66,7 @@ let
             sharedProfiles
             roles
             system
+            isBootstrap
             ;
           inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
         };

@@ -2,6 +2,8 @@
   self,
   config,
   pkgs,
+  lib,
+  isBootstrap ? false,
   ...
 }:
 {
@@ -12,12 +14,10 @@
     ];
   };
 
-  # secrets
-  # age.secrets = {
-  #   "snapraid-runner.apprise.yaml".file = "${self}/secrets/services/snapraid-runner/apprise.yaml.age";
-  # };
+  age.secrets = lib.mkIf (!isBootstrap) {
+    "snapraid-runner.apprise.yaml".file = "${self}/secrets/services/snapraid-runner/apprise.yaml.age";
+  };
 
-  # enable snapraid
   services.snapraid = {
     enable = true;
     extraConfig = ''
@@ -64,12 +64,14 @@
 
   services.snapraid-runner = {
     enable = true;
-    # notification = {
-    #   enable = true;
-    #   config = config.age.secrets."snapraid-runner.apprise.yaml".path;
-    # };
     scrub.enabled = true;
     snapraid.touch = true;
+  }
+  // lib.optionalAttrs (!isBootstrap) {
+    notification = {
+      enable = true;
+      config = config.age.secrets."snapraid-runner.apprise.yaml".path;
+    };
   };
 
   # add cache expiration script
