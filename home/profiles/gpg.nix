@@ -23,7 +23,6 @@ let
         ${pkgs.coreutils}/bin/ln -sf "$(${gpgPkg}/bin/gpgconf --list-dir agent-ssh-socket)" "$SSH_AUTH_SOCK"
       fi
     '';
-  sockPathCmd = "$(${gpgPkg}/bin/gpgconf --list-dirs agent-ssh-socket)";
   maxCacheTtl = "1800";
   defaultCacheTtl = "600";
   sshCacheTtl = "600";
