@@ -65,7 +65,6 @@ let
               _module.args = {
                 inherit inputs';
                 inherit (ctx.config) packages;
-                isNixos = false;
               };
               networking.hostName = hostName;
               networking.computerName = hostName;
@@ -80,6 +79,7 @@ let
             system
             ;
           inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
+          isNixos = false;
         };
       }
     );

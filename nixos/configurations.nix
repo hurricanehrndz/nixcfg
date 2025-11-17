@@ -51,7 +51,6 @@ let
                   inputs'
                   packages
                   ;
-                isNixos = true;
               };
               nixpkgs.pkgs = nixosArgs.pkgs or pkgs;
               networking.hostName = hostname;
@@ -70,6 +69,7 @@ let
             isBootstrap
             ;
           inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux isMacOS;
+          isNixos = true;
         };
       }
     );

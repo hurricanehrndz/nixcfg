@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   darwinAliases = {
     nrb = "sudo darwin-rebuild switch --flake ~/src/me/nixcfg";
   };

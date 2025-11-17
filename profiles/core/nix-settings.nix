@@ -1,12 +1,12 @@
 {
   pkgs,
   inputs,
+  isDarwin,
+  isLinux,
   ...
 }:
 let
   l = inputs.nixpkgs.lib // builtins;
-  isDarwin = pkgs.stdenv.isDarwin;
-  isLinux = pkgs.stdenv.isLinux;
   inputFlakes = l.filterAttrs (_: v: v ? outputs) inputs;
 
   customNixSettings = {
@@ -41,22 +41,24 @@ let
   };
 in
 {
-  config = l.mkMerge [
-    {
-      nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
-      nix.nixPath = [
-        "nixpkgs=${pkgs.path}"
-        "home-manager=${inputs.home-manager}"
-        "/etc/nix/inputs"
-      ]
-      ++ (l.optional isDarwin "darwin=${inputs.darwin}");
-    }
-    (l.mkIf isLinux {
+  config = l.mkMerge (
+    [
+      {
+        nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
+        nix.nixPath = [
+          "nixpkgs=${pkgs.path}"
+          "home-manager=${inputs.home-manager}"
+          "/etc/nix/inputs"
+        ]
+        ++ (l.optional isDarwin "darwin=${inputs.darwin}");
+      }
+    ]
+    ++ (l.optional isLinux {
       nix.settings = customNixSettings;
     })
-    (l.mkIf isDarwin {
+    ++ (l.optional isDarwin {
       nix.enable = false;
       determinate-nix.customSettings = customNixSettings;
     })
-  ];
+  );
 }
