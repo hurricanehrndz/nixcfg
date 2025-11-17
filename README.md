@@ -21,28 +21,30 @@ This configuration uses [Determinate Nix](https://determinate.systems/nix/), whi
 
 The bootstrap process uses a special flag to disable agenix secrets during the initial install, since the host SSH keys don't exist yet.
 
-#### Option 1: Automated Installation (Destructive)
+#### Automated Installation with nixos-anywhere
 
-**WARNING:** This script will completely erase the target disk and create a new partition scheme.
+**WARNING:** This will completely erase the target disk and create a new partition scheme using disko.
 
-1. **Run the install script** with your target device and hostname:
+1. **Boot the target machine** into a NixOS installer ISO (recommend [Determinate Nix installer ISO](https://determinate.systems/posts/determinate-nix-installer/))
+
+2. **Ensure SSH access** to the target machine
+
+3. **Deploy with nixos-anywhere:**
 
    ```console
-   nix run --accept-flake-config .\#nixos-install-init /dev/sda Hal9000
+   nixos-anywhere --flake .#<hostname> --override-input bootstrap path:./bootstrap-flags/true root@<target-ip>
    ```
 
-   Note: If not using Determinate Nix, add `--extra-experimental-features "flakes nix-command"` to the command.
+   Replace `<hostname>` with your machine name (e.g., DeepThought) and `<target-ip>` with the target machine's IP address.
 
-   The script will:
-   - **Erase all data on the target disk**
-   - Create a GPT partition table with BTRFS root, swap, and EFI boot partitions
-   - Create BTRFS subvolumes (home, var, nix, tmp, srv, opt, root)
-   - Generate hardware configuration
-   - Prompt you to run `nixos-install` with the bootstrap flag
+   The command will:
+   - Use disko to partition and format the disk according to `disk-config.nix`
+   - Install NixOS with the bootstrap flag enabled (secrets disabled)
+   - Deploy your system configuration
 
-#### Option 2: Manual Partitioning
+#### Manual Installation
 
-If you prefer a custom partition scheme, follow the [NixOS manual partitioning guide](https://nixos.org/manual/nixos/stable/#sec-installation-manual-partitioning) using the [Determinate Nix installer ISO](https://determinate.systems/posts/determinate-nix-installer/).
+If you prefer manual control, follow the [NixOS manual partitioning guide](https://nixos.org/manual/nixos/stable/#sec-installation-manual-partitioning).
 
 After partitioning and mounting your filesystems to `/mnt`:
 
@@ -53,14 +55,10 @@ After partitioning and mounting your filesystems to `/mnt`:
 
 2. Copy the generated `hardware-configuration.nix` to your machine's directory in this repo
 
-3. Continue with step 2 below
-
-#### Completing Installation
-
-2. **Install with bootstrap mode enabled** (as prompted by the script):
+3. Install with bootstrap mode enabled:
 
    ```console
-   sudo nixos-install --root /mnt --no-root-passwd --flake "${HOME}/nixcfg#Hal9000" --override-input bootstrap path:./bootstrap-flags/true
+   sudo nixos-install --root /mnt --no-root-passwd --flake .#<hostname> --override-input bootstrap path:./bootstrap-flags/true
    ```
 
    The `--override-input bootstrap path:./bootstrap-flags/true` flag disables all agenix secrets during installation.

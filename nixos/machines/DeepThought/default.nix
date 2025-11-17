@@ -6,6 +6,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./disk-config.nix
     ./filesystems.nix
     ./profles/snapraid.nix
     ./profles/samba.nix

@@ -23,107 +23,12 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/nix" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@nix"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/tmp" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@tmp"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/opt" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@opt"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/srv" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@srv"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/root" = {
-    device = "/dev/disk/by-uuid/1f63fd63-50b7-4131-88ec-5d7a1f22d31d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@root"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/home" = {
-    device = "/dev/disk/by-uuid/4b0885af-b829-4d77-85b3-27b4ff218b9d";
-    fsType = "btrfs";
-    options = [
-      "subvol=@home"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/var" = {
-    device = "/dev/disk/by-uuid/0d08b745-cd37-4509-9949-3a0cdd70a30e";
-    fsType = "btrfs";
-    options = [
-      "subvol=@var"
-      "compress=zstd"
-      "noatime"
-    ];
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/A8F6-23F4";
-    fsType = "vfat";
-    options = [
-      "fmask=0022"
-      "dmask=0022"
-    ];
-  };
-
   zramSwap = {
     enable = true;
     algorithm = "zstd";
     priority = 100;
     memoryPercent = 10;
   };
-
-  swapDevices = [
-    {
-      device = "/dev/disk/by-uuid/b5a0c73e-3253-48cb-9352-2182a4c84db1";
-    }
-  ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

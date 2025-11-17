@@ -29,6 +29,10 @@
     # default pkg set
     nixpkgs.follows = "fh-nixpkgs-unstable";
 
+    # disks
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
     haumea.url = "github:nix-community/haumea/v0.2.2";

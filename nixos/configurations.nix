@@ -24,6 +24,7 @@ let
     inputs.agenix.nixosModules.age
     inputs.nixos-generators.nixosModules.all-formats
     inputs.determinate.nixosModules.default
+    inputs.disko.nixosModules.disko
   ];
 
   makeNixosSystem =
