@@ -2,10 +2,9 @@
   pkgs,
   buildGoModule,
   strongbox-src,
-  lib,
   ...
 }:
-buildGoModule rec {
+buildGoModule {
   pname = "strongbox";
   version = "master";
   src = strongbox-src;
