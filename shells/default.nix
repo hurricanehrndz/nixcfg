@@ -6,8 +6,7 @@
 }:
 let
   inherit (pkgs) age agenix lib;
-  inherit (flake.packages) nixos-install-init;
-  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   pkgWithCategory = category: package: { inherit package category; };
 in
 pkgs.devshell.mkShell {
@@ -21,7 +20,6 @@ pkgs.devshell.mkShell {
       flake.packages.treefmt
       inputs'.determinate-nix.packages.default
     ]
-    ++ (lib.optionals isLinux [ flake.packages.nixos-install-init ])
     ++ (lib.optionals isDarwin [
       inputs'.darwin.packages.darwin-rebuild
     ]);
@@ -34,8 +32,7 @@ pkgs.devshell.mkShell {
       help = "Format all nix files in the project";
       command = "treefmt";
     }
-  ]
-  ++ (lib.optionals isLinux [ (pkgWithCategory "install" nixos-install-init) ]);
+  ];
 
   devshell.startup.git-config.text = ''
     ${flake.packages.strongbox-init}/bin/strongbox-init

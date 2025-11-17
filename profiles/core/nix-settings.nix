@@ -8,6 +8,12 @@
 let
   l = inputs.nixpkgs.lib // builtins;
   inputFlakes = l.filterAttrs (_: v: v ? outputs) inputs;
+  inputsToPaths = l.mapAttrs' (
+    n: v: {
+      name = "nix/inputs/${n}";
+      value.source = v.outPath;
+    }
+  );
 
   customNixSettings = {
     accept-flake-config = true;
@@ -44,6 +50,7 @@ in
   config = l.mkMerge (
     [
       {
+        environment.etc = inputsToPaths inputs;
         nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
         nix.nixPath = [
           "nixpkgs=${pkgs.path}"
