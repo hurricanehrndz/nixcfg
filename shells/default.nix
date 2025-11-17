@@ -32,6 +32,12 @@ pkgs.devshell.mkShell {
       help = "Format all nix files in the project";
       command = "treefmt";
     }
+    {
+        name = "agenix-rekey";
+        category = "secrets";
+        help = "Rekey secrets, in secrets directory";
+        command = "agenix -i $PRIVATE_KEY -r";
+    }
   ];
 
   devshell.startup.git-config.text = ''
