@@ -23,6 +23,7 @@ in
       bind-key -N "Send the prefix key through to the application" a send-prefix
 
       set -g set-clipboard on
+      set -g update-environment "DISPLAY SSH_ASKPASS SSH_AGENT_PID SSH_AUTH_SOCK SSH_CONNECTION WINDOWID XAUTHORITY"
       set-option -sa terminal-overrides ',*256col*:RGB'
       set-option -g focus-events on
       bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"

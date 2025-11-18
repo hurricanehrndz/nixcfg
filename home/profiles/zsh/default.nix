@@ -94,6 +94,18 @@ with lib;
           fi
         }
         zle -N prepend-sudo
+
+        # auto update SSH_AUTH_SOCK
+        _update_ssh_agent() {
+          if ! [[ -S $SSH_AUTH_SOCK ]]; then
+              eval "$(tmux show-environment -s SSH_AUTH_SOCK 2>/dev/null)"
+          fi
+        }
+        autoload -Uz add-zsh-hook
+        if [[ -n "$TMUX" ]]; then
+            add-zsh-hook precmd _update_ssh_agent
+        fi
+
         bindkey -M vicmd '^X^S' prepend-sudo
         bindkey -M viins '^X^S' prepend-sudo
 
