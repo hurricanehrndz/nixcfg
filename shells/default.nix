@@ -33,10 +33,10 @@ pkgs.devshell.mkShell {
       command = "treefmt";
     }
     {
-        name = "agenix-rekey";
-        category = "secrets";
-        help = "Rekey secrets, in secrets directory";
-        command = "agenix -i $PRIVATE_KEY -r";
+      name = "agenix-rekey";
+      category = "secrets";
+      help = "Rekey secrets, in secrets directory";
+      command = "agenix -i $PRIVATE_KEY -r";
     }
   ];
 

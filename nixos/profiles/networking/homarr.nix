@@ -29,7 +29,7 @@ lib.mkIf (!isBootstrap) {
       http.services = {
         "homarr" = {
           loadbalancer.servers = [
-            {url = "http://localhost:7575/";}
+            { url = "http://localhost:7575/"; }
           ];
         };
       };
