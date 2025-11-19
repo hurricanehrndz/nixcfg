@@ -6,7 +6,7 @@
       ...
     }:
     {
-      # define packages
-      formatter = config.packages.treefmt;
+      # set nix fmt
+      formatter = config.treefmt.build.wrapper;
     };
 }

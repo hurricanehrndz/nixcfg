@@ -6,6 +6,7 @@
 
     # formatter
     ./formatter.nix
+    ./treefmt.nix
 
     # packages
     ./pkgs

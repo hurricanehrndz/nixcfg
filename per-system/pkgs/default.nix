@@ -1,7 +1,9 @@
-inupts: {
-  perSystem =
-    { ... }:
+{ inputs, ... }:
+{
+  imports = [
+    inputs.pkgs-by-name-for-flake-parts.flakeModule
     {
-      pkgsDirectory = ../pkgs;
-    };
+      perSystem.pkgsDirectory = ./by-name;
+    }
+  ];
 }

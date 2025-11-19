@@ -1,6 +1,9 @@
-inputs: {
+{ inputs, ... }:
+{
+  imports = [ inputs.devshell.flakeModule ];
   perSystem =
     {
+      config,
       pkgs,
       self',
       inputs',
@@ -11,19 +14,28 @@ inputs: {
       devshells.default =
         let
           inherit (pkgs.stdenv.hostPlatform) isDarwin;
-          agenix = inputs'.agenix.packages.default;
+          treefmt = config.treefmt.build.wrapper;
+          nix = inputs'.determinate-nix.packages.default;
           pkgWithCategory = category: package: { inherit package category; };
         in
         {
           name = "default";
 
-          packages = [
-            pkgs.local.treefmt
-            inputs'.determinate-nix.packages.default
-          ]
-          ++ (lib.optionals isDarwin [
-            inputs'.darwin.packages.darwin-rebuild
-          ]);
+          packages =
+            with pkgs;
+            [
+              age
+              agenix
+              nix
+              treefmt
+            ]
+            ++ (with pkgs.local; [
+              strongbox
+              strongbox-init
+            ])
+            ++ (lib.optionals isDarwin [
+              inputs'.darwin.packages.darwin-rebuild
+            ]);
 
           commands = with pkgs; [
             (pkgWithCategory "secrets" agenix)
