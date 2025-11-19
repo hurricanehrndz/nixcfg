@@ -1,5 +1,9 @@
 {
   inputs = {
+    # `flake-schemas` is a flake that provides schemas for commonly used flake outputs,
+    # like `packages` and `devShells`.
+    flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/*.tar.gz";
+
     # determinate nix
     determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
@@ -10,6 +14,9 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     fh-nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     fh-nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+
+    # systems defs
+    systems.url = "github:nix-systems/default";
 
     # default pkg set
     nixpkgs.follows = "fh-nixpkgs-unstable";
@@ -30,37 +37,18 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{ flake-parts, flake-schemas, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = [
-        "aarch64-darwin"
-        "x86_64-linux"
-      ];
-
       imports = with inputs; [
         devshell.flakeModule
         pkgs-by-name-for-flake-parts.flakeModule
 
-        # define shells
-        (import-tree ./perSystem/devShells)
+        # factored out flake
+        ./flake
       ];
-
-      perSystem =
-        {
-          config,
-          self',
-          inputs',
-          pkgs,
-          system,
-          ...
-        }:
-        {
-          # define packages
-          pkgsDirectory = ./pkgs;
-          formatter = config.packages.treefmt;
-        };
     };
 }

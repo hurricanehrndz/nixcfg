@@ -18,7 +18,7 @@ inputs: {
           name = "default";
 
           packages = [
-            self'.packages.treefmt
+            pkgs.local.treefmt
             inputs'.determinate-nix.packages.default
           ]
           ++ (lib.optionals isDarwin [

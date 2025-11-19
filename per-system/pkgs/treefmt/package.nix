@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 pkgs.treefmt.withConfig {
   runtimeInputs = [ pkgs.nixfmt-rfc-style ];
   settings = {
@@ -9,5 +8,4 @@ pkgs.treefmt.withConfig {
       includes = [ "*.nix" ];
     };
   };
-
 }

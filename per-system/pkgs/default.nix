@@ -1,0 +1,7 @@
+inupts: {
+  perSystem =
+    { ... }:
+    {
+      pkgsDirectory = ../pkgs;
+    };
+}
