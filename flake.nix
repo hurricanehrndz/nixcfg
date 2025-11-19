@@ -19,18 +19,33 @@
     easy-hosts.url = "github:tgirlcloud/easy-hosts";
     import-tree.url = "github:vic/import-tree";
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
+
+    # devshell
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
+    devshell.url = "github:numtide/devshell";
+
+    # extended management
+    darwin.url = "github:lnl7/nix-darwin/master";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
-    inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "aarch64-darwin"
         "x86_64-linux"
       ];
 
-      imports = [
-        inputs.pkgs-by-name-for-flake-parts.flakeModule
+      imports = with inputs; [
+        devshell.flakeModule
+        pkgs-by-name-for-flake-parts.flakeModule
+
+        # define shells
+        (import-tree ./perSystem/devShells)
       ];
 
       perSystem =
@@ -43,6 +58,7 @@
           ...
         }:
         {
+          # define packages
           pkgsDirectory = ./pkgs;
           formatter = config.packages.treefmt;
         };
