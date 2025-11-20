@@ -300,14 +300,15 @@
       "locked": {
         "lastModified": 1761577921,
         "narHash": "sha256-eK3/xbUOrxp9fFlei09XNjqcdiHXxndzrTXp7jFpOk8=",
+        "owner": "DeterminateSystems",
+        "repo": "flake-schemas",
         "rev": "47849c7625e223d36766968cc6dc23ba0e135922",
-        "revCount": 107,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/flake-schemas/0.2.0/019a4a84-544d-7c59-b26d-e334e320c932/source.tar.gz"
+        "type": "github"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%2A.tar.gz"
+        "owner": "DeterminateSystems",
+        "repo": "flake-schemas",
+        "type": "github"
       }
     },
     "git-hooks-nix": {

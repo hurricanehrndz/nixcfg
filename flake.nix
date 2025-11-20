@@ -2,7 +2,7 @@
   inputs = {
     # `flake-schemas` is a flake that provides schemas for commonly used flake outputs,
     # like `packages` and `devShells`.
-    flake-schemas.url = "https://flakehub.com/f/DeterminateSystems/flake-schemas/*.tar.gz";
+    flake-schemas.url = "github:DeterminateSystems/flake-schemas";
 
     # determinate nix
     determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
@@ -54,13 +54,7 @@
   outputs =
     inputs@{
       flake-parts,
-      flake-schemas,
       ...
     }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        # factored out flake
-        ./flake
-      ];
-    };
+    flake-parts.lib.mkFlake { inherit inputs; } { imports = [ ./flake ]; };
 }
