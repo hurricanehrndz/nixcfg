@@ -10,6 +10,11 @@ in
 {
   easy-hosts.host.class = "darwin";
 
+  # system customization via gated options
+  hrndz = {
+    core.enable = true;
+  };
+
   users.users.${username} = {
     home = homeDir;
     isHidden = false;
