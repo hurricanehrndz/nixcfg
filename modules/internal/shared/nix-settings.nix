@@ -1,11 +1,11 @@
 {
+  lib,
   pkgs,
   inputs,
   ...
 }:
 let
-  inherit (pkgs.stdenv.hostPlatform) isDarwin isLinux;
-  l = inputs.nixpkgs.lib // builtins;
+  l = lib // builtins;
   inputFlakes = l.filterAttrs (_: v: v ? outputs) inputs;
   inputsToPaths = l.mapAttrs' (
     n: v: {
@@ -14,7 +14,7 @@ let
     }
   );
 
-  customNixSettings = {
+  mkCustomNixSettings = isDarwin: {
     accept-flake-config = true;
     auto-optimise-store = true;
     builders-use-substitutes = true;
@@ -46,25 +46,19 @@ let
   };
 in
 {
-  config = l.mkMerge (
-    [
-      {
-        environment.etc = inputsToPaths inputs;
-        nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
-        nix.nixPath = [
-          "nixpkgs=${pkgs.path}"
-          "home-manager=${inputs.home-manager}"
-          "/etc/nix/inputs"
-        ]
-        ++ (l.optional isDarwin "darwin=${inputs.darwin}");
-      }
-    ]
-    ++ (l.optional isLinux {
-      nix.settings = customNixSettings;
-    })
-    ++ (l.optional isDarwin {
-      nix.enable = false;
-      determinate-nix.customSettings = customNixSettings;
-    })
+  environment.etc = inputsToPaths inputs;
+  nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
+  nix.nixPath = [
+    "nixpkgs=${pkgs.path}"
+    "home-manager=${inputs.home-manager}"
+    "/etc/nix/inputs"
+  ]
+  ++ (l.optional pkgs.stdenv.hostPlatform.isDarwin "darwin=${inputs.darwin}");
+
+  nix.settings = l.mkIf pkgs.stdenv.hostPlatform.isLinux (mkCustomNixSettings false);
+
+  nix.enable = l.mkIf pkgs.stdenv.hostPlatform.isDarwin false;
+  determinate-nix.customSettings = l.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+    mkCustomNixSettings true
   );
 }
