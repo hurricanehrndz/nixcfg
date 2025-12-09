@@ -1,7 +1,6 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkEnableOption;
-
+  inherit (lib) mkEnableOption mkDefault mkIf;
   cfg = config.hrndz;
 in
 {
@@ -11,11 +10,16 @@ in
     };
 
     tui.enable = mkEnableOption "Enable CLI/TUI programs" // {
-      default = cfg.core.enable;
+      default = false;
     };
 
-    devEnv.enable = mkEnableOption "Enable development environment" // {
-      default = true;
+    roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment" // {
+      default = false;
     };
+  };
+
+  config.hrndz = mkIf cfg.roles.terminalDeveloper.enable {
+    core.enable = mkDefault true;
+    tui.enable = mkDefault true;
   };
 }

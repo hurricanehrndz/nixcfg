@@ -10,7 +10,7 @@ in
 {
   # system customization via gated options
   hrndz = {
-    core.enable = true;
+    roles.terminalDeveloper.enable = true;
   };
 
   users.users.${username} = {
