@@ -12,7 +12,7 @@ in
     shell = pkgs.zsh;
   };
 
-  home-manager.users.${username} = hmArgs: {
+  home-manager.users.${username} = {
     home.stateVersion = "25.05";
   };
 

@@ -1,9 +1,11 @@
 {
-  self,
   lib,
   inputs,
   ...
 }:
+let
+  inherit (inputs) import-tree;
+in
 {
   imports = [ inputs.easy-hosts.flakeModule ];
 
@@ -12,6 +14,7 @@
     path = ../hosts;
 
     shared.modules = [
+      (import-tree ../modules/internal/shared)
     ];
 
     perClass = class: {
