@@ -4,9 +4,11 @@
   inputs,
   inputs',
   ...
-}: let
+}:
+let
   inherit (inputs) import-tree;
-in {
+in
+{
   home-manager = {
     verbose = true;
     useUserPackages = true;
