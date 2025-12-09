@@ -18,20 +18,16 @@ in
     ];
 
     perClass = class: {
-
       modules =
         with inputs;
-        builtins.concatList [
-
+        builtins.concatLists [
           # darwin modules
           (lib.optionals (class == "darwin") [
             home-manager.darwinModules.home-manager
             determinate.darwinModules.default
             agenix.darwinModules.age
           ])
-
         ];
-
     };
   };
 }
