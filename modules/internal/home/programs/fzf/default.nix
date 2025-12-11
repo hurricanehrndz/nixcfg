@@ -47,6 +47,8 @@ in
         "--tiebreak=index"
         "--preview '${dirPreviewCommand}'"
       ];
+
+      enableZshIntegration = false;
     };
   };
 }
