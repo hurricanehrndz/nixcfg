@@ -14,5 +14,8 @@
 
     # hosts
     ../hosts
+
+    # darwinModules
+    ./darwinModules.nix
   ];
 }

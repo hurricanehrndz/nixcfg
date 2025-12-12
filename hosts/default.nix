@@ -26,6 +26,7 @@ in
             home-manager.darwinModules.home-manager
             determinate.darwinModules.default
             agenix.darwinModules.age
+            self.darwinModules.default
           ])
         ];
     };
