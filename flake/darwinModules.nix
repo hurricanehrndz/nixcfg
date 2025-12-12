@@ -1,5 +1,4 @@
 {
-  self,
   inputs,
   lib,
   ...
@@ -20,11 +19,11 @@ in
             })
           )
           (i: i.withLib lib)
-          (i: i.leafs ./modules/exported/darwin)
+          (i: i.leafs ../modules/exported/darwin)
         ]
       ))
       // {
-        default = import-tree (self + /modules/exported/darwin);
+        default = import-tree ../modules/exported/darwin;
       };
 
   };
