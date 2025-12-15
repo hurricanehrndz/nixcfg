@@ -18,6 +18,10 @@ in
       default = false;
     };
 
+    profile.virtualization = mkEnableOption "Enable virtualization programs" // {
+      default = false;
+    };
+
     roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment" // {
       default = false;
     };
