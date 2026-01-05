@@ -23,6 +23,7 @@ in
         builtins.concatLists [
           # darwin modules
           (lib.optionals (class == "darwin") [
+            (import-tree ../modules/internal/darwin)
             home-manager.darwinModules.home-manager
             determinate.darwinModules.default
             agenix.darwinModules.age
