@@ -15,7 +15,8 @@ let
     optionalString
     ;
   cfg = config.hrndz.services.aerospace;
-  configFile = pkgs.writeTextFile "aerospace.toml" {
+  configFile = pkgs.writeTextFile {
+    name = "aerospace.toml";
     text = cfg.settings;
   };
 in
