@@ -10,7 +10,9 @@ in
 {
   # system customization via gated options
   hrndz = {
-    roles.terminalDeveloper.enable = true;
+    roles.guiDeveloper.enable = true;
+    profile.virtualization.enable = true;
+    profile.macadmin.enable = true;
   };
 
   users.users.${username} = {
