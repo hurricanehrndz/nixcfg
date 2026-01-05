@@ -18,7 +18,11 @@ in
       default = false;
     };
 
-    profile.virtualization = mkEnableOption "Enable virtualization programs" // {
+    profile.virtualization.enable = mkEnableOption "Enable virtualization programs" // {
+      default = false;
+    };
+
+    profile.macadmin.enable = mkEnableOption "Enable MacAdmin tooling" // {
       default = false;
     };
 

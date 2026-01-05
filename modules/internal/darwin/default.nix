@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 let
   inherit (lib) mkDefault mkForce;
 in
@@ -9,10 +9,6 @@ in
   programs.zsh.enableFzfGit = mkForce false;
   programs.zsh.enableFzfHistory = mkForce false;
   programs.zsh.enableSyntaxHighlighting = mkForce false;
-
-  environment.systemPackages = with pkgs; [
-    ncurses
-  ];
 
   system.activationScripts.postActivation.text = ''
     if [[ -z "$(find /usr/share/terminfo -name "tmux")" ]]; then

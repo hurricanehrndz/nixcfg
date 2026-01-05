@@ -8,13 +8,10 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.profile.virtualization.enable {
+  config = mkIf cfg.profile.macadmin.enable {
     homebrew.casks = [
-      "utm"
-    ];
-
-    homebrew.brews = [
-      "container"
+      "apparency"
+      "suspicious-package"
     ];
   };
 }

@@ -8,13 +8,9 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.profile.virtualization.enable {
-    homebrew.casks = [
-      "utm"
-    ];
-
+  config = mkIf cfg.tui.enable {
     homebrew.brews = [
-      "container"
+      "opencode" # more up-to-date than nixpkgs
     ];
   };
 }

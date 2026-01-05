@@ -13,6 +13,7 @@ in
     environment.systemPackages = with pkgs; [
       # commandline tool for battery, volume, wifi
       m-cli
+      ncurses
     ];
   };
 }
