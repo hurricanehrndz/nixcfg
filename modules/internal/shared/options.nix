@@ -14,12 +14,23 @@ in
       default = false;
     };
 
-    profile.virtualization.enable = mkEnableOption "Enable virtualization programs" // {
-      default = false;
-    };
+    tooling = {
+      # darwin only
+      virtualization.enable = mkEnableOption "Enable virtualization tooling" // {
+        default = false;
+      };
 
-    profile.macadmin.enable = mkEnableOption "Enable MacAdmin tooling" // {
-      default = false;
+      macadmin.enable = mkEnableOption "Enable MacAdmin tooling" // {
+        default = false;
+      };
+
+      python.enable = mkEnableOption "Enable Python tooling" // {
+        default = false;
+      };
+
+      ruby.enable = mkEnableOption "Enable Ruby tooling" // {
+        default = false;
+      };
     };
 
     roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment" // {

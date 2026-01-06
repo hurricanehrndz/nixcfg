@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.profile.virtualization.enable {
+  config = mkIf cfg.tooling.virtualization.enable {
     homebrew.casks = [
       "utm"
     ];

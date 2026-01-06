@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.profile.macadmin.enable {
+  config = mkIf cfg.tooling.macadmin.enable {
     homebrew.casks = [
       "apparency"
       "suspicious-package"
