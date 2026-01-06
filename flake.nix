@@ -15,6 +15,10 @@
     fh-nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     fh-nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
 
+    # index
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
     # systems defs
     systems.url = "github:nix-systems/default";
 

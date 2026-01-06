@@ -44,6 +44,10 @@ in
       sshf
     ];
 
+    # command-not-found alt
+    programs.command-not-found.enable = false;
+    programs.nix-index-database.comma.enable = true;
+
     programs.zsh = {
       enable = true;
       dotDir = "${config.xdg.configHome}/zsh";

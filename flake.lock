@@ -438,6 +438,26 @@
         "url": "https://flakehub.com/f/DeterminateSystems/nix-src/%2A"
       }
     },
+    "nix-index-database": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765267181,
+        "narHash": "sha256-d3NBA9zEtBu2JFMnTBqWj7Tmi7R5OikoU2ycrdhQEws=",
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "rev": "82befcf7dc77c909b0f2a09f5da910ec95c5b78f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nixos-unstable": {
       "locked": {
         "lastModified": 1767379071,
@@ -652,6 +672,7 @@
         "flake-schemas": "flake-schemas",
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
+        "nix-index-database": "nix-index-database",
         "nixos-unstable": "nixos-unstable",
         "nixpkgs": [
           "fh-nixpkgs-unstable"
