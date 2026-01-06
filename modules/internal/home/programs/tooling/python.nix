@@ -13,7 +13,7 @@ in
     home.packages = with pkgs; [
       pipx
       pyright
-      python310
+      (lib.lowPrio python310)
       python312
       ruff
       uv

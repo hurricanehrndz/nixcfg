@@ -13,7 +13,7 @@ in
     home.packages = with pkgs; [
       rbenv
       ruby_3_4
-      rubyfmt
+      # rubyfmt
     ];
   };
 }
