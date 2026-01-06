@@ -10,10 +10,6 @@ let
 in
 {
   options.hrndz = {
-    core.enable = mkEnableOption "Enable minimal options" // {
-      default = true;
-    };
-
     tui.enable = mkEnableOption "Enable CLI/TUI programs" // {
       default = false;
     };
@@ -37,7 +33,6 @@ in
 
   config.hrndz = mkMerge [
     (mkIf cfg.roles.terminalDeveloper.enable {
-      core.enable = mkDefault true;
       tui.enable = mkDefault true;
     })
 

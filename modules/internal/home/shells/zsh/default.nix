@@ -31,7 +31,7 @@ let
   # omp-config = pkgs.writeText "omp.zen.toml" (builtins.readFile ./omp.zen.toml);
 in
 {
-  config = mkIf cfg.core.enable {
+  config = mkIf cfg.tui.enable {
     home.extraOutputsToInstall = [
       "/share/zsh"
       # TODO: is this already implied by `/share/zsh`?

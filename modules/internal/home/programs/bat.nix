@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = lib.mkIf cfg.core.enable {
+  config = lib.mkIf cfg.tui.enable {
     home.shellAliases."man" = "${pkgs.bat-extras.batman}/bin/batman";
 
     home.packages = with pkgs; [
