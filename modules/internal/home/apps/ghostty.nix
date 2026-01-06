@@ -16,7 +16,7 @@ in
       enable = true;
       enableZshIntegration = true;
       settings = {
-        theme = "rose-pine-dawn";
+        theme = "Rose Pine Dawn";
         window-theme = "light";
       };
     };
