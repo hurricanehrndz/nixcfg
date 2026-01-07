@@ -15,6 +15,10 @@ in
 
     homebrew.brews = [
       "container"
+      "docker"
+      "docker-compose"
+      "lazydocker"
+      "lima"
     ];
   };
 }
