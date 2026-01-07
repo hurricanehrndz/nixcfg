@@ -46,6 +46,8 @@ let
   };
 in
 {
+  nixpkgs.config.allowUnfree = true;
+
   environment.etc = inputsToPaths inputs;
   nix.registry = l.mkForce (l.mapAttrs (_: flake: { inherit flake; }) inputFlakes);
   nix.nixPath = [
