@@ -1,7 +1,25 @@
 {
   system.defaults.CustomUserPreferences = {
     # spotlight search items
-    "com.apple.spotlight" = {
+    "com.apple.Spotlight" = {
+      EnabledPreferenceRules = [
+        "com.apple.AppStore"
+        "com.apple.iBooksX"
+        "com.apple.iCal"
+        "com.apple.AddressBook"
+        "com.apple.Dictionary"
+        "com.apple.mail"
+        "com.apple.Notes"
+        "com.apple.Photos"
+        "com.apple.podcasts"
+        "com.apple.reminders"
+        "com.apple.Safari"
+        "com.apple.shortcuts"
+        "com.apple.VoiceMemos"
+        "System.files"
+        "System.folders"
+        "System.iphoneApps"
+      ];
       orderedItems = [
         {
           enabled = 1;
