@@ -23,6 +23,8 @@
     };
 
     NSGlobalDomain = {
+      AppleShowAllExtensions = false;
+
       NSDocumentSaveNewDocumentsToCloud = false;
       NSNavPanelExpandedStateForSaveMode = true;
       NSNavPanelExpandedStateForSaveMode2 = true;
