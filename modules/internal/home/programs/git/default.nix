@@ -14,9 +14,10 @@ in
   config = mkIf cfg.roles.terminalDeveloper.enable {
     home.packages = with pkgs; [
       packages.strongbox
-      git-crypt
-      difftastic
       delta
+      difftastic
+      gh
+      git-crypt
     ];
 
     programs.git = {

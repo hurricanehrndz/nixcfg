@@ -53,6 +53,9 @@
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    # personalized neovim
+    pdenv.url = "github:hurricanehrndz/pdenv";
   };
 
   outputs =
