@@ -11,8 +11,8 @@ let
   inherit (lib) mkIf mkMerge;
   inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
   cfg = osConfig.hrndz;
-  pgpPublicKey = "0x0D2565B7C6058A69";
-  keysDir = self + "/secrets/keys";
+  hrndzPGPPublicKey = "0x0D2565B7C6058A69";
+  gpgIdsDir = self + "/identities/gpg";
   maxCacheTtl = "1800";
   defaultCacheTtl = "600";
   sshCacheTtl = "600";
@@ -36,19 +36,19 @@ in
         mutableTrust = true;
         publicKeys = [
           {
-            source = keysDir + "/${pgpPublicKey}.asc";
+            source = gpgIdsDir + "/${hrndzPGPPublicKey}.asc";
             trust = "ultimate";
           }
         ]
         ++ (
           let
-            ls = builtins.readDir keysDir;
-            files = builtins.filter (name: ls.${name} == "regular" && "${name}" != "${pgpPublicKey}.asc") (
-              builtins.attrNames ls
-            );
+            gpgIds = builtins.readDir gpgIdsDir;
+            files = builtins.filter (
+              name: gpgIds.${name} == "regular" && "${name}" != "${hrndzPGPPublicKey}.asc"
+            ) (builtins.attrNames gpgIds);
           in
           builtins.map (keyName: {
-            source = "${keysDir}/${keyName}";
+            source = "${gpgIdsDir}/${keyName}";
             trust = "full";
           }) files
         );
