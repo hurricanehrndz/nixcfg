@@ -3,6 +3,7 @@
     # spotlight search items
     "com.apple.Spotlight" = {
       EnabledPreferenceRules = [
+        "Custom.relatedContents"
         "com.apple.AppStore"
         "com.apple.iBooksX"
         "com.apple.iCal"
@@ -15,6 +16,7 @@
         "com.apple.reminders"
         "com.apple.Safari"
         "com.apple.shortcuts"
+        "com.apple.tips"
         "com.apple.VoiceMemos"
         "System.files"
         "System.folders"
