@@ -21,7 +21,7 @@ let
 in
 {
   "darwin/zsh/env_vars.age".publicKeys = darwin_Keys;
-  # "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
+  "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
 
   # "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
   # "services/traefik/env.age".publicKeys = deepthoughtKeys ++ [ machineKeys.Hal9000 ];
