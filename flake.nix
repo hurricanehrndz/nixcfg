@@ -32,9 +32,11 @@
     pkgs-by-name-for-flake-parts.url = "github:drupol/pkgs-by-name-for-flake-parts";
 
     # devshell
+    devshell.url = "github:numtide/devshell";
+
+    # secrets
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
-    devshell.url = "github:numtide/devshell";
 
     # extended management
     darwin.url = "github:lnl7/nix-darwin/master";

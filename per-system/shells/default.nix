@@ -17,6 +17,11 @@
           treefmt = config.treefmt.build.wrapper;
           nix = inputs'.determinate-nix.packages.default;
           pkgWithCategory = category: package: { inherit package category; };
+
+          # Override agenix to use rage-with-yubikey
+          agenix-rage = pkgs.agenix.override {
+            ageBin = "${pkgs.rage-with-yubikey}/bin/rage";
+          };
         in
         {
           name = "default";
@@ -24,8 +29,6 @@
           packages =
             with pkgs;
             [
-              age
-              agenix
               nix
               treefmt
             ]
@@ -38,20 +41,19 @@
             ]);
 
           commands = with pkgs; [
-            (pkgWithCategory "secrets" agenix)
-            (pkgWithCategory "secrets" age)
-
+            (pkgWithCategory "secrets" agenix-rage)
+            (pkgWithCategory "secrets" age-plugin-yubikey)
+            {
+              name = "rage";
+              category = "secrets";
+              help = "rage (rust version of age) with yubikey plugin";
+              package = rage-with-yubikey;
+            }
             {
               name = "format-all";
               category = "general commands";
               help = "Format all nix files in the project";
               command = "treefmt";
-            }
-            {
-              name = "agenix-rekey";
-              category = "secrets";
-              help = "Rekey secrets, in secrets directory";
-              command = "agenix -i $PRIVATE_KEY -r";
             }
           ];
         };
