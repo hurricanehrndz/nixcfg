@@ -2,9 +2,11 @@
 let
   inherit (lib)
     mkEnableOption
+    mkOption
     mkDefault
     mkIf
     mkMerge
+    types
     ;
   cfg = config.hrndz;
 in
@@ -39,6 +41,17 @@ in
 
     roles.guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment" // {
       default = false;
+    };
+
+    roles.serviceHost = {
+      enable = mkEnableOption "Enable services for hosting HTTP services" // {
+        default = false;
+      };
+
+      reverseProxySecretsFile = mkOption {
+        type = types.path;
+        description = "Path to secrets file containing ACME_EMAIL and CLOUDFLARE_API_TOKEN. Best practice: use agenix secret path (config.age.secrets.<name>.path)";
+      };
     };
   };
 
