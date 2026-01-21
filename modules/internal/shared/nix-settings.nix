@@ -33,6 +33,7 @@ let
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:1qmSANYALsKLWDZoLxTaBU+3V/vcQhfbqYQjVNYXjKE="
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
     ];
 
     substituters = [
@@ -40,6 +41,7 @@ let
       "https://nix-community.cachix.org"
       "https://nixpkgs-update.cachix.org"
       "https://hurricanehrndz.cachix.org"
+      "https://install.determinate.systems"
     ];
 
     trusted-users = if isDarwin then [ "@admin" ] else [ "@wheel" ];
@@ -57,8 +59,21 @@ in
 
   nix.settings = l.mkIf pkgs.stdenv.hostPlatform.isLinux (mkCustomNixSettings false);
 
+  nix.gc = l.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
+
   nix.enable = l.mkIf pkgs.stdenv.hostPlatform.isDarwin false;
-  determinate-nix.customSettings = l.mkIf pkgs.stdenv.hostPlatform.isDarwin (
-    mkCustomNixSettings true
-  );
-}
+} // (l.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+  determinateNix = {
+    enable = true;
+    customSettings = (mkCustomNixSettings true);
+    registry = l.mapAttrs (_: flake: { inherit flake; }) inputFlakes;
+    determinateNixd = {
+      builder.state = "enabled";
+      garbageCollector.strategy = "automatic";
+    };
+  };
+})
