@@ -65,5 +65,6 @@
     ## === nix ===
     nix-index
     manix
+    cachix
   ];
 }

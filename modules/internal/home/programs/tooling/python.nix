@@ -14,6 +14,7 @@ in
       pipx
       pyright
       (lib.lowPrio python310)
+      (lib.lowPrio python311)
       python312
       ruff
       uv
