@@ -34,6 +34,7 @@ let
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:1qmSANYALsKLWDZoLxTaBU+3V/vcQhfbqYQjVNYXjKE="
+      "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
     ];
 
     substituters = [
@@ -65,7 +66,15 @@ in
     })
     ++ (l.optional isDarwin {
       nix.enable = false;
-      determinate-nix.customSettings = customNixSettings;
+      determinateNix = {
+        enable = true;
+        customSettings = customNixSettings;
+        registry = l.mapAttrs (_: flake: { inherit flake; }) inputFlakes;
+        determinateNixd = {
+          builder.state = "enabled";
+          garbageCollector.strategy = "automatic";
+        };
+    };
     })
   );
 }
