@@ -3,15 +3,6 @@
     enable = true;
     enableDefaultConfig = false;
     matchBlocks = {
-      "*" = {
-        forwardAgent = false;
-        addKeysToAgent = "yes";
-        compression = false;
-        serverAliveCountMax = 2;
-        serverAliveInterval = 300;
-        hashKnownHosts = true;
-        userKnownHostsFile = "~/.ssh/known_hosts";
-      };
       "deepthought" = {
         hostname = "172.24.224.15";
         user = "hurricane";
@@ -37,12 +28,36 @@
         user = "chernand";
         hostname = "dev61-uswest1adevc";
         forwardAgent = true;
+        userKnownHostsFile = "/dev/null";
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+        };
         remoteForwards = [
           {
             host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
             bind.address = "/run/user/3712/gnupg/S.gpg-agent";
           }
         ];
+      };
+      "*.yelpcorp.com" = {
+        user = "chernand";
+        userKnownHostsFile = "/dev/null";
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+        };
+        remoteForwards = [
+          {
+            host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
+            bind.address = "/run/user/3712/gnupg/S.gpg-agent";
+          }
+        ];
+      };
+      "*" = {
+        forwardAgent = false;
+        addKeysToAgent = "yes";
+        compression = false;
+        serverAliveCountMax = 2;
+        serverAliveInterval = 300;
       };
     };
   };
