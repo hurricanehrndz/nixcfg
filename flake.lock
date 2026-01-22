@@ -46,6 +46,17 @@
         "type": "github"
       }
     },
+    "bootstrap": {
+      "locked": {
+        "path": "./inputs/flags/false",
+        "type": "path"
+      },
+      "original": {
+        "path": "./inputs/flags/false",
+        "type": "path"
+      },
+      "parent": []
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -1064,6 +1075,7 @@
     "root": {
       "inputs": {
         "agenix": "agenix",
+        "bootstrap": "bootstrap",
         "darwin": "darwin_2",
         "determinate": "determinate",
         "determinate-nix": "determinate-nix",
