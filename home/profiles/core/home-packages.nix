@@ -20,5 +20,8 @@
 
     # grpc
     evans
+
+    # attempting to use yubikey for age
+    age-plugin-yubikey
   ];
 }
