@@ -1,19 +1,37 @@
 {
+  nixConfig = {
+    extra-substituters = [
+      "https://nix-community.cachix.org"
+      "https://nixpkgs-update.cachix.org"
+      "https://cache.nixos.org "
+      "https://hurricanehrndz.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
+      "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
+    ];
+    extra-experimental-features = "nix-command flakes";
+  };
+
   inputs = {
     # `flake-schemas` is a flake that provides schemas for commonly used flake outputs,
     # like `packages` and `devShells`.
     flake-schemas.url = "github:DeterminateSystems/flake-schemas";
 
-    # determinate nix
+    # determinate nix cli
     determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
+    # determinate nix module
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
 
     # Package sets
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
-    nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    fh-nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
-    fh-nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    # nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+    nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    nixpkgs-unstable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
+    nixpkgs-unstable-weekly.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
+
+    # default pkg set
+    nixpkgs.follows = "nixpkgs-unstable-weekly";
 
     # index
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -21,9 +39,6 @@
 
     # systems defs
     systems.url = "github:nix-systems/default";
-
-    # default pkg set
-    nixpkgs.follows = "fh-nixpkgs-unstable";
 
     # flake helpers
     flake-parts.url = "github:hercules-ci/flake-parts";
