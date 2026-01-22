@@ -73,6 +73,9 @@
 
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
+
+    # bootstrap flag
+    bootstrap.url = "path:./inputs/flags/false";
   };
 
   outputs =
