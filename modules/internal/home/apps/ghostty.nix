@@ -12,7 +12,7 @@ in
 {
   config = mkIf cfg.roles.guiDeveloper.enable {
     programs.ghostty = {
-      package = if (isDarwin) then pkgs.ghostty-bin else pkgs.ghostty;
+      package = if isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
       enable = true;
       enableZshIntegration = true;
       settings = {
