@@ -18,11 +18,6 @@ in
       # viewers
       ghostscript # see pdf
       imagemagick # see images
-      # formatters
-      nodePackages_latest.prettier # formatter
-      shfmt
-      # linters
-      gitlint
     ];
 
     programs.zsh.initContent = lib.mkOrder 1090 ''
