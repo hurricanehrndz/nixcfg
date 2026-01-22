@@ -5,7 +5,6 @@
     {
       config,
       pkgs,
-      self',
       inputs',
       lib,
       ...
