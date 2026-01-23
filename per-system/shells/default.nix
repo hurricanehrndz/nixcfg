@@ -42,6 +42,7 @@
           commands = with pkgs; [
             (pkgWithCategory "secrets" agenix-rage)
             (pkgWithCategory "secrets" age-plugin-yubikey)
+            (pkgWithCategory "shortcuts" just)
             {
               name = "rage";
               category = "secrets";
