@@ -17,8 +17,11 @@ in
     ];
 
     launchd.user.agents.superkey = {
-      command = "/Applications/Superkey.app/Contents/MacOS/Superkey";
       serviceConfig = {
+        Program = "/Applications/Superkey.app/Contents/MacOS/Superkey";
+        ProgramArguments = [
+          "/Applications/Superkey.app/Contents/MacOS/Superkey"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
       };
@@ -27,14 +30,12 @@ in
 
     system.defaults.CustomUserPreferences = {
       "com.knollsoft.Superkey" = {
-        "NSWindow Frame EntryBarWindow" = "1720 1151 400 40 0 0 3840 1575 ";
         SUEnableAutomaticChecks = 0;
         SUHasLaunchedBefore = 1;
         capsLockRemapped = 2;
-        executeQuickHyperKey = 1;
+        executeQuickHyperKey = 2;
         hyperFlags = 1966080;
         keyRemap = 1;
-        lastVersion = 41;
         launchOnLogin = 0;
         mehKeycode = 57;
         mehRemap = 1;
