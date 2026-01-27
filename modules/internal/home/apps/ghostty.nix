@@ -18,8 +18,9 @@ in
       settings = {
         theme = "Catppuccin Latte";
         window-theme = "light";
-        background-opacity = 0.95;
-        background-blur-radius = 20;
+        background-opacity = 0.80;
+        background-opacity-cells = true;
+        background-blur-radius = 16;
         window-decoration = false;
       };
     };

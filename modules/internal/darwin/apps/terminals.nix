@@ -11,7 +11,7 @@ in
   config = mkIf cfg.roles.guiDeveloper.enable {
     homebrew.casks = [
       "ghostty"
-      "wezterm"
+      "wezterm@nightly"
     ];
   };
 }
