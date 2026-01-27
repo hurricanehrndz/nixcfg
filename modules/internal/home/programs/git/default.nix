@@ -17,7 +17,6 @@ in
       delta
       difftastic
       gh
-      git-crypt
     ];
 
     programs.git = {
