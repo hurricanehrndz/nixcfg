@@ -42,19 +42,23 @@ in
         bind-key -T copy-mode-vi 'M-j' select-pane -D
         bind-key -T copy-mode-vi 'M-k' select-pane -U
         bind-key -T copy-mode-vi 'M-l' select-pane -R
-        bind-key -T copy-mode-vi 'M-\' select-pane -l
+        bind-key -T copy-mode-vi 'M-;' select-pane -l
 
         # smart splits resize
-        bind-key -n C-M-h if -F "#{@pane-is-vim}" 'send-keys C-M-h' 'resize-pane -L 3'
-        bind-key -n C-M-j if -F "#{@pane-is-vim}" 'send-keys C-M-j' 'resize-pane -D 3'
-        bind-key -n C-M-k if -F "#{@pane-is-vim}" 'send-keys C-M-k' 'resize-pane -U 3'
-        bind-key -n C-M-l if -F "#{@pane-is-vim}" 'send-keys C-M-l' 'resize-pane -R 3'
+        # bind -n M-H resize-pane -L 5
+        # bind -n M-J resize-pane -D 5
+        # bind -n M-K resize-pane -U 5
+        # bind -n M-L resize-pane -R 5
+        bind-key -n M-H if -F "#{@pane-is-vim}" 'send-keys M-H' 'resize-pane -L 3'
+        bind-key -n M-J if -F "#{@pane-is-vim}" 'send-keys M-J' 'resize-pane -D 3'
+        bind-key -n M-K if -F "#{@pane-is-vim}" 'send-keys M-K' 'resize-pane -U 3'
+        bind-key -n M-L if -F "#{@pane-is-vim}" 'send-keys M-L' 'resize-pane -R 3'
 
         tmux_version='$(tmux -V | sed -En "s/^tmux ([0-9]+(.[0-9]+)?).*/\1/p")'
         if-shell -b '[ "$(echo "$tmux_version < 3.0" | bc)" = 1 ]' \
-            "bind-key -n 'C-\\' if -F \"#{@pane-is-vim}\" 'send-keys C-\\'  'select-pane -l'"
+            "bind-key -n 'A-;' if -F \"#{@pane-is-vim}\" 'send-keys A-;'  'select-pane -l'"
         if-shell -b '[ "$(echo "$tmux_version >= 3.0" | bc)" = 1 ]' \
-            "bind-key -n 'C-\\' if -F \"#{@pane-is-vim}\" 'send-keys C-\\\\'  'select-pane -l'"
+            "bind-key -n 'A-;' if -F \"#{@pane-is-vim}\" 'send-keys A-;'  'select-pane -l'"
 
         bind-key Z switch-client -T size
 
@@ -99,7 +103,11 @@ in
 
         set -g "@catppuccin_session_color" "#{E:@thm_green}"
         set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
-        set -g status-left "#[bg=#{@thm_surface_1},fg=#{@thm_fg}] #{=4:client_key_table} #[fg=#{@thm_teal},bg=#{@thm_bg}]█ "
+        set -g status-left "#[bg=#{@thm_surface_1},fg=#{@thm_fg}] #{=4:client_key_table} #[fg=#{@thm_teal},bg=#{@thm_bg}]█ "
+
+        set -g window-style "fg=#{@thm_overlay_1},bg=#{@thm_mantle},dim"
+        set -g window-active-style "fg=#{@thm_fg},bg=default"
+
         set -gu default-command
         set -g default-shell "$SHELL"
       '';

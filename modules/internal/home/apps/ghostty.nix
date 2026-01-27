@@ -16,8 +16,11 @@ in
       enable = true;
       enableZshIntegration = true;
       settings = {
-        theme = "Rose Pine Dawn";
+        theme = "Catppuccin Latte";
         window-theme = "light";
+        background-opacity = 0.95;
+        background-blur-radius = 20;
+        window-decoration = false;
       };
     };
   };
