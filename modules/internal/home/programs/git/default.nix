@@ -26,7 +26,7 @@ in
           name = "Carlos Hernandez";
           email = "carlos@hrndz.ca";
         };
-        aliases = {
+        alias = {
           # logging
           plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'";
           tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative";
@@ -135,6 +135,7 @@ in
       ignores = [
         ".direnv/"
         ".envrc"
+        ".claude/"
       ];
     };
   };
