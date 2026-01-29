@@ -17,9 +17,9 @@
           nix = inputs'.determinate-nix.packages.default;
           pkgWithCategory = category: package: { inherit package category; };
 
-          # Override agenix to use rage-with-yubikey
-          agenix-rage = pkgs.agenix.override {
-            ageBin = "${pkgs.rage-with-yubikey}/bin/rage";
+          # Override agenix to use age with age-plugin-yubikey
+          agenix-age = pkgs.agenix.override {
+            ageBin = "PATH=$PATH:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
           };
         in
         {
@@ -40,15 +40,10 @@
             ]);
 
           commands = with pkgs; [
-            (pkgWithCategory "secrets" agenix-rage)
+            (pkgWithCategory "secrets" agenix-age)
+            (pkgWithCategory "secrets" age)
             (pkgWithCategory "secrets" age-plugin-yubikey)
             (pkgWithCategory "shortcuts" just)
-            {
-              name = "rage";
-              category = "secrets";
-              help = "rage (rust version of age) with yubikey plugin";
-              package = rage-with-yubikey;
-            }
             {
               name = "format-all";
               category = "general commands";

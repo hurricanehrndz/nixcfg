@@ -120,7 +120,7 @@ sudo nixos-enter
    nix develop
    ```
 
-   The devshell provides agenix (with rage-yubikey support), darwin-rebuild,
+   The devshell provides agenix (with yubikey support), darwin-rebuild,
    and other necessary tools.
 
 2. **Add the host key to secrets configuration:**

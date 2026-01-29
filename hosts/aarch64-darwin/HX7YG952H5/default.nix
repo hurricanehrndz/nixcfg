@@ -10,7 +10,7 @@ let
 in
 {
   age = {
-    ageBin = "${pkgs.rage-with-yubikey}/bin/rage";
+    ageBin = "PATH=$PATH:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
     secrets =
       let
         owner = "${username}";
