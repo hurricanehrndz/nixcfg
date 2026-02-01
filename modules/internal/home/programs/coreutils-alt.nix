@@ -19,9 +19,6 @@ in
 
       # TODO: joy ride
       lsd
-
-      # rm alt
-      gtrash
     ];
   };
 }
