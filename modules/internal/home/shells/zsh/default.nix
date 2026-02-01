@@ -116,11 +116,35 @@ in
       enable = true;
       enableZshIntegration = false;
       settings = {
-        cmd_duration.disabled = true;
+        command_timeout = 500;
+        scan_timeout = 10;
+
+        # Inserts a blank line between shell prompts
+        add_newline = true;
+
+        format = lib.concatStrings [
+          "$username"
+          "$hostname"
+          "$directory"
+          "$git_branch"
+          "$git_state"
+          "$git_status"
+          "$python"
+          "$cmd_duration"
+          "$line_break"
+          "$character"
+        ];
+
         directory = {
           fish_style_pwd_dir_length = 1;
+          truncate_to_repo = false;
         };
-        git_status.use_git_executable = true;
+        git_status = {
+          ignore_submodules = true;
+          # use_git_executable = true;
+        };
+        python.python_binary = [ ];
+        cmd_duration.disabled = true;
       };
     };
     # plugins/integrations
