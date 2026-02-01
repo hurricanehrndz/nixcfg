@@ -32,6 +32,7 @@ let
         "zsh"
       ];
       order = 585; # Load early (environment setup)
+      defer = false;
     }
     {
       name = "zoxide";
@@ -41,12 +42,14 @@ let
         "zsh"
       ];
       order = 590; # Load early (directory jumping)
+      defer = false;
     }
     {
       name = "fzf";
       package = pkgs.fzf;
       initArgs = [ "--zsh" ];
       order = 600; # Load after core but before prompt
+      defer = false;
     }
     {
       name = "starship";
@@ -56,6 +59,7 @@ let
         "zsh"
       ];
       order = 605; # Load late (prompt customization)
+      defer = false;
     }
   ];
 in
