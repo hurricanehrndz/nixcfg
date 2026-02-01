@@ -17,6 +17,8 @@ let
   cfg = osConfig.hrndz;
 in
 {
+  imports = [ ./lib.nix ];
+
   config = mkIf cfg.tui.enable {
     home.extraOutputsToInstall = [
       "/share/zsh"
@@ -49,11 +51,11 @@ in
         fi
       '';
       initContent = mkForce ''
-          # environment
-          for profile in ''${(z)NIX_PROFILES}; do
-                fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
-          done
-          HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
+        # environment
+        for profile in ''${(z)NIX_PROFILES}; do
+              fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
+        done
+        HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
       '';
 
       ## things to add
@@ -77,6 +79,43 @@ in
     # plugins/integrations
     programs.zoxide.enable = true;
     programs.zoxide.enableZshIntegration = false;
+
+    # Use cached/compiled inits for better performance
+    programs.zsh.compiledConfig = {
+      enable = true;
+
+      cachedInits = [
+        {
+          name = "fzf";
+          package = pkgs.fzf;
+          initArgs = [ "--zsh" ];
+        }
+        {
+          name = "zoxide";
+          package = pkgs.zoxide;
+          initArgs = [
+            "init"
+            "zsh"
+          ];
+        }
+        {
+          name = "direnv";
+          package = pkgs.direnv;
+          initArgs = [
+            "hook"
+            "zsh"
+          ];
+        }
+        {
+          name = "starship";
+          package = pkgs.starship;
+          initArgs = [
+            "init"
+            "zsh"
+          ];
+        }
+      ];
+    };
 
     # performance tweak
     home.activation.zsh_compile = lib.hm.dag.entryAfter [ "installPackages" ] ''
