@@ -68,7 +68,8 @@ let
     let
       # Generate cached init derivations with metadata
       cachedInitDerivations = map (init: {
-        inherit (init) name order defer;
+        inherit (init) name order;
+        defer = init.defer or false;
         sanitizedName = builtins.replaceStrings [ "/" " " ":" ] [ "-" "-" "-" ] init.name;
         derivation = mkCachedInit { inherit (init) name package initArgs; };
       }) cachedInits;
@@ -78,7 +79,7 @@ let
         type = "plugin";
         name = if p.name != "" then p.name else p.plugin.pname or (lib.getName p.plugin);
         order = p.order;
-        defer = p.defer;
+        defer = p.defer or false;
         package = p.plugin;
       }) plugins;
 
@@ -162,7 +163,7 @@ let
       cachedInitDerivations = map (
         init: mkCachedInit { inherit (init) name package initArgs; }
       ) cachedInits;
-      hasDeferred = lib.any (item: item.defer) (plugins ++ cachedInits);
+      hasDeferred = lib.any (item: item.defer or false) (plugins ++ cachedInits);
     in
     cachedInitDerivations ++ lib.optional hasDeferred pkgs.zsh-defer;
 in
