@@ -11,9 +11,11 @@ let
 in
 {
   config = mkIf cfg.roles.guiDeveloper.enable {
-    environment.systemPackages = with pkgs; mkIf isLinux [
+    environment.systemPackages =
+      with pkgs;
+      mkIf isLinux [
         fontconfig
-    ];
+      ];
     fonts.packages =
       with pkgs;
       [
