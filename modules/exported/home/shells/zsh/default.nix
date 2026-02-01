@@ -116,14 +116,26 @@ in
     # Don't use home-manager's plugin sourcing - we handle it in initContent
     programs.zsh.plugins = [ ];
 
-    # Generate cached init packages and add zsh-defer if needed
+    # Generate cached init derivations and keep references
     home.packages =
-      (map (init: zshLib.mkCachedInit { inherit (init) name package initArgs; }) cfg.cachedInits)
-      ++ lib.optional (lib.any (item: item.defer) (cfg.plugins ++ cfg.cachedInits)) pkgs.zsh-defer;
+      let
+        cachedInitDerivations = map (
+          init: zshLib.mkCachedInit { inherit (init) name package initArgs; }
+        ) cfg.cachedInits;
+        hasDeferred = lib.any (item: item.defer) (cfg.plugins ++ cfg.cachedInits);
+      in
+      cachedInitDerivations ++ lib.optional hasDeferred pkgs.zsh-defer;
 
     # Unified loading system for plugins and cachedInits
     programs.zsh.initContent =
       let
+        # Generate cached init derivations with metadata
+        cachedInitDerivations = map (init: {
+          inherit (init) name order defer;
+          sanitizedName = builtins.replaceStrings [ "/" " " ":" ] [ "-" "-" "-" ] init.name;
+          derivation = zshLib.mkCachedInit { inherit (init) name package initArgs; };
+        }) cfg.cachedInits;
+
         # Convert plugins to common format
         pluginItems = map (p: {
           type = "plugin";
@@ -133,15 +145,17 @@ in
           package = p.plugin;
         }) cfg.plugins;
 
-        # Convert cachedInits to common format
+        # Convert cachedInits to common format with derivation references
         initItems = map (i: {
           type = "cachedInit";
-          name = i.name;
-          order = i.order;
-          defer = i.defer;
-          package = i.package;
-          initArgs = i.initArgs;
-        }) cfg.cachedInits;
+          inherit (i)
+            name
+            order
+            defer
+            derivation
+            sanitizedName
+            ;
+        }) cachedInitDerivations;
 
         # Merge and sort by order
         allItems = lib.sort (a: b: a.order < b.order) (pluginItems ++ initItems);
@@ -176,40 +190,29 @@ in
                 ${sourceCmd}
               ''
           else
-            # cachedInit
+            # cachedInit - use direct store path reference
             let
-              # Search for the file in all profiles (NIX_PROFILES includes home-manager profile)
-              sourceCmd = ''
-                for profile in ''${(z)NIX_PROFILES}; do
-                  if [[ -f "$profile/share/zsh-cached-init/${sanitizedName}.zsh" ]]; then
-                    source "$profile/share/zsh-cached-init/${sanitizedName}.zsh"
-                    break
-                  fi
-                done
-              '';
+              initPath = "${item.derivation}/share/zsh-cached-inits/${item.sanitizedName}/init.zsh";
             in
             if item.defer then
               ''
-                # Deferred cached init: ${item.name} (order: ${toString item.order})
-                zsh-defer ${sourceCmd}
+                # Deferred: ${item.name} (order: ${toString item.order})
+                [[ -f "${initPath}" ]] && zsh-defer source "${initPath}"
               ''
             else
               ''
-                # Cached init: ${item.name} (order: ${toString item.order})
-                ${sourceCmd}
+                # ${item.name} (order: ${toString item.order})
+                [[ -f "${initPath}" ]] && source "${initPath}"
               '';
 
         hasDeferred = lib.any (item: item.defer) allItems;
       in
       mkOrder 500 ''
         ${lib.optionalString hasDeferred ''
-          # Load zsh-defer for deferred loading support
-          for profile in ''${(z)NIX_PROFILES}; do
-            if [[ -f "$profile/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
-              source "$profile/share/zsh-defer/zsh-defer.plugin.zsh"
-              break
-            fi
-          done
+          # Load zsh-defer - direct store path
+          if [[ -f "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
+            source "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh"
+          fi
         ''}
 
         ${concatMapStrings generateSource allItems}

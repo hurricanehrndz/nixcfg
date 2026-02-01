@@ -47,16 +47,16 @@ lib.makeOverridable (
           preferLocalBuild = true;
         }
         ''
-          mkdir -p $out/share/zsh-cached-init
+          mkdir -p $out/share/zsh-cached-inits/${sanitizedName}
 
           # Generate the init output
-          ${lib.getExe package} ${lib.concatStringsSep " " initArgs} > $out/share/zsh-cached-init/${sanitizedName}.zsh
+          ${lib.getExe package} ${lib.concatStringsSep " " initArgs} > $out/share/zsh-cached-inits/${sanitizedName}/init.zsh
 
           # Compile it
-          zsh -c "zcompile -UR $out/share/zsh-cached-init/${sanitizedName}.zsh"
+          zsh -c "zcompile -UR $out/share/zsh-cached-inits/${sanitizedName}/init.zsh"
 
           # Create metadata for reference
-          cat > $out/share/zsh-cached-init/${sanitizedName}.meta <<EOF
+          cat > $out/share/zsh-cached-inits/${sanitizedName}/meta.txt <<EOF
           package=${package}
           version=${package.version or "unknown"}
           args=${lib.concatStringsSep " " initArgs}
