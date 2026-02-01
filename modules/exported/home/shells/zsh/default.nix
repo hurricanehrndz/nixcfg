@@ -13,7 +13,15 @@ let
     concatMapStrings
     ;
   cfg = config.programs.zsh.compiledConfig;
-  zshLib = pkgs.zshLib;
+
+  # For external users: call zshLib directly from the flake using relative path
+  # For internal users: use pkgs.zshLib from overlay (will be the same result)
+  zshLib =
+    if pkgs ? zshLib then
+      pkgs.zshLib
+    else
+      # External users: call the package directly using relative path from this module
+      pkgs.callPackage ../../../../per-system/lib/zsh-lib/package.nix { };
 in
 {
   options.programs.zsh.compiledConfig = {
