@@ -163,6 +163,13 @@ in
         ########################
         "doc/tags"
         "*/doc/tags"
+
+        # Claude Code local files
+        ########################
+        ".claude/settings.local.json"
+        "CLAUDE.local.md"
+        "tmp/"
+        ".claude/tmp/"
       ];
     };
   };
