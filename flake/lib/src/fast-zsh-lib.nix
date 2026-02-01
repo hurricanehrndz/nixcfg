@@ -309,13 +309,13 @@ let
         let
           pluginDir = dir + "/${name}";
           initFile = pluginDir + "/init.zsh";
-          defaultFile = pluginDir + "/_default.nix";
+          optsFile = pluginDir + "/_opts.nix";
           fullName = if namePrefix != "" then "${namePrefix}-${name}" else name;
 
           # Import _default.nix if it exists, otherwise use empty set
           opts =
-            if builtins.pathExists defaultFile then
-              import defaultFile
+            if builtins.pathExists optsFile then
+              import optsFile
             else
               { };
         in
