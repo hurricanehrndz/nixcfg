@@ -6,14 +6,7 @@
   ...
 }:
 let
-  inherit (lib)
-    mkIf
-    mkMerge
-    mkOrder
-    mkForce
-    mkOverride
-    getExe
-    ;
+  inherit (lib) mkIf;
   cfg = osConfig.hrndz;
 in
 {
@@ -79,46 +72,46 @@ in
     programs.zoxide.enableZshIntegration = false;
 
     # Use cached/compiled inits for better performance
-    programs.zsh.compiledConfig = {
-      enable = true;
-
-      cachedInits = [
-        {
-          name = "direnv";
-          package = pkgs.direnv;
-          initArgs = [
-            "hook"
-            "zsh"
-          ];
-          order = 300; # Load early (environment setup)
-        }
-        {
-          name = "zoxide";
-          package = pkgs.zoxide;
-          initArgs = [
-            "init"
-            "zsh"
-          ];
-          order = 400; # Load early (directory jumping)
-        }
-        {
-          name = "fzf";
-          package = pkgs.fzf;
-          initArgs = [ "--zsh" ];
-          order = 600; # Load after core but before prompt
-        }
-        {
-          name = "starship";
-          package = pkgs.starship;
-          initArgs = [
-            "init"
-            "zsh"
-          ];
-          order = 900; # Load late (prompt customization)
-          defer = true; # Defer for faster perceived startup
-        }
-      ];
-    };
+    # programs.zsh.compiledConfig = {
+    #   enable = true;
+    #
+    #   cachedInits = [
+    #     {
+    #       name = "direnv";
+    #       package = pkgs.direnv;
+    #       initArgs = [
+    #         "hook"
+    #         "zsh"
+    #       ];
+    #       order = 300; # Load early (environment setup)
+    #     }
+    #     {
+    #       name = "zoxide";
+    #       package = pkgs.zoxide;
+    #       initArgs = [
+    #         "init"
+    #         "zsh"
+    #       ];
+    #       order = 400; # Load early (directory jumping)
+    #     }
+    #     {
+    #       name = "fzf";
+    #       package = pkgs.fzf;
+    #       initArgs = [ "--zsh" ];
+    #       order = 600; # Load after core but before prompt
+    #     }
+    #     {
+    #       name = "starship";
+    #       package = pkgs.starship;
+    #       initArgs = [
+    #         "init"
+    #         "zsh"
+    #       ];
+    #       order = 900; # Load late (prompt customization)
+    #       defer = true; # Defer for faster perceived startup
+    #     }
+    #   ];
+    # };
 
     # performance tweak
     home.activation.zsh_compile = lib.hm.dag.entryAfter [ "installPackages" ] ''

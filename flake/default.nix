@@ -9,6 +9,9 @@
   };
 
   imports = [
+    # lib exports
+    ./lib
+
     # per-system
     ../per-system
 
