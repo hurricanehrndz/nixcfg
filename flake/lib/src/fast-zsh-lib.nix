@@ -113,6 +113,7 @@ let
   #     - name: Plugin name (defaults to plugin.pname)
   #     - order: Loading order (lower numbers load first)
   #     - defer: Optional boolean, defer loading with zsh-defer (default: false)
+  #     - path: Optional relative path within plugin for monolithic plugins (e.g., "zsh-syntax-highlighting.zsh")
   #   cachedInits - List of cached init records with attributes:
   #     - name: Descriptive name
   #     - package: Package containing the command
@@ -134,6 +135,7 @@ let
   #     plugins = [
   #       { plugin = ./my-plugin; name = "my-plugin"; order = 100; }
   #       { plugin = pkgs.zsh-autosuggestions; order = 200; defer = true; }
+  #       { plugin = pkgs.zsh-syntax-highlighting; path = "zsh-syntax-highlighting.zsh"; order = 300; }
   #     ];
   #     cachedInits = [
   #       { name = "starship"; package = pkgs.starship; initArgs = ["init" "zsh"]; order = 50; }
@@ -164,6 +166,7 @@ let
         order = p.order;
         defer = p.defer or false;
         package = p.plugin;
+        path = p.path or null;
       }) plugins;
 
       # Convert cachedInits to common format with derivation references
@@ -199,12 +202,16 @@ let
               plugin = item.package;
               name = item.name;
             };
-            # Find the main init file (common patterns: *.plugin.zsh, init.zsh, *.zsh)
-            sourceCmd = ''
-              for initfile in "${compiledPlugin}"/*.plugin.zsh "${compiledPlugin}"/init.zsh "${compiledPlugin}"/*.zsh; do
-                [[ -f "$initfile" ]] && source "$initfile" && break
-              done
-            '';
+            # Use explicit path if provided, otherwise find the main init file
+            sourceCmd =
+              if item.path != null then
+                ''[[ -f "${compiledPlugin}/${item.path}" ]] && source "${compiledPlugin}/${item.path}"''
+              else
+                ''
+                  for initfile in "${compiledPlugin}"/*.plugin.zsh "${compiledPlugin}"/init.zsh "${compiledPlugin}"/*.zsh; do
+                    [[ -f "$initfile" ]] && source "$initfile" && break
+                  done
+                '';
           in
           if item.defer then
             ''
