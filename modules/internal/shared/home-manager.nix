@@ -25,6 +25,9 @@ in
     };
 
     # Home-manager modules (programs, themes, etc.)
-    sharedModules = [ (import-tree (self + /modules/internal/home)) ];
+    sharedModules = [
+      (import-tree (self + /modules/internal/home))
+      self.homeModules.default
+    ];
   };
 }

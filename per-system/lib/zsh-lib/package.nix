@@ -2,7 +2,6 @@
   lib,
   pkgs,
   runCommand,
-  writeTextFile,
 }:
 
 lib.makeOverridable (

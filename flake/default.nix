@@ -17,5 +17,8 @@
 
     # darwinModules
     ./darwinModules.nix
+
+    # homeModules
+    ./homeModules.nix
   ];
 }

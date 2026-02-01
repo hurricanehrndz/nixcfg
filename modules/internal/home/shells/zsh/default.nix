@@ -17,8 +17,6 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  imports = [ ./lib.nix ];
-
   config = mkIf cfg.tui.enable {
     home.extraOutputsToInstall = [
       "/share/zsh"
@@ -86,9 +84,13 @@ in
 
       cachedInits = [
         {
-          name = "fzf";
-          package = pkgs.fzf;
-          initArgs = [ "--zsh" ];
+          name = "direnv";
+          package = pkgs.direnv;
+          initArgs = [
+            "hook"
+            "zsh"
+          ];
+          order = 300; # Load early (environment setup)
         }
         {
           name = "zoxide";
@@ -97,14 +99,13 @@ in
             "init"
             "zsh"
           ];
+          order = 400; # Load early (directory jumping)
         }
         {
-          name = "direnv";
-          package = pkgs.direnv;
-          initArgs = [
-            "hook"
-            "zsh"
-          ];
+          name = "fzf";
+          package = pkgs.fzf;
+          initArgs = [ "--zsh" ];
+          order = 600; # Load after core but before prompt
         }
         {
           name = "starship";
@@ -113,6 +114,8 @@ in
             "init"
             "zsh"
           ];
+          order = 900; # Load late (prompt customization)
+          defer = true; # Defer for faster perceived startup
         }
       ];
     };
