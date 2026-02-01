@@ -19,7 +19,7 @@ export BAT_CONFIG_FILE="$HOME/.config/bat/config"
 #######################################
 # batman settings
 #######################################
-export MANPAGER="env BATMAN_IS_BEING_MANPAGER=yes BAT_THEME='Monokai Extended Light' $(command batman)"
+export MANPAGER=" BATMAN_IS_BEING_MANPAGER=yes BAT_THEME='Monokai Extended Light' command batman"
 export MANROFFOPT=-c
 
 # Async mode for autocompletion
