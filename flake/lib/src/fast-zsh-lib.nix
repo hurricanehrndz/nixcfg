@@ -119,6 +119,11 @@ let
   #     - initArgs: Arguments to pass to the command
   #     - order: Loading order
   #     - defer: Optional boolean, defer loading (default: false)
+  #   rawScripts - List of raw script records with attributes:
+  #     - content: The raw zsh script string to include
+  #     - name: Optional descriptive name (default: "raw-script")
+  #     - order: Loading order (lower numbers load first)
+  #     - defer: Optional boolean, defer loading with zsh-defer (default: false)
   #
   # Returns:
   #   A string containing zsh initialization code that sources all plugins
@@ -133,11 +138,15 @@ let
   #     cachedInits = [
   #       { name = "starship"; package = pkgs.starship; initArgs = ["init" "zsh"]; order = 50; }
   #     ];
+  #     rawScripts = [
+  #       { content = "export FOO=bar"; name = "env-vars"; order = 10; }
+  #     ];
   #   }
   mkInitContent =
     {
       plugins ? [ ],
       cachedInits ? [ ],
+      rawScripts ? [ ],
     }:
     let
       # Generate cached init derivations with metadata
@@ -169,8 +178,17 @@ let
           ;
       }) cachedInitDerivations;
 
+      # Convert rawScripts to common format
+      rawScriptItems = map (s: {
+        type = "rawScript";
+        name = s.name or "raw-script";
+        order = s.order;
+        defer = s.defer or false;
+        content = s.content;
+      }) rawScripts;
+
       # Merge and sort by order
-      allItems = lib.sort (a: b: a.order < b.order) (pluginItems ++ initItems);
+      allItems = lib.sort (a: b: a.order < b.order) (pluginItems ++ initItems ++ rawScriptItems);
 
       # Generate source statements
       generateSource =
@@ -198,7 +216,7 @@ let
               # Plugin: ${item.name} (order: ${toString item.order})
               ${sourceCmd}
             ''
-        else
+        else if item.type == "cachedInit" then
           # cachedInit - use direct store path reference
           let
             initPath = "${item.derivation}/share/zsh/cached-inits/${item.sanitizedName}/init.zsh";
@@ -212,6 +230,18 @@ let
             ''
               # ${item.name} (order: ${toString item.order})
               [[ -f "${initPath}" ]] && source "${initPath}"
+            ''
+        else
+          # rawScript - inline the content
+          if item.defer then
+            ''
+              # Deferred: ${item.name} (order: ${toString item.order})
+              zsh-defer eval ${lib.escapeShellArg item.content}
+            ''
+          else
+            ''
+              # ${item.name} (order: ${toString item.order})
+              ${item.content}
             '';
 
       hasDeferred = lib.any (item: item.defer) allItems;
