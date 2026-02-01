@@ -9,13 +9,11 @@ let
 in
 {
   config = lib.mkIf cfg.tui.enable {
-    home.shellAliases."man" = "${pkgs.bat-extras.batman}/bin/batman";
-
     home.packages = with pkgs; [
       # Bash scripts that integrate bat with various command line tools.
       # https://github.com/eth-p/bat-extras/
-      # bat-extras.batman #     <- Read system manual pages (man) using bat as the manual page formatter.
-      # bat-extras.batgrep #    <- Quickly search through and highlight files using ripgrep.
+      bat-extras.batman # <- Read system manual pages (man) using bat as the manual page formatter.
+      bat-extras.batgrep # <- Quickly search through and highlight files using ripgrep.
       bat-extras.batdiff # <- Diff a file against the current git index, or display the diff between two files.
       bat-extras.batwatch # <- Watch for changes in files or command output, and print them with bat.
       bat-extras.prettybat # <- Pretty-print source code and highlight it with bat.
@@ -24,7 +22,12 @@ in
     programs.bat = {
       enable = true;
       config = {
-        theme = "OneHalfLight";
+        theme = "Catppuccin Latte";
+        style = "numbers,changes,header";
+        italic-text = "always";
+        pager = "less -RFK";
+        theme-dark = "OneHalfDark";
+        theme-light = "Catppuccin Latte";
         map-syntax = [
           ".*ignore:Git Ignore"
           ".gitconfig.local:Git Config"
