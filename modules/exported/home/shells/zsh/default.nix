@@ -178,18 +178,25 @@ in
           else
             # cachedInit
             let
-              sourcePath = "$HOME/.nix-profile/share/zsh-cached-init/${sanitizedName}.zsh";
-              sourceCmd = "source \"${sourcePath}\"";
+              # Search for the file in all profiles (NIX_PROFILES includes home-manager profile)
+              sourceCmd = ''
+                for profile in ''${(z)NIX_PROFILES}; do
+                  if [[ -f "$profile/share/zsh-cached-init/${sanitizedName}.zsh" ]]; then
+                    source "$profile/share/zsh-cached-init/${sanitizedName}.zsh"
+                    break
+                  fi
+                done
+              '';
             in
             if item.defer then
               ''
                 # Deferred cached init: ${item.name} (order: ${toString item.order})
-                [[ -f "${sourcePath}" ]] && zsh-defer ${sourceCmd}
+                zsh-defer ${sourceCmd}
               ''
             else
               ''
                 # Cached init: ${item.name} (order: ${toString item.order})
-                [[ -f "${sourcePath}" ]] && ${sourceCmd}
+                ${sourceCmd}
               '';
 
         hasDeferred = lib.any (item: item.defer) allItems;
@@ -197,9 +204,12 @@ in
       mkOrder 500 ''
         ${lib.optionalString hasDeferred ''
           # Load zsh-defer for deferred loading support
-          if [[ -f "$HOME/.nix-profile/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
-            source "$HOME/.nix-profile/share/zsh-defer/zsh-defer.plugin.zsh"
-          fi
+          for profile in ''${(z)NIX_PROFILES}; do
+            if [[ -f "$profile/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
+              source "$profile/share/zsh-defer/zsh-defer.plugin.zsh"
+              break
+            fi
+          done
         ''}
 
         ${concatMapStrings generateSource allItems}

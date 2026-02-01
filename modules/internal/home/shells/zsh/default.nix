@@ -48,13 +48,13 @@ in
           path=(/usr/local/munki $path)
         fi
       '';
-      initContent = mkForce ''
-        # environment
-        for profile in ''${(z)NIX_PROFILES}; do
-              fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
-        done
-        HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
-      '';
+      # initContent = mkForce ''
+      #   # environment
+      #   for profile in ''${(z)NIX_PROFILES}; do
+      #         fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
+      #   done
+      #   HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
+      # '';
 
       ## things to add
       # source /nix/store/giwji59178p0ih6ndy1llq21ap8apxrm-nix-index-with-full-db-0.1.9/etc/profile.d/command-not-found.sh
@@ -123,6 +123,7 @@ in
     # performance tweak
     home.activation.zsh_compile = lib.hm.dag.entryAfter [ "installPackages" ] ''
       rm -f "${config.xdg.configHome}/zsh/.zshrc.zwc"
+      rm -f "${config.xdg.configHome}/zsh/.zshenv.zwc"
       ${pkgs.zsh}/bin/zsh -c 'zcompile "${config.xdg.configHome}/zsh/.zshrc"'
       ${pkgs.zsh}/bin/zsh -c 'zcompile "${config.xdg.configHome}/zsh/.zshenv"'
     '';
