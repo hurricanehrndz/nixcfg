@@ -11,16 +11,12 @@ let
     mkIf
     mkForce
     mkMerge
-    mkOverride
     mkOrder
     ;
   cfg = osConfig.hrndz;
 
   # Initialize zsh library
-  zshLib = self.lib.fast-zsh-lib {
-    inherit lib pkgs;
-    runCommand = pkgs.runCommand;
-  };
+  zshLib = self.lib.fast-zsh-lib { inherit pkgs; };
 
   # Cached inits configuration
   cachedInits = [
@@ -98,7 +94,9 @@ in
         let
           fast-zsh-init = zshLib.mkInitContent { inherit cachedInits; };
         in
-        mkMerge [ (mkOrder 915 fast-zsh-init) ];
+        mkMerge [
+          (mkOrder 915 fast-zsh-init)
+        ];
       # mkForce ''
       #   # environment
       #   for profile in ''${(z)NIX_PROFILES}; do
@@ -118,7 +116,6 @@ in
       enable = true;
       enableZshIntegration = false;
       settings = {
-        aws.disabled = true;
         cmd_duration.disabled = true;
         directory = {
           fish_style_pwd_dir_length = 1;
