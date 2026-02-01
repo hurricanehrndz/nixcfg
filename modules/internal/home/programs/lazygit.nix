@@ -11,6 +11,7 @@ in
   config = mkIf cfg.roles.terminalDeveloper.enable {
     programs.lazygit = {
       enable = true;
+      enableZshIntegration = false;
       settings = {
         promptToReturnFromSubprocess = false;
         # moved to pdenv
