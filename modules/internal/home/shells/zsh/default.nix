@@ -1,4 +1,5 @@
 {
+  self,
   config,
   pkgs,
   lib,
@@ -6,8 +7,57 @@
   ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (lib)
+    mkIf
+    mkForce
+    mkMerge
+    mkOverride
+    mkOrder
+    ;
   cfg = osConfig.hrndz;
+
+  # Initialize zsh library
+  zshLib = self.lib.fast-zsh-lib {
+    inherit lib pkgs;
+    runCommand = pkgs.runCommand;
+  };
+
+  # Cached inits configuration
+  cachedInits = [
+    {
+      name = "direnv";
+      package = pkgs.direnv;
+      initArgs = [
+        "hook"
+        "zsh"
+      ];
+      order = 585; # Load early (environment setup)
+    }
+    {
+      name = "zoxide";
+      package = pkgs.zoxide;
+      initArgs = [
+        "init"
+        "zsh"
+      ];
+      order = 590; # Load early (directory jumping)
+    }
+    {
+      name = "fzf";
+      package = pkgs.fzf;
+      initArgs = [ "--zsh" ];
+      order = 600; # Load after core but before prompt
+    }
+    {
+      name = "starship";
+      package = pkgs.starship;
+      initArgs = [
+        "init"
+        "zsh"
+      ];
+      order = 605; # Load late (prompt customization)
+    }
+  ];
 in
 {
   config = mkIf cfg.tui.enable {
@@ -17,10 +67,12 @@ in
       "/share/zsh/site-functions"
     ];
 
-    home.packages = with pkgs; [
-      zsh-completions
-      nix-zsh-completions
-    ];
+    home.packages =
+      (with pkgs; [
+        zsh-completions
+        nix-zsh-completions
+      ])
+      ++ (zshLib.mkPackages { inherit cachedInits; });
 
     # command-not-found alt
     programs.command-not-found.enable = false;
@@ -41,13 +93,20 @@ in
           path=(/usr/local/munki $path)
         fi
       '';
-      # initContent = mkForce ''
+      completionInit = "";
+      initContent =
+        let
+          fast-zsh-init = zshLib.mkInitContent { inherit cachedInits; };
+        in
+        mkMerge [ (mkOrder 915 fast-zsh-init) ];
+      # mkForce ''
       #   # environment
       #   for profile in ''${(z)NIX_PROFILES}; do
       #         fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
       #   done
       #   HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
-      # '';
+      #
+      # '' ++ fast-zsh-init;
 
       ## things to add
       # source /nix/store/giwji59178p0ih6ndy1llq21ap8apxrm-nix-index-with-full-db-0.1.9/etc/profile.d/command-not-found.sh
@@ -70,48 +129,6 @@ in
     # plugins/integrations
     programs.zoxide.enable = true;
     programs.zoxide.enableZshIntegration = false;
-
-    # Use cached/compiled inits for better performance
-    # programs.zsh.compiledConfig = {
-    #   enable = true;
-    #
-    #   cachedInits = [
-    #     {
-    #       name = "direnv";
-    #       package = pkgs.direnv;
-    #       initArgs = [
-    #         "hook"
-    #         "zsh"
-    #       ];
-    #       order = 300; # Load early (environment setup)
-    #     }
-    #     {
-    #       name = "zoxide";
-    #       package = pkgs.zoxide;
-    #       initArgs = [
-    #         "init"
-    #         "zsh"
-    #       ];
-    #       order = 400; # Load early (directory jumping)
-    #     }
-    #     {
-    #       name = "fzf";
-    #       package = pkgs.fzf;
-    #       initArgs = [ "--zsh" ];
-    #       order = 600; # Load after core but before prompt
-    #     }
-    #     {
-    #       name = "starship";
-    #       package = pkgs.starship;
-    #       initArgs = [
-    #         "init"
-    #         "zsh"
-    #       ];
-    #       order = 900; # Load late (prompt customization)
-    #       defer = true; # Defer for faster perceived startup
-    #     }
-    #   ];
-    # };
 
     # performance tweak
     home.activation.zsh_compile = lib.hm.dag.entryAfter [ "installPackages" ] ''
