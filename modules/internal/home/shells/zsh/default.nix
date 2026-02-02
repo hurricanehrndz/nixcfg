@@ -1,4 +1,5 @@
 {
+  inputs,
   self,
   config,
   pkgs,
@@ -14,8 +15,7 @@ let
   cfg = osConfig.hrndz;
 
   # Initialize zsh library
-  zshLib = self.lib.fast-zsh-lib { inherit pkgs; };
-
+  fzl = self.lib.fast-zsh-lib { inherit pkgs; };
 
   # zsh raw scripts
   rawScripts = [
@@ -32,6 +32,43 @@ let
     }
   ];
 
+  plugins = [
+    {
+      name = "zephyr-environment";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/environment/environment.plugin.zsh";
+      order = 150;
+    }
+    {
+      name = "zephyr-editor";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/editor/editor.plugin.zsh";
+      order = 200;
+    }
+    {
+      name = "zsh-syntax-highlighting";
+      src = pkgs.zsh-syntax-highlighting;
+      file = "zsh-syntax-highlighting.plugin.zsh";
+      order = 1900; # Load last
+      defer = true;
+    }
+    {
+      name = "zsh-autosuggestions";
+      src = pkgs.zsh-autosuggestions;
+      file = "zsh-autosuggestions.plugin.zsh";
+      order = 2000; # Load last
+      defer = true;
+    }
+  ];
+
+  # customPlugins = fzl.mkPluginsFromDir {
+  #   dir = ./zsh/plugins;
+  #   namePrefix = "custom";
+  # };
+
+  # ZSH dotDir configuration - define once to avoid circular deps
+  dotDir = "${config.xdg.configHome}/zsh";
+
   # Cached inits configuration
   cachedInits = [
     {
@@ -47,7 +84,7 @@ let
         "init"
         "zsh"
       ];
-      order = 650; # Load late (prompt customization)
+      order = 650; # Load before completion
     }
     {
       name = "zoxide";
@@ -56,7 +93,7 @@ let
         "init"
         "zsh"
       ];
-      order = 700; # Load early (directory jumping)
+      order = 1500; # Load late
       defer = true;
     }
     {
@@ -66,7 +103,7 @@ let
         "hook"
         "zsh"
       ];
-      order = 750; # Load early (environment setup)
+      order = 1600; # Load late
       defer = true;
     }
   ];
@@ -79,12 +116,15 @@ in
       "/share/zsh/site-functions"
     ];
 
-    home.packages =
-      (with pkgs; [
-        zsh-completions
-        nix-zsh-completions
-      ])
-      ++ (zshLib.mkPackages { inherit cachedInits; });
+    # Add plugin files to dotDir
+    home.file = fzl.mkPluginFiles {
+      inherit plugins dotDir;
+    };
+
+    home.packages = with pkgs; [
+      zsh-completions
+      nix-zsh-completions
+    ];
 
     # command-not-found alt
     programs.command-not-found.enable = false;
@@ -93,7 +133,7 @@ in
     programs.zsh = {
       enable = true;
       package = pkgs.zsh;
-      dotDir = "${config.xdg.configHome}/zsh";
+      dotDir = dotDir;
       # zprof.enable = true;
       envExtra = ''
         if [[ -f  $HOME/.config/zsh/zsh_vars ]]; then
@@ -108,9 +148,13 @@ in
       completionInit = "";
       initContent =
         let
-          fast-zsh-init = zshLib.mkInitContent {
-            inherit cachedInits;
-            inherit rawScripts;
+          fast-zsh-init = fzl.mkInitContent {
+            inherit
+              cachedInits
+              rawScripts
+              plugins
+              dotDir
+              ;
           };
         in
         mkForce fast-zsh-init;

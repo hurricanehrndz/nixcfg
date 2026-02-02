@@ -7,6 +7,23 @@
 }:
 let
 
+  # Converts dotDir to absolute path string
+  mkAbsPathStr = dotDir: if lib.hasPrefix "/" dotDir then dotDir else "\${HOME}/${dotDir}";
+
+  # Converts dotDir to relative path string
+  mkRelPathStr = dotDir: if lib.hasPrefix "/" dotDir then dotDir else dotDir;
+
+  # Determines plugin directory based on dotDir
+  # If dotDir is relative "." (home), plugins go in ~/.zsh/plugins
+  # Otherwise plugins go in dotDir/plugins
+  mkPluginsDir =
+    dotDir:
+    let
+      absPath = mkAbsPathStr dotDir;
+      relPath = mkRelPathStr dotDir;
+    in
+    absPath + (lib.optionalString (relPath == ".") "/.zsh") + "/plugins";
+
   # Compiles a zsh plugin by running zcompile on all .zsh files
   #
   # Takes a plugin derivation or path and produces a new derivation with all
@@ -60,7 +77,7 @@ let
   #
   # Returns:
   #   A derivation containing the cached and compiled init script at
-  #   $out/share/zsh/cached-inits/${sanitizedName}/init.zsh(.zwc)
+  #   $out/fzl-cached-inits/${sanitizedName}/init.zsh(.zwc)
   #
   # Example:
   #   mkCachedInit {
@@ -84,16 +101,16 @@ let
         preferLocalBuild = true;
       }
       ''
-        mkdir -p $out/share/zsh/cached-inits/${sanitizedName}
+        mkdir -p $out/fzl-cached-inits/${sanitizedName}
 
         # Generate the init output
-        ${lib.getExe package} ${lib.concatStringsSep " " initArgs} > $out/share/zsh/cached-inits/${sanitizedName}/init.zsh
+        ${lib.getExe package} ${lib.concatStringsSep " " initArgs} > $out/fzl-cached-inits/${sanitizedName}/init.zsh
 
         # Compile it
-        zsh -c "zcompile -UR $out/share/zsh/cached-inits/${sanitizedName}/init.zsh"
+        zsh -c "zcompile -UR $out/fzl-cached-inits/${sanitizedName}/init.zsh"
 
         # Create metadata for reference
-        cat > $out/share/zsh/cached-inits/${sanitizedName}/meta.txt <<EOF
+        cat > $out/fzl-cached-inits/${sanitizedName}/meta.txt <<EOF
         package=${package}
         version=${package.version or "unknown"}
         args=${lib.concatStringsSep " " initArgs}
@@ -104,16 +121,16 @@ let
   #
   # Takes lists of plugins and cached inits, sorts them by order, and generates
   # the shell code to source them. Handles deferred loading via zsh-defer for
-  # plugins/inits marked with defer=true. Automatically compiles plugins and
-  # uses direct store paths for reliable loading.
+  # plugins/inits marked with defer=true. Plugins are sourced from dotDir/plugins
+  # with fpath setup (never deferred) and optional deferred sourcing.
   #
   # Arguments:
   #   plugins - List of plugin records with attributes:
-  #     - plugin: The plugin derivation or path
-  #     - name: Plugin name (defaults to plugin.pname)
+  #     - src: The plugin derivation or path (home-manager compatible)
+  #     - name: Plugin name (required)
+  #     - file: File to source within plugin (default: "${name}.plugin.zsh")
   #     - order: Loading order (lower numbers load first)
-  #     - defer: Optional boolean, defer loading with zsh-defer (default: false)
-  #     - path: Optional relative path within plugin for monolithic plugins (e.g., "zsh-syntax-highlighting.zsh")
+  #     - defer: Optional boolean, defer only the sourcing with zsh-defer (default: false)
   #   cachedInits - List of cached init records with attributes:
   #     - name: Descriptive name
   #     - package: Package containing the command
@@ -125,6 +142,7 @@ let
   #     - name: Optional descriptive name (default: "raw-script")
   #     - order: Loading order (lower numbers load first)
   #     - defer: Optional boolean, defer loading with zsh-defer (default: false)
+  #   dotDir - The zsh dotDir path (e.g., ".config/zsh" or ".")
   #
   # Returns:
   #   A string containing zsh initialization code that sources all plugins
@@ -133,9 +151,8 @@ let
   # Example:
   #   mkInitContent {
   #     plugins = [
-  #       { plugin = ./my-plugin; name = "my-plugin"; order = 100; }
-  #       { plugin = pkgs.zsh-autosuggestions; order = 200; defer = true; }
-  #       { plugin = pkgs.zsh-syntax-highlighting; path = "zsh-syntax-highlighting.zsh"; order = 300; }
+  #       { name = "my-plugin"; src = ./plugin; file = "init.zsh"; order = 100; }
+  #       { name = "zsh-autosuggestions"; src = pkgs.zsh-autosuggestions; order = 200; defer = true; }
   #     ];
   #     cachedInits = [
   #       { name = "starship"; package = pkgs.starship; initArgs = ["init" "zsh"]; order = 50; }
@@ -143,12 +160,14 @@ let
   #     rawScripts = [
   #       { content = "export FOO=bar"; name = "env-vars"; order = 10; }
   #     ];
+  #     dotDir = ".config/zsh";
   #   }
   mkInitContent =
     {
       plugins ? [ ],
       cachedInits ? [ ],
       rawScripts ? [ ],
+      dotDir,
     }:
     let
       # Generate cached init derivations with metadata
@@ -162,11 +181,11 @@ let
       # Convert plugins to common format
       pluginItems = map (p: {
         type = "plugin";
-        name = if p.name != "" then p.name else p.plugin.pname or (lib.getName p.plugin);
+        name = if p.name != "" then p.name else (p.src.name or p.src.pname or (lib.getName p.src));
         order = p.order;
         defer = p.defer or false;
-        package = p.plugin;
-        path = p.path or null;
+        src = p.src;
+        file = p.file or "${p.name}.plugin.zsh"; # Default to home-manager convention
       }) plugins;
 
       # Convert cachedInits to common format with derivation references
@@ -198,35 +217,37 @@ let
         item:
         if item.type == "plugin" then
           let
-            compiledPlugin = mkCompiledPlugin {
-              plugin = item.package;
-              name = item.name;
-            };
-            # Use explicit path if provided, otherwise find the main init file
-            sourceCmd =
-              if item.path != null then
-                ''[[ -f "${compiledPlugin}/${item.path}" ]] && source "${compiledPlugin}/${item.path}"''
-              else
-                ''
-                  for initfile in "${compiledPlugin}"/*.plugin.zsh "${compiledPlugin}"/init.zsh "${compiledPlugin}"/*.zsh; do
-                    [[ -f "$initfile" ]] && source "$initfile" && break
-                  done
-                '';
+            pluginsDir = mkPluginsDir dotDir;
+            pluginPath = "${pluginsDir}/${item.name}";
+            pluginFile = "${pluginPath}/${item.file}";
+
+            # Generate fpath additions (NEVER deferred)
+            # Note: This sources from dotDir, not store, so plugins must be copied via mkPluginFiles
+            fpathScript = ''
+              # Plugin: ${item.name} - fpath setup (order: ${toString item.order})
+              fpath+=("${pluginPath}")
+            '';
+
           in
+          # fpath always runs immediately, only sourcing can be deferred
           if item.defer then
-            ''
-              # Deferred plugin: ${item.name} (order: ${toString item.order})
-              zsh-defer ${sourceCmd}
+            fpathScript
+            + ''
+
+              # Deferred plugin source: ${item.name}
+              [[ -f "${pluginFile}" ]] && zsh-defer source "${pluginFile}"
             ''
           else
-            ''
-              # Plugin: ${item.name} (order: ${toString item.order})
-              ${sourceCmd}
+            fpathScript
+            + ''
+
+              # Plugin source: ${item.name}
+              [[ -f "${pluginFile}" ]] && source "${pluginFile}"
             ''
         else if item.type == "cachedInit" then
           # cachedInit - use direct store path reference
           let
-            initPath = "${item.derivation}/share/zsh/cached-inits/${item.sanitizedName}/init.zsh";
+            initPath = "${item.derivation}/fzl-cached-inits/${item.sanitizedName}/init.zsh";
           in
           if item.defer then
             ''
@@ -266,41 +287,43 @@ let
       ${lib.concatMapStrings generateSource allItems}
     '';
 
-  # Collects all package derivations needed for a zsh configuration
+  # Generates home.file entries to copy plugins to dotDir/plugins
   #
-  # Gathers the cached init derivations and conditionally includes zsh-defer
-  # if any plugins or cached inits use deferred loading. These packages should
-  # be added to the system or home-manager environment.
+  # Takes a list of plugins and copies them to the zsh plugins directory
+  # determined by dotDir configuration. Plugins are compiled before copying.
   #
   # Arguments:
-  #   cachedInits - List of cached init records (see mkInitContent)
   #   plugins - List of plugin records (see mkInitContent)
+  #   dotDir - The zsh dotDir path (e.g., ".config/zsh" or ".")
   #
   # Returns:
-  #   A list of derivations to include in the environment
+  #   Attribute set suitable for home.file with plugin paths as keys
   #
   # Example:
-  #   mkPackages {
-  #     cachedInits = [
-  #       { name = "zoxide"; package = pkgs.zoxide; initArgs = ["init" "zsh"]; }
-  #     ];
+  #   mkPluginFiles {
   #     plugins = [
-  #       { plugin = pkgs.zsh-autosuggestions; defer = true; }
+  #       { name = "my-plugin"; src = ./plugin; file = "init.zsh"; order = 100; }
   #     ];
+  #     dotDir = ".config/zsh";
   #   }
-  #   # Returns: [ <zoxide-cached-init-drv> pkgs.zsh-defer ]
-  mkPackages =
+  #   # Returns: { ".config/zsh/plugins/my-plugin".source = <compiled-plugin-drv>; }
+  mkPluginFiles =
     {
-      cachedInits ? [ ],
       plugins ? [ ],
+      dotDir,
     }:
     let
-      cachedInitDerivations = map (
-        init: mkCachedInit { inherit (init) name package initArgs; }
-      ) cachedInits;
-      hasDeferred = lib.any (item: item.defer or false) (plugins ++ cachedInits);
+      pluginsDir =
+        mkRelPathStr dotDir + (lib.optionalString (mkRelPathStr dotDir == ".") "/.zsh") + "/plugins";
     in
-    cachedInitDerivations ++ lib.optional hasDeferred pkgs.zsh-defer;
+    lib.foldl' (a: b: a // b) { } (
+      map (plugin: {
+        "${pluginsDir}/${plugin.name}".source = mkCompiledPlugin {
+          plugin = plugin.src;
+          name = plugin.name;
+        };
+      }) plugins
+    );
 
   # Creates plugin records from a directory structure
   #
@@ -351,15 +374,16 @@ let
           optsFile = pluginDir + "/_opts.nix";
           fullName = if namePrefix != "" then "${namePrefix}-${name}" else name;
 
-          # Import _default.nix if it exists, otherwise use empty set
+          # Import _opts.nix if it exists, otherwise use empty set
           opts = if builtins.pathExists optsFile then import optsFile else { };
         in
         if builtins.pathExists initFile then
           {
             name = fullName;
-            plugin = pluginDir;
+            src = pluginDir; # Changed from 'plugin'
+            file = "init.zsh"; # NEW: explicit file attribute
           }
-          // opts # Merge order, defer, and any other options from _default.nix
+          // opts # Merge order, defer, and any other options from _opts.nix
         else
           null;
 
@@ -373,7 +397,7 @@ in
     mkCompiledPlugin
     mkCachedInit
     mkInitContent
-    mkPackages
     mkPluginsFromDir
+    mkPluginFiles
     ;
 }
