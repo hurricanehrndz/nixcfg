@@ -10,39 +10,35 @@ let
   inherit (lib)
     mkIf
     mkForce
-    mkMerge
-    mkOrder
     ;
   cfg = osConfig.hrndz;
 
   # Initialize zsh library
   zshLib = self.lib.fast-zsh-lib { inherit pkgs; };
 
+
+  # zsh raw scripts
+  rawScripts = [
+    {
+      name = "default-nix-environment";
+      content = ''
+        # Nix environment
+        for profile in ''${(z)NIX_PROFILES}; do
+              fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
+        done
+        HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
+      '';
+      order = 300;
+    }
+  ];
+
   # Cached inits configuration
   cachedInits = [
-    {
-      name = "direnv";
-      package = pkgs.direnv;
-      initArgs = [
-        "hook"
-        "zsh"
-      ];
-      order = 585; # Load early (environment setup)
-    }
-    {
-      name = "zoxide";
-      package = pkgs.zoxide;
-      initArgs = [
-        "init"
-        "zsh"
-      ];
-      order = 590; # Load early (directory jumping)
-    }
     {
       name = "fzf";
       package = pkgs.fzf;
       initArgs = [ "--zsh" ];
-      order = 600; # Load after core but before prompt
+      order = 500; # Load after core but before prompt
     }
     {
       name = "starship";
@@ -51,7 +47,27 @@ let
         "init"
         "zsh"
       ];
-      order = 605; # Load late (prompt customization)
+      order = 650; # Load late (prompt customization)
+    }
+    {
+      name = "zoxide";
+      package = pkgs.zoxide;
+      initArgs = [
+        "init"
+        "zsh"
+      ];
+      order = 700; # Load early (directory jumping)
+      defer = true;
+    }
+    {
+      name = "direnv";
+      package = pkgs.direnv;
+      initArgs = [
+        "hook"
+        "zsh"
+      ];
+      order = 750; # Load early (environment setup)
+      defer = true;
     }
   ];
 in
@@ -92,25 +108,15 @@ in
       completionInit = "";
       initContent =
         let
-          fast-zsh-init = zshLib.mkInitContent { inherit cachedInits; };
+          fast-zsh-init = zshLib.mkInitContent {
+            inherit cachedInits;
+            inherit rawScripts;
+          };
         in
-        mkMerge [
-          (mkOrder 915 fast-zsh-init)
-        ];
-      # mkForce ''
-      #   # environment
-      #   for profile in ''${(z)NIX_PROFILES}; do
-      #         fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
-      #   done
-      #   HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
-      #
-      # '' ++ fast-zsh-init;
+        mkForce fast-zsh-init;
 
       ## things to add
       # source /nix/store/giwji59178p0ih6ndy1llq21ap8apxrm-nix-index-with-full-db-0.1.9/etc/profile.d/command-not-found.sh
-      # if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
-      #   source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
-      # fi
     };
     programs.starship = {
       enable = true;
