@@ -71,6 +71,12 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    # zsh plugins
+    zephyr-zsh-src = {
+      url = "github:mattmc3/zephyr";
+      flake = false;
+    };
+
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
 
