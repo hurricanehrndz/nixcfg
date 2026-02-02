@@ -118,7 +118,12 @@ in
 
     # Add plugin files to dotDir
     home.file = fzl.mkPluginFiles {
-      inherit plugins dotDir;
+      inherit
+        plugins
+        cachedInits
+        rawScripts
+        dotDir
+        ;
     };
 
     home.packages = with pkgs; [

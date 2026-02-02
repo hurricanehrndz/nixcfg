@@ -1097,7 +1097,8 @@
         "snapraid-runner": "snapraid-runner",
         "strongbox-src": "strongbox-src",
         "systems": "systems_4",
-        "treefmt-nix": "treefmt-nix_2"
+        "treefmt-nix": "treefmt-nix_2",
+        "zephyr-zsh-src": "zephyr-zsh-src"
       }
     },
     "rust-analyzer-src": {
@@ -1293,6 +1294,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "zephyr-zsh-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1769620582,
+        "narHash": "sha256-KBjujEUF6wGu4jayxJggwdcIr336NKFVk+VHZ26JXZ8=",
+        "owner": "mattmc3",
+        "repo": "zephyr",
+        "rev": "88bfeab779d95bcb0099c2fe807204f495734f6c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattmc3",
+        "repo": "zephyr",
         "type": "github"
       }
     }

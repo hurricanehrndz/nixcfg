@@ -24,6 +24,42 @@ let
     in
     absPath + (lib.optionalString (relPath == ".") "/.zsh") + "/plugins";
 
+  # Injects zsh-defer plugin into plugins list if any deferred items exist
+  #
+  # This is an internal helper that ensures zsh-defer is available and compiled
+  # when plugins, cachedInits, or rawScripts use defer=true.
+  #
+  # Arguments:
+  #   plugins - List of plugin records
+  #   cachedInits - List of cached init records
+  #   rawScripts - List of raw script records
+  #
+  # Returns:
+  #   Plugin list with zsh-defer injected at order 20 if needed
+  injectZshDefer =
+    {
+      plugins ? [ ],
+      cachedInits ? [ ],
+      rawScripts ? [ ],
+    }:
+    let
+      # Check if we need zsh-defer
+      hasDeferred =
+        (lib.any (p: p.defer or false) plugins)
+        || (lib.any (i: i.defer or false) cachedInits)
+        || (lib.any (s: s.defer or false) rawScripts);
+
+      # zsh-defer plugin definition
+      zshDeferPlugin = {
+        name = "zsh-defer";
+        src = pkgs.zsh-defer + "/share/zsh-defer";
+        file = "zsh-defer.plugin.zsh";
+        order = 20;
+        defer = false; # zsh-defer itself should never be deferred
+      };
+    in
+    if hasDeferred then [ zshDeferPlugin ] ++ plugins else plugins;
+
   # Compiles a zsh plugin by running zcompile on all .zsh files
   #
   # Takes a plugin derivation or path and produces a new derivation with all
@@ -170,6 +206,11 @@ let
       dotDir,
     }:
     let
+      # Inject zsh-defer plugin if any items are deferred
+      effectivePlugins = injectZshDefer {
+        inherit plugins cachedInits rawScripts;
+      };
+
       # Generate cached init derivations with metadata
       cachedInitDerivations = map (init: {
         inherit (init) name order;
@@ -186,7 +227,7 @@ let
         defer = p.defer or false;
         src = p.src;
         file = p.file or "${p.name}.plugin.zsh"; # Default to home-manager convention
-      }) plugins;
+      }) effectivePlugins;
 
       # Convert cachedInits to common format with derivation references
       initItems = map (i: {
@@ -271,19 +312,8 @@ let
             # ${item.name} (order: ${toString item.order})
             ${item.content}
           '';
-
-      hasDeferred = lib.any (item: item.defer) allItems;
     in
     ''
-      ${lib.optionalString hasDeferred ''
-        # Built with fast-zsh-init
-
-        # Load zsh-defer - direct store path
-        if [[ -f "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
-          source "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh"
-        fi
-      ''}
-
       ${lib.concatMapStrings generateSource allItems}
     '';
 
@@ -291,9 +321,12 @@ let
   #
   # Takes a list of plugins and copies them to the zsh plugins directory
   # determined by dotDir configuration. Plugins are compiled before copying.
+  # Automatically injects zsh-defer plugin if any deferred items exist.
   #
   # Arguments:
   #   plugins - List of plugin records (see mkInitContent)
+  #   cachedInits - Optional list of cached init records (for defer detection)
+  #   rawScripts - Optional list of raw script records (for defer detection)
   #   dotDir - The zsh dotDir path (e.g., ".config/zsh" or ".")
   #
   # Returns:
@@ -310,9 +343,16 @@ let
   mkPluginFiles =
     {
       plugins ? [ ],
+      cachedInits ? [ ],
+      rawScripts ? [ ],
       dotDir,
     }:
     let
+      # Inject zsh-defer plugin if any items are deferred
+      effectivePlugins = injectZshDefer {
+        inherit plugins cachedInits rawScripts;
+      };
+
       pluginsDir =
         mkRelPathStr dotDir + (lib.optionalString (mkRelPathStr dotDir == ".") "/.zsh") + "/plugins";
     in
@@ -322,7 +362,7 @@ let
           plugin = plugin.src;
           name = plugin.name;
         };
-      }) plugins
+      }) effectivePlugins
     );
 
   # Creates plugin records from a directory structure
