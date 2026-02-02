@@ -19,6 +19,14 @@ let
 
   # zsh raw scripts
   rawScripts = [
+    # {
+    #   name = "zprof";
+    #   content = ''
+    #     zmodload zsh/zprof
+    #   '';
+    #   order = 10;
+    #
+    # }
     {
       name = "default-nix-environment";
       content = ''
@@ -30,6 +38,14 @@ let
       '';
       order = 160;
     }
+    # {
+    #   name = "zprof-done";
+    #   content = ''
+    #     zprof
+    #   '';
+    #   order = 3000;
+    #
+    # }
   ];
 
   plugins = [
@@ -61,13 +77,26 @@ let
       name = "zephyr-color";
       src = inputs.zephyr-zsh-src;
       file = "plugins/color/color.plugin.zsh";
-      order = 300;
+      order = 350;
+    }
+    {
+      name = "zsh-forgit";
+      src = pkgs.zsh-forgit;
+      file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
+      order = 510;
     }
     {
       name = "zephr-completion";
       src = inputs.zephyr-zsh-src;
       file = "plugins/completion/completion.plugin.zsh";
       order = 800;
+    }
+    {
+      name = "fzf-tab";
+      src = pkgs.zsh-fzf-tab;
+      file = "share/fzf-tab/fzf-tab.plugin.zsh";
+      order = 1450;
+      defer = true;
     }
     {
       name = "zsh-syntax-highlighting";
@@ -153,6 +182,7 @@ in
     home.packages = with pkgs; [
       zsh-completions
       nix-zsh-completions
+      zsh-forgit
     ];
 
     # command-not-found alt
