@@ -239,22 +239,24 @@ let
               [[ -f "${initPath}" ]] && source "${initPath}"
             ''
         else
-          # rawScript - inline the content
-          if item.defer then
-            ''
-              # Deferred: ${item.name} (order: ${toString item.order})
-              zsh-defer eval ${lib.escapeShellArg item.content}
-            ''
-          else
-            ''
-              # ${item.name} (order: ${toString item.order})
-              ${item.content}
-            '';
+        # rawScript - inline the content
+        if item.defer then
+          ''
+            # Deferred: ${item.name} (order: ${toString item.order})
+            zsh-defer eval ${lib.escapeShellArg item.content}
+          ''
+        else
+          ''
+            # ${item.name} (order: ${toString item.order})
+            ${item.content}
+          '';
 
       hasDeferred = lib.any (item: item.defer) allItems;
     in
     ''
       ${lib.optionalString hasDeferred ''
+        # Built with fast-zsh-init
+
         # Load zsh-defer - direct store path
         if [[ -f "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh" ]]; then
           source "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh"
@@ -350,11 +352,7 @@ let
           fullName = if namePrefix != "" then "${namePrefix}-${name}" else name;
 
           # Import _default.nix if it exists, otherwise use empty set
-          opts =
-            if builtins.pathExists optsFile then
-              import optsFile
-            else
-              { };
+          opts = if builtins.pathExists optsFile then import optsFile else { };
         in
         if builtins.pathExists initFile then
           {
