@@ -272,16 +272,22 @@ let
           in
           # fpath always runs immediately, only sourcing can be deferred
           if item.defer then
+            ''
+
+            ''
+            +
             fpathScript
             + ''
-
               # Deferred plugin source: ${item.name}
               [[ -f "${pluginFile}" ]] && zsh-defer source "${pluginFile}"
             ''
           else
+            ''
+
+            ''
+            +
             fpathScript
             + ''
-
               # Plugin source: ${item.name}
               [[ -f "${pluginFile}" ]] && source "${pluginFile}"
             ''
@@ -292,11 +298,13 @@ let
           in
           if item.defer then
             ''
+
               # Deferred: ${item.name} (order: ${toString item.order})
               [[ -f "${initPath}" ]] && zsh-defer source "${initPath}"
             ''
           else
             ''
+
               # ${item.name} (order: ${toString item.order})
               [[ -f "${initPath}" ]] && source "${initPath}"
             ''
@@ -304,16 +312,19 @@ let
         # rawScript - inline the content
         if item.defer then
           ''
+
             # Deferred: ${item.name} (order: ${toString item.order})
             zsh-defer eval ${lib.escapeShellArg item.content}
           ''
         else
           ''
+
             # ${item.name} (order: ${toString item.order})
             ${item.content}
           '';
     in
     ''
+      # Built with fast-zsh-lib
       ${lib.concatMapStrings generateSource allItems}
     '';
 
