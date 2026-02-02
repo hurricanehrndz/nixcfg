@@ -45,7 +45,7 @@ in
           remoteForwards = [
             {
               host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
-              bind.address = "/run/user/3712/gnupg/S.gpg-agent";
+              bind.address = "/run/user/3576/gnupg/S.gpg-agent";
             }
           ];
         };
@@ -78,6 +78,9 @@ in
           ];
         };
         "*" = {
+          setEnv = {
+            TERM = "xterm-256color";
+          };
           forwardAgent = false;
           addKeysToAgent = "yes";
           compression = false;
