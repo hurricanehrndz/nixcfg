@@ -19,10 +19,14 @@ export BAT_CONFIG_FILE="$HOME/.config/bat/config"
 #######################################
 # batman settings
 #######################################
-export MANPAGER=" BATMAN_IS_BEING_MANPAGER=yes BAT_THEME='Monokai Extended Light' command batman"
+export MANPAGER="env BATMAN_IS_BEING_MANPAGER=yes batman"
 export MANROFFOPT=-c
 
 # Async mode for autocompletion
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 ZSH_HIGHLIGHT_MAXLENGTH=100
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+# ZSH syntax highlighting
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)

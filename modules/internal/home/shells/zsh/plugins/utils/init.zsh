@@ -25,13 +25,11 @@ if [[ -n "$TMUX" ]]; then
 fi
 
 batman() {
-    BAT_THEME='Monokai Extended Light' command batman "$@"
+    BAT_THEME='Catppuccin Latte' command batman "$@"
     return $?
 }
 
 # completions
 compdef _files cpv
-compdef what-would-happen-on=ssh wwho=ssh
-compdef _chezmoi cm
 compdef _bat cat
 compdef _files v
