@@ -22,13 +22,13 @@ let
     {
       name = "default-nix-environment";
       content = ''
-        # Nix environment
+        # Nix environment -- this will provide completions from nix pkgs i.e. home.packages
         for profile in ''${(z)NIX_PROFILES}; do
               fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
         done
         HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
       '';
-      order = 300;
+      order = 160;
     }
   ];
 
@@ -46,25 +46,49 @@ let
       order = 200;
     }
     {
+      name = "zephyr-history";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/history/history.plugin.zsh";
+      order = 300;
+    }
+    {
+      name = "zephyr-directory";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/directory/directory.plugin.zsh";
+      order = 300;
+    }
+    {
+      name = "zephyr-color";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/color/color.plugin.zsh";
+      order = 300;
+    }
+    {
+      name = "zephr-completion";
+      src = inputs.zephyr-zsh-src;
+      file = "plugins/completion/completion.plugin.zsh";
+      order = 800;
+    }
+    {
       name = "zsh-syntax-highlighting";
       src = pkgs.zsh-syntax-highlighting;
-      file = "zsh-syntax-highlighting.plugin.zsh";
+      file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
       order = 1900; # Load last
       defer = true;
     }
     {
       name = "zsh-autosuggestions";
       src = pkgs.zsh-autosuggestions;
-      file = "zsh-autosuggestions.plugin.zsh";
+      file = "share/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh";
       order = 2000; # Load last
       defer = true;
     }
   ];
 
-  # customPlugins = fzl.mkPluginsFromDir {
-  #   dir = ./zsh/plugins;
-  #   namePrefix = "custom";
-  # };
+  customPlugins = fzl.mkPluginsFromDir {
+    dir = ./plugins;
+    namePrefix = "custom";
+  };
 
   # ZSH dotDir configuration - define once to avoid circular deps
   dotDir = "${config.xdg.configHome}/zsh";
@@ -119,11 +143,11 @@ in
     # Add plugin files to dotDir
     home.file = fzl.mkPluginFiles {
       inherit
-        plugins
         cachedInits
         rawScripts
         dotDir
         ;
+      plugins = plugins ++ customPlugins;
     };
 
     home.packages = with pkgs; [
@@ -157,9 +181,9 @@ in
             inherit
               cachedInits
               rawScripts
-              plugins
               dotDir
               ;
+            plugins = plugins ++ customPlugins;
           };
         in
         mkForce fast-zsh-init;
