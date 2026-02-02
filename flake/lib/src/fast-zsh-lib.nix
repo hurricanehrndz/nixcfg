@@ -167,6 +167,10 @@ let
   #     - file: File to source within plugin (default: "${name}.plugin.zsh")
   #     - order: Loading order (lower numbers load first)
   #     - defer: Optional boolean, defer only the sourcing with zsh-defer (default: false)
+  #     - completions: Optional list of completion paths relative to plugin src
+  #       * If not defined: no fpath entries added (plugin manages its own fpath)
+  #       * If set to []: no fpath entries added (explicit opt-out)
+  #       * If set to paths: only the specified completion paths added to fpath
   #   cachedInits - List of cached init records with attributes:
   #     - name: Descriptive name
   #     - package: Package containing the command
@@ -189,6 +193,8 @@ let
   #     plugins = [
   #       { name = "my-plugin"; src = ./plugin; file = "init.zsh"; order = 100; }
   #       { name = "zsh-autosuggestions"; src = pkgs.zsh-autosuggestions; order = 200; defer = true; }
+  #       { name = "wd"; src = pkgs.zsh-wd; file = "share/wd/wd.plugin.zsh";
+  #         completions = [ "share/zsh/site-functions" ]; order = 300; }
   #     ];
   #     cachedInits = [
   #       { name = "starship"; package = pkgs.starship; initArgs = ["init" "zsh"]; order = 50; }
@@ -227,6 +233,7 @@ let
         defer = p.defer or false;
         src = p.src;
         file = p.file or "${p.name}.plugin.zsh"; # Default to home-manager convention
+        completions = p.completions or [ ];
       }) effectivePlugins;
 
       # Convert cachedInits to common format with derivation references
@@ -264,33 +271,45 @@ let
 
             # Generate fpath additions (NEVER deferred)
             # Note: This sources from dotDir, not store, so plugins must be copied via mkPluginFiles
-            fpathScript = ''
-              # Plugin: ${item.name} - fpath setup (order: ${toString item.order})
-              fpath+=("${pluginPath}")
-            '';
-
+            hasCompletionsField = item ? completions && builtins.length item.completions >= 1;
+            fpathScript =
+              # Conditional fpath logic:
+              # - completions = []: do not add any fpath entries
+              # - completions = [...]: add only the specified completion paths
+              if !hasCompletionsField then
+                ""
+              else
+                let
+                  fpathEntries = map (compDir: "${pluginPath}/${compDir}") item.completions;
+                in
+                lib.concatMapStringsSep "\n  " (path: ''fpath+=("${path}")'') fpathEntries;
           in
-          # fpath always runs immediately, only sourcing can be deferred
-          if item.defer then
-            ''
+          ''
 
-            ''
-            +
-            fpathScript
-            + ''
-              # Deferred plugin source: ${item.name}
-              [[ -f "${pluginFile}" ]] && zsh-defer source "${pluginFile}"
-            ''
-          else
-            ''
-
-            ''
-            +
-            fpathScript
-            + ''
-              # Plugin source: ${item.name}
-              [[ -f "${pluginFile}" ]] && source "${pluginFile}"
-            ''
+            # Plugin: ${item.name} (order: ${toString item.order})
+          ''
+          + (
+            if hasCompletionsField then
+              # fpath always runs immediately, only sourcing can be deferred
+              if item.defer then
+                ''
+                  ${fpathScript}
+                  [[ -f "${pluginFile}" ]] && zsh-defer source "${pluginFile}"
+                ''
+              else
+                ''
+                  ${fpathScript}
+                  [[ -f "${pluginFile}" ]] && source "${pluginFile}"
+                ''
+            else if item.defer then
+              ''
+                [[ -f "${pluginFile}" ]] && zsh-defer source "${pluginFile}"
+              ''
+            else
+              ''
+                [[ -f "${pluginFile}" ]] && source "${pluginFile}"
+              ''
+          )
         else if item.type == "cachedInit" then
           # cachedInit - use direct store path reference
           let
