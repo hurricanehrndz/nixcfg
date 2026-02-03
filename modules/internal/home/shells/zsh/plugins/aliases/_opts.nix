@@ -1,3 +1,4 @@
 {
-  order = 600;
+  order = 1700;
+  defer = true;
 }

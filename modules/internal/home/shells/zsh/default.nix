@@ -80,16 +80,17 @@ let
       order = 350;
     }
     {
-      name = "zsh-forgit";
-      src = pkgs.zsh-forgit;
-      file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
-      order = 510;
-    }
-    {
       name = "zephr-completion";
       src = inputs.zephyr-zsh-src;
       file = "plugins/completion/completion.plugin.zsh";
       order = 800;
+    }
+    {
+      name = "zsh-forgit";
+      src = pkgs.zsh-forgit;
+      file = "share/zsh/zsh-forgit/forgit.plugin.zsh";
+      defer = true;
+      order = 1400;
     }
     {
       name = "fzf-tab";

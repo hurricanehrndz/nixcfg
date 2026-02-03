@@ -14,15 +14,18 @@ in
     programs.ghostty = {
       package = if isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
       enable = true;
+      # disable nix's integration
       enableZshIntegration = false;
       settings = {
         theme = "Catppuccin Latte";
         window-theme = "light";
+        # disable automatic injection - we do it in zsh
         shell-integration = "none";
         background-opacity = 0.80;
         background-opacity-cells = true;
         background-blur-radius = 16;
         window-decoration = false;
+        shell-integration-features =  "sudo,ssh-terminfo,ssh-env,cursor";
       };
     };
   };

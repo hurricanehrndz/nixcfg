@@ -78,9 +78,6 @@ in
           ];
         };
         "*" = {
-          setEnv = {
-            TERM = "xterm-256color";
-          };
           forwardAgent = false;
           addKeysToAgent = "yes";
           compression = false;

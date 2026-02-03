@@ -127,6 +127,7 @@ alias tk='tmux kill-session -t'
 #######################################
 # utility aliases
 #######################################
+alias xsh='TERM=TERM=xterm-256color ssh'
 alias vi='v'
 alias lg='lazygit'
 alias mkdir='mkdir -p'
