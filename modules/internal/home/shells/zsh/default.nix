@@ -251,7 +251,7 @@ in
         };
         git_status = {
           ignore_submodules = true;
-          # use_git_executable = true;
+          use_git_executable = true;
         };
         python.python_binary = [ ];
         cmd_duration.disabled = true;
