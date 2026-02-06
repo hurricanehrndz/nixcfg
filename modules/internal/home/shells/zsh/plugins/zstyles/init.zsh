@@ -8,3 +8,4 @@ zstyle ':zephyr:plugin:editor' dot-expansion yes
 zstyle ':zephyr:plugin:editor' magic-enter yes
 zstyle ':zephyr:plugin:editor' key-bindings vi
 zstyle ':zephyr:plugin:zfunctions' directory "$ZDOTDIR/zfuncs"
+zstyle ':fzf-tab:*' fzf-flags --bind=tab:accept
