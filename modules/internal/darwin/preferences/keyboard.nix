@@ -15,11 +15,12 @@
       "com.apple.keyboard.fnState" = false;
     };
   };
-  system.keyboard = {
-    enableKeyMapping = true;
-    nonUS.remapTilde = false;
-    remapCapsLockToControl = false;
-    remapCapsLockToEscape = false;
-    swapLeftCommandAndLeftAlt = false;
-  };
+  # interfers with superkey/hyperkey
+  # system.keyboard = {
+  #   enableKeyMapping = false;
+  #   nonUS.remapTilde = false;
+  #   remapCapsLockToControl = false;
+  #   remapCapsLockToEscape = false;
+  #   swapLeftCommandAndLeftAlt = false;
+  # };
 }

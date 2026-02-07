@@ -32,6 +32,7 @@ in
       "com.knollsoft.Superkey" = {
         SUEnableAutomaticChecks = 0;
         SUHasLaunchedBefore = 1;
+        capsLockKeycode = "-1";
         capsLockRemapped = 2;
         executeQuickHyperKey = 2;
         hyperFlags = 1966080;
@@ -39,6 +40,7 @@ in
         launchOnLogin = 0;
         mehKeycode = 57;
         mehRemap = 1;
+        modifierSeekMode = 2;
         physicalKeycode = 230;
         quickHyperKeycode = 53;
         statusIcon = 2;
