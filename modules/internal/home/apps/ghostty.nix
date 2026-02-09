@@ -25,7 +25,7 @@ in
         background-opacity-cells = true;
         background-blur-radius = 16;
         window-decoration = false;
-        shell-integration-features =  "sudo,no-ssh-terminfo,no-ssh-env,cursor";
+        shell-integration-features = "sudo,no-ssh-terminfo,no-ssh-env,cursor";
       };
     };
   };

@@ -15,7 +15,7 @@
       "com.apple.keyboard.fnState" = false;
     };
   };
-  # interfers with superkey/hyperkey
+  # interferes with superkey/hyperkey
   # system.keyboard = {
   #   enableKeyMapping = false;
   #   nonUS.remapTilde = false;
