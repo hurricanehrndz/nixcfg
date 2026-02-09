@@ -27,6 +27,7 @@ in
             home-manager.nixosModules.home-manager
             determinate.nixosModules.default
             agenix.nixosModules.default
+            disko.nixosModules.disko
             self.nixosModules.default
           ])
 
@@ -39,6 +40,10 @@ in
             self.darwinModules.default
           ])
         ];
+
+      specialArgs = lib.optionalAttrs (class == "nixos") {
+        isBootstrap = inputs.bootstrap;
+      };
     };
   };
 }

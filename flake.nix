@@ -33,6 +33,10 @@
     # default pkg set
     nixpkgs.follows = "nixpkgs-unstable-weekly";
 
+    # disk config
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+
     # index
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";

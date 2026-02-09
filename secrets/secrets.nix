@@ -10,9 +10,10 @@ let
   yubikeys = {
     yubikey-5c-5f449e60 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
   };
-  # deepthoughtKeys = [
-  #   machineKeys.DeepThought
-  # ] ++ (builtins.attrValues yubikeys);
+  deepthoughtKeys = [
+    machineKeys.DeepThought
+  ]
+  ++ (builtins.attrValues yubikeys);
   darwin_Keys = [
     machineKeys.LH9KCR6DJX
     machineKeys.HX7YG952H5
@@ -24,6 +25,6 @@ in
   "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
 
   # "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
-  # "services/traefik/env.age".publicKeys = deepthoughtKeys ++ [ machineKeys.Hal9000 ];
-  # "services/homarr/env.age".publicKeys = deepthoughtKeys;
+  "services/ingress/env.age".publicKeys = deepthoughtKeys; # ++ [ machineKeys.Hal9000 ];
+  "services/homarr/env.age".publicKeys = deepthoughtKeys;
 }
