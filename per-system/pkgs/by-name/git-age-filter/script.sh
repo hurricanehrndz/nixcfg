@@ -43,9 +43,9 @@ require_recipients() {
 ##: install
 
 cmd_install() {
-  local root pattern rf
+  local root rf
   root="$(repo_root)"
-  pattern="${1:-secrets/*}"
+  local patterns=("${@:-.secrets/*}")
 
   # Configure git filter
   git config filter.age.clean "git-age-filter clean %f"
@@ -64,12 +64,15 @@ EOF
     echo "$PROG: created $RECIPIENTS_FILE (add recipient public keys)" >&2
   fi
 
-  # Add .gitattributes entry if not already present
+  # Add .gitattributes entries for each pattern
   local ga="$root/.gitattributes"
-  if ! grep -q "filter=age" "$ga" 2>/dev/null; then
-    echo "$pattern filter=age diff=age merge=age" >>"$ga"
-    echo "$PROG: added pattern '$pattern' to .gitattributes" >&2
-  fi
+  local pattern
+  for pattern in "${patterns[@]}"; do
+    if ! grep -qF "$pattern filter=age" "$ga" 2>/dev/null; then
+      echo "$pattern filter=age diff=age merge=age" >>"$ga"
+      echo "$PROG: added pattern '$pattern' to .gitattributes" >&2
+    fi
+  done
 }
 
 ##: clean — encrypt (stdin plaintext -> stdout ciphertext)
@@ -256,7 +259,7 @@ case "${1:-}" in
     echo "Usage: $PROG <install|clean|smudge|diff|unlock|lock> [args...]" >&2
     echo "" >&2
     echo "Commands:" >&2
-    echo "  install [pattern]  Set up git filter config (default pattern: secrets/*)" >&2
+    echo "  install [pattern...] Set up git filter config (default: .secrets/*)" >&2
     echo "  clean <file>       Encrypt filter (used by git)" >&2
     echo "  smudge             Decrypt filter (used by git)" >&2
     echo "  diff <file>        Textconv filter for diffs (used by git)" >&2

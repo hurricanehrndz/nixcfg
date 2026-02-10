@@ -1,5 +1,4 @@
 {
-  self',
   lib,
   pkgs,
   osConfig,
@@ -7,13 +6,11 @@
 }:
 let
   inherit (lib) mkIf;
-  inherit (self') packages;
   cfg = osConfig.hrndz;
 in
 {
   config = mkIf cfg.roles.terminalDeveloper.enable {
     home.packages = with pkgs; [
-      packages.strongbox
       delta
       difftastic
       gh
@@ -64,8 +61,8 @@ in
           diffFilter = "delta --color-only";
         };
         diff.tool = "difftastic";
-        diff.strongbox = {
-          textconv = "strongbox -diff";
+        diff.age = {
+          textconv = "git-age-filter diff";
         };
         difftool = {
           prompt = false;
@@ -94,10 +91,9 @@ in
         };
         filter = {
           # https://github.com/bphenriques/dotfiles/blob/4fce72c08e7d2b1c9eadbaefb8db3d2b8ac99eb9/bin/sops-git-filter.sh
-          # alt: https://github.com/uw-labs/strongbox?tab=readme-ov-file#existing-project
-          strongbox = {
-            clean = "strongbox -clean %f";
-            smudge = "strongbox -smudge %f";
+          age = {
+            clean = "git-age-filter clean %f";
+            smudge = "git-age-filter smudge";
             required = true;
           };
         };

@@ -1116,7 +1116,6 @@
         "pdenv": "pdenv",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
         "snapraid-runner": "snapraid-runner",
-        "strongbox-src": "strongbox-src",
         "systems": "systems_4",
         "treefmt-nix": "treefmt-nix_2",
         "zephyr-zsh-src": "zephyr-zsh-src"
@@ -1158,23 +1157,6 @@
         "owner": "hurricanehrndz",
         "ref": "hrndz",
         "repo": "snapraid-runner",
-        "type": "github"
-      }
-    },
-    "strongbox-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738037611,
-        "narHash": "sha256-Pzb35KPoeUCRDPVDC6Lloa9bR366enK5QsA8GEcZUe4=",
-        "owner": "uw-labs",
-        "repo": "strongbox",
-        "rev": "1a7295968330d96dcdbae026d0c52a9afb0c0d66",
-        "type": "github"
-      },
-      "original": {
-        "owner": "uw-labs",
-        "ref": "v2.1.0",
-        "repo": "strongbox",
         "type": "github"
       }
     },

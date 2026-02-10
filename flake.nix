@@ -67,10 +67,6 @@
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
 
-    # encryption tools
-    strongbox-src.url = "github:uw-labs/strongbox/v2.1.0";
-    strongbox-src.flake = false;
-
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
