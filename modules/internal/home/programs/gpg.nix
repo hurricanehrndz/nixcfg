@@ -47,7 +47,7 @@ in
               name: gpgIds.${name} == "regular" && "${name}" != "${hrndzPGPPublicKey}.asc"
             ) (builtins.attrNames gpgIds);
           in
-          builtins.map (keyName: {
+          map (keyName: {
             source = "${gpgIdsDir}/${keyName}";
             trust = "full";
           }) files
