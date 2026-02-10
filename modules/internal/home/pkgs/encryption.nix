@@ -17,8 +17,7 @@ in
       [
         sops
         age
-        strongbox
-        strongbox-init
+        age-plugin-yubikey
       ];
   };
 }
