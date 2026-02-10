@@ -32,6 +32,7 @@
               treefmt
             ]
             ++ (with pkgs.local; [
+              git-age-filter
               strongbox
               strongbox-init
             ])
