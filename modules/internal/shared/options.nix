@@ -10,36 +10,22 @@ let
 in
 {
   options.hrndz = {
-    tui.enable = mkEnableOption "Enable CLI/TUI programs" // {
-      default = false;
-    };
+    tui.enable = mkEnableOption "Enable CLI/TUI programs";
 
     tooling = {
       # darwin only
-      virtualization.enable = mkEnableOption "Enable virtualization tooling" // {
-        default = false;
-      };
+      virtualization.enable = mkEnableOption "Enable virtualization tooling";
 
-      macadmin.enable = mkEnableOption "Enable MacAdmin tooling" // {
-        default = false;
-      };
+      macadmin.enable = mkEnableOption "Enable MacAdmin tooling";
 
-      python.enable = mkEnableOption "Enable Python tooling" // {
-        default = false;
-      };
+      python.enable = mkEnableOption "Enable Python tooling";
 
-      ruby.enable = mkEnableOption "Enable Ruby tooling" // {
-        default = false;
-      };
+      ruby.enable = mkEnableOption "Enable Ruby tooling";
     };
 
-    roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment" // {
-      default = false;
-    };
+    roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";
 
-    roles.guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment" // {
-      default = false;
-    };
+    roles.guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment";
   };
 
   config.hrndz = mkMerge [
