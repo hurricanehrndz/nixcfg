@@ -37,4 +37,6 @@ in
     enable = true;
     fqdn = "deepdash.${config.networking.domain}";
   };
+
+  hrndz.services.mediaAppStack.enable = true;
 }

@@ -14,6 +14,7 @@ in
       delta
       difftastic
       gh
+      local.git-age-filter
     ];
 
     programs.git = {
