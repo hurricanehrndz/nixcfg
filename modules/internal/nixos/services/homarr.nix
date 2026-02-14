@@ -40,8 +40,10 @@ in
         environmentFiles = optionals (cfg.environmentFiles != null) cfg.environmentFiles;
       };
     };
-    hrndz.services.ingress.sites."homarr" = {
-      proxy = ":7575";
+    hrndz.services.ingress.sites = mkIf config.hrndz.services.ingress.enable {
+      "homarr" = {
+        proxy = ":7575";
+      };
     };
   };
 }

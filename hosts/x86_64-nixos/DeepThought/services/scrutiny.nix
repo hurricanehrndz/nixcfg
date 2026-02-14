@@ -1,10 +1,11 @@
 {
+  config,
   lib,
   isBootstrap ? false,
   ...
 }:
 let
-  inherit (lib) optionalAttrs;
+  inherit (lib) mkIf;
 in
 {
   # smart monitoring reporting
@@ -39,10 +40,11 @@ in
       ];
     };
   };
-}
-// optionalAttrs (!isBootstrap) {
-  hrndz.services.ingress.sites."scrutiny" = {
-    proxy = ":1080";
-    path = "/storage";
+
+  hrndz.services.ingress.sites = mkIf (!isBootstrap && config.hrndz.services.ingress.enable) {
+    "scrutiny" = {
+      proxy = ":1080";
+      path = "/storage";
+    };
   };
 }

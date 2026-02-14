@@ -49,9 +49,11 @@ in
         };
       };
     };
-    hrndz.services.ingress.sites."dashdot" = {
-      host = cfg.fqdn;
-      proxy = ":3001";
+    hrndz.services.ingress.sites = mkIf config.hrndz.services.ingress.enable {
+      "dashdot" = {
+        host = cfg.fqdn;
+        proxy = ":3001";
+      };
     };
   };
 }
