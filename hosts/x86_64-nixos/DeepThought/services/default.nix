@@ -12,6 +12,8 @@ in
   imports = [
     ./scrutiny.nix
   ];
+
+  hrndz.services.autoUpdateContainers.enable = true;
 }
 // optionalAttrs (!isBootstrap) {
   age.secrets = {
