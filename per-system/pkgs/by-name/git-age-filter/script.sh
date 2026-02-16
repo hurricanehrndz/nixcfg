@@ -264,7 +264,7 @@ cmd_keygen() {
   # Generate keypair
   local tmpkey
   tmpkey="$(mktmp)"
-  age-keygen -o "$tmpkey" 2>&1
+  age-keygen >"$tmpkey" 2>/dev/null
 
   # Extract public key from comment line
   local pubkey
@@ -293,7 +293,8 @@ cmd_keygen() {
 
   echo "" >&2
   echo "Next steps:" >&2
-  echo "  git add $AGE_DIR/ .gitignore && git commit -m 'chore: set up git-age-filter'" >&2
+  echo "  git add $AGE_DIR/local-key.age $AGE_DIR/local-key.pub $AGE_DIR/recipients .gitignore" >&2
+  echo "  git commit -m 'chore: set up git-age-filter'" >&2
 }
 
 ##: rekey-masters — re-encrypt local key for current master recipients
