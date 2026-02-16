@@ -15,7 +15,7 @@ let
   filePreviewCommand = "${l.getBin pkgs.bat}/bin/bat -n --color=always {}";
 in
 {
-  config = l.mkIf cfg.tui.enable {
+  config = l.mkIf cfg.cli.enable {
     programs.fzf = {
       enable = true;
       defaultOptions = [

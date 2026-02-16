@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.tui.enable {
+  config = (mkIf cfg.cli.enable) {
     homebrew.brews = [
       "opencode" # more up-to-date than nixpkgs
     ];

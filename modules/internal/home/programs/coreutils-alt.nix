@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = lib.mkIf cfg.tui.enable {
+  config = lib.mkIf cfg.cli.enable {
     home.packages = with pkgs; [
       # modern coreutils alternatives
       bottom

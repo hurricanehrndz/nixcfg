@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.tui.enable {
+  config = mkIf cfg.roles.terminalDeveloper.enable {
     programs.man.enable = true;
 
     # more manpages

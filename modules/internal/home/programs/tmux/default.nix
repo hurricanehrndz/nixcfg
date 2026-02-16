@@ -9,7 +9,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = l.mkIf cfg.tui.enable {
+  config = l.mkIf cfg.cli.enable {
     programs.tmux = {
       enable = true;
       baseIndex = 1;

@@ -9,7 +9,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = lib.mkIf cfg.tui.enable {
+  config = lib.mkIf cfg.cli.enable {
     programs.tealdeer.enable = true;
     programs.tealdeer.settings = {
       display = {

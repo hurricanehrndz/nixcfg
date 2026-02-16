@@ -10,7 +10,7 @@ let
 in
 {
   options.hrndz = {
-    tui.enable = mkEnableOption "Enable CLI/TUI programs";
+    cli.enable = mkEnableOption "Enable CLI/TUI programs";
 
     tooling = {
       # darwin only
@@ -30,7 +30,7 @@ in
 
   config.hrndz = mkMerge [
     (mkIf cfg.roles.terminalDeveloper.enable {
-      tui.enable = mkDefault true;
+      cli.enable = mkDefault true;
     })
 
     (mkIf cfg.roles.guiDeveloper.enable {

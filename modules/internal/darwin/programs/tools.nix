@@ -9,7 +9,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.tui.enable {
+  config = mkIf cfg.cli.enable {
     environment.systemPackages = with pkgs; [
       # commandline tool for battery, volume, wifi
       m-cli

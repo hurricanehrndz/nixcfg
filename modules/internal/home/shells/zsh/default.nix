@@ -163,7 +163,7 @@ let
   ];
 in
 {
-  config = mkIf cfg.tui.enable {
+  config = mkIf cfg.cli.enable {
     home.extraOutputsToInstall = [
       "/share/zsh"
       # TODO: is this already implied by `/share/zsh`?

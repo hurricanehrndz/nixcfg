@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.tui.enable {
+  config = mkIf cfg.cli.enable {
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
