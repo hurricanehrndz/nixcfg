@@ -21,6 +21,9 @@
     # darwinModules
     ./darwinModules.nix
 
+    # nixosModules
+    ./nixosModules.nix
+
     # homeModules
     ./homeModules.nix
   ];

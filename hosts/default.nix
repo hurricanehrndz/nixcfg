@@ -28,6 +28,7 @@ in
             determinate.nixosModules.default
             agenix.nixosModules.default
             disko.nixosModules.disko
+            snapraid-runner.nixosModules.default
             self.nixosModules.default
           ])
 
@@ -42,7 +43,7 @@ in
         ];
 
       specialArgs = lib.optionalAttrs (class == "nixos") {
-        isBootstrap = inputs.bootstrap;
+        isBootstrap = inputs.bootstrap.value;
       };
     };
   };

@@ -1,5 +1,12 @@
-{ config, ... }:
-
+{
+  inputs,
+  self,
+  pkgs,
+  ...
+}:
+let
+  system = pkgs.stdenv.hostPlatform.system;
+in
 {
   nixpkgs = {
     config = {
@@ -8,8 +15,9 @@
 
     overlays = [
       (final: prev: {
-        local = config.packages;
+        local = self.packages.${system};
       })
+      inputs.snapraid-runner.overlays.default
     ];
   };
 }
