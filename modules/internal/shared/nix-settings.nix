@@ -1,5 +1,6 @@
 {
   lib,
+  options,
   pkgs,
   inputs,
   ...
@@ -65,17 +66,21 @@ in
         options = "--delete-older-than 30d";
       };
     })
-    (l.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-      nix.enable = false;
-      determinateNix = {
-        enable = true;
-        customSettings = mkCustomNixSettings true;
-        registry = l.mapAttrs (_: flake: { inherit flake; }) inputFlakes;
-        determinateNixd = {
-          builder.state = "enabled";
-          garbageCollector.strategy = "automatic";
+    (l.mkIf pkgs.stdenv.hostPlatform.isDarwin (
+      {
+        nix.enable = false;
+      }
+      // l.optionalAttrs (options ? determinateNix) {
+        determinateNix = {
+          enable = true;
+          customSettings = mkCustomNixSettings true;
+          registry = l.mapAttrs (_: flake: { inherit flake; }) inputFlakes;
+          determinateNixd = {
+            builder.state = "enabled";
+            garbageCollector.strategy = "automatic";
+          };
         };
-      };
-    })
+      }
+    ))
   ];
 }
