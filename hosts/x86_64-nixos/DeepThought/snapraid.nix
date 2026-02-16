@@ -8,7 +8,7 @@
 }:
 let
 
-  inherit (lib) mkIf optionalAttrs;
+  inherit (lib) optionalAttrs;
 in
 {
   environment = {
