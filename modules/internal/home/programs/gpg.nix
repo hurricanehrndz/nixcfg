@@ -16,6 +16,7 @@ let
   maxCacheTtl = "1800";
   defaultCacheTtl = "600";
   sshCacheTtl = "600";
+  gpgPkg = config.programs.gpg.package;
 in
 {
   config = mkIf cfg.roles.terminalDeveloper.enable (mkMerge [
@@ -97,7 +98,6 @@ in
 
     (mkIf isDarwin (
       let
-        gpgPkg = config.programs.gpg.package;
         gpg-agent-start =
           with pkgs;
           writeShellScriptBin "gpg-agent-start" ''
