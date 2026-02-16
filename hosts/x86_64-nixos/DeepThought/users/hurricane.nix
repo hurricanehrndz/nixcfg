@@ -30,6 +30,11 @@ in
     }
   ];
 
+  # system customization via gated options
+  hrndz = {
+    roles.terminalDeveloper.enable = true;
+  };
+
   home-manager.users.${username} = {
     home.stateVersion = "22.11";
   };
