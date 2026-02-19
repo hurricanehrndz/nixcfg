@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+output_file="$(mktemp)"
+trap 'rm -f "$output_file"' EXIT
+
+echo "Running: nix flake check --no-build --show-trace"
+if nix flake check --no-build --show-trace 2>&1 | tee "$output_file"; then
+  exit_code=0
+else
+  exit_code=$?
+fi
+
+echo
+printf '%s\n' "Summary (warnings/errors):"
+if command -v rg >/dev/null 2>&1; then
+  summarize_cmd=(rg -n "^(warning:|error:)")
+else
+  summarize_cmd=(grep -n -E "^(warning:|error:)")
+fi
+if "${summarize_cmd[@]}" "$output_file"; then
+  true
+else
+  echo "(none)"
+fi
+
+exit "$exit_code"

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="${1:-.}"
+
+if ! command -v rg >/dev/null 2>&1; then
+  echo "rg is required for this script. Install ripgrep and re-run." >&2
+  exit 1
+fi
+
+echo "Scanning Nix files under: $root"
+rg -n --glob "*.nix" \
+  -e "lib\\.fold\\b" \
+  -e "builtins\\.fold\\b" \
+  -e "cli\\.toGNUCommandLineShell" \
+  -e "cli\\.toGNUCommandLine\\b" \
+  -e "\\bpkgs\\.system\\b" \
+  -e "\\bstdenv\\.system\\b" \
+  "$root" || true

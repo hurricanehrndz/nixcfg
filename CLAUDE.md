@@ -27,6 +27,20 @@ This is a personal NixOS/nix-darwin configuration repository that manages multip
 - Garbage collection: `just gc`
 - Enter devshell: `nix develop`
 
+## Justfile Shortcuts
+- `just check` - run `nix flake check`
+- `just fmt` - run `nix fmt`
+- `just update` - run `nix flake update --no-use-registries`
+- `just gc` - run Nix garbage collection
+- `just build-switch <hostname>` - build and switch the target configuration
+
+## Troubleshooting
+- `builtins.toFile`/`options.json` warnings during `nix flake check` come from nixpkgs option docs generation, not this repo. They can be ignored or silenced by disabling NixOS docs (`documentation.nixos.enable = false`) if desired.
+
+## Local Helper Scripts
+- `scripts/flake-check-lite` - runs `nix flake check --no-build --show-trace` and summarizes warnings/errors
+- `scripts/nix-deprecation-scan` - scans Nix files for common deprecated APIs
+
 ## Architecture
 
 ### Flake Structure
