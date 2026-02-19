@@ -132,6 +132,13 @@ in
               set -g @extrakto_grab_area "window 500"
             '';
           }
+          {
+            plugin = fingers;
+            extraConfig = ''
+              unbind-key Space
+              set -g @fingers-key Space
+            '';
+          }
         ];
     };
   };
