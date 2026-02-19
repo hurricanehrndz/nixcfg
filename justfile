@@ -70,7 +70,7 @@ rebuild:
 [group('nix')]
 [macos]
 dev-rebuild:
-    sudo darwin-rebuild switch --flake . --override-input pdenv path:../pdenv
+    sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv
 alias dr := dev-rebuild
 
 [group('nix')]
