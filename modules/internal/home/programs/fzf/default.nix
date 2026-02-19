@@ -7,7 +7,7 @@
 let
   l = lib // builtins;
   cfg = osConfig.hrndz;
-  packageCommand = pkg: args: (l.getExe pkg) + " " + (l.cli.toGNUCommandLineShell { } args);
+  packageCommand = pkg: args: (l.getExe pkg) + " " + (l.cli.toCommandLineShellGNU { } args);
   find = packageCommand pkgs.fd;
   findFiles = args: find (args // { type = "f"; });
   findDirs = args: find (args // { type = "d"; });

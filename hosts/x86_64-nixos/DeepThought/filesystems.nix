@@ -18,7 +18,9 @@ let
       };
     in
     diskLabelList:
-    lib.fold (attrset: acc: lib.recursiveUpdate acc attrset) { } (map mkFileSystemEntry diskLabelList);
+    lib.foldl' (acc: attrset: lib.recursiveUpdate acc attrset) { } (
+      map mkFileSystemEntry diskLabelList
+    );
 in
 {
   environment = {
