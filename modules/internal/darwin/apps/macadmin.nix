@@ -11,7 +11,7 @@ in
   config = mkIf cfg.tooling.macadmin.enable {
     homebrew.casks = [
       "apparency"
-      "suspicious-package"
+      # "suspicious-package" # disable - causing install issues
     ];
   };
 }
