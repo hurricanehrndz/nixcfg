@@ -13,6 +13,11 @@ in
     autoConstruct = true;
     path = ../hosts;
 
+    hosts = {
+      HX7YG952H5.nixpkgs = inputs.nixpkgs-darwin;
+      LH9KCR6DJX.nixpkgs = inputs.nixpkgs-darwin;
+    };
+
     shared.modules = [
       (import-tree ../modules/internal/shared)
     ];
@@ -25,7 +30,6 @@ in
           (lib.optionals (class == "nixos") [
             (import-tree ../modules/internal/nixos)
             home-manager.nixosModules.home-manager
-            determinate.nixosModules.default
             agenix.nixosModules.default
             disko.nixosModules.disko
             snapraid-runner.nixosModules.default
@@ -36,7 +40,6 @@ in
           (lib.optionals (class == "darwin") [
             (import-tree ../modules/internal/darwin)
             home-manager.darwinModules.home-manager
-            determinate.darwinModules.default
             agenix.darwinModules.default
             self.darwinModules.default
           ])

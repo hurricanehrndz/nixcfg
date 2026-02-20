@@ -29,6 +29,8 @@
     nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
     nixpkgs-unstable-weekly.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
+    # nix-darwin
+    nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
 
     # default pkg set
     nixpkgs.follows = "nixpkgs-unstable-weekly";
@@ -58,8 +60,8 @@
     agenix.inputs.nixpkgs.follows = "nixpkgs";
 
     # extended management
-    darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
