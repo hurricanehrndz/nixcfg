@@ -68,7 +68,7 @@ Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.
 - Constructs nixosConfigurations or darwinConfigurations based on the class (nixos/darwin)
 - Applies shared modules from `modules/internal/shared/`
 - Applies class-specific modules (darwin or nixos) from `modules/internal/`
-- Integrates home-manager, agenix, and determinate modules
+- Integrates home-manager and agenix modules
 
 ### Per-System Configuration
 `per-system/` contains flake-parts perSystem configuration:
