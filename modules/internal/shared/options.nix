@@ -21,6 +21,8 @@ in
       python.enable = mkEnableOption "Enable Python tooling";
 
       ruby.enable = mkEnableOption "Enable Ruby tooling";
+
+      js.enable = mkEnableOption "Enable JavaScript tooling";
     };
 
     roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";

@@ -10,7 +10,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.tooling.python.enable {
+  config = mkIf cfg.tooling.js.enable {
     home.packages = with pkgs; [
       bun
     ];
