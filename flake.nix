@@ -1,23 +1,35 @@
 {
   nixConfig = {
     extra-substituters = [
-      "https://cache.nixos.org "
+      "https://cache.nixos.org"
+      "https://install.determinate.systems"
       "https://nix-community.cachix.org"
-      "https://cache.lix.systems"
       "https://nixpkgs-update.cachix.org"
       "https://hurricanehrndz.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
     ];
-    extra-experimental-features = "nix-command flakes";
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
   };
 
   inputs = {
+    # `flake-schemas` is a flake that provides schemas for commonly used flake outputs,
+    # like `packages` and `devShells`.
+    flake-schemas.url = "github:DeterminateSystems/flake-schemas";
+
+    # determinate nix cli
+    determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
+    # determinate nix module
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+
     # Package sets
     # nixos
     nixos-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -25,6 +37,7 @@
     # nixpkgs
     nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs-unstable-weekly.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # nix-darwin
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";

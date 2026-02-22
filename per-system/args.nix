@@ -19,7 +19,6 @@
         overlays = [
           inputs.agenix.overlays.default
           inputs.devshell.overlays.default
-          # inputs.snapraid-runner.overlays.default
 
           (final: prev: {
             local = config.packages;

@@ -33,6 +33,7 @@ in
             agenix.nixosModules.default
             disko.nixosModules.disko
             snapraid-runner.nixosModules.default
+            determinate.nixosModules.default
             self.nixosModules.default
           ])
 
@@ -41,6 +42,7 @@ in
             (import-tree ../modules/internal/darwin)
             home-manager.darwinModules.home-manager
             agenix.darwinModules.default
+            determinate.darwinModules.default
             self.darwinModules.default
           ])
         ];

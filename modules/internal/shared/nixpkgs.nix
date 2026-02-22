@@ -14,18 +14,15 @@ in
     };
 
     overlays = [
+      inputs.agenix.overlays.default
+      inputs.snapraid-runner.overlays.default
+
       (final: prev: {
         local = self.packages.${system};
+        master = inputs.nixpkgs-master.legacyPackages.${system};
+        unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+        unstable-weekly = inputs.nixpkgs-unstable-weekly.legacyPackages.${system};
       })
-      (final: prev: {
-        inherit (prev.lixPackageSets.stable)
-          nixpkgs-review
-          nix-eval-jobs
-          nix-fast-build
-          colmena
-          ;
-      })
-      inputs.snapraid-runner.overlays.default
     ];
   };
 }

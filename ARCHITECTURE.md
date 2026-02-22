@@ -81,8 +81,8 @@ For each host, easy-hosts:
 1. Applies **shared modules** from `modules/internal/shared/`
 2. Applies **class-specific modules** based on whether the host is `darwin` or
    `nixos` (from `modules/internal/darwin/` or `modules/internal/nixos/`)
-3. Integrates upstream modules: home-manager, agenix, disko (NixOS only), and
-   exported modules from this flake
+3. Integrates upstream modules: home-manager, determinate, agenix, disko (NixOS
+   only), and exported modules from this flake
 
 ### Module Organization
 
@@ -149,8 +149,8 @@ Nix configuration is centralized in `modules/internal/shared/nix-settings.nix`:
 - **All hosts**: flake registry pinned to inputs, `nixPath` set, input sources
   symlinked into `/etc/nix/inputs`
 - **NixOS**: `nix.settings` with caches, substituters, and weekly GC
-- **Darwin**: nix daemon managed by nix-darwin with Lix, same cache/substituter
-  config as NixOS
+- **Darwin**: `nix.enable = false` (defers to Determinate Nix) with
+  `determinateNix.customSettings` reusing the same cache/substituter config
 
 ## Key Inputs
 
@@ -160,6 +160,7 @@ Nix configuration is centralized in `modules/internal/shared/nix-settings.nix`:
 | `flake-parts` | Modular flake organization |
 | `easy-hosts` | Auto host discovery from directory structure |
 | `import-tree` | Recursive directory-based module imports |
+| `determinate` | Determinate Nix daemon modules |
 | `home-manager` | User environment management |
 | `nix-darwin` | macOS system configuration |
 | `agenix` | Secret encryption with age |

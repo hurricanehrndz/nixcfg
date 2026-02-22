@@ -2,7 +2,11 @@
 {
   systems = import inputs.systems;
 
-  flake = { };
+  # original flake attributes here.
+  flake = {
+    # define schemas
+    inherit (inputs.flake-schemas) schemas;
+  };
 
   imports = [
     # lib exports

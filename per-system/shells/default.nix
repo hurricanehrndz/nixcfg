@@ -14,7 +14,7 @@
         let
           inherit (pkgs.stdenv.hostPlatform) isDarwin;
           treefmt = config.treefmt.build.wrapper;
-          nix = pkgs.lixPackageSets.stable.lix;
+          nix = inputs'.determinate-nix.packages.default;
           pkgWithCategory = category: package: { inherit package category; };
 
           # Override agenix to use age with age-plugin-yubikey

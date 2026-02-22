@@ -23,7 +23,7 @@ build target:
 [linux]
 switch target:
     @echo 'Activating build {{target}}...'
-    sudo ./result/sw/bin/nixos-rebuild switch --flake '.#{{target}}'
+    sudo ./result/sw/bin/nixos-rebuild switch --flake --accept-flake-config '.#{{target}}'
 
 [group('nix')]
 [linux]
@@ -56,6 +56,9 @@ bootstrap target:
     # Install Lix
     @echo "Installing Lix..."
     curl -sSf -L https://install.lix.systems/lix | sh -s -- install
+    # Install Nix
+    @echo "Installing DeterminateNix..."
+    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
     # Install Homebrew
     @echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

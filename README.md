@@ -16,10 +16,10 @@ repository is organized.
 
 ## Prerequisites
 
-This configuration uses [Lix](https://lix.systems/), a modern, community-driven
-Nix implementation with flakes and nix-command experimental features enabled by
-default. If you're using standard Nix, you'll need to enable these features
-manually or add `--extra-experimental-features "flakes nix-command"` to commands.
+This configuration uses [Determinate Nix](https://determinate.systems/nix/),
+which has flakes and nix-command experimental features enabled by default. If
+you're using standard Nix, you'll need to enable these features manually or add
+`--extra-experimental-features "flakes nix-command"` to commands.
 
 ## Quick Reference
 
@@ -53,7 +53,8 @@ initial install, since the host SSH keys don't exist yet.
 **WARNING:** This will completely erase the target disk and create a new
 partition scheme using disko.
 
-1. **Boot the target machine** into a NixOS installer ISO
+1. **Boot the target machine** into a NixOS installer ISO (recommend
+   [Determinate Nix installer ISO](https://determinate.systems/posts/determinate-nix-installer/))
 
 2. **Ensure SSH access** to the target machine
 
@@ -128,9 +129,9 @@ sudo nixos-enter
 
 ### Prerequisites
 
-1. **Install Lix:**
+1. **Install Determinate Nix:**
    ```console
-   curl -sSf -L https://install.lix.systems/lix | sh -s -- install
+   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
    ```
 
 2. **Install Homebrew:**
