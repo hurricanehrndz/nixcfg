@@ -53,17 +53,7 @@ build-switch target: (build target) (switch target)
 [group('nix')]
 [macos]
 bootstrap target:
-    # Install Lix
-    @echo "Installing Lix..."
-    curl -sSf -L https://install.lix.systems/lix | sh -s -- install
-    # Install Nix
-    @echo "Installing DeterminateNix..."
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-    # Install Homebrew
-    @echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    just build {{target}}
-    just switch {{target}}
+    ./scripts/bootstrap-darwin {{target}}
 
 [group('nix')]
 [macos]

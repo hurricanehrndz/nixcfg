@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <target>" >&2
+  exit 1
+fi
+
+target="$1"
+
+##: Pre-flight checks
+
+if [[ "$(uname)" != "Darwin" ]]; then
+  echo "This script is only for macOS." >&2
+  exit 1
+fi
+
+if ! xcode-select -p >/dev/null 2>&1; then
+  echo "Xcode Command Line Tools are not installed." >&2
+  echo "Run: xcode-select --install" >&2
+  exit 1
+fi
+
+##: Install Determinate Nix
+
+if [[ -d /nix ]]; then
+  echo "Nix already installed, sourcing nix-daemon.sh..."
+  # shellcheck disable=SC1091
+  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+else
+  echo "Installing Determinate Nix..."
+  curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+  # shellcheck disable=SC1091
+  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+fi
+
+##: Install Homebrew
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  echo "Homebrew already installed, sourcing shellenv..."
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+  echo "Installing Homebrew..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+##: Build and switch configuration
+
+echo "Building ${target}..."
+nix build ".#darwinConfigurations.${target}.system" --accept-flake-config
+
+echo "Switching to ${target}..."
+sudo ./result/sw/bin/darwin-rebuild switch --flake ".#${target}"
+
+##: Post-install validation
+
+echo "Verifying installation..."
+nix --version
+brew --version
+
+echo "Bootstrap complete."
