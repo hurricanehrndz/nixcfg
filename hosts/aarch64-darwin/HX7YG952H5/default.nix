@@ -46,7 +46,7 @@ in
   };
 
   home-manager.users.${username} = {
-    home.stateVersion = "25.05";
+    home.stateVersion = "25.11";
   };
 
   system.primaryUser = "${username}";

@@ -12,7 +12,8 @@ in
 {
   config = mkIf cfg.roles.guiDeveloper.enable {
     programs.ghostty = {
-      package = if isDarwin then pkgs.ghostty-bin else pkgs.ghostty;
+      # ghostty installed via Homebrew
+      package = if isDarwin then pkgs.ghostty-bin else pkgs.unstable.ghostty;
       enable = true;
       # disable nix's integration
       enableZshIntegration = false;
