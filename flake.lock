@@ -948,20 +948,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-unstable-weekly": {
-      "locked": {
-        "lastModified": 1771177547,
-        "narHash": "sha256-trTtk3WTOHz7hSw89xIIvahkgoFJYQ0G43IlqprFoMA=",
-        "rev": "ac055f38c798b0d87695240c7b761b82fc7e5bc2",
-        "revCount": 946843,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/nixpkgs-weekly/0.1.946843%2Brev-ac055f38c798b0d87695240c7b761b82fc7e5bc2/019c6a25-fd20-733f-936e-6487e2957fe4/source.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0.1"
-      }
-    },
     "nixpkgs-unstable_2": {
       "locked": {
         "lastModified": 1769433173,
@@ -1201,7 +1187,6 @@
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
-        "nixpkgs-unstable-weekly": "nixpkgs-unstable-weekly",
         "pdenv": "pdenv",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
         "snapraid-runner": "snapraid-runner",

@@ -21,7 +21,6 @@ in
         local = self.packages.${system};
         master = inputs.nixpkgs-master.legacyPackages.${system};
         unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
-        unstable-weekly = inputs.nixpkgs-unstable-weekly.legacyPackages.${system};
       })
     ];
   };
