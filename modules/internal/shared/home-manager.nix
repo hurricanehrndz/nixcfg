@@ -3,6 +3,8 @@
   self',
   inputs,
   inputs',
+  lib,
+  config,
   ...
 }:
 let
@@ -22,6 +24,10 @@ in
         inputs
         inputs'
         ;
+    };
+
+    users.${config.system.primaryUser} = {
+      home.stateVersion = lib.mkDefault "25.11";
     };
 
     # Home-manager modules (programs, themes, etc.)

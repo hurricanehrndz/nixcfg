@@ -34,8 +34,4 @@ in
   hrndz = {
     roles.terminalDeveloper.enable = true;
   };
-
-  home-manager.users.${username} = {
-    home.stateVersion = "22.11";
-  };
 }
