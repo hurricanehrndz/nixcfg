@@ -33,6 +33,7 @@ build-switch target: (build target) (switch target)
 [linux]
 dev-rebuild:
     sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv
+alias ndr := dev-rebuild
 
 [group('nix')]
 [macos]
