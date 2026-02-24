@@ -27,6 +27,7 @@ in
         background-blur-radius = 16;
         window-decoration = false;
         shell-integration-features = "sudo,no-ssh-terminfo,no-ssh-env,cursor";
+        clipboard-paste-protection = false;
       };
     };
   };
