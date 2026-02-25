@@ -251,6 +251,22 @@
         "type": "github"
       }
     },
+    "evalcache-zsh-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1764003866,
+        "narHash": "sha256-CN9dnSt9kc5AEkWnbtjyv+DCQZ08Ifmac5wELqve17U=",
+        "owner": "mroth",
+        "repo": "evalcache",
+        "rev": "d6973f8c3ecde3eabd75c17b47e2222e24ab3e87",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mroth",
+        "repo": "evalcache",
+        "type": "github"
+      }
+    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -1172,6 +1188,7 @@
         "devshell": "devshell",
         "disko": "disko",
         "easy-hosts": "easy-hosts",
+        "evalcache-zsh-src": "evalcache-zsh-src",
         "flake-parts": "flake-parts_3",
         "flake-schemas": "flake-schemas",
         "home-manager": "home-manager_2",

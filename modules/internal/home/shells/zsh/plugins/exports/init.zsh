@@ -31,3 +31,7 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # ZSH syntax highlighting
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
+
+# FZF
+# disable fzf history search for atuin
+export FZF_CTRL_R_COMMAND=

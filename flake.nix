@@ -87,6 +87,10 @@
       url = "github:mattmc3/zephyr";
       flake = false;
     };
+    evalcache-zsh-src = {
+      url = "github:mroth/evalcache";
+      flake = false;
+    };
 
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";

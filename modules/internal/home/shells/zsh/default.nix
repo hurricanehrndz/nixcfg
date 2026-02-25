@@ -38,6 +38,13 @@ let
       '';
       order = 160;
     }
+    {
+      name = "atuin-via-evalcache";
+      content = ''
+        _evalcache atuin init zsh --disable-up-arrow
+      '';
+      order = 510;
+    }
     # {
     #   name = "zprof-done";
     #   content = ''
@@ -49,6 +56,12 @@ let
   ];
 
   plugins = [
+    {
+      name = "evalcache";
+      src = inputs.evalcache-zsh-src;
+      file = "evalcache.plugin.zsh";
+      order = 140;
+    }
     {
       name = "zephyr-environment";
       src = inputs.zephyr-zsh-src;
@@ -260,6 +273,8 @@ in
     # plugins/integrations
     programs.zoxide.enable = true;
     programs.zoxide.enableZshIntegration = false;
+    programs.atuin.enable = true;
+    programs.atuin.enableZshIntegration = false;
 
     # performance tweak
     home.activation.zsh_compile = lib.hm.dag.entryAfter [ "installPackages" ] ''
