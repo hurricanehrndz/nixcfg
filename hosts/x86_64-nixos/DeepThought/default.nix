@@ -34,5 +34,6 @@
     };
   };
 
+  system.primaryUser = "hurricane";
   system.stateVersion = "25.11";
 }
