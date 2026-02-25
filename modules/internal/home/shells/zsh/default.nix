@@ -35,6 +35,10 @@ let
               fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
         done
         HELPDIR="${pkgs.zsh}/share/zsh/$ZSH_VERSION/help"
+
+        ## from HM: programs.nix-index.enableZshIntegration
+        ## or this https://github.com/hurricanehrndz/nixcfg/commit/30bf1ccb8e545d0f6ebbdd775407b8f6eff43e74
+         source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
       '';
       order = 160;
     }
@@ -171,7 +175,7 @@ let
         "zsh"
       ];
       order = 1600; # Load late
-      defer = true;
+      # defer = true;
     }
   ];
 in
@@ -201,7 +205,7 @@ in
 
     # command-not-found alt
     programs.command-not-found.enable = false;
-    programs.nix-index-database.comma.enable = false;
+    programs.nix-index-database.comma.enable = true;
 
     programs.zsh = {
       enable = true;
