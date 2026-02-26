@@ -93,6 +93,19 @@ in
       };
     };
 
+  # btrfs maintenance
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "Sun *-*-01..07 04:00:00";
+    fileSystems = [
+      "/"
+      "/volumes/cache"
+      "/volumes/books"
+    ];
+  };
+
+  services.fstrim.enable = true;
+
   # smart monitoring
   services.smartd = {
     enable = true;
