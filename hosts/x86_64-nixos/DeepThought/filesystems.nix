@@ -96,7 +96,7 @@ in
   # smart monitoring
   services.smartd = {
     enable = true;
-    defaults.monitored = "-a -o on -S on -T permissive -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
+    defaults.monitored = "-a -o on -S on -T permissive -R 5! -C 197! -U 198! -W 0,46,55 -n never,q -s (S/../.././02|L/../../7/04)";
     devices = [
       {
         device = "/dev/disk/by-id/ata-ADATA_SU800_2I5020042202";
@@ -109,11 +109,11 @@ in
       }
       {
         device = "/dev/disk/by-id/ata-ST12000VN0008-2PH103_ZL2PSACH";
-        options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
+        options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -C 197! -U 198! -W 0,46,55 -n never,q -s (S/../.././02|L/../../7/04)";
       }
       {
         device = "/dev/disk/by-id/ata-ST12000VN0008-2PH103_ZTN18K65";
-        options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -W 0,46 -n never,q -s (S/../.././02|L/../../7/04)";
+        options = "-a -o on -S on -T permissive -v 1,raw48:54 -v 7,raw48:54 -R 5! -C 197! -U 198! -W 0,46,55 -n never,q -s (S/../.././02|L/../../7/04)";
       }
       {
         device = "/dev/disk/by-id/ata-WDC_WD40EFRX-68N32N0_WD-WCC7K6HJVF1L";
