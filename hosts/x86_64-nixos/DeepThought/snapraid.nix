@@ -22,6 +22,7 @@
       autosave 500
     '';
     contentFiles = [
+      "/var/snapraid/snapraid.content"
       "/volumes/data1/snapraid.content"
       "/volumes/data2/snapraid.content"
       "/volumes/data3/snapraid.content"
