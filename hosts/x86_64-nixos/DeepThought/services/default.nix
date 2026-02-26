@@ -22,6 +22,14 @@
     environmentFiles = [
       config.age.secrets."ingress.env".path
     ];
+    extraConfig.traefik-dashboard = {
+      http.routers.traefik = {
+        rule = "Host(`${config.networking.hostName}.${config.networking.domain}`) && PathPrefix(`/traefik`)";
+        entryPoints = [ "websecure" ];
+        service = "api@internal";
+        tls.certResolver = "default";
+      };
+    };
   };
 
   hrndz.services.homarr = lib.mkIf (!isBootstrap) {
