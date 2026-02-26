@@ -19,8 +19,14 @@ in
 
       (final: prev: {
         local = self.packages.${system};
-        master = inputs.nixpkgs-master.legacyPackages.${system};
-        unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+        master = import inputs.nixpkgs-master {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        unstable = import inputs.nixpkgs-unstable {
+          inherit system;
+          config.allowUnfree = true;
+        };
       })
     ];
   };

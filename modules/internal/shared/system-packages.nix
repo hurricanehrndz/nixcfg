@@ -63,7 +63,8 @@
     unzip # <- *.zip archive extraction utility
 
     ## === nix ===
-    nix-index
+    # nix-index installed by module
+    nix-output-monitor
     manix
     cachix
   ];

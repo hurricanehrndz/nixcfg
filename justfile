@@ -6,24 +6,24 @@ default:
     @just --list
 
 [group('nix')]
-update:
-    nix flake update --no-use-registries
+update *args:
+    nix flake update --no-use-registries {{args}}
 
 [group('nix')]
 [linux]
-rebuild:
-    sudo nixos-rebuild switch --flake .
+rebuild *args:
+    sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
 
 [group('nix')]
 [linux]
-build target:
-    nix build '.#nixosConfigurations.{{ target }}.system' --accept-flake-config
+build *args:
+    nixos-rebuild build --accept-flake-config --flake . {{args}} |& nom
 
 [group('nix')]
 [linux]
-switch target:
-    @echo 'Activating build {{target}}...'
-    sudo ./result/sw/bin/nixos-rebuild switch --flake --accept-flake-config '.#{{target}}'
+switch *args:
+    @echo 'Activating build...'
+    sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
 
 [group('nix')]
 [linux]
@@ -31,21 +31,21 @@ build-switch target: (build target) (switch target)
 
 [group('nix')]
 [linux]
-dev-rebuild:
-    sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv
+dev-rebuild *args:
+    sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv {{args}} |& nom
 alias ndr := dev-rebuild
 
 [group('nix')]
 [macos]
-build target:
+build target *args:
     @echo 'Building {{target}}...'
-    nix build '.#darwinConfigurations.{{ target }}.system' --accept-flake-config
+    nix build '.#darwinConfigurations.{{ target }}.system' --accept-flake-config {{args}} |& nom
 
 [group('nix')]
 [macos]
-switch target:
+switch target *args:
     @echo 'Activating build {{target}}...'
-    sudo ./result/sw/bin/darwin-rebuild switch --flake '.#{{target}}'
+    sudo ./result/sw/bin/darwin-rebuild switch --flake '.#{{target}}' {{args}} |& nom
 
 [group('nix')]
 [macos]
@@ -53,29 +53,29 @@ build-switch target: (build target) (switch target)
 
 [group('nix')]
 [macos]
-bootstrap target:
-    ./scripts/bootstrap-darwin {{target}}
+bootstrap target *args:
+    ./scripts/bootstrap-darwin {{target}} {{args}}
 
 [group('nix')]
 [macos]
-rebuild:
-    sudo darwin-rebuild switch --flake .
+rebuild *args:
+    sudo darwin-rebuild switch --flake . {{args}} |& nom
 
 [group('nix')]
 [macos]
-dev-rebuild:
-    sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv
+dev-rebuild *args:
+    sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv {{args}} |& nom
 alias dr := dev-rebuild
 
 [group('nix')]
-fmt:
-    nix fmt
+fmt *args:
+    nix fmt {{args}}
 
 [group('nix')]
-check:
-    nix flake check
+check *args:
+    nix flake check {{args}}
 
 [group('nix')]
-gc:
-  sudo nix-collect-garbage -d
-  nix-collect-garbage -d
+clean *args:
+  sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
+  sudo nix-collect-garbage --delete-older-than 3d {{args}}

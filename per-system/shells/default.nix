@@ -29,6 +29,7 @@
             with pkgs;
             [
               nix
+              nix-output-monitor
               treefmt
             ]
             ++ (with pkgs.local; [
