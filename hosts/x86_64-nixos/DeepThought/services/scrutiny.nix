@@ -6,45 +6,24 @@
 }:
 let
   inherit (lib) mkIf;
+  cfg = config.services.scrutiny;
 in
 {
   # smart monitoring reporting
-  virtualisation.oci-containers.containers = {
-    scrutiny = {
-      image = "ghcr.io/analogj/scrutiny:master-omnibus";
-      ports = [
-        "127.0.0.1:1080:1080"
-      ];
-      environment = {
-        COLLECTOR_API_ENDPOINT = "http://localhost:1080/storage";
-        COLLECTOR_CRON_SCHEDULE = "0 0 * * *";
-        DEBUG = "true";
-        SCRUTINY_LOG_FILE = "/tmp/web.log";
-      };
-      volumes = [
-        "/var/lib/scrutiny/config:/opt/scrutiny/config"
-        "/var/lib/scrutiny/influxdb:/opt/scrutiny/influxdb"
-        "/run/udev:/run/udev:ro"
-      ];
-      extraOptions = [
-        "--pull=newer"
-        "--cap-add=SYS_RAWIO"
-        "--device=/dev/sda"
-        "--device=/dev/sdb"
-        "--device=/dev/sdc"
-        "--device=/dev/sdd"
-        "--device=/dev/sde"
-        "--device=/dev/sdf"
-        "--device=/dev/sdg"
-        "--device=/dev/nvme0n1"
-      ];
+  services.scrutiny = {
+    enable = true;
+    settings.web.listen.port = 1080;
+    settings.web.listen.basepath = "/storage";
+    collector = {
+      enable = true;
+      schedule = "daily";
     };
   };
 
   hrndz.services.ingress.sites = mkIf (!isBootstrap && config.hrndz.services.ingress.enable) {
     "scrutiny" = {
-      proxy = ":1080";
-      path = "/storage";
+      proxy = ":${toString cfg.settings.web.listen.port}";
+      path = cfg.settings.web.listen.basepath;
     };
   };
 }
