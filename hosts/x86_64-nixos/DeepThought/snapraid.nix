@@ -6,10 +6,6 @@
   isBootstrap ? false,
   ...
 }:
-let
-
-  inherit (lib) optionalAttrs;
-in
 {
   environment = {
     systemPackages = with pkgs; [
@@ -90,13 +86,12 @@ in
       '';
     };
   };
-}
-// optionalAttrs (!isBootstrap) {
-  age.secrets = {
+
+  age.secrets = lib.mkIf (!isBootstrap) {
     "snapraid-runner.apprise.yaml".file = "${self}/secrets/services/snapraid-runner/apprise.yaml.age";
   };
 
-  services.snapraid-runner = {
+  services.snapraid-runner = lib.mkIf (!isBootstrap) {
     enable = true;
     scrub.enabled = true;
     snapraid.touch = true;

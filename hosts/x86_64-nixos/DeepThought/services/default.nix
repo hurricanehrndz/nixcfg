@@ -5,40 +5,36 @@
   isBootstrap ? false,
   ...
 }:
-let
-  inherit (lib) optionalAttrs;
-in
 {
   imports = [
     ./scrutiny.nix
   ];
 
   hrndz.services.autoUpdateContainers.enable = true;
-}
-// optionalAttrs (!isBootstrap) {
-  age.secrets = {
+
+  age.secrets = lib.mkIf (!isBootstrap) {
     "ingress.env".file = "${self}/secrets/services/ingress/env.age";
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
   };
 
-  hrndz.services.ingress = {
+  hrndz.services.ingress = lib.mkIf (!isBootstrap) {
     enable = true;
     environmentFiles = [
       config.age.secrets."ingress.env".path
     ];
   };
 
-  hrndz.services.homarr = {
+  hrndz.services.homarr = lib.mkIf (!isBootstrap) {
     enable = true;
     environmentFiles = [
       config.age.secrets."homarr.env".path
     ];
   };
 
-  hrndz.services.dashdot = {
+  hrndz.services.dashdot = lib.mkIf (!isBootstrap) {
     enable = true;
     fqdn = "deepdash.${config.networking.domain}";
   };
 
-  hrndz.services.mediaAppStack.enable = true;
+  hrndz.services.mediaAppStack.enable = lib.mkIf (!isBootstrap) true;
 }
