@@ -77,6 +77,9 @@ in
           compression = false;
           serverAliveCountMax = 2;
           serverAliveInterval = 300;
+          setEnv = {
+            "TERM" = "xterm-256color";
+          };
         };
       };
     };
