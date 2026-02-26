@@ -5,67 +5,61 @@
 default:
     @just --list
 
-[group('nix')]
-update *args:
-    nix flake update --no-use-registries {{args}}
-
-[group('nix')]
-[linux]
-rebuild *args:
-    sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
-
+### Linux cmds
 [group('nix')]
 [linux]
 build *args:
     nixos-rebuild build --accept-flake-config --flake . {{args}} |& nom
+    nvd diff /run/current-system ./result
 
 [group('nix')]
 [linux]
 switch *args:
-    @echo 'Activating build...'
     sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
 
 [group('nix')]
 [linux]
-build-switch target: (build target) (switch target)
+bs *args: (build args) (switch args)
 
 [group('nix')]
 [linux]
-dev-rebuild *args:
+dev-switch *args: (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
     sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv {{args}} |& nom
-alias ndr := dev-rebuild
+alias nds := dev-switch
+
+
+### Darwin cmds
+[group('nix')]
+[macos]
+bootstrap target:
+    ./scripts/bootstrap-darwin {{target}}
 
 [group('nix')]
 [macos]
-build target *args:
-    @echo 'Building {{target}}...'
-    nix build '.#darwinConfigurations.{{ target }}.system' --accept-flake-config {{args}} |& nom
+build *args:
+    sudo darwin-rebuild build --flake . {{args}} |& nom
+    nvd diff /run/current-system ./result
 
 [group('nix')]
 [macos]
-switch target *args:
-    @echo 'Activating build {{target}}...'
-    sudo ./result/sw/bin/darwin-rebuild switch --flake '.#{{target}}' {{args}} |& nom
-
-[group('nix')]
-[macos]
-build-switch target: (build target) (switch target)
-
-[group('nix')]
-[macos]
-bootstrap target *args:
-    ./scripts/bootstrap-darwin {{target}} {{args}}
-
-[group('nix')]
-[macos]
-rebuild *args:
+switch *args:
     sudo darwin-rebuild switch --flake . {{args}} |& nom
 
 [group('nix')]
 [macos]
-dev-rebuild *args:
+bs *args: (build args) (switch args)
+
+[group('nix')]
+[macos]
+dev-switch *args: (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
     sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv {{args}} |& nom
-alias dr := dev-rebuild
+alias dds := dev-switch
+
+
+### Chores
+[group('nix')]
+update *args:
+    nix flake update --no-use-registries {{args}}
 
 [group('nix')]
 fmt *args:

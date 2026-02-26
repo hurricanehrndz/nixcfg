@@ -30,6 +30,7 @@
             [
               nix
               nix-output-monitor
+              nvd
               treefmt
             ]
             ++ (with pkgs.local; [

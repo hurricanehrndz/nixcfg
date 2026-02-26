@@ -67,5 +67,6 @@
     nix-output-monitor
     manix
     cachix
+    nvd
   ];
 }
