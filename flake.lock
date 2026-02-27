@@ -1179,6 +1179,22 @@
         "type": "github"
       }
     },
+    "pr-493140": {
+      "locked": {
+        "lastModified": 1771795608,
+        "narHash": "sha256-vJDO1Joo7iNY962TMrqrd1BnLJHpDFWtFmXyCggXWNY=",
+        "owner": "josephst",
+        "repo": "nixpkgs",
+        "rev": "ea553d6294ccbf42618e8544b7c22b5ff8f2fe8a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "josephst",
+        "ref": "recyclarr-update",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -1206,6 +1222,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pdenv": "pdenv",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
+        "pr-493140": "pr-493140",
         "snapraid-runner": "snapraid-runner",
         "systems": "systems_4",
         "treefmt-nix": "treefmt-nix_2",

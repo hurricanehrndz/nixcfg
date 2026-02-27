@@ -92,6 +92,9 @@
       flake = false;
     };
 
+    # nixpkgs PRs
+    pr-493140.url = "github:josephst/nixpkgs/recyclarr-update";
+
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
 
