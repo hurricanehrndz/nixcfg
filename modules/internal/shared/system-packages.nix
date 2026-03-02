@@ -29,6 +29,7 @@
     rsync
     sd
     tealdeer
+    tre
     tmux
 
     # (
