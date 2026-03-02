@@ -27,4 +27,6 @@ in
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
   "services/ingress/env.age".publicKeys = deepthoughtKeys; # ++ [ machineKeys.Hal9000 ];
   "services/homarr/env.age".publicKeys = deepthoughtKeys;
+  "services/media-app-stack/skey.age".publicKeys = deepthoughtKeys;
+  "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
 }

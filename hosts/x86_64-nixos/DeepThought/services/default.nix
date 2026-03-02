@@ -15,6 +15,8 @@
   age.secrets = lib.mkIf (!isBootstrap) {
     "ingress.env".file = "${self}/secrets/services/ingress/env.age";
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
+    "sAPIKey".file = "${self}/secrets/services/media-app-stack/skey.age";
+    "rAPIKey".file = "${self}/secrets/services/media-app-stack/rkey.age";
   };
 
   hrndz.services.ingress = lib.mkIf (!isBootstrap) {
@@ -44,5 +46,9 @@
     fqdn = "deepdash.${config.networking.domain}";
   };
 
-  hrndz.services.mediaAppStack.enable = lib.mkIf (!isBootstrap) true;
+  hrndz.services.mediaAppStack = lib.mkIf (!isBootstrap) {
+    enable = true;
+    sAPIKey = config.age.secrets."sAPIKey".path;
+    rAPIKey = config.age.secrets."rAPIKey".path;
+  };
 }
