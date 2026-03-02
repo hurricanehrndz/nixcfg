@@ -95,7 +95,10 @@
   services.snapraid-runner = lib.mkIf (!isBootstrap) {
     enable = true;
     scrub.enabled = true;
-    snapraid.touch = true;
+    snapraid = {
+      touch = true;
+      deletethreshold = 110;
+    };
     notification = {
       enable = true;
       config = config.age.secrets."snapraid-runner.apprise.yaml".path;
