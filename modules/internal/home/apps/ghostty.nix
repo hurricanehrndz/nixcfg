@@ -25,7 +25,7 @@ in
         background-opacity = 0.80;
         background-opacity-cells = true;
         background-blur-radius = 16;
-        window-decoration = false;
+        # window-decoration = false;
         shell-integration-features = "sudo,no-ssh-terminfo,no-ssh-env,cursor";
         clipboard-paste-protection = false;
       };
