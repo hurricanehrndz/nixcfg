@@ -60,6 +60,7 @@ alias dds := dev-switch
 [group('nix')]
 update *args:
     nix flake update --no-use-registries {{args}}
+    nix flake update --no-use-registries --flake ./modules/internal/nixos/services/_media-app-stack
 
 [group('nix')]
 fmt *args:

@@ -92,8 +92,9 @@
       flake = false;
     };
 
-    # nixpkgs PRs
-    pr-493140.url = "github:josephst/nixpkgs/recyclarr-update";
+    # embedded flakes
+    media-app-stack.url = "path:./modules/internal/nixos/services/_media-app-stack";
+    media-app-stack.inputs.nixpkgs.follows = "nixpkgs";
 
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";

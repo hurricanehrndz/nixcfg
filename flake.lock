@@ -593,6 +593,23 @@
         "type": "github"
       }
     },
+    "media-app-stack": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pr-493140": "pr-493140"
+      },
+      "locked": {
+        "path": "./modules/internal/nixos/services/_media-app-stack",
+        "type": "path"
+      },
+      "original": {
+        "path": "./modules/internal/nixos/services/_media-app-stack",
+        "type": "path"
+      },
+      "parent": []
+    },
     "neovim-nightly-overlay": {
       "inputs": {
         "flake-parts": "flake-parts_6",
@@ -1214,6 +1231,7 @@
         "flake-schemas": "flake-schemas",
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
+        "media-app-stack": "media-app-stack",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-stable": "nixos-stable",
@@ -1227,7 +1245,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pdenv": "pdenv",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
-        "pr-493140": "pr-493140",
         "snapraid-runner": "snapraid-runner",
         "systems": "systems_4",
         "treefmt-nix": "treefmt-nix_2",

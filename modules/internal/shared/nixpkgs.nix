@@ -27,25 +27,6 @@ in
           inherit system;
           config.allowUnfree = true;
         };
-        pr-493140 =
-          let
-            p = import inputs.pr-493140 {
-              inherit system;
-              config.allowUnfree = true;
-            };
-          in
-          p
-          // {
-            recyclarr = p.recyclarr.overrideAttrs (old: rec {
-              version = "8.3.2";
-              src = p.fetchFromGitHub {
-                owner = "recyclarr";
-                repo = "recyclarr";
-                rev = "v${version}";
-                hash = "sha256-UMDe4wljN1LjlpXV+5P3pXYf7vEKLwWYUws1B13scS4=";
-              };
-            });
-          };
       })
     ];
   };

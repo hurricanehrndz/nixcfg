@@ -34,6 +34,7 @@ in
             disko.nixosModules.disko
             snapraid-runner.nixosModules.default
             determinate.nixosModules.default
+            media-app-stack.nixosModules.default
             self.nixosModules.default
           ])
 
