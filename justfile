@@ -8,7 +8,7 @@ default:
 ### Linux cmds
 [group('nix')]
 [linux]
-build *args:
+build *args: lock
     nixos-rebuild build --accept-flake-config --flake . {{args}} |& nom
     nvd diff /run/current-system ./result
 
@@ -23,7 +23,7 @@ bs *args: (build args) (switch args)
 
 [group('nix')]
 [linux]
-dev-switch *args: (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
+dev-switch *args: lock (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
     sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv {{args}} |& nom
 alias nds := dev-switch
 
@@ -36,7 +36,7 @@ bootstrap target:
 
 [group('nix')]
 [macos]
-build *args:
+build *args: lock
     sudo darwin-rebuild build --flake . {{args}} |& nom
     nvd diff /run/current-system ./result
 
@@ -51,7 +51,7 @@ bs *args: (build args) (switch args)
 
 [group('nix')]
 [macos]
-dev-switch *args: (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
+dev-switch *args: lock (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
     sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv {{args}} |& nom
 alias dds := dev-switch
 
