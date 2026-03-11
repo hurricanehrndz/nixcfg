@@ -59,8 +59,8 @@ alias dds := dev-switch
 ### Chores
 [group('nix')]
 update *args:
-    nix flake update --no-use-registries {{args}}
     nix flake update --no-use-registries --flake ./modules/internal/nixos/services/_media-app-stack
+    nix flake update --no-use-registries {{args}}
 
 [group('nix')]
 fmt *args:
@@ -69,6 +69,12 @@ fmt *args:
 [group('nix')]
 check *args:
     nix flake check {{args}}
+
+[group('nix')]
+lock:
+    nix flake lock --no-use-registries ./modules/internal/nixos/services/_media-app-stack
+    nix flake lock --no-use-registries
+    nix flake update media-app-stack
 
 [group('nix')]
 clean *args:
