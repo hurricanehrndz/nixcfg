@@ -23,6 +23,8 @@ in
       ruby.enable = mkEnableOption "Enable Ruby tooling";
 
       js.enable = mkEnableOption "Enable JavaScript tooling";
+
+      golang.enable = mkEnableOption "Enable Golang tooling";
     };
 
     roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";

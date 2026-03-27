@@ -36,6 +36,7 @@ in
     tooling.macadmin.enable = true;
     tooling.python.enable = true;
     tooling.ruby.enable = true;
+    tooling.golang.enable = true;
   };
 
   users.users.${username} = {
