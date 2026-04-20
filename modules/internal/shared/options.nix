@@ -25,6 +25,8 @@ in
       js.enable = mkEnableOption "Enable JavaScript tooling";
 
       golang.enable = mkEnableOption "Enable Golang tooling";
+
+      extras.enable = mkEnableOption "Enable extra cmdline utils";
     };
 
     roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";

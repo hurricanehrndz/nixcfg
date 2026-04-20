@@ -37,6 +37,7 @@ in
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.golang.enable = true;
+    tooling.extras.enable = true;
   };
 
   users.users.${username} = {
