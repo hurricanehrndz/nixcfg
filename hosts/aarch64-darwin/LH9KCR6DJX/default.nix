@@ -38,6 +38,7 @@ in
     tooling.ruby.enable = true;
     tooling.golang.enable = true;
     tooling.extras.enable = true;
+    tooling.js.enable = true;
   };
 
   users.users.${username} = {
