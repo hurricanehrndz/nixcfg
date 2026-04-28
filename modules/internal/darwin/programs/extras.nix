@@ -8,9 +8,9 @@ let
   cfg = config.hrndz;
 in
 {
-  config = (mkIf cfg.cli.enable) {
+  config = mkIf cfg.tooling.extras.enable {
     homebrew.brews = [
-      "opencode" # more up-to-date than nixpkgs
+      "makensis"
     ];
   };
 }
