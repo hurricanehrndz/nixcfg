@@ -48,6 +48,10 @@ in
         indent_size = 2;
         max_line_length = 120;
       };
+      "*.{js,jsx,ts,tsx}" = {
+        indent_size = 2;
+        max_line_length = 120;
+      };
       "*.json" = {
         indent_size = 2;
       };
