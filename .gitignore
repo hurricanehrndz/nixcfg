@@ -7,3 +7,5 @@ result-*
 .direnv
 
 .age/local-key
+
+.claude/specs
