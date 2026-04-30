@@ -44,7 +44,7 @@ in
       volumes = [
         "/var/lib/calibre-web-automated/config:/config"
         "/var/lib/calibre-web-automated/ingest:/cwa-book-ingest"
-        "/srv/books/calibre-library:/calibre-library"
+        "/volumes/storage/books:/calibre-library"
       ];
     };
 
