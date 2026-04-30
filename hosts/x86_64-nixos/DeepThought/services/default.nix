@@ -51,4 +51,8 @@
     sAPIKey = config.age.secrets."sAPIKey".path;
     rAPIKey = config.age.secrets."rAPIKey".path;
   };
+
+  hrndz.services.calibreWebAutomated = lib.mkIf (!isBootstrap) {
+    enable = true;
+  };
 }
