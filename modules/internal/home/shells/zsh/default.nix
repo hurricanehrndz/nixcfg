@@ -221,6 +221,10 @@ in
         if [[ -d "/usr/local/munki" ]]; then
           path=(/usr/local/munki $path)
         fi
+
+        if [[ -d "$HOME/.cache/.bun/bin" ]]; then
+          path=("$HOME/.cache/.bun/bin" $path)
+        fi
       '';
       completionInit = "";
       initContent =
