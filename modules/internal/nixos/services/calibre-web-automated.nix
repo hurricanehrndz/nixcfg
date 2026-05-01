@@ -43,8 +43,8 @@ in
       };
       volumes = [
         "/var/lib/calibre-web-automated/config:/config"
-        "/var/lib/calibre-web-automated/ingest:/cwa-book-ingest"
-        "/volumes/storage/books:/calibre-library"
+        "/volumes/books/ebooks/ingest:/cwa-book-ingest"
+        "/volumes/books/ebooks/library:/calibre-library"
       ];
     };
 
