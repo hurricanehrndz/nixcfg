@@ -27,6 +27,8 @@ in
         set -g update-environment "DISPLAY SSH_ASKPASS SSH_AGENT_PID SSH_AUTH_SOCK SSH_CONNECTION WINDOWID XAUTHORITY"
         set -g focus-events on
         set -g allow-passthrough on
+        set -g extended-keys on
+        set -g extended-keys-format csi-u
         set -sa terminal-overrides ',*256col*:RGB'
         bind r source-file $HOME/.config/tmux/tmux.conf \; display "TMUX conf reloaded!"
         bind k 'select-pane -U'
