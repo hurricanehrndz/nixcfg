@@ -7,7 +7,6 @@
     ./hardware-configuration.nix
     ./disk-config.nix
     ./filesystems.nix
-    ./opengl.nix
     ./samba.nix
     ./services
     ./snapraid.nix

@@ -99,6 +99,9 @@ in
     interval = "Sun *-*-01..07 04:00:00";
     fileSystems = [
       "/"
+      "/home"
+      "/var"
+      "/backups"
       "/volumes/cache"
       "/volumes/books"
     ];
