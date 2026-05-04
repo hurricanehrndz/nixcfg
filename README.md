@@ -75,6 +75,22 @@ partition scheme using disko.
    - Install NixOS with the bootstrap flag enabled (secrets disabled)
    - Deploy your system configuration
 
+4. **Restarting a failed nixos-anywhere run:**
+
+   If `nixos-anywhere` does not complete and rerunning fails because the target
+   disk is in a partial state, wipe the target disk from the installer shell and
+   rerun the deployment:
+
+   ```console
+   [root@nixos:~]# umount -R /mnt || true
+   [root@nixos:~]# swapoff -a || true
+   [root@nixos:~]# wipefs -a /dev/sda
+   [root@nixos:~]# sgdisk --zap-all /dev/sda
+   [root@nixos:~]# partprobe /dev/sda || true
+   ```
+
+   Verify `/dev/sda` is the intended target disk before running these commands.
+
 #### Manual Installation
 
 If you prefer manual control, follow the
