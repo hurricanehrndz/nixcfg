@@ -74,6 +74,7 @@ in
         "*" = {
           forwardAgent = false;
           addKeysToAgent = "yes";
+          extraOptions.StreamLocalBindUnlink = "yes";
           compression = false;
           serverAliveCountMax = 2;
           serverAliveInterval = 300;
