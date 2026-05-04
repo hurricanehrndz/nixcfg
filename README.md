@@ -63,7 +63,7 @@ partition scheme using disko.
    ```console
    nix run github:nix-community/nixos-anywhere -- \
      --flake .#<hostname> \
-     --override-input bootstrap path:./inputs/flags/true \
+     --override-input bootstrap github:boolean-option/true \
      root@<target-ip>
    ```
 
@@ -74,6 +74,7 @@ partition scheme using disko.
    - Use disko to partition and format the disk according to `disk-config.nix`
    - Install NixOS with the bootstrap flag enabled (secrets disabled)
    - Deploy your system configuration
+   - override-input might not work
 
 4. **Restarting a failed nixos-anywhere run:**
 
@@ -110,7 +111,7 @@ After partitioning and mounting your filesystems to `/mnt`:
    ```console
    sudo nixos-install --root /mnt --no-root-passwd \
      --flake .#<hostname> \
-     --override-input bootstrap path:./inputs/flags/true
+     --override-input bootstrap github:boolean-option/true
    ```
 
 ### After First Boot
