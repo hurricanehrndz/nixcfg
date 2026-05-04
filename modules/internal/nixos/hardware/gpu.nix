@@ -12,10 +12,10 @@ let
     mkOption
     types
     ;
-  cfg = config.me.hardware.gpu;
+  cfg = config.hrndz.hardware.gpu;
 in
 {
-  options.me.hardware.gpu = {
+  options.hrndz.hardware.gpu = {
     vendor = mkOption {
       type = types.nullOr (
         types.enum [

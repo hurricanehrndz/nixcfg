@@ -6,12 +6,10 @@
 }:
 let
   inherit (lib) mkIf optionals;
-  cfg = osConfig.me.desktop.hyprland or { };
+  cfg = osConfig.hrndz.desktop.hyprland or { };
   enabled = cfg.enable or false;
   autologin = cfg.autologin or { };
   remote = cfg.remote or { };
-  keybindings = import ./hyprland/keybindings.nix;
-  rules = import ./hyprland/rules.nix;
   remoteCommand = "wayvnc ${remote.bind or "127.0.0.1"} ${toString (remote.port or 5900)}";
   remoteExec =
     if (remote.enable or false) && (autologin.enable or false) then
@@ -24,7 +22,6 @@ in
 {
   config = mkIf enabled {
     home.packages = with pkgs; [
-      ghostty
       rofi
       waybar
       mako
@@ -50,66 +47,63 @@ in
       enable = true;
       xwayland.enable = true;
 
-      settings =
-        keybindings
-        // rules
-        // {
-          "$mod" = "SUPER";
-          "$aero" = "CTRL SHIFT ALT";
-          "$aeroMove" = "CTRL SHIFT ALT SUPER";
-          "$terminal" = cfg.terminal or "ghostty";
-          "$launcher" = cfg.launcher or "rofi -show drun";
+      settings = {
+        "$mod" = "SUPER";
+        "$aero" = "CTRL SHIFT ALT";
+        "$aeroMove" = "CTRL SHIFT ALT SUPER";
+        "$terminal" = cfg.terminal or "ghostty";
+        "$launcher" = cfg.launcher or "rofi -show drun";
 
-          monitor = [
-            ",preferred,auto,1"
-          ];
+        monitor = [
+          ",preferred,auto,1"
+        ];
 
-          exec-once = [
-            "waybar"
-            "mako"
-            "hypridle"
-            "wl-paste --type text --watch cliphist store"
-            "wl-paste --type image --watch cliphist store"
-            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-          ]
-          ++ optionals ((autologin.enable or false) && !(remote.enable or false)) [
-            "hyprlock"
-          ]
-          ++ remoteExec;
+        exec-once = [
+          "waybar"
+          "mako"
+          "hypridle"
+          "wl-paste --type text --watch cliphist store"
+          "wl-paste --type image --watch cliphist store"
+          "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        ]
+        ++ optionals ((autologin.enable or false) && !(remote.enable or false)) [
+          "hyprlock"
+        ]
+        ++ remoteExec;
 
-          input = {
-            kb_layout = "us";
-            follow_mouse = 1;
+        input = {
+          kb_layout = "us";
+          follow_mouse = 1;
 
-            touchpad = {
-              natural_scroll = true;
-              tap-to-click = true;
-            };
-          };
-
-          general = {
-            gaps_in = 0;
-            gaps_out = 8;
-            border_size = 2;
-            layout = "dwindle";
-          };
-
-          decoration = {
-            rounding = 8;
-            blur = {
-              enabled = true;
-              size = 6;
-              passes = 2;
-            };
-          };
-
-          animations.enabled = true;
-
-          dwindle = {
-            pseudotile = true;
-            preserve_split = true;
+          touchpad = {
+            natural_scroll = true;
+            tap-to-click = true;
           };
         };
+
+        general = {
+          gaps_in = 0;
+          gaps_out = 8;
+          border_size = 2;
+          layout = "dwindle";
+        };
+
+        decoration = {
+          rounding = 8;
+          blur = {
+            enabled = true;
+            size = 6;
+            passes = 2;
+          };
+        };
+
+        animations.enabled = true;
+
+        dwindle = {
+          pseudotile = true;
+          preserve_split = true;
+        };
+      };
     };
 
     xdg.configFile = {

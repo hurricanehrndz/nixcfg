@@ -15,7 +15,7 @@ let
     optionals
     types
     ;
-  cfg = config.me.virtualization;
+  cfg = config.hrndz.tooling.virtualization;
   cpuModule =
     if cfg.hardware.cpuVendor == "intel" then
       "kvm-intel"
@@ -32,9 +32,7 @@ let
       null;
 in
 {
-  options.me.virtualization = {
-    enable = mkEnableOption "NixOS virtualization host support";
-
+  options.hrndz.tooling.virtualization = {
     hardware.cpuVendor = mkOption {
       type = types.nullOr (
         types.enum [
@@ -86,7 +84,7 @@ in
       assertions = [
         {
           assertion = cfg.hardware.cpuVendor != null;
-          message = "me.virtualization.enable requires me.virtualization.hardware.cpuVendor to be set to \"intel\" or \"amd\".";
+          message = "hrndz.tooling.virtualization.enable requires hrndz.tooling.virtualization.hardware.cpuVendor to be set to \"intel\" or \"amd\".";
         }
       ];
 
@@ -103,10 +101,7 @@ in
     (mkIf cfg.libvirt.enable {
       virtualisation.libvirtd = {
         enable = true;
-        qemu = {
-          ovmf.enable = mkDefault true;
-          swtpm.enable = mkDefault true;
-        };
+        qemu.swtpm.enable = mkDefault true;
       };
     })
 

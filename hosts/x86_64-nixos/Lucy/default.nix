@@ -14,7 +14,7 @@
   networking.hostName = "Lucy";
   networking.domain = "hrndz.ca";
 
-  me.virtualization = {
+  hrndz.tooling.virtualization = {
     enable = true;
     hardware.cpuVendor = "intel";
     users = [ "hurricane" ];
@@ -25,9 +25,7 @@
     };
   };
 
-  me.desktop.hyprland = {
-    enable = true;
-
+  hrndz.desktop.hyprland = {
     autologin = {
       enable = true;
       user = "hurricane";

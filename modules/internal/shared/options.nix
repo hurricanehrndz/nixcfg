@@ -13,7 +13,6 @@ in
     cli.enable = mkEnableOption "Enable CLI/TUI programs";
 
     tooling = {
-      # darwin only
       virtualization.enable = mkEnableOption "Enable virtualization tooling";
 
       macadmin.enable = mkEnableOption "Enable MacAdmin tooling";

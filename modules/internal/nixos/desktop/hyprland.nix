@@ -9,14 +9,15 @@ let
     mkDefault
     mkEnableOption
     mkIf
+    mkMerge
     mkOption
     optionalAttrs
     types
     ;
-  cfg = config.me.desktop.hyprland;
+  cfg = config.hrndz.desktop.hyprland;
 in
 {
-  options.me.desktop.hyprland = {
+  options.hrndz.desktop.hyprland = {
     enable = mkEnableOption "opinionated Hyprland desktop";
 
     autologin = {
@@ -72,62 +73,68 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
-    ##: Hyprland
-    programs.hyprland = {
-      enable = true;
-      xwayland.enable = true;
-    };
+  config = mkMerge [
+    (mkIf config.hrndz.roles.guiDeveloper.enable {
+      hrndz.desktop.hyprland.enable = mkDefault true;
+    })
 
-    ##: Login screen - greetd + tuigreet
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
-          user = "greeter";
-        };
-      }
-      // optionalAttrs cfg.autologin.enable {
-        initial_session = {
-          command = "${pkgs.hyprland}/bin/Hyprland";
-          user = cfg.autologin.user;
+    (mkIf cfg.enable {
+      ##: Hyprland
+      programs.hyprland = {
+        enable = true;
+        xwayland.enable = true;
+      };
+
+      ##: Login screen - greetd + tuigreet
+      services.greetd = {
+        enable = true;
+        settings = {
+          default_session = {
+            command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${pkgs.hyprland}/bin/Hyprland";
+            user = "greeter";
+          };
+        }
+        // optionalAttrs cfg.autologin.enable {
+          initial_session = {
+            command = "${pkgs.hyprland}/bin/Hyprland";
+            user = cfg.autologin.user;
+          };
         };
       };
-    };
 
-    ##: Portals for Wayland desktop integration
-    xdg.portal = {
-      enable = true;
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-hyprland
-        xdg-desktop-portal-gtk
-      ];
-    };
+      ##: Portals for Wayland desktop integration
+      xdg.portal = {
+        enable = true;
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-hyprland
+          xdg-desktop-portal-gtk
+        ];
+      };
 
-    ##: Audio - PipeWire stack
-    security.rtkit.enable = true;
-    security.polkit.enable = true;
-    services.dbus.enable = true;
+      ##: Audio - PipeWire stack
+      security.rtkit.enable = true;
+      security.polkit.enable = true;
+      services.dbus.enable = true;
 
-    services.pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-      wireplumber.enable = true;
-    };
-    services.pulseaudio.enable = false;
+      services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        jack.enable = true;
+        wireplumber.enable = true;
+      };
+      services.pulseaudio.enable = false;
 
-    ##: Desktop support
-    networking.networkmanager.enable = mkDefault true;
-    hardware.bluetooth.enable = mkDefault true;
-    services.blueman.enable = mkDefault true;
+      ##: Desktop support
+      networking.networkmanager.enable = mkDefault true;
+      hardware.bluetooth.enable = mkDefault true;
+      services.blueman.enable = mkDefault true;
 
-    environment.sessionVariables = {
-      MOZ_ENABLE_WAYLAND = "1";
-      NIXOS_OZONE_WL = "1";
-    };
-  };
+      environment.sessionVariables = {
+        MOZ_ENABLE_WAYLAND = "1";
+        NIXOS_OZONE_WL = "1";
+      };
+    })
+  ];
 }

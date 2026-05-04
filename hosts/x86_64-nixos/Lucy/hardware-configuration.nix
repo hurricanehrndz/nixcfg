@@ -48,6 +48,6 @@
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 
-  me.hardware.gpu.vendor = "intel";
+  hrndz.hardware.gpu.vendor = "intel";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
