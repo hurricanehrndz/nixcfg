@@ -114,6 +114,7 @@ in
       ##: Audio - PipeWire stack
       security.rtkit.enable = true;
       security.polkit.enable = true;
+      security.pam.services.hyprlock = { };
       services.dbus.enable = true;
 
       services.pipewire = {
