@@ -49,8 +49,8 @@ in
 
       settings = {
         "$mod" = "SUPER";
-        "$aero" = "CTRL SHIFT ALT";
-        "$aeroMove" = "CTRL SHIFT ALT SUPER";
+        "$meh" = "CTRL SHIFT ALT";
+        "$hyper" = "CTRL SHIFT ALT SUPER";
         "$terminal" = cfg.terminal or "ghostty";
         "$launcher" = cfg.launcher or "rofi -show drun";
 
