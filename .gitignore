@@ -9,3 +9,6 @@ result-*
 .age/local-key
 
 .claude/specs
+
+# worktrees
+.worktrees
