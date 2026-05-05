@@ -1,0 +1,57 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p curl jq nix
+# shellcheck shell=bash
+
+set -euo pipefail
+
+REPO="brave/brave-browser"
+VERSIONS_BASE="https://versions.brave.com/latest"
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+out_file="${repo_root}/modules/internal/shared/brave-origin-beta-sources.json"
+
+tmp_file="$(mktemp)"
+trap 'rm -f "$tmp_file"' EXIT
+
+prefetch_hash() {
+  local url="$1"
+  nix store prefetch-file --hash-type sha256 --json "$url" | jq -r .hash
+}
+
+emit_source() {
+  local system="$1" version_url="$2" asset_template="$3"
+
+  local version asset url hash
+  version="$(curl -fsSL "$version_url")"
+  asset="${asset_template//VERSION/$version}"
+  url="https://github.com/${REPO}/releases/download/v${version}/${asset}"
+  hash="$(prefetch_hash "$url")"
+
+  jq -n \
+    --arg system "$system" \
+    --arg version "$version" \
+    --arg url "$url" \
+    --arg hash "$hash" \
+    '{($system): {version: $version, url: $url, hash: $hash}}'
+}
+
+jq -s 'add' \
+  <(emit_source \
+    "aarch64-darwin" \
+    "${VERSIONS_BASE}/origin-beta-macos-arm64.version" \
+    "brave-origin-vVERSION-darwin-arm64.zip") \
+  <(emit_source \
+    "aarch64-linux" \
+    "${VERSIONS_BASE}/origin-beta-linux-arm64.version" \
+    "brave-origin-beta_VERSION_arm64.deb") \
+  <(emit_source \
+    "x86_64-darwin" \
+    "${VERSIONS_BASE}/origin-beta-macos-x64.version" \
+    "brave-origin-vVERSION-darwin-x64.zip") \
+  <(emit_source \
+    "x86_64-linux" \
+    "${VERSIONS_BASE}/origin-beta-linux-x64.version" \
+    "brave-origin-beta_VERSION_amd64.deb") \
+  > "$tmp_file"
+
+mv "$tmp_file" "$out_file"
