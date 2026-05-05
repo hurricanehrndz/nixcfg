@@ -6,6 +6,10 @@
 }:
 let
   system = pkgs.stdenv.hostPlatform.system;
+  braveOriginPkgs = import inputs.nixpkgs-brave-origin {
+    inherit system;
+    config.allowUnfree = true;
+  };
 in
 {
   nixpkgs = {
@@ -27,6 +31,11 @@ in
           inherit system;
           config.allowUnfree = true;
         };
+
+        inherit (braveOriginPkgs)
+          brave-origin-beta
+          brave-origin-nightly
+          ;
       })
     ];
   };

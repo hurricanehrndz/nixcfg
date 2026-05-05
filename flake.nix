@@ -38,6 +38,8 @@
     nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
+    # Browser packages that have not landed in nixpkgs yet.
+    nixpkgs-brave-origin.url = "github:NixOS/nixpkgs/pull/513143/head";
     # nix-darwin
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
 
