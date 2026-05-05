@@ -33,7 +33,6 @@ in
       playerctl
       nautilus
       sushi
-      xfce.tumbler
       brightnessctl
       networkmanagerapplet
       blueman
