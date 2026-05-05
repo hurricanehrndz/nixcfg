@@ -6,8 +6,9 @@
 }:
 let
   inherit (lib) mkIf optionals;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   cfg = osConfig.hrndz.desktop.hyprland or { };
-  enabled = cfg.enable or false;
+  enabled = (cfg.enable or false) && isLinux;
   autologin = cfg.autologin or { };
   remote = cfg.remote or { };
   remoteCommand = "wayvnc ${remote.bind or "127.0.0.1"} ${toString (remote.port or 5900)}";

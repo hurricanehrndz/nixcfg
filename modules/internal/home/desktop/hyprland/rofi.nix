@@ -6,12 +6,13 @@
 }:
 let
   inherit (lib) mkIf;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   mkLiteral = value: {
     _type = "literal";
     inherit value;
   };
   cfg = osConfig.hrndz.desktop.hyprland or { };
-  enabled = cfg.enable or false;
+  enabled = (cfg.enable or false) && isLinux;
 in
 {
   config = mkIf enabled {
