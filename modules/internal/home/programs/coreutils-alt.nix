@@ -11,6 +11,8 @@ in
   config = lib.mkIf cfg.cli.enable {
     home.packages = with pkgs; [
       # modern coreutils alternatives
+      just
+      go-task
       bottom
       eza
       fd
