@@ -161,12 +161,15 @@ in
         "doc/tags"
         "*/doc/tags"
 
-        # Claude Code local files
+        # AI local files
         ########################
         ".claude/settings.local.json"
         "CLAUDE.local.md"
         "tmp/"
         ".claude/tmp/"
+        "APPEND_SYSTEM.md"
+        ".pi/"
+        ".worktrees/"
       ];
     };
   };
