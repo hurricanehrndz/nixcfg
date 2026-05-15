@@ -167,9 +167,16 @@ in
         "CLAUDE.local.md"
         "tmp/"
         ".claude/tmp/"
-        "APPEND_SYSTEM.md"
-        ".pi/"
         ".worktrees/"
+        # pi coding agent — local/generated project artifacts                                                                                                                                                                                      │
+        ".pi/git/"
+        ".pi/npm/"
+        ".pi/tmp/"
+        ".pi/cache/"
+        ".pi/logs/"
+        ".pi/sessions/"
+        ".pi/pi-debug.log"
+        ".pi/.ENABLE_PI_DOCS"
       ];
     };
   };
