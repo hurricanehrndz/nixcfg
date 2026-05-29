@@ -12,6 +12,7 @@ in
 {
   config = mkIf cfg.tooling.extras.enable {
     home.packages = with pkgs; [
+      pandoc
     ];
   };
 }
