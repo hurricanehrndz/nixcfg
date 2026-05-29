@@ -51,7 +51,6 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/calibre-web-automated 0755 hurricane users - -"
       "d /var/lib/calibre-web-automated/config 0755 hurricane users - -"
-      "d /var/lib/calibre-web-automated/ingest 0775 hurricane users - -"
     ];
 
     hrndz.services.ingress.sites.calibre-web-automated = mkIf config.hrndz.services.ingress.enable {
