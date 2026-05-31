@@ -30,7 +30,7 @@ in
 
   config = mkIf (cfg.enable && !isBootstrap) {
     virtualisation.oci-containers.containers.calibre-web-automated = {
-      image = "crocodilestick/calibre-web-automated:latest";
+      image = "ghcr.io/new-usemame/calibre-web-nextgen:latest";
       ports = [
         "127.0.0.1:${toString cfg.port}:8083"
       ];
