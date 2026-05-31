@@ -29,4 +29,5 @@ in
   "services/homarr/env.age".publicKeys = deepthoughtKeys;
   "services/media-app-stack/skey.age".publicKeys = deepthoughtKeys;
   "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
+  "services/searxng/env.age".publicKeys = deepthoughtKeys;
 }
