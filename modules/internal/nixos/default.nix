@@ -16,7 +16,6 @@ in
     inetutils
     iputils
     ethtool
-    fast-cli
 
     # filesystems
     exfat
