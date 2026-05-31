@@ -12,12 +12,12 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
+      settings = {
         "deepthought" = {
-          hostname = "172.24.224.15";
-          user = "hurricane";
-          forwardAgent = true;
-          remoteForwards = [
+          HostName = "172.24.224.15";
+          User = "hurricane";
+          ForwardAgent = true;
+          RemoteForward = [
             {
               host.address = "/Users/chernand/.gnupg/S.gpg-agent";
               bind.address = "/run/user/1000/gnupg/S.gpg-agent";
@@ -25,9 +25,9 @@ in
           ];
         };
         "172.24.*" = {
-          user = "hurricane";
-          forwardAgent = true;
-          remoteForwards = [
+          User = "hurricane";
+          ForwardAgent = true;
+          RemoteForward = [
             {
               host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
               bind.address = "/run/user/1000/gnupg/S.gpg-agent";
@@ -35,14 +35,12 @@ in
           ];
         };
         "dev" = {
-          user = "chernand";
-          forwardAgent = true;
-          hostname = "cpedev1";
-          userKnownHostsFile = "/dev/null";
-          extraOptions = {
-            StrictHostKeyChecking = "no";
-          };
-          remoteForwards = [
+          User = "chernand";
+          ForwardAgent = true;
+          HostName = "cpedev1";
+          UserKnownHostsFile = "/dev/null";
+          StrictHostKeyChecking = "no";
+          RemoteForward = [
             {
               host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
               bind.address = "/run/user/3576/gnupg/S.gpg-agent";
@@ -50,14 +48,12 @@ in
           ];
         };
         "olddev" = {
-          user = "chernand";
-          hostname = "dev61-uswest1adevc";
-          forwardAgent = true;
-          userKnownHostsFile = "/dev/null";
-          extraOptions = {
-            StrictHostKeyChecking = "no";
-          };
-          remoteForwards = [
+          User = "chernand";
+          HostName = "dev61-uswest1adevc";
+          ForwardAgent = true;
+          UserKnownHostsFile = "/dev/null";
+          StrictHostKeyChecking = "no";
+          RemoteForward = [
             {
               host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
               bind.address = "/run/user/3712/gnupg/S.gpg-agent";
@@ -65,21 +61,19 @@ in
           ];
         };
         "*.yelpcorp.com" = {
-          user = "chernand";
-          userKnownHostsFile = "/dev/null";
-          extraOptions = {
-            StrictHostKeyChecking = "no";
-          };
+          User = "chernand";
+          UserKnownHostsFile = "/dev/null";
+          StrictHostKeyChecking = "no";
         };
         "*" = {
-          forwardAgent = false;
-          addKeysToAgent = "yes";
-          extraOptions.StreamLocalBindUnlink = "yes";
-          compression = false;
-          serverAliveCountMax = 2;
-          serverAliveInterval = 300;
-          setEnv = {
-            "TERM" = "xterm-256color";
+          ForwardAgent = false;
+          AddKeysToAgent = "yes";
+          StreamLocalBindUnlink = "yes";
+          Compression = false;
+          ServerAliveCountMax = 2;
+          ServerAliveInterval = 300;
+          SetEnv = {
+            TERM = "xterm-256color";
           };
         };
       };
