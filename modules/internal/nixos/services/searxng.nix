@@ -51,6 +51,10 @@ in
           base_url = "https://${cfg.host}/";
         };
         ui.static_use_hash = true;
+        search.formats = [
+          "html"
+          "json"
+        ];
       };
     };
 
