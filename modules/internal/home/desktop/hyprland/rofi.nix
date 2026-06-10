@@ -18,7 +18,7 @@ in
   config = mkIf enabled {
     programs.rofi = {
       enable = true;
-      package = pkgs.rofi-wayland;
+      package = pkgs.rofi;
       terminal = cfg.terminal or "ghostty";
       extraConfig = {
         modi = [
