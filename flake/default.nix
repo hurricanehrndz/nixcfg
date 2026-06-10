@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  systems = import inputs.systems;
+  systems = builtins.filter (system: system != "x86_64-darwin") (import inputs.systems);
 
   # original flake attributes here.
   flake = {
