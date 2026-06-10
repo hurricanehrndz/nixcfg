@@ -723,6 +723,26 @@
         "url": "https://flakehub.com/f/DeterminateSystems/nix-src/%2A"
       }
     },
+    "nix-claude-code": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781093302,
+        "narHash": "sha256-ilLcIN8RDwmWrOZb1PDHi9e2o2UA+Yl81WH7o0NtLHg=",
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "rev": "697be80985755dc6265a57d30034e5586c6ed0b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ryoppippi",
+        "repo": "nix-claude-code",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -1286,6 +1306,7 @@
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
         "media-app-stack": "media-app-stack",
+        "nix-claude-code": "nix-claude-code",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-stable": "nixos-stable",

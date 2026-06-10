@@ -79,6 +79,8 @@
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
+    nix-claude-code.url = "github:ryoppippi/nix-claude-code";
+    nix-claude-code.inputs.nixpkgs.follows = "nixpkgs";
 
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
