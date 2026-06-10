@@ -38,5 +38,21 @@ in
     onActivation.cleanup = "zap";
     onActivation.upgrade = true;
     onActivation.autoUpdate = true;
+    onActivation.extraFlags = [
+      "--force-cleanup"
+    ];
   };
+
+  # Force Homebrew bundle to accept destructive cleanup during activation
+  system.activationScripts.preActivation.text = ''
+    export HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP=1
+  '';
+
+  # Force it into the system environment definition
+  environment.variables.HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP = "1";
+
+  # Force it explicitly into launchd/system profiles so nix-darwin's background hooks catch it
+  environment.extraInit = ''
+    export HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP=1
+  '';
 }

@@ -30,7 +30,7 @@ in
 
   config = mkIf (cfg.enable && !isBootstrap) {
     virtualisation.oci-containers.containers.calibre-web-automated = {
-      image = "crocodilestick/calibre-web-automated:latest";
+      image = "ghcr.io/new-usemame/calibre-web-nextgen:latest";
       ports = [
         "127.0.0.1:${toString cfg.port}:8083"
       ];
@@ -51,7 +51,6 @@ in
     systemd.tmpfiles.rules = [
       "d /var/lib/calibre-web-automated 0755 hurricane users - -"
       "d /var/lib/calibre-web-automated/config 0755 hurricane users - -"
-      "d /var/lib/calibre-web-automated/ingest 0775 hurricane users - -"
     ];
 
     hrndz.services.ingress.sites.calibre-web-automated = mkIf config.hrndz.services.ingress.enable {

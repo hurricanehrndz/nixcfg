@@ -9,8 +9,15 @@ let
 in
 {
   config = mkIf cfg.tooling.extras.enable {
-    homebrew.brews = [
-      "makensis"
-    ];
+    homebrew = {
+      taps = [
+        "1jehuang/mmdr"
+      ];
+      brews = [
+        "makensis"
+        "mmdr"
+        "sem-cli"
+      ];
+    };
   };
 }

@@ -161,12 +161,22 @@ in
         "doc/tags"
         "*/doc/tags"
 
-        # Claude Code local files
+        # AI local files
         ########################
         ".claude/settings.local.json"
         "CLAUDE.local.md"
         "tmp/"
         ".claude/tmp/"
+        ".worktrees/"
+        # pi coding agent — local/generated project artifacts                                                                                                                                                                                      │
+        ".pi/git/"
+        ".pi/npm/"
+        ".pi/tmp/"
+        ".pi/cache/"
+        ".pi/logs/"
+        ".pi/sessions/"
+        ".pi/pi-debug.log"
+        ".pi/.ENABLE_PI_DOCS"
       ];
     };
   };

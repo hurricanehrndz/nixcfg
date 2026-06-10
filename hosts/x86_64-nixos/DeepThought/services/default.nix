@@ -17,6 +17,7 @@
     "homarr.env".file = "${self}/secrets/services/homarr/env.age";
     "sAPIKey".file = "${self}/secrets/services/media-app-stack/skey.age";
     "rAPIKey".file = "${self}/secrets/services/media-app-stack/rkey.age";
+    "searxng.env".file = "${self}/secrets/services/searxng/env.age";
   };
 
   hrndz.services.ingress = lib.mkIf (!isBootstrap) {
@@ -54,5 +55,10 @@
 
   hrndz.services.calibreWebAutomated = lib.mkIf (!isBootstrap) {
     enable = true;
+  };
+
+  hrndz.services.searxng = lib.mkIf (!isBootstrap) {
+    enable = true;
+    environmentFile = config.age.secrets."searxng.env".path;
   };
 }

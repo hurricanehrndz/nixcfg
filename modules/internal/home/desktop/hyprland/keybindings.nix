@@ -1,8 +1,9 @@
-{ lib, osConfig, ... }:
+{ lib, pkgs, osConfig, ... }:
 let
   inherit (lib) mkIf;
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
   cfg = osConfig.hrndz.desktop.hyprland or { };
-  enabled = cfg.enable or false;
+  enabled = (cfg.enable or false) && isLinux;
 in
 {
   config = mkIf enabled {

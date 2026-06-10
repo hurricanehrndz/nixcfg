@@ -143,3 +143,4 @@ alias rgv="rg --line-number --with-filename --color=always --field-match-separat
     --preview 'bat --color=always --highlight-line {2} {1}' \
     --preview-window 'right,50%,+{2}-3,~3'"
 alias clauded='claude --dangerously-skip-permissions'
+alias pi='env -u AWS_PROFILE pi'
