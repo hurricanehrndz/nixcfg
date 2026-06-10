@@ -24,6 +24,17 @@ in
             }
           ];
         };
+        "lucy" = {
+          HostName = "lucy.lan.internal";
+          User = "hurricane";
+          ForwardAgent = true;
+          RemoteForward = [
+            {
+              host.address = "/Users/chernand/.gnupg/S.gpg-agent";
+              bind.address = "/run/user/1000/gnupg/S.gpg-agent";
+            }
+          ];
+        };
         "172.24.*" = {
           User = "hurricane";
           ForwardAgent = true;
