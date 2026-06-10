@@ -39,7 +39,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # Browser packages that have not landed in nixpkgs yet.
-    nixpkgs-brave-origin.url = "github:NixOS/nixpkgs/pull/513143/head";
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
     # nix-darwin
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 

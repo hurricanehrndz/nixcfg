@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   lib,
   pkgs,
@@ -15,25 +16,23 @@ let
     ;
   cfg = config.hrndz.desktop.browser;
 
+  system = pkgs.stdenv.hostPlatform.system;
+
   browserType = types.enum [
-    "brave-origin-beta"
-    "brave-origin-nightly"
+    "zen"
     "firefox"
   ];
 
   hasBrowser = browser: builtins.elem browser cfg.browsers;
 
   desktopEntries = {
-    brave-origin-beta = "brave-origin-beta.desktop";
-    brave-origin-nightly = "brave-origin-nightly.desktop";
+    zen = "zen-beta.desktop";
     firefox = "firefox.desktop";
   };
 
   defaultDesktop = desktopEntries.${cfg.default};
 
-  browserPackages =
-    optional (hasBrowser "brave-origin-beta") pkgs.brave-origin-beta
-    ++ optional (hasBrowser "brave-origin-nightly") pkgs.brave-origin-nightly;
+  browserPackages = optional (hasBrowser "zen") inputs.zen-browser.packages.${system}.default;
 in
 {
   options.hrndz.desktop.browser = {
@@ -41,7 +40,7 @@ in
       type = types.listOf browserType;
       default = [ ];
       example = [
-        "brave-origin-beta"
+        "zen"
         "firefox"
       ];
       description = ''
@@ -52,7 +51,7 @@ in
 
     default = mkOption {
       type = browserType;
-      default = "brave-origin-beta";
+      default = "zen";
       description = "Default browser. Must be present in `hrndz.desktop.browser.browsers` when browsers are enabled.";
     };
   };
@@ -68,7 +67,7 @@ in
     }
 
     (mkIf (config.hrndz.roles.guiDeveloper.enable || config.hrndz.desktop.hyprland.enable) {
-      hrndz.desktop.browser.browsers = mkDefault [ "brave-origin-beta" ];
+      hrndz.desktop.browser.browsers = mkDefault [ "zen" ];
     })
 
     (mkIf (browserPackages != [ ]) {
