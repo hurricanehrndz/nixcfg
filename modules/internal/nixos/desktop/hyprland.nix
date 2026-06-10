@@ -127,6 +127,8 @@ in
       services.pulseaudio.enable = false;
 
       ##: Desktop support
+      services.gvfs.enable = true;
+      services.tumbler.enable = true;
       networking.networkmanager.enable = mkDefault true;
       hardware.bluetooth.enable = mkDefault true;
       services.blueman.enable = mkDefault true;

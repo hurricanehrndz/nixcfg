@@ -36,6 +36,9 @@ in
       pavucontrol
       pwvucontrol
       playerctl
+      nautilus
+      sushi
+      xfce.tumbler
       brightnessctl
       networkmanagerapplet
       blueman
