@@ -105,21 +105,35 @@ in
             extraConfig = ''
               # Theme
               set -g @catppuccin_flavor 'latte'
-              set -g @catppuccin_window_status_style "rounded"
+              set -g @catppuccin_window_status_style "basic"
               set -g @catppuccin_window_text " #W"
               set -g @catppuccin_window_current_text " #W"
               set -g @catppuccin_window_flags "icon"
 
+              set -g @catppuccin_pane_left_separator "█"
+              set -g @catppuccin_pane_middle_separator "█"
+              set -g @catppuccin_pane_right_separator "█"
+
+              # Make the status line pretty
+              set -g status-right-length 100
+              set -g status-left-length 100
+              set -g @catppuccin_status_left_separator "█"
+              set -g @catppuccin_status_middle_separator ""
+              set -g @catppuccin_status_right_separator "█"
+              set -g @catppuccin_status_connect_separator "yes"
+
               # Right status
-              set -g @catppuccin_session_color "#{E:@thm_green}"
-              set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_session}#{E:@catppuccin_status_date_time}"
+              set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_date_time}"
 
               # Left status
               # are we controlling tmux or the content of the panes?
-              set -g status-left "#[bg=#{@thm_surface_0}]#[fg=#{@thm_text}]#{?client_prefix,#[bg=#{@thm_green}],}"
+              set -g status-left "#[bg=#{@thm_surface_0}]#[fg=#{@thm_text}]#{?client_prefix,#[bg=#{@thm_red}],}"
               if-shell '[[ $(uname) = Darwin ]]' \
                 'set -ga status-left "  "' \
                 'set -ga status-left "  "'
+              set -ga status-left "#{E:@catppuccin_status_session}"
+              # Gap matching the inter-window window-status-separator (bar bg, not surface_0)
+              set -ga status-left "#[fg=default,bg=#{@thm_mantle}] "
 
               # window style
               set -g window-style "fg=#{@thm_overlay_1},bg=#{@thm_mantle},dim"
