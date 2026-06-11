@@ -14,15 +14,18 @@
   networking.hostName = "Lucy";
   networking.domain = "hrndz.ca";
 
-  hrndz.tooling.virtualization = {
-    enable = true;
-    hardware.cpuVendor = "intel";
-    users = [ "hurricane" ];
-
-    vfio = {
+  hrndz.tooling = {
+    virtualization = {
       enable = true;
-      ignoreMsrs = true;
+      hardware.cpuVendor = "intel";
+      users = [ "hurricane" ];
+
+      vfio = {
+        enable = true;
+        ignoreMsrs = true;
+      };
     };
+    js.enable = true;
   };
 
   hrndz.desktop.hyprland = {
