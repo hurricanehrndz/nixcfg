@@ -23,6 +23,8 @@ in
 
       js.enable = mkEnableOption "Enable JavaScript tooling";
 
+      ai.enable = mkEnableOption "Enable AI tooling";
+
       golang.enable = mkEnableOption "Enable Golang tooling";
 
       extras.enable = mkEnableOption "Enable extra cmdline utils";

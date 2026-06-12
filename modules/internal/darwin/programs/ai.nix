@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.tooling.ai.enable {
     homebrew.brews = [
       "llama.cpp"
       "opencode" # more up-to-date than nixpkgs
