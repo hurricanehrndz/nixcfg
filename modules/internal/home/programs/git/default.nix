@@ -25,6 +25,31 @@ in
           email = "carlos@hrndz.ca";
         };
         alias = {
+          # zsh-style git shortcuts, invoked as `g <alias>` from the shell.
+          aa = "add --all";
+          b = "branch";
+          ba = "branch -a";
+          c = "commit --verbose";
+          ca = "commit --verbose --amend";
+          caa = "commit --verbose --amend --all";
+          cs = "commit --verbose --sign";
+          d = "diff";
+          dc = "diff --cached";
+          discard = "reset --hard";
+          f = "fetch";
+          fm = "pull";
+          main = "switch main";
+          master = "switch master";
+          p = "push";
+          pc = "push --set-upstream origin HEAD";
+          pf = "push --force-with-lease";
+          rsc = "rebase --exec \"git commit --amend --no-edit -n -S\" -i";
+          ss = "status --short";
+          st = "status";
+          sw = "switch";
+          swc = "switch -c";
+          unstage = "restore --staged";
+
           # logging
           plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'";
           tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative";
@@ -39,6 +64,9 @@ in
           lc = "log ORIG_HEAD.. --stat --no-merges --graph";
           lg1 = "log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'";
           lg2 = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all";
+          lb = "log --topo-order --pretty=format:'%C(green)%h%C(reset) %s%n%C(blue)(%ar by %an)%C(red)%d%C(reset)%n'";
+          lga = "log --topo-order --all --graph --pretty=format:'%C(green)%h%C(reset) %s%C(red)%d %C(reset)%C(blue)Sig:%G?%C(reset)%n'";
+          lm = "log --topo-order --pretty=format:'%C(bold)Commit:%C(reset) %C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'";
           lg = "!git lg1";
           # other stuff
           clean-all = "clean -dfq";

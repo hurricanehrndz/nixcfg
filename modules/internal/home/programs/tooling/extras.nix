@@ -14,6 +14,7 @@ in
     home.packages = with pkgs; [
       pandoc
       local.html-to-markdown
+      mermaid-cli
     ];
   };
 }
