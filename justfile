@@ -59,7 +59,6 @@ alias dds := dev-switch
 ### Chores
 [group('nix')]
 update *args:
-    nix flake update --no-use-registries --flake ./modules/internal/nixos/services/_media-app-stack
     nix flake update --no-use-registries {{args}}
 
 [group('nix')]

@@ -87,11 +87,6 @@
       flake = false;
     };
 
-    # embedded flakes
-    media-app-stack.url = "path:./modules/internal/nixos/services/_media-app-stack";
-    media-app-stack.inputs.nixpkgs.follows = "nixpkgs";
-    media-app-stack.inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
-
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
 

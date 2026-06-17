@@ -33,7 +33,6 @@ in
             agenix.nixosModules.default
             disko.nixosModules.disko
             snapraid-runner.nixosModules.default
-            media-app-stack.nixosModules.default
             self.nixosModules.default
           ])
 
