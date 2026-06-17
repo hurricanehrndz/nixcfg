@@ -32,14 +32,21 @@ recipients_file() {
 }
 
 identity_file() {
-  local root
+  local root common_root
   root="$(repo_root)"
   if [[ -n ${AGE_IDENTITY:-} && -f $AGE_IDENTITY ]]; then
     echo "$AGE_IDENTITY"
   elif [[ -f "$root/$AGE_DIR/local-key" ]]; then
     echo "$root/$AGE_DIR/local-key"
   else
-    die "no identity found: run '$PROG keygen' or set AGE_IDENTITY"
+    # Linked worktrees don't carry the gitignored local key. Fall back to the
+    # main worktree (parent of the git common dir) so all worktrees share it.
+    common_root="$(dirname "$(git rev-parse --git-common-dir)")"
+    if [[ -f "$common_root/$AGE_DIR/local-key" ]]; then
+      echo "$common_root/$AGE_DIR/local-key"
+    else
+      die "no identity found: run '$PROG keygen' or set AGE_IDENTITY"
+    fi
   fi
 }
 
