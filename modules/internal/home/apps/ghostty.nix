@@ -22,7 +22,7 @@ in
         window-theme = "light";
         # disable automatic injection - we do it in zsh
         shell-integration = "none";
-        background-opacity = 0.80;
+        # background-opacity = 0.80;
         background-opacity-cells = true;
         background-blur-radius = 16;
         # window-decoration = false;
