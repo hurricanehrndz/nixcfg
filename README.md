@@ -61,7 +61,7 @@ partition scheme using disko.
 
    ```console
    nix run github:nix-community/nixos-anywhere -- \
-     --flake .#<hostname> \
+     --flake '.#<hostname>' \
      --override-input bootstrap github:boolean-option/true \
      root@<target-ip>
    ```
