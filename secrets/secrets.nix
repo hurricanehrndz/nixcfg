@@ -5,7 +5,7 @@ let
     DeepThought = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFGfyxfjRIvGOAC70fSG6Xe6DTZkvzhYa+iqeG9Fp7ff";
     LH9KCR6DJX = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDZGnhXNa4z8Ty4NtnR56yz6kuoCBcBgFNCg3EbnMEIY";
     HX7YG952H5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAcp1c7b48MG7QwMIt7Sgv32JajcbdPG/f/f4+1AH7CB";
-    Hal9000 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPfL9zUyDVULTUhNZzlEi8z7nHguRBzIkxzJbxUeDupg";
+    hal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWYoQyoNQ4dFZfPIyzZ/bRDnUo/dSQFu+gxr626kHua";
   };
   yubikeys = {
     yubikey-5c-5f449e60 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
@@ -25,7 +25,7 @@ in
   "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
 
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
-  "services/ingress/env.age".publicKeys = deepthoughtKeys; # ++ [ machineKeys.Hal9000 ];
+  "services/ingress/env.age".publicKeys = deepthoughtKeys ++ [ machineKeys.hal ];
   "services/homarr/env.age".publicKeys = deepthoughtKeys;
   "services/media-app-stack/skey.age".publicKeys = deepthoughtKeys;
   "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
