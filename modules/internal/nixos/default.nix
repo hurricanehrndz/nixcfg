@@ -33,7 +33,7 @@ in
     ];
   };
 
-  programs.command-not-found.enable = true;
+  programs.command-not-found.enable = false;
   programs.htop.enable = true;
   programs.mtr.enable = true;
 

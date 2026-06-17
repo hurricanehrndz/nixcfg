@@ -34,7 +34,7 @@ in
       playerctl
       nautilus
       sushi
-      xfce.tumbler
+      tumbler
       brightnessctl
       networkmanagerapplet
       blueman
@@ -45,6 +45,7 @@ in
     wayland.windowManager.hyprland = {
       enable = true;
       xwayland.enable = true;
+      configType = "hyprlang";
 
       settings = {
         "$mod" = "SUPER";
