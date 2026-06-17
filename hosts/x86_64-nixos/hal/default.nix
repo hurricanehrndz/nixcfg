@@ -15,7 +15,7 @@
   boot.loader.timeout = 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.hostName = "Hal9000";
+  networking.hostName = "hal";
   networking.domain = "hrndz.ca";
 
   virtualisation = {
@@ -37,7 +37,7 @@
 
   virtualisation.oci-containers.containers = {
     omada-controller = {
-      image = "docker.io/mbentley/omada-controller:latest";
+      image = "docker.io/mbentley/omada-controller:5.15";
       environment = {
         TZ = "America/Edmonton";
       };

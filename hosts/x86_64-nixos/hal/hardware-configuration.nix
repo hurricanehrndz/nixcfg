@@ -27,8 +27,8 @@
   hrndz.nixos.networkd-dhcp.enable = true;
   # Static IP for the network-controller host (ported from the old config).
   # Verify the interface name on the target before deploying.
-  systemd.network.networks."50-enp1s0" = {
-    matchConfig.Name = "enp1s0";
+  systemd.network.networks."50-enp2s0" = {
+    matchConfig.Name = "enp2s0";
     networkConfig = {
       DHCP = "ipv6";
       Address = "192.168.0.15/24";
