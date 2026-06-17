@@ -1,4 +1,9 @@
-{ lib, pkgs, osConfig, ... }:
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
+}:
 let
   inherit (lib) mkIf;
   inherit (pkgs.stdenv.hostPlatform) isLinux;
