@@ -22,6 +22,7 @@ _update_ssh_agent() {
 autoload -Uz add-zsh-hook
 if [[ -n "$TMUX" ]]; then
     add-zsh-hook precmd _update_ssh_agent
+    add-zsh-hook preexec _update_ssh_agent
 fi
 
 batman() {
