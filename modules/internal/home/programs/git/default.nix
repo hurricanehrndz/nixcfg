@@ -90,9 +90,6 @@ in
           diffFilter = "delta --color-only";
         };
         diff.tool = "difftastic";
-        diff.age = {
-          textconv = "git-age-filter diff";
-        };
         difftool = {
           prompt = false;
           "difftastic".cmd = "difft \"$LOCAL\" \"$REMOTE\"";
@@ -118,18 +115,11 @@ in
           verbose = true;
           # gpgSign= true;
         };
-        filter = {
-          # https://github.com/bphenriques/dotfiles/blob/4fce72c08e7d2b1c9eadbaefb8db3d2b8ac99eb9/bin/sops-git-filter.sh
-          age = {
-            clean = "git-age-filter clean %f";
-            # Fall back to cat when the binary is absent so a fresh clone on a
-            # machine without git-age-filter still checks out (as ciphertext)
-            # instead of aborting on the required filter. clean stays strict, so
-            # a missing binary blocks commits rather than leaking plaintext.
-            smudge = "if command -v git-age-filter >/dev/null 2>&1; then git-age-filter smudge; else cat; fi";
-            required = true;
-          };
-        };
+        # The age clean/smudge/diff filters are configured per-repo by
+        # `git-age-filter install` (writes .git/config), not globally. That way
+        # a fresh clone has no filter driver and checks out ciphertext instead of
+        # aborting on a required filter the machine may not have. Run `install`
+        # as step 1 when onboarding a clone.
         url = {
           "git@github.com:" = {
             pushInsteadOf = [

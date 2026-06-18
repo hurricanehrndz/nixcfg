@@ -65,7 +65,19 @@ require_recipients() {
 cmd_install() {
   local root
   root="$(repo_root)"
-  local patterns=("${@:-.secrets/*}")
+
+  # Patterns to add to .gitattributes. When called with no args, default to
+  # '.secrets/*' for a fresh setup — but if the repo already has filter=age
+  # entries (i.e. this is a clone), inject nothing: install then just wires up
+  # the local git config without dirtying the committed .gitattributes.
+  local patterns=("$@")
+  if [[ ${#patterns[@]} -eq 0 ]]; then
+    if grep -q 'filter=age' "$root/.gitattributes" 2>/dev/null; then
+      patterns=()
+    else
+      patterns=(".secrets/*")
+    fi
+  fi
 
   # Configure git filter. smudge falls back to cat when the binary is absent so
   # a fresh clone on a machine without git-age-filter still checks out (as
@@ -91,15 +103,18 @@ EOF
     echo "$PROG: created $AGE_DIR/recipients (add master public keys)" >&2
   fi
 
-  # Add .gitattributes entries for each pattern
-  local ga="$root/.gitattributes"
-  local pattern
-  for pattern in "${patterns[@]}"; do
-    if ! grep -qF "$pattern filter=age" "$ga" 2>/dev/null; then
-      echo "$pattern filter=age diff=age merge=age" >>"$ga"
-      echo "$PROG: added pattern '$pattern' to .gitattributes" >&2
-    fi
-  done
+  # Add .gitattributes entries for each pattern. Guard the expansion: patterns
+  # may be empty (clone case), and "${empty[@]}" trips set -u on bash < 4.4.
+  if [[ ${#patterns[@]} -gt 0 ]]; then
+    local ga="$root/.gitattributes"
+    local pattern
+    for pattern in "${patterns[@]}"; do
+      if ! grep -qF "$pattern filter=age" "$ga" 2>/dev/null; then
+        echo "$pattern filter=age diff=age merge=age" >>"$ga"
+        echo "$PROG: added pattern '$pattern' to .gitattributes" >&2
+      fi
+    done
+  fi
 }
 
 ##: clean — encrypt (stdin plaintext -> stdout ciphertext)

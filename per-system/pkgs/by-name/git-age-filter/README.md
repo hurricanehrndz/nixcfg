@@ -105,13 +105,15 @@ git-age-filter rekey-masters
 git add .age/ && git commit -m 'chore: add teammate to master recipients'
 ```
 
-Bootstrap on a new machine (one-time Yubikey touch):
+Bootstrap on a new machine (one-time Yubikey touch). The filter is configured
+per-repo, so `install` must run first — a fresh clone has no filter driver yet:
 
 ```sh
+git-age-filter install                     # configure the per-repo filter
 root="$(git rev-parse --show-toplevel)"
 age -d -i "$root/identities/age/yubikey-id-5f449e60.txt" "$root/.age/local-key.age" > "$root/.age/local-key"
 chmod 600 "$root/.age/local-key"
-git-age-filter unlock
+git-age-filter unlock                      # decrypt the working tree
 ```
 
 ## Repo files
