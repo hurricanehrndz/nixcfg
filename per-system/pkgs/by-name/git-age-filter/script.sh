@@ -67,9 +67,13 @@ cmd_install() {
   root="$(repo_root)"
   local patterns=("${@:-.secrets/*}")
 
-  # Configure git filter
+  # Configure git filter. smudge falls back to cat when the binary is absent so
+  # a fresh clone on a machine without git-age-filter still checks out (as
+  # ciphertext) instead of aborting on the required filter. clean stays strict:
+  # if the binary is missing, commits of secrets are blocked rather than leaking
+  # plaintext.
   git config filter.age.clean "git-age-filter clean %f"
-  git config filter.age.smudge "git-age-filter smudge"
+  git config filter.age.smudge "if command -v git-age-filter >/dev/null 2>&1; then git-age-filter smudge; else cat; fi"
   git config filter.age.required true
   git config diff.age.textconv "git-age-filter diff"
   echo "$PROG: configured git filter" >&2
