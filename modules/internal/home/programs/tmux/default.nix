@@ -131,6 +131,12 @@ in
               if-shell '[[ $(uname) = Darwin ]]' \
                 'set -ga status-left "  "' \
                 'set -ga status-left "  "'
+              # Keep the session block a steady color; the prefix-red indicator
+              # above is the only thing that should react to controlling tmux.
+              # Pin icon_bg directly: @catppuccin_session_color only feeds icon_bg
+              # via a set-if-empty guard, so it's captured once at server start
+              # and overriding the color later (e.g. on reload) is a no-op.
+              set -g @catppuccin_status_session_icon_bg "#{E:@thm_green}"
               set -ga status-left "#{E:@catppuccin_status_session}"
               # Gap matching the inter-window window-status-separator (bar bg, not surface_0)
               set -ga status-left "#[fg=default,bg=#{@thm_mantle}] "
