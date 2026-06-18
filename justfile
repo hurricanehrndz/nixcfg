@@ -71,9 +71,7 @@ check *args:
 
 [group('nix')]
 lock:
-    nix flake lock --no-use-registries ./modules/internal/nixos/services/_media-app-stack
     nix flake lock --no-use-registries
-    nix flake update media-app-stack
 
 [group('nix')]
 clean *args:
