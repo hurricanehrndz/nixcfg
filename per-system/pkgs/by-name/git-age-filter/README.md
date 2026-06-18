@@ -108,14 +108,17 @@ git add .age/ && git commit -m 'chore: add teammate to master recipients'
 Bootstrap on a new machine (one-time Yubikey touch):
 
 ```sh
-age -d -i ~/.age/yubikey-identity.txt .age/local-key.age > .age/local-key
-chmod 600 .age/local-key
+root="$(git rev-parse --show-toplevel)"
+age -d -i "$root/identities/age/yubikey-id-5f449e60.txt" "$root/.age/local-key.age" > "$root/.age/local-key"
+chmod 600 "$root/.age/local-key"
 git-age-filter unlock
 ```
 
 ## Repo files
 
-| File | Checked in | Description |
+Paths are relative to the repo root (`git rev-parse --show-toplevel`).
+
+| Path | Checked in | Description |
 |---|---|---|
 | `.age/recipients` | Yes | Master public keys (Yubikey, team members). Used to encrypt the local key. |
 | `.age/local-key` | No | Local age identity (plaintext, gitignored). |
