@@ -22,6 +22,7 @@ in
     exfatprogs
     dosfstools
     gptfdisk
+    e2fsprogs
   ];
 
   ##: programs
