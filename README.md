@@ -113,6 +113,24 @@ After partitioning and mounting your filesystems to `/mnt`:
      --override-input bootstrap github:boolean-option/true
    ```
 
+### Decrypt repository secrets (git-age-filter)
+
+Some files in this repo are encrypted at rest with
+[`git-age-filter`](per-system/pkgs/by-name/git-age-filter/README.md) and check
+out as ciphertext on a fresh clone. The filter is configured per-repo, so
+`install` must run first. To decrypt (one-time Yubikey touch):
+
+```console
+git-age-filter install                     # configure the per-repo filter
+root="$(git rev-parse --show-toplevel)"
+age -d -i "$root/identities/age/yubikey-id-5f449e60.txt" "$root/.age/local-key.age" > "$root/.age/local-key"
+chmod 600 "$root/.age/local-key"
+git-age-filter unlock                      # decrypt the working tree
+```
+
+See the [git-age-filter README](per-system/pkgs/by-name/git-age-filter/README.md)
+for how the filter works and its day-to-day commands.
+
 ### After First Boot
 
 1. **Retrieve the host SSH public key:**
