@@ -122,7 +122,11 @@ in
           # https://github.com/bphenriques/dotfiles/blob/4fce72c08e7d2b1c9eadbaefb8db3d2b8ac99eb9/bin/sops-git-filter.sh
           age = {
             clean = "git-age-filter clean %f";
-            smudge = "git-age-filter smudge";
+            # Fall back to cat when the binary is absent so a fresh clone on a
+            # machine without git-age-filter still checks out (as ciphertext)
+            # instead of aborting on the required filter. clean stays strict, so
+            # a missing binary blocks commits rather than leaking plaintext.
+            smudge = "if command -v git-age-filter >/dev/null 2>&1; then git-age-filter smudge; else cat; fi";
             required = true;
           };
         };
