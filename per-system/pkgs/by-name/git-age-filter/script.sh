@@ -150,19 +150,37 @@ cmd_clean() {
 ##: smudge — decrypt (stdin ciphertext -> stdout plaintext)
 
 cmd_smudge() {
-  local id
-  id="$(identity_file)"
-
   local tmpinput
   tmpinput="$(mktmp)"
   cat >"$tmpinput"
 
-  # If input isn't age-encrypted, pass through unchanged
+  # Not age-encrypted: pass through unchanged (no identity needed).
   local first_line
   first_line="$(head -1 "$tmpinput")"
-  if [[ $first_line == "age-encryption.org"* ]]; then
-    age -d -i "$id" <"$tmpinput"
+  if [[ $first_line != "age-encryption.org"* ]]; then
+    cat "$tmpinput"
+    return 0
+  fi
+
+  # Encrypted blob. Never hard-fail the checkout: on a fresh clone the local
+  # key isn't recovered yet, so leave the ciphertext in the working tree and
+  # exit 0. The clone then succeeds; recover the key and run '$PROG unlock' to
+  # decrypt. filter.age.required=true still guards the clean side, so this can
+  # never silently commit plaintext.
+  local id
+  if ! id="$(identity_file 2>/dev/null)"; then
+    echo "$PROG: no identity; leaving file encrypted in working tree (recover key, then '$PROG unlock')" >&2
+    cat "$tmpinput"
+    return 0
+  fi
+
+  # Decrypt to a temp first so a partial failure can't corrupt the output.
+  local tmpout
+  tmpout="$(mktmp)"
+  if age -d -i "$id" <"$tmpinput" >"$tmpout" 2>/dev/null; then
+    cat "$tmpout"
   else
+    echo "$PROG: failed to decrypt; leaving ciphertext in working tree" >&2
     cat "$tmpinput"
   fi
 }
