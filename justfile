@@ -5,6 +5,12 @@
 default:
     @just --list
 
+# Ensure sudo creds are valid before piping to nom (where the prompt would be hidden).
+# Test first; only prompt if needed.
+[private]
+sudo-prime:
+    @sudo -n true 2>/dev/null || sudo -v
+
 ### Linux cmds
 [group('nix')]
 [linux]
@@ -15,6 +21,7 @@ build *args: lock
 [group('nix')]
 [linux]
 switch *args:
+    @just sudo-prime
     sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
 
 [group('nix')]
@@ -24,6 +31,7 @@ bs *args: (build args) (switch args)
 [group('nix')]
 [linux]
 dev-switch *args: lock (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
+    @just sudo-prime
     sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv {{args}} |& nom
 alias nds := dev-switch
 
@@ -37,12 +45,14 @@ bootstrap target:
 [group('nix')]
 [macos]
 build *args: lock
+    @just sudo-prime
     sudo darwin-rebuild build --flake . {{args}} |& nom
     nvd diff /run/current-system ./result
 
 [group('nix')]
 [macos]
 switch *args:
+    @just sudo-prime
     sudo darwin-rebuild switch --flake . {{args}} |& nom
 
 [group('nix')]
@@ -52,6 +62,7 @@ bs *args: (build args) (switch args)
 [group('nix')]
 [macos]
 dev-switch *args: lock (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
+    @just sudo-prime
     sudo darwin-rebuild switch --flake . --override-input pdenv path:$HOME/src/me/pdenv {{args}} |& nom
 alias dds := dev-switch
 
