@@ -41,7 +41,16 @@
             ]);
 
           commands = with pkgs; [
-            (pkgWithCategory "secrets" agenix-age)
+            {
+              name = "agenix";
+              category = "secrets";
+              help = "agenix with the yubikey identity, against working-tree secrets/";
+              command = ''
+                root=$(${pkgs.git}/bin/git rev-parse --show-toplevel) || exit 1
+                # cd "$root/secrets" || exit 1
+                exec ${agenix-age}/bin/agenix --identity "$root/identities/age/yubikey-id-5f449e60.txt" "$@"
+              '';
+            }
             (pkgWithCategory "secrets" age)
             (pkgWithCategory "secrets" age-plugin-yubikey)
             (pkgWithCategory "shortcuts" just)
