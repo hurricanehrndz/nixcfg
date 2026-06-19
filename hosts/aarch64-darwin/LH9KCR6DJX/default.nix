@@ -21,11 +21,6 @@ in
           file = "${self}/secrets/darwin/aws/auth_config.age";
           path = "${homeDir}/.aws/credentials";
         };
-        "darwin/env/zsh_vars" = {
-          inherit owner group;
-          file = "${self}/secrets/darwin/zsh/env_vars.age";
-          path = "${homeDir}/.config/zsh/zsh_vars";
-        };
       };
   };
 

@@ -213,8 +213,8 @@ in
       dotDir = dotDir;
       # zprof.enable = true;
       envExtra = ''
-        if [[ -f  $HOME/.config/zsh/zsh_vars ]]; then
-          source $HOME/.config/zsh/zsh_vars
+        if [[ -f  $HOME/.config/zsh/env_vars ]]; then
+          source $HOME/.config/zsh/env_vars
         fi
 
         # PATH
