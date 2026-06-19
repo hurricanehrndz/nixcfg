@@ -1,16 +1,11 @@
 {
+  inputs,
   pkgs,
   ...
 }:
 {
   imports = [
-    ./hardware-configuration.nix
-    ./disk-config.nix
-    ./filesystems.nix
-    ./samba.nix
-    ./services
-    ./snapraid.nix
-    ./users/hurricane.nix
+    (inputs.import-tree ./config)
   ];
 
   boot.loader.systemd-boot.enable = true;
