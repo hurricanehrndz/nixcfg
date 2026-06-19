@@ -4,6 +4,9 @@
   # short self-test nightly at 02:00, long self-test Sundays at 04:00.
   services.smartd = {
     enable = true;
+    # Headless host; alerting goes through scrutiny -> Telegram instead.
+    # Disabling wall also drops smartd-notify.sh + envsubst from the closure.
+    notifications.wall.enable = false;
     devices = [
       {
         # The disko `main` disk (Samsung EVO NVMe, /dev/nvme0n1). Switch to a

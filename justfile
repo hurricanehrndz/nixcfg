@@ -88,3 +88,22 @@ lock:
 clean *args:
   sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old
   sudo nix-collect-garbage --delete-older-than 3d {{args}}
+
+
+### Diagnostics
+
+# Prints the JSON result: {"success":true} means Telegram accepted the message;
+# false -> check `just scrutiny-logs` on DeepThought (bad bot token, stray newline
+# in the secret, wrong chat id, or bot never /start-ed in the chat). Pass url= to
+# target a different scrutiny instance.
+
+# Fire a scrutiny test notification through every configured notify URL.
+[group('ops')]
+test-scrutiny-notify url="https://deepthought.hrndz.ca/storage":
+    curl -fsS {{url}}/api/health/notify && echo
+
+# Follow the scrutiny web-service logs (run on DeepThought; hal only collects).
+[group('ops')]
+[linux]
+scrutiny-logs *args:
+    journalctl -u scrutiny -f {{args}}
