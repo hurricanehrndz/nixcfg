@@ -30,4 +30,8 @@ in
   "services/media-app-stack/skey.age".publicKeys = deepthoughtKeys;
   "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
   "services/searxng/env.age".publicKeys = deepthoughtKeys;
+
+  # Scrutiny Telegram notification URL (Shoutrrr). Notifier runs on the
+  # DeepThought scrutiny web instance, so only DeepThought needs to decrypt it.
+  "services/scrutiny/notify-url.age".publicKeys = deepthoughtKeys;
 }
