@@ -7,6 +7,7 @@
   services.scrutiny.collector = {
     enable = true;
     schedule = "daily";
+    settings.host.id = "hal";
     settings.api.endpoint = "https://deepthought.hrndz.ca/storage";
   };
 }

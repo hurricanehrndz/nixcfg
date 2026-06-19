@@ -41,6 +41,7 @@ in
     collector = {
       enable = true;
       schedule = "daily";
+      settings.host.id = "DeepThought";
     };
   };
 
