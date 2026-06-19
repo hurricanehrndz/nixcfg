@@ -36,7 +36,7 @@ in
           ];
         };
         "hal" = {
-          HostName = "hal.lan.internal";
+          HostName = "hal.hrndz.ca";
           User = "hurricane";
           ForwardAgent = true;
           RemoteForward = [
