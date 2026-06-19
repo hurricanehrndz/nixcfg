@@ -45,7 +45,7 @@ in
           ])
         ];
 
-      specialArgs = lib.optionalAttrs (class == "nixos") {
+      specialArgs = {
         isBootstrap = inputs.bootstrap.value;
       };
     };

@@ -21,8 +21,9 @@ let
   ++ (builtins.attrValues yubikeys);
 in
 {
-  "darwin/zsh/env_vars.age".publicKeys = darwin_Keys;
   "darwin/aws/auth_config.age".publicKeys = darwin_Keys;
+
+  "home/zsh/env_vars.age".publicKeys = (builtins.attrValues machineKeys) ++ (builtins.attrValues yubikeys);
 
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
   "services/ingress/env.age".publicKeys = deepthoughtKeys ++ [ machineKeys.hal ];
