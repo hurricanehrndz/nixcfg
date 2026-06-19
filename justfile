@@ -100,7 +100,7 @@ clean *args:
 # Fire a scrutiny test notification through every configured notify URL.
 [group('ops')]
 test-scrutiny-notify url="https://deepthought.hrndz.ca/storage":
-    curl -fsS {{url}}/api/health/notify && echo
+    curl -fsS -X POST {{url}}/api/health/notify && echo
 
 # Follow the scrutiny web-service logs (run on DeepThought; hal only collects).
 [group('ops')]
