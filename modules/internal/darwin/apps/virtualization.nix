@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -9,15 +10,18 @@ let
 in
 {
   config = mkIf cfg.tooling.virtualization.enable {
+    environment.systemPackages = with pkgs; [
+      docker
+      docker-compose
+      lazydocker
+    ];
+
     homebrew.casks = [
       "utm"
     ];
 
     homebrew.brews = [
       "container"
-      "docker"
-      "docker-compose"
-      "lazydocker"
       "lima"
     ];
   };
