@@ -34,7 +34,8 @@ in
     enable = true;
     # Use the nix-darwin brewfile when invoking `brew bundle` imperatively.
     global.brewfile = true;
-    caskArgs.no_quarantine = true;
+    # Homebrew 5.0.0 (2025-11-12) removed the --no-quarantine flag; passing it
+    # now fails with "invalid option: --no_quarantine" during `brew bundle`.
     onActivation.cleanup = "zap";
     onActivation.upgrade = true;
     onActivation.autoUpdate = true;
