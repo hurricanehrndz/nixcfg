@@ -165,6 +165,7 @@ j = 'join-with down'
 k = 'join-with up'
 l = 'join-with right'
 f = 'fullscreen'
+a = 'layout accordion tiles' # Toggle between accordion and tiling layout
 cmd-f = 'layout floating tiling' # Toggle between floating and tiling layout
 
 [[on-window-detected]]
