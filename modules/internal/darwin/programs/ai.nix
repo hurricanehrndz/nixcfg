@@ -20,7 +20,6 @@ in
 
     homebrew.brews = [
       "omlx" # MLX-based local LLM server; run `omlx start`
-      "opencode" # more up-to-date than nixpkgs
     ];
   };
 }
