@@ -55,6 +55,9 @@ in
         # window-decoration = false;
         shell-integration-features = "sudo,no-ssh-terminfo,no-ssh-env,cursor";
         clipboard-paste-protection = false;
+        window-show-tab-bar = "never";
+        # Prefer windows over tabs: make ⌘T open a new window like ⌘N.
+        keybind = "super+t=new_window";
       };
     };
   };
