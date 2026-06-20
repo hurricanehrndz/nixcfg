@@ -165,13 +165,13 @@ j = 'join-with down'
 k = 'join-with up'
 l = 'join-with right'
 f = 'fullscreen'
-a = 'layout accordion tiles' # Toggle between accordion and tiling layout
+a = 'layout h_accordion tiles' # Toggle between horizontal accordion and tiling layout
 cmd-f = 'layout floating tiling' # Toggle between floating and tiling layout
 
 [[on-window-detected]]
 if.app-id="com.mitchellh.ghostty"
 run= [
-  "layout floating",
+  "layout h_accordion",
   "move-node-to-workspace T",
 ]
 
