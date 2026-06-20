@@ -17,6 +17,8 @@ in
       terminal = "tmux-256color";
       aggressiveResize = true;
       escapeTime = 10;
+      mouse = true;
+      historyLimit = 50000;
       extraConfig = ''
         unbind C-b
         set-option -g prefix C-a
