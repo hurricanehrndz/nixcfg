@@ -26,9 +26,8 @@
     # Package sets
     # nixos
     nixos-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
-    nixos-unstalbe.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/release-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # Browser packages that have not landed in nixpkgs yet.

@@ -638,7 +638,7 @@
         "type": "github"
       }
     },
-    "nixos-unstalbe": {
+    "nixos-unstable": {
       "locked": {
         "lastModified": 1781577229,
         "narHash": "sha256-lrp67w8AulE9Ks53n27I45ADSzbOCn4H+CNW1Ck8B+8=",
@@ -743,22 +743,6 @@
       "original": {
         "owner": "NixOS",
         "ref": "master",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-stable": {
-      "locked": {
-        "lastModified": 1781734178,
-        "narHash": "sha256-aODUAw8cBYfH5yKpqhup0o4luhenGOxAZtMcan+NxgI=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "82566a34ef859d170291a4819292401fc7f73ca5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "release-26.05",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -989,13 +973,12 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-stable": "nixos-stable",
-        "nixos-unstalbe": "nixos-unstalbe",
+        "nixos-unstable": "nixos-unstable",
         "nixpkgs": [
           "nixos-stable"
         ],
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgs-master": "nixpkgs-master",
-        "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pdenv": "pdenv",
         "pi": "pi",
