@@ -16,6 +16,7 @@ in
     hosts = {
       HX7YG952H5.nixpkgs = inputs.nixpkgs-darwin;
       LH9KCR6DJX.nixpkgs = inputs.nixpkgs-darwin;
+      HHY314TN61.nixpkgs = inputs.nixpkgs-darwin;
     };
 
     shared.modules = [
