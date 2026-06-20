@@ -5,6 +5,7 @@ let
     DeepThought = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFGfyxfjRIvGOAC70fSG6Xe6DTZkvzhYa+iqeG9Fp7ff";
     LH9KCR6DJX = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDZGnhXNa4z8Ty4NtnR56yz6kuoCBcBgFNCg3EbnMEIY";
     HX7YG952H5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAcp1c7b48MG7QwMIt7Sgv32JajcbdPG/f/f4+1AH7CB";
+    HHY314TN61 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBVjEb2tV4daRlqt2lXspKqXFav2Prg1IVSZA71A3qY";
     hal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWYoQyoNQ4dFZfPIyzZ/bRDnUo/dSQFu+gxr626kHua";
   };
   yubikeys = {
@@ -17,6 +18,7 @@ let
   darwin_Keys = [
     machineKeys.LH9KCR6DJX
     machineKeys.HX7YG952H5
+    machineKeys.HHY314TN61
   ]
   ++ (builtins.attrValues yubikeys);
 in
