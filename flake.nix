@@ -74,6 +74,9 @@
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
     nix-claude-code.url = "github:ryoppippi/nix-claude-code";
     nix-claude-code.inputs.nixpkgs.follows = "nixpkgs";
+    # pi: terminal coding agent (unofficial Nix packaging)
+    pi.url = "github:lukasl-dev/pi.nix";
+    pi.inputs.nixpkgs.follows = "nixpkgs";
 
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
