@@ -11,7 +11,8 @@ in
 {
   config = mkIf cfg.tooling.virtualization.enable {
     environment.systemPackages = with pkgs; [
-      docker
+      # CLI only; dockerd is Linux-only, the daemon lives in lima/container.
+      docker-client
       docker-compose
       lazydocker
     ];
