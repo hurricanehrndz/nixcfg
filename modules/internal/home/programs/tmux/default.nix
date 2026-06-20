@@ -142,7 +142,9 @@ in
               set -ga status-left "#[fg=default,bg=#{@thm_mantle}] "
 
               # window style
-              set -g window-style "fg=#{@thm_overlay_1},bg=#{@thm_mantle},dim"
+              # Inactive panes defer to ghostty's background too (keep `dim` +
+              # a muted fg as the only inactive cue); active stays transparent.
+              set -g window-style "fg=#{@thm_overlay_1},bg=default,dim"
               set -g window-active-style "fg=#{@thm_fg},bg=default"
             '';
           }
