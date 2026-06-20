@@ -11,7 +11,7 @@ someone else shares their configuration, anyone can make use of it.
 This flake is configured with the use of several flake helpers. Have a look at
 the inputs for a full comprehensive list.
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for a detailed explanation of how the
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a detailed explanation of how the
 repository is organized.
 
 ## Prerequisites
