@@ -154,12 +154,6 @@ For manual partitioning and install (kept for historical reference), see
    This rebuild uses the default configuration (without the bootstrap flag),
    enabling all secrets.
 
-### Enter chroot after install
-
-```console
-sudo nixos-enter
-```
-
 ## Bootstrapping a new macOS system
 
 ### Prerequisites

@@ -26,6 +26,16 @@ After partitioning and mounting your filesystems to `/mnt`:
    The bootstrap flag disables agenix secrets during the initial install, since
    the host SSH keys don't exist yet.
 
+## Enter chroot after install
+
+Unlike the automated nixos-anywhere flow (which reboots into the installed
+system automatically), a manual install drops you back in the installer. To
+inspect or fix the freshly installed system before rebooting, chroot into it:
+
+```console
+sudo nixos-enter
+```
+
 ## After first boot
 
 Once the system boots, onboard it to secrets and switch to the production
@@ -39,9 +49,3 @@ configuration — see [Secrets](../README.md#secrets) in the main README:
    ```console
    sudo nixos-rebuild switch --flake .#<hostname>
    ```
-
-## Enter chroot after install
-
-```console
-sudo nixos-enter
-```
