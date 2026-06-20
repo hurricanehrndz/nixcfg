@@ -17,18 +17,25 @@ alias g=git
 # ls alternatives
 #######################################
 alias ls='eza --group-directories-first'
-alias ll='eza --group-directories-first -l -h -g --git'
-alias la='eza --group-directories-first -l -h -g --git -a'
-alias l='eza --group-directories-first -l -h -g --git -a'
-alias lt='eza --group-directories-first -l -h -g --git -smodified'      # Long format, newest modification time last
-alias lx='eza --group-directories-first -l -h -g --git -sextension'     # Long format, sort by extension
-alias lk='eza --group-directories-first -l -h -g --git -ssize'          # Long format, largest file size last
-alias lc='eza --group-directories-first -l -h -g --git -schanged'       # Long format, newest status change (ctime) last
+alias l='eza --group-directories-first -lhg --icons=auto'
+alias ll='l --git'
+alias la='l -a'
+alias lm='la -smodified'      # Long format, newest modification time last
+alias lx='la -sextension'     # Long format, sort by extension
+alias lz='la -ssize'          # Long format, largest file size last
+alias lc='la -schanged'       # Long format, newest status change (ctime) last
+
+#######################################
+# tree views (eza)
+#######################################
+alias tree='eza -T --group-directories-first --icons=auto'   # replace tree(1) with eza
+alias lt='tree --level=2'                                    # shallow tree, depth 2
+alias llt='l -T'                                             # long/detailed tree
 
 #######################################
 # cat alternative
 #######################################
-alias rcat=cat
+alias rcat='command cat'
 alias cat=bat
 
 #######################################
