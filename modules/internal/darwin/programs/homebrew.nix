@@ -34,26 +34,23 @@ in
     enable = true;
     # Use the nix-darwin brewfile when invoking `brew bundle` imperatively.
     global.brewfile = true;
-    # Homebrew 5.0.0 (2025-11-12) removed the --no-quarantine flag; passing it
-    # now fails with "invalid option: --no_quarantine" during `brew bundle`.
-    onActivation.cleanup = "zap";
     onActivation.upgrade = true;
     onActivation.autoUpdate = true;
+    # Homebrew 6 refuses to load formulae from custom-remote taps (e.g.
+    # `jundot/omlx`, see programs/ai.nix) until they're trusted via `brew
+    # trust`, which otherwise prompts interactively during activation. Opt out
+    # of the trust check for the unattended `brew bundle` run; activation runs
+    # under sudo, so this isn't inherited from the user's shell env.
+    onActivation.extraEnv.HOMEBREW_NO_REQUIRE_TAP_TRUST = "1";
+    # Homebrew 6 deprecated the bare `--cleanup` switch that nix-darwin's
+    # `onActivation.cleanup = "zap"` emits ("Calling the --cleanup switch is
+    # deprecated"). Keep cleanup off in the module and drive it ourselves via
+    # the live `--force-cleanup --zap` flags, which run the same
+    # `brew bundle cleanup` machinery non-interactively without the warning.
+    onActivation.cleanup = "none";
     onActivation.extraFlags = [
       "--force-cleanup"
+      "--zap"
     ];
   };
-
-  # Force Homebrew bundle to accept destructive cleanup during activation
-  system.activationScripts.preActivation.text = ''
-    export HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP=1
-  '';
-
-  # Force it into the system environment definition
-  environment.variables.HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP = "1";
-
-  # Force it explicitly into launchd/system profiles so nix-darwin's background hooks catch it
-  environment.extraInit = ''
-    export HOMEBREW_BUNDLE_FORCE_INSTALL_CLEANUP=1
-  '';
 }
