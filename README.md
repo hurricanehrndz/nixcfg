@@ -41,6 +41,51 @@ just update          # update flake inputs
 just gc              # garbage collection
 ```
 
+## Secrets
+
+Secrets are managed with [agenix](https://github.com/ryantm/agenix) and a
+[`git-age-filter`](per-system/pkgs/by-name/git-age-filter/README.md) that keeps
+files encrypted at rest. Both the Linux and macOS bootstrap flows reference the
+subsections below.
+
+### Decrypt repository secrets (git-age-filter)
+
+Some files in this repo are encrypted at rest with `git-age-filter` and check
+out as ciphertext on a fresh clone. The filter is configured per-repo, so
+`install` must run first. The `git-age-filter` and `age` tools come from the
+devshell, so enter it first. To decrypt (one-time Yubikey touch):
+
+```console
+nix develop --impure                       # enter devshell (provides git-age-filter, age)
+git-age-filter install                     # configure the per-repo filter
+age -d -i "$PRJ_ROOT/identities/age/yubikey-id-5f449e60.txt" "$PRJ_ROOT/.age/local-key.age" > "$PRJ_ROOT/.age/local-key"
+chmod 600 "$PRJ_ROOT/.age/local-key"
+git-age-filter unlock                      # decrypt the working tree
+```
+
+See the [git-age-filter README](per-system/pkgs/by-name/git-age-filter/README.md)
+for how the filter works and its day-to-day commands.
+
+### Onboard a new host
+
+A new host needs its SSH public key added to the secrets config so agenix can
+rekey secrets for it.
+
+1. **Retrieve the host SSH public key:**
+   ```console
+   # macOS only: generate the host key first if it doesn't exist
+   sudo /usr/libexec/sshd-keygen-wrapper
+
+   cat /etc/ssh/ssh_host_ed25519_key.pub
+   ```
+
+2. **Add the host key to secrets configuration:**
+   - Edit `secrets/secrets.nix` and add the new host's public key
+   - Rekey all secrets:
+     ```console
+     agenix --rekey
+     ```
+
 ## Bootstrapping a new Linux system
 
 ### Initial Installation
@@ -93,59 +138,15 @@ partition scheme using disko.
 
 #### Manual Installation
 
-If you prefer manual control, follow the
-[NixOS manual partitioning guide](https://nixos.org/manual/nixos/stable/#sec-installation-manual-partitioning).
-
-After partitioning and mounting your filesystems to `/mnt`:
-
-1. Generate hardware configuration:
-   ```console
-   nixos-generate-config --root /mnt
-   ```
-
-2. Copy the generated `hardware-configuration.nix` to your machine's directory
-   in this repo
-
-3. Install with bootstrap mode enabled:
-   ```console
-   sudo nixos-install --root /mnt --no-root-passwd \
-     --flake .#<hostname> \
-     --override-input bootstrap github:boolean-option/true
-   ```
-
-### Decrypt repository secrets (git-age-filter)
-
-Some files in this repo are encrypted at rest with
-[`git-age-filter`](per-system/pkgs/by-name/git-age-filter/README.md) and check
-out as ciphertext on a fresh clone. The filter is configured per-repo, so
-`install` must run first. To decrypt (one-time Yubikey touch):
-
-```console
-git-age-filter install                     # configure the per-repo filter
-root="$(git rev-parse --show-toplevel)"
-age -d -i "$root/identities/age/yubikey-id-5f449e60.txt" "$root/.age/local-key.age" > "$root/.age/local-key"
-chmod 600 "$root/.age/local-key"
-git-age-filter unlock                      # decrypt the working tree
-```
-
-See the [git-age-filter README](per-system/pkgs/by-name/git-age-filter/README.md)
-for how the filter works and its day-to-day commands.
+For manual partitioning and install (kept for historical reference), see
+[docs/manual-nixos-install.md](docs/manual-nixos-install.md).
 
 ### After First Boot
 
-1. **Retrieve the host SSH public key:**
-   ```console
-   cat /etc/ssh/ssh_host_ed25519_key.pub
-   ```
+1. [Onboard the new host](#onboard-a-new-host) — add its SSH key and rekey
+   secrets.
 
-2. **Add the host key to secrets configuration:**
-   - Edit `secrets/secrets.nix` and add the new host's public key
-   - Rekey all secrets:
-     ```console
-     agenix --rekey
-     ```
-
-3. **Switch to production configuration:**
+2. **Switch to production configuration:**
    ```console
    sudo nixos-rebuild switch --flake .#<hostname>
    ```
@@ -163,6 +164,11 @@ sudo nixos-enter
 
 ### Prerequisites
 
+> **Grant your terminal Full Disk Access first.** The Lix/Nix installer needs
+> to write to protected locations (e.g. `/nix`, `/etc`); without it the install
+> fails. Add your terminal (Terminal.app, iTerm, Ghostty, etc.) under **System
+> Settings → Privacy & Security → Full Disk Access**, then restart the terminal.
+
 1. **Install Lix:**
    ```console
    curl -sSf -L https://install.lix.systems/lix | sh -s -- install
@@ -179,31 +185,37 @@ sudo nixos-enter
    ```console
    git clone <repository-url>
    cd nixcfg
-   nix develop
+   nix develop --impure
    ```
 
    The devshell provides agenix (with yubikey support), darwin-rebuild, and
    other necessary tools.
 
-2. **Add the host key to secrets configuration:**
-   - Retrieve the host SSH public key:
-     ```console
-     cat /etc/ssh/ssh_host_ed25519_key.pub
-     ```
-   - Edit `secrets/secrets.nix` and add the new host's public key
-   - Rekey all secrets:
-     ```console
-     agenix --rekey
-     ```
+2. **Decrypt repository secrets:**
 
-3. **Build the Darwin configuration:**
+   Follow [Decrypt repository secrets (git-age-filter)](#decrypt-repository-secrets-git-age-filter)
+   to install the filter and unlock the working tree.
+
+3. [Onboard this host](#onboard-a-new-host) — add its SSH key and rekey secrets.
+
+4. **Add yourself as a trusted Nix user:**
+
+   Edit `/etc/nix/nix.custom.conf` and set `trusted-users` to match the value
+   in `flake.nix`:
+
    ```console
-   nix build .#darwinConfigurations.<hostname>.system --accept-flake-config
+   # adjust according to flake.nix
+   trusted-users = root chernand @admin
    ```
 
-4. **Apply the configuration:**
+5. **Build the Darwin configuration:**
    ```console
-   sudo ./result/sw/bin/darwin-rebuild switch --flake .#<hostname>
+   nix build ".#darwinConfigurations.$(hostname).system" --accept-flake-config
+   ```
+
+6. **Apply the configuration:**
+   ```console
+   sudo ./result/sw/bin/darwin-rebuild switch --flake ".#$(hostname)"
    ```
 
 ### Subsequent Updates
