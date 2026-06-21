@@ -45,8 +45,7 @@ bootstrap target:
 [group('nix')]
 [macos]
 build *args: lock
-    @just sudo-prime
-    sudo darwin-rebuild build --flake . {{args}} |& nom
+    darwin-rebuild build --flake . {{args}} |& nom
     nvd diff /run/current-system ./result
 
 [group('nix')]
