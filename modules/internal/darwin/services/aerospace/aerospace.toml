@@ -199,6 +199,10 @@ if.app-id = 'org.mozilla.firefox'
 run = "move-node-to-workspace F"
 
 [[on-window-detected]]
+if.app-id = 'app.zen-browser.zen'
+run = "move-node-to-workspace F"
+
+[[on-window-detected]]
 if.app-id = 'md.obsidian'
 run = "move-node-to-workspace N"
 
