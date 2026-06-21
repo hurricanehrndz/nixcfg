@@ -27,6 +27,11 @@ let
     # input), so the in-app auto-updater must stay off.
     env.DISABLE_AUTOUPDATER = "1";
 
+    # Lazily load tools instead of injecting every tool definition up front
+    # (each can cost ~5-10% of the context window). Mutually exclusive with
+    # ENABLE_EXPERIMENTAL_MCP_CLI — only one may be set.
+    env.ENABLE_TOOL_SEARCH = "1";
+
     permissions = {
       # Allow-by-default to minimize prompts: a broad allow auto-approves
       # everything, and the deny list still wins (precedence is deny > ask >
