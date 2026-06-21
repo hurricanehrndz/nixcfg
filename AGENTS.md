@@ -79,7 +79,7 @@ Modules are organized into two categories:
   - `modules/internal/shared/` - Common modules for both Darwin and NixOS
   - `modules/internal/darwin/` - Darwin-specific internal modules
   - `modules/internal/nixos/` - NixOS-specific internal modules
-  - `modules/internal/home/` - home-manager modules
+  - `modules/internal/home/` - home-manager modules. Program modules under `home/programs/` are grouped by concern: `ai/` (Claude + pi agents, rtk), `languages/` (per-language toolchains), `extras.nix` (a small misc-utils bucket), and individual tools at the top level.
 
 The `import-tree` utility automatically imports all Nix files in a directory tree, enabling a directory-based module organization pattern.
 
@@ -90,6 +90,13 @@ Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.
 - Applies shared modules from `modules/internal/shared/`
 - Applies class-specific modules (darwin or nixos) from `modules/internal/`
 - Integrates home-manager, agenix, and (NixOS only) disko modules
+
+### Host Capability Options (`hrndz`)
+Host capabilities are toggled through `hrndz.*` options defined in `modules/internal/shared/options.nix`, then enabled per-host (typically in `hosts/<arch>/<host>/config/users/hurricane.nix` or the host `default.nix`):
+- `roles.terminalDeveloper` / `roles.guiDeveloper` — developer-environment roles. `guiDeveloper` implies `terminalDeveloper`, which defaults `cli.enable = true`.
+- `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `extras`, `virtualization`, `macadmin`.
+
+These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.
 
 ### Per-System Configuration
 `per-system/` contains flake-parts perSystem configuration:
