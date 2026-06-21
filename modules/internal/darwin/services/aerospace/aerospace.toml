@@ -124,7 +124,8 @@ ctrl-shift-alt-equal = 'resize smart +50'
 ctrl-shift-alt-w = 'workspace W' # web
 ctrl-shift-alt-a = 'workspace A' # audio
 ctrl-shift-alt-r = 'workspace R' # ramblings (chat)
-ctrl-shift-alt-s = 'workspace S' # study notes
+ctrl-shift-alt-s = 'workspace S' # scratch thoughts
+ctrl-shift-alt-n = 'workspace N' # notes
 ctrl-shift-alt-t = 'workspace T' # terminal
 ctrl-shift-alt-v = 'workspace V' # video
 ctrl-shift-alt-c = 'workspace C' # code (vs)
@@ -136,7 +137,8 @@ ctrl-shift-alt-f = 'workspace F' # firefox
 ctrl-shift-alt-cmd-w = 'move-node-to-workspace W' # web
 ctrl-shift-alt-cmd-r = 'move-node-to-workspace R' # ramblings (chat)
 ctrl-shift-alt-cmd-a = 'move-node-to-workspace A' # audio
-ctrl-shift-alt-cmd-s = 'move-node-to-workspace S' # study
+ctrl-shift-alt-cmd-s = 'move-node-to-workspace S' # scratch thoughts
+ctrl-shift-alt-cmd-n = 'move-node-to-workspace N' # notes
 ctrl-shift-alt-cmd-t = 'move-node-to-workspace T' # terminal
 ctrl-shift-alt-cmd-v = 'move-node-to-workspace V' # video
 ctrl-shift-alt-cmd-c = 'move-node-to-workspace C' # code (vs)
@@ -196,8 +198,8 @@ if.app-id = 'org.mozilla.firefox'
 run = "move-node-to-workspace F"
 
 [[on-window-detected]]
-if.app-id = 'com.electron.logseq'
-run = "move-node-to-workspace S"
+if.app-id = 'md.obsidian'
+run = "move-node-to-workspace N"
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.VSCode'
@@ -209,4 +211,4 @@ run = ['layout floating', 'move-node-to-workspace C']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
-run = ['layout floating', 'move-node-to-workspace S']  # The callback itself
+run = 'layout floating'  # settings: always float, stay on the active workspace
