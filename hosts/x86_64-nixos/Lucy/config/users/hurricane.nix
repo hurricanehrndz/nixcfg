@@ -33,5 +33,8 @@ in
     }
   ];
 
-  hrndz.roles.guiDeveloper.enable = true;
+  hrndz = {
+    roles.guiDeveloper.enable = true;
+    tooling.ai.enable = true;
+  };
 }

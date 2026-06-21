@@ -65,10 +65,27 @@ let
       type = "command";
       command = statusline;
     };
+
+    # rtk (Rust Token Killer): rewrite Bash commands through the rtk proxy
+    # before they run so their output is token-optimized. The rtk binary is
+    # provided by the rtk home module; this hook is a no-op if it is missing.
+    hooks = {
+      PreToolUse = [
+        {
+          matcher = "Bash";
+          hooks = [
+            {
+              type = "command";
+              command = "rtk hook claude";
+            }
+          ];
+        }
+      ];
+    };
   };
 in
 {
-  config = mkIf cfg.roles.terminalDeveloper.enable {
+  config = mkIf cfg.tooling.ai.enable {
     # User-scope settings: Claude reads this at startup but never writes to
     # it (runtime state — auth, MCP, permission approvals — lives in
     # ~/.claude.json), so a read-only Nix store symlink is safe here.

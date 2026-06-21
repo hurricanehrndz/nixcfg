@@ -33,5 +33,6 @@ in
   # system customization via gated options
   hrndz = {
     roles.terminalDeveloper.enable = true;
+    tooling.ai.enable = true;
   };
 }
