@@ -66,6 +66,12 @@ git-age-filter unlock                      # decrypt the working tree
 See the [git-age-filter README](per-system/pkgs/by-name/git-age-filter/README.md)
 for how the filter works and its day-to-day commands.
 
+### Add a new YubiKey age recipient
+
+To provision a new YubiKey as an age identity and grant it access to both the
+git-age-filter local key and agenix secrets, see
+[docs/adding-a-yubikey-age-key.md](docs/adding-a-yubikey-age-key.md).
+
 ### Onboard a new host
 
 A new host needs its SSH public key added to the secrets config so agenix can
