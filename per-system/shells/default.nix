@@ -14,7 +14,7 @@
         let
           inherit (pkgs.stdenv.hostPlatform) isDarwin;
           treefmt = config.treefmt.build.wrapper;
-          nix = inputs'.determinate-nix.packages.default;
+          nix = pkgs.lixPackageSets.stable.lix;
           pkgWithCategory = category: package: { inherit package category; };
 
           # Override agenix to use age with age-plugin-yubikey
@@ -33,9 +33,6 @@
               nvd
               treefmt
             ]
-            ++ (with pkgs.local; [
-              git-age-filter
-            ])
             ++ (lib.optionals isDarwin [
               inputs'.nix-darwin.packages.darwin-rebuild
             ]);
@@ -53,6 +50,7 @@
             }
             (pkgWithCategory "secrets" age)
             (pkgWithCategory "secrets" age-plugin-yubikey)
+            (pkgWithCategory "secrets" local.git-age-filter)
             (pkgWithCategory "shortcuts" just)
             {
               name = "format-all";

@@ -34,6 +34,7 @@ in
     tooling.golang.enable = true;
     tooling.extras.enable = true;
     tooling.js.enable = true;
+    tooling.ai.enable = true;
   };
 
   users.users.${username} = {

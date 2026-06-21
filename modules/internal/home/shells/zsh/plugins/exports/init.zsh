@@ -14,7 +14,7 @@ else
 fi
 
 export EZA_COLORS='da=1;34:gm=1;34:Su=1;34'
-export BAT_CONFIG_FILE="$HOME/.config/bat/config"
+export BAT_CONFIG_PATH="$HOME/.config/bat/config"
 
 #######################################
 # batman settings

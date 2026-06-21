@@ -16,6 +16,9 @@ in
     useUserPackages = true;
     useGlobalPkgs = true;
     backupFileExtension = "bak";
+    # Overwrite a stale `.bak` instead of aborting activation when one already
+    # exists (e.g. a previously hand-managed ~/.claude/settings.json.bak).
+    overwriteBackup = true;
 
     extraSpecialArgs = {
       inherit

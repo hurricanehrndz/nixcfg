@@ -32,6 +32,7 @@ in
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.js.enable = true;
+    tooling.ai.enable = true;
   };
 
   users.users.${username} = {

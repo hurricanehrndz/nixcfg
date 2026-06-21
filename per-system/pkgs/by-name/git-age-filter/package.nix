@@ -19,4 +19,10 @@ pkgs.symlinkJoin {
   buildInputs = [ pkgs.makeWrapper ];
 
   postBuild = "wrapProgram $out/bin/${script-name} --prefix PATH : $out/bin";
+
+  meta = {
+    description = "Transparent git file encryption using age and age-plugin-yubikey";
+    license = pkgs.lib.licenses.mit;
+    mainProgram = script-name;
+  };
 }

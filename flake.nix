@@ -2,17 +2,21 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos.org"
-      "https://install.determinate.systems"
       "https://nix-community.cachix.org"
+      "https://cache.lix.systems"
       "https://nixpkgs-update.cachix.org"
       "https://hurricanehrndz.cachix.org"
+      "https://ryoppippi.cachix.org"
+      "https://devenv.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
+      "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
+      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
     ];
     experimental-features = [
       "nix-command"
@@ -21,21 +25,11 @@
   };
 
   inputs = {
-    # `flake-schemas` is a flake that provides schemas for commonly used flake outputs,
-    # like `packages` and `devShells`.
-    flake-schemas.url = "github:DeterminateSystems/flake-schemas";
-
-    # determinate nix cli
-    determinate-nix.url = "https://flakehub.com/f/DeterminateSystems/nix-src/*";
-    # determinate nix module
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-
     # Package sets
     # nixos
     nixos-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
-    nixos-unstalbe.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs
-    nixpkgs-stable.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # Browser packages that have not landed in nixpkgs yet.
@@ -81,6 +75,9 @@
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
     nix-claude-code.url = "github:ryoppippi/nix-claude-code";
     nix-claude-code.inputs.nixpkgs.follows = "nixpkgs";
+    # pi: terminal coding agent (unofficial Nix packaging)
+    pi.url = "github:lukasl-dev/pi.nix";
+    pi.inputs.nixpkgs.follows = "nixpkgs";
 
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -95,11 +92,6 @@
       url = "github:mroth/evalcache";
       flake = false;
     };
-
-    # embedded flakes
-    media-app-stack.url = "path:./modules/internal/nixos/services/_media-app-stack";
-    media-app-stack.inputs.nixpkgs.follows = "nixpkgs";
-    media-app-stack.inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
 
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";

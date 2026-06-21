@@ -39,6 +39,26 @@ in
         };
 
       })
+      # Build the nix-adjacent tooling against Lix rather than CppNix.
+      (final: prev: {
+        # nix-eval-jobs is built specially in the Lix package set (custom
+        # callPackage against lixStdenv) and doesn't reference the top-level
+        # name, so it can be inherited directly.
+        inherit (prev.lixPackageSets.stable) nix-eval-jobs;
+
+        # nixpkgs-review, nix-fast-build, and colmena are defined in the Lix set
+        # as overrides of the top-level packages, so inheriting them would
+        # recurse once we shadow those names here. Override the base packages
+        # against Lix (and the Lix-built nix-eval-jobs) instead.
+        nixpkgs-review = prev.nixpkgs-review.override { nix = prev.lixPackageSets.stable.lix; };
+        nix-fast-build = prev.nix-fast-build.override {
+          inherit (prev.lixPackageSets.stable) nix-eval-jobs;
+        };
+        colmena = prev.colmena.override {
+          nix = prev.lixPackageSets.stable.lix;
+          inherit (prev.lixPackageSets.stable) nix-eval-jobs;
+        };
+      })
     ];
   };
 }

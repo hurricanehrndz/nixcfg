@@ -16,6 +16,7 @@ in
     hosts = {
       HX7YG952H5.nixpkgs = inputs.nixpkgs-darwin;
       LH9KCR6DJX.nixpkgs = inputs.nixpkgs-darwin;
+      HHY314TN61.nixpkgs = inputs.nixpkgs-darwin;
     };
 
     shared.modules = [
@@ -33,8 +34,6 @@ in
             agenix.nixosModules.default
             disko.nixosModules.disko
             snapraid-runner.nixosModules.default
-            determinate.nixosModules.default
-            media-app-stack.nixosModules.default
             self.nixosModules.default
           ])
 
@@ -43,7 +42,6 @@ in
             (import-tree ../modules/internal/darwin)
             home-manager.darwinModules.home-manager
             agenix.darwinModules.default
-            determinate.darwinModules.default
             self.darwinModules.default
           ])
         ];

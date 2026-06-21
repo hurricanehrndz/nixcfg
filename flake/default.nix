@@ -2,11 +2,7 @@
 {
   systems = builtins.filter (system: system != "x86_64-darwin") (import inputs.systems);
 
-  # original flake attributes here.
-  flake = {
-    # define schemas
-    inherit (inputs.flake-schemas) schemas;
-  };
+  flake = { };
 
   imports = [
     # lib exports

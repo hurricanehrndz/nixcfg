@@ -63,6 +63,9 @@ in
   ##: hardware
   hardware.enableRedistributableFirmware = mkDefault true;
 
+  ##: networking
+  systemd.network.wait-online.anyInterface = true;
+
   ##: services
   services.earlyoom.enable = true;
 

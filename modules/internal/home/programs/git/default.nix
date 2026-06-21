@@ -35,39 +35,35 @@ in
           cs = "commit --verbose --sign";
           d = "diff";
           dc = "diff --cached";
-          discard = "reset --hard";
           f = "fetch";
           fm = "pull";
           main = "switch main";
           master = "switch master";
           p = "push";
           pc = "push --set-upstream origin HEAD";
-          pf = "push --force-with-lease";
-          rsc = "rebase --exec \"git commit --amend --no-edit -n -S\" -i";
+          pf = "push --force-with-lease --force-if-includes";
+          resign = "rebase --exec \"git commit --amend --no-edit -n -S\" -i";
           ss = "status --short";
           st = "status";
           sw = "switch";
           swc = "switch -c";
           unstage = "restore --staged";
+          # discard staged + unstaged changes to tracked files (scoped
+          # alternative to `discard`/reset --hard, which also moves HEAD)
+          restore-all = "restore --staged --worktree .";
 
           # logging
-          plog = "log --graph --pretty='format:%C(red)%d%C(reset) %C(yellow)%h%C(reset) %ar %C(green)%aN%C(reset) %s'";
           tlog = "log --stat --since='1 Day Ago' --graph --pretty=oneline --abbrev-commit --date=relative";
           l = "!git --no-pager log -1 --format=format:\"$path: %Cgreen%s%Creset (%Cred$(git rev-parse --abbrev-ref HEAD)%Creset/%ar)\"; echo ";
-          x = "log -10 --format=format:'%Cgreen%h%Creset %Cred%d%Creset %s %Cblue(%ar by %an)%Creset'";
-          xlog = "!git x";
-          xlogall = "log -10 --branches --format=format:'%Cgreen%h%Creset %Cred%d%Creset %s %Cblue(%ar by %an)%Creset'";
-          xlogfull = "log --format=format:'%Cgreen%h%Creset %Cred%d%Creset %s %Cblue(%ar by %an)%Creset'";
-          xlogfullall = "log --branches --format=format:'%Cgreen%h%Creset %Cred%d%Creset %s %Cblue(%ar by %an)%Creset'";
-          glog = "log --oneline --decorate --stat --graph";
-          tree = "log --decorate --pretty=oneline --abbrev-commit --graph";
           lc = "log ORIG_HEAD.. --stat --no-merges --graph";
-          lg1 = "log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)'";
-          lg2 = "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all";
-          lb = "log --topo-order --pretty=format:'%C(green)%h%C(reset) %s%n%C(blue)(%ar by %an)%C(red)%d%C(reset)%n'";
-          lga = "log --topo-order --all --graph --pretty=format:'%C(green)%h%C(reset) %s%C(red)%d %C(reset)%C(blue)Sig:%G?%C(reset)%n'";
+          # lg: compact one-line graph (daily driver)
+          lg = "log --decorate --pretty=oneline --abbrev-commit --graph";
+          # lgs: compact graph with per-commit file stats
+          lgs = "log --oneline --decorate --stat --graph";
+          # lga: detailed graph across all branches, plus signature status
+          lga = "log --all --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset) %C(blue)Sig:%G?%C(reset)%C(bold yellow)%d%C(reset)'";
+          # lm: full single-commit view with body
           lm = "log --topo-order --pretty=format:'%C(bold)Commit:%C(reset) %C(green)%H%C(red)%d%n%C(bold)Author:%C(reset) %C(cyan)%an <%ae>%n%C(bold)Date:%C(reset)   %C(blue)%ai (%ar)%C(reset)%n%+B'";
-          lg = "!git lg1";
           # other stuff
           clean-all = "clean -dfq";
         };

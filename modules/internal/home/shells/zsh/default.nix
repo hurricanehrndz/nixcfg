@@ -140,6 +140,10 @@ let
   # ZSH dotDir configuration - define once to avoid circular deps
   dotDir = "${config.xdg.configHome}/zsh";
 
+  # agenix-decrypted env vars secret (lives under /run/agenix, owned by the
+  # user). Sourced directly so it doesn't collide with home-manager's dotDir.
+  envVarsPath = osConfig.age.secrets."home/zsh/env_vars".path;
+
   # Cached inits configuration
   cachedInits = [
     {
@@ -213,8 +217,8 @@ in
       dotDir = dotDir;
       # zprof.enable = true;
       envExtra = ''
-        if [[ -f  $HOME/.config/zsh/env_vars ]]; then
-          source $HOME/.config/zsh/env_vars
+        if [[ -f  ${envVarsPath} ]]; then
+          source ${envVarsPath}
         fi
 
         # PATH

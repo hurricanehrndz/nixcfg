@@ -8,7 +8,6 @@
 }:
 let
   user = config.system.primaryUser;
-  inherit (config.users.users.${user}) home;
   group = if pkgs.stdenv.hostPlatform.isDarwin then "staff" else "users";
 in
 {
@@ -17,7 +16,10 @@ in
       owner = user;
       inherit group;
       file = "${self}/secrets/home/zsh/env_vars.age";
-      path = "${home}/.config/zsh/env_vars";
+      # Decrypt to the default agenix runtime dir (/run/agenix/...). Do NOT
+      # symlink into ~/.config/zsh: that dir is home-manager's zsh dotDir, and
+      # agenix (running as root) would create it root-owned, breaking
+      # home-manager's later `mkdir ~/.config/zsh/plugins` for user plugins.
     };
   };
 }
