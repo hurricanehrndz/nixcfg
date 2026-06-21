@@ -52,8 +52,11 @@ in the identity file's comment header.
 ## 2. Save the identity file
 
 Export the identity stub to `identities/age/`, following the existing naming
-convention `yubikey-id-<tag>.txt` (the `<tag>` is the short hex tag shown in the
-generate output / recipient):
+convention `yubikey-id-<tag>.txt`. The `<tag>` is the short hex tag that
+`age-plugin-yubikey --generate` suggests as the default filename
+(`age-yubikey-identity-<tag>.txt`) — it is derived from the recipient
+(public key), **not** from the serial number, so don't try to compute it from
+the serial:
 
 ```sh
 root="$(git rev-parse --show-toplevel)"
@@ -154,6 +157,32 @@ age -d -i "$root/identities/age/yubikey-id-<tag>.txt" \
 
 A touch (and PIN, on first use of the session) confirms the new identity is in
 play.
+
+## Identify which YubiKey matches which id file
+
+The filename tag (`5f449e60`) is an internal hash of the recipient and is **not**
+printed by `age-plugin-yubikey --list` or any `ykman` command — so don't try to
+match on it. Match on the **serial** or **recipient** instead; both appear in the
+`--list` output *and* in each id file's header.
+
+Name the id file for whatever key is currently plugged in:
+
+```sh
+root="$(git rev-parse --show-toplevel)"
+grep -rl "$(age-plugin-yubikey --list | grep '^age1yubikey')" \
+  "$root"/identities/age/yubikey-id-*.txt
+```
+
+Or eyeball the serial:
+
+```sh
+age-plugin-yubikey --list | grep Serial          # e.g. Serial: 20497165
+grep -l "Serial: 20497165" "$root"/identities/age/yubikey-id-*.txt
+```
+
+(`ykman list` also reports connected serials, and `ykman piv info` confirms a key
+has an age slot — look for `CN=AGE` under `Slot 82`/`RETIRED1`, which is age
+"Slot 1" — but neither shows the age recipient or tag.)
 
 ## Recipient files at a glance
 

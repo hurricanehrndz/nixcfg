@@ -10,6 +10,7 @@ let
   };
   yubikeys = {
     yubikey-5c-5f449e60 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
+    yubikey-5nfc-0b55362f = "age1yubikey1q0v4s9zc0c7jtkqmfkhfmmyay00typ05rz3wvak5uw7gjejz944xsjf8uys";
   };
   deepthoughtKeys = [
     machineKeys.DeepThought
