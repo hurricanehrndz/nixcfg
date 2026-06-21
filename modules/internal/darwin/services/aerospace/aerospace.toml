@@ -126,7 +126,7 @@ ctrl-shift-alt-a = 'workspace A' # audio
 ctrl-shift-alt-r = 'workspace R' # ramblings (chat)
 ctrl-shift-alt-s = 'workspace S' # scratch thoughts
 ctrl-shift-alt-n = 'workspace N' # notes
-ctrl-shift-alt-t = 'workspace T' # terminal
+ctrl-shift-alt-t = ['workspace T', 'layout h_accordion'] # terminal
 ctrl-shift-alt-v = 'workspace V' # video
 ctrl-shift-alt-c = 'workspace C' # code (vs)
 ctrl-shift-alt-b = 'workspace B' # books
@@ -139,7 +139,7 @@ ctrl-shift-alt-cmd-r = 'move-node-to-workspace R' # ramblings (chat)
 ctrl-shift-alt-cmd-a = 'move-node-to-workspace A' # audio
 ctrl-shift-alt-cmd-s = 'move-node-to-workspace S' # scratch thoughts
 ctrl-shift-alt-cmd-n = 'move-node-to-workspace N' # notes
-ctrl-shift-alt-cmd-t = 'move-node-to-workspace T' # terminal
+ctrl-shift-alt-cmd-t = ['move-node-to-workspace T', 'workspace T', 'layout h_accordion'] # terminal
 ctrl-shift-alt-cmd-v = 'move-node-to-workspace V' # video
 ctrl-shift-alt-cmd-c = 'move-node-to-workspace C' # code (vs)
 ctrl-shift-alt-cmd-b = 'move-node-to-workspace B' # books
@@ -173,8 +173,9 @@ cmd-f = 'layout floating tiling' # Toggle between floating and tiling layout
 [[on-window-detected]]
 if.app-id="com.mitchellh.ghostty"
 run= [
-  "layout h_accordion",
   "move-node-to-workspace T",
+  "workspace T",
+  "layout h_accordion",
 ]
 
 [[on-window-detected]]
