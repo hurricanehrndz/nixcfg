@@ -29,7 +29,7 @@ in
       # Symlink every input source into /etc/nix/inputs/<name>.
       environment.etc = inputsToPaths inputs;
       nix.enable = true;
-      nix.package = pkgs.lixPackageSets.stable.lix;
+      nix.package = pkgs.lixPackageSets.latest.lix;
 
       # Pin the flake registry to our locked inputs so `nix run nixpkgs#...`
       # resolves to the local store path instead of fetching/re-locking.
