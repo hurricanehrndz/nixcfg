@@ -5,19 +5,24 @@
 }:
 let
   inherit (inputs) import-tree;
+
+  hostsPath = ../hosts;
+  subdirs = path: lib.attrNames (lib.filterAttrs (_: t: t == "directory") (builtins.readDir path));
+
+  # Auto-pin every darwin host to nixpkgs-darwin, derived from the
+  # `hosts/*-darwin/<host>` layout, so new hosts need no entry here.
+  darwinHostNames = lib.concatMap (arch: subdirs (hostsPath + "/${arch}")) (
+    lib.filter (lib.hasSuffix "-darwin") (subdirs hostsPath)
+  );
 in
 {
   imports = [ inputs.easy-hosts.flakeModule ];
 
   easy-hosts = {
     autoConstruct = true;
-    path = ../hosts;
+    path = hostsPath;
 
-    hosts = {
-      HX7YG952H5.nixpkgs = inputs.nixpkgs-darwin;
-      LH9KCR6DJX.nixpkgs = inputs.nixpkgs-darwin;
-      HHY314TN61.nixpkgs = inputs.nixpkgs-darwin;
-    };
+    hosts = lib.genAttrs darwinHostNames (_: { nixpkgs = inputs.nixpkgs-darwin; });
 
     shared.modules = [
       (import-tree ../modules/internal/shared)
