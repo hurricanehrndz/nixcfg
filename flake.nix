@@ -93,6 +93,12 @@
       flake = false;
     };
 
+    # ghostty themes (vendored; not built into ghostty)
+    noctis-themes-src = {
+      url = "github:EastSun5566/noctis-themes";
+      flake = false;
+    };
+
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
 

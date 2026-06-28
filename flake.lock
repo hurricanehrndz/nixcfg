@@ -811,6 +811,22 @@
         "type": "github"
       }
     },
+    "noctis-themes-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1776327174,
+        "narHash": "sha256-MjyVwvMU1uQ5tq2sO7L6id1AfHAaLoHV7TeOhbLpWMA=",
+        "owner": "EastSun5566",
+        "repo": "noctis-themes",
+        "rev": "b205d6eb1fda0158471510383139ec751f395eca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "EastSun5566",
+        "repo": "noctis-themes",
+        "type": "github"
+      }
+    },
     "pdenv": {
       "inputs": {
         "blink-cmp": "blink-cmp",
@@ -946,6 +962,7 @@
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgs-master": "nixpkgs-master",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "noctis-themes-src": "noctis-themes-src",
         "pdenv": "pdenv",
         "pi": "pi",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
