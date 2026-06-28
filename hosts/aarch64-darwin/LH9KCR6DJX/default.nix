@@ -35,6 +35,7 @@ in
     tooling.extras.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
+    tooling.ai.localInference.enable = true;
   };
 
   users.users.${username} = {

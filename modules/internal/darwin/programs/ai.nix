@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.tooling.ai.enable {
+  config = mkIf (cfg.tooling.ai.enable && cfg.tooling.ai.localInference.enable) {
     # oMLX (Apple-Silicon MLX inference server) lives in a custom tap whose
     # repo isn't named `homebrew-omlx`, so the clone target must be explicit.
     homebrew.taps = [

@@ -23,7 +23,13 @@ in
 
       js.enable = mkEnableOption "Enable JavaScript tooling";
 
-      ai.enable = mkEnableOption "Enable AI tooling";
+      ai = {
+        enable = mkEnableOption "Enable AI tooling";
+
+        # omlx and friends load large MLX models into RAM, so only enable this
+        # on hosts with ample memory (>=30GB). Off by default; flip on per-host.
+        localInference.enable = mkEnableOption "Enable local LLM inference tooling (omlx)";
+      };
 
       golang.enable = mkEnableOption "Enable Golang tooling";
 

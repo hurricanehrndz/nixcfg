@@ -35,6 +35,7 @@ in
     tooling.extras.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
+    tooling.ai.localInference.enable = true;
   };
 
   users.users.${username} = {
@@ -42,7 +43,7 @@ in
     isHidden = false;
     shell = pkgs.zsh;
   };
-  
+
   home-manager.users."${username}" = {
     home.stateVersion = "26.05";
   };

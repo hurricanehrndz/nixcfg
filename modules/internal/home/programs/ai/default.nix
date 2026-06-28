@@ -18,6 +18,7 @@ in
     home.packages = [
       inputs.nix-claude-code.packages.${system}.claude
       inputs.pi.packages.${system}.default
+      pkgs.unstable.agent-browser # headless browser automation CLI for AI agents
     ];
   };
 }
