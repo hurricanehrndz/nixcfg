@@ -16,12 +16,14 @@ in
   # The agents wire into it differently:
   #   - Claude Code: a PreToolUse Bash hook (`rtk hook claude`) declared in the
   #     claude module's settings.json.
-  #   - Pi: the auto-loaded extension below, which delegates to `rtk rewrite`.
+  #   - Pi: the extension below, wired through the pi module's
+  #     programs.pi.coding-agent.extensions option, which delegates to
+  #     `rtk rewrite`.
   config = mkIf cfg.tooling.ai.enable {
     home.packages = [ pkgs.unstable.rtk ];
 
-    # Pi auto-discovers extensions under ~/.pi/agent/extensions/, so a managed
-    # file is enough — no `pi install` needed.
-    home.file.".pi/agent/extensions/rtk.ts".source = ./pi-extension.ts;
+    # Loaded via pi's --extension flag (routed through the pi module option)
+    # rather than ~/.pi auto-discovery, so all pi wiring lives in one option.
+    programs.pi.coding-agent.extensions = [ ./pi-extension.ts ];
   };
 }
