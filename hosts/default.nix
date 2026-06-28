@@ -22,7 +22,9 @@ in
     autoConstruct = true;
     path = hostsPath;
 
-    hosts = lib.genAttrs darwinHostNames (_: { nixpkgs = inputs.nixpkgs-darwin; });
+    hosts = lib.genAttrs darwinHostNames (_: {
+      nixpkgs = inputs.nixpkgs-darwin;
+    });
 
     shared.modules = [
       (import-tree ../modules/internal/shared)
