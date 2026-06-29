@@ -6,7 +6,6 @@
       "https://cache.lix.systems"
       "https://nixpkgs-update.cachix.org"
       "https://hurricanehrndz.cachix.org"
-      "https://ryoppippi.cachix.org"
       "https://devenv.cachix.org"
     ];
     extra-trusted-public-keys = [
@@ -15,7 +14,6 @@
       "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
-      "ryoppippi.cachix.org-1:b2LbtWNvJeL/qb1B6TYOMK+apaCps4SCbzlPRfSQIms="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
     ];
     experimental-features = [
@@ -73,8 +71,6 @@
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
-    nix-claude-code.url = "github:ryoppippi/nix-claude-code";
-    nix-claude-code.inputs.nixpkgs.follows = "nixpkgs";
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";

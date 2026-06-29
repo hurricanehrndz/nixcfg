@@ -452,26 +452,6 @@
         "type": "github"
       }
     },
-    "nix-claude-code": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782765201,
-        "narHash": "sha256-HtC27c0dy2yn6feMRkfEY1EHF/65P5ylQOqENZWTn3E=",
-        "owner": "ryoppippi",
-        "repo": "nix-claude-code",
-        "rev": "bf3b3c473e156099d6a1825df3f6040089a7ba8c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ryoppippi",
-        "repo": "nix-claude-code",
-        "type": "github"
-      }
-    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -879,7 +859,6 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager_2",
         "import-tree": "import-tree",
-        "nix-claude-code": "nix-claude-code",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-stable": "nixos-stable",

@@ -23,8 +23,8 @@ let
     theme = "light";
     editorMode = "vim";
 
-    # Nix owns the Claude version (managed via the nix-claude-code flake
-    # input), so the in-app auto-updater must stay off.
+    # Nix owns the Claude version (from nixpkgs), so the in-app
+    # auto-updater must stay off.
     env.DISABLE_AUTOUPDATER = "1";
 
     # Lazily load tools instead of injecting every tool definition up front
