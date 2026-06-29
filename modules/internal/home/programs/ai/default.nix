@@ -15,8 +15,8 @@ in
   # home-manager. They come from flake inputs rather than nixpkgs so they
   # track upstream releases closely.
   #
-  # pi is managed by its own module (./pi) via inputs.pi.homeModules.default,
-  # which installs the (wrapped) pi package itself — so it is not listed here.
+  # pi is managed by its own vendored module (./pi/module.nix) which installs
+  # the (wrapped) pi package itself — so it is not listed here.
   config = mkIf cfg.tooling.ai.enable {
     home.packages = [
       inputs.nix-claude-code.packages.${system}.claude
