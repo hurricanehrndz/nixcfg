@@ -25,13 +25,13 @@ in
 
   programs.pi.coding-agent.enable = cfg.tooling.ai.enable;
 
-  # Ensure my personal pi-ext bundle is checked out for development and
-  # registered as a local pi package. This edits ~/.pi/agent/settings.json
-  # imperatively rather than via programs.pi.coding-agent.settings: that option
-  # would turn the (pi-owned) file into a read-only store symlink and stomp pi's
-  # `packages` array. The jq merge only *adds* the entry when missing, so it
-  # never reorders the array, never rewrites on a no-op switch, and never
-  # clobbers invalid JSON.
+  # Ensure my personal pi-ext bundle is checked out for development and keep a
+  # set of pi packages registered (the local pi-ext checkout plus remote
+  # bundles). This edits ~/.pi/agent/settings.json imperatively rather than via
+  # programs.pi.coding-agent.settings: that option would turn the (pi-owned)
+  # file into a read-only store symlink and stomp pi's `packages` array. The jq
+  # merge only *appends* missing entries (order is irrelevant to pi), so it
+  # never rewrites on a no-op switch and never clobbers invalid JSON.
   home.activation.piExtRepo = lib.mkIf cfg.tooling.ai.enable (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       export PATH="${
@@ -50,17 +50,24 @@ in
         $DRY_RUN_CMD git clone https://github.com/hurricanehrndz/pi-ext.git "$repo"
       fi
 
-      # Register the local package only if it is not already listed.
-      if [ -e "$settings" ] && jq -e --arg p "$repo" '(.packages // []) | index($p)' "$settings" >/dev/null 2>&1; then
-        : # already registered
+      # Packages to keep registered: local pi-ext checkout plus remote bundles.
+      want=(
+        "$repo"
+        "git:github.com/otahontas/pi-coding-agent-catppuccin"
+      )
+      wantjson="$(jq -n '$ARGS.positional' --args "''${want[@]}")"
+
+      # Append any desired entry that is not already listed.
+      if [ -e "$settings" ] && jq -e --argjson want "$wantjson" '(.packages // []) as $cur | all($want[]; . as $x | $cur | index($x))' "$settings" >/dev/null 2>&1; then
+        : # all registered
       else
         $DRY_RUN_CMD mkdir -p "$(dirname "$settings")"
         tmp="$(mktemp)"
         ok=0
         if [ -e "$settings" ]; then
-          jq --arg p "$repo" '.packages = ((.packages // []) + [$p])' "$settings" > "$tmp" && ok=1
+          jq --argjson want "$wantjson" '.packages = ((.packages // []) as $cur | $cur + [ $want[] | select(. as $x | ($cur | index($x)) == null) ])' "$settings" > "$tmp" && ok=1
         else
-          jq -n --arg p "$repo" '{packages: [$p]}' > "$tmp" && ok=1
+          jq -n --argjson want "$wantjson" '{packages: $want}' > "$tmp" && ok=1
         fi
         if [ "$ok" -eq 1 ]; then
           $DRY_RUN_CMD mv "$tmp" "$settings"
