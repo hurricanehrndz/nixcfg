@@ -188,7 +188,11 @@ run = "move-node-to-workspace A"
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = "move-node-to-workspace R"
+run = [
+  "move-node-to-workspace R",
+  "workspace R",
+  "layout h_accordion",
+]
 
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
