@@ -136,6 +136,10 @@ in
     })
 
     (mkIf cfg.podman.enable {
+      environment.systemPackages = with pkgs; [
+        podman-compose
+      ];
+
       virtualisation.podman = {
         enable = true;
         dockerCompat = mkDefault cfg.podman.dockerCompat;

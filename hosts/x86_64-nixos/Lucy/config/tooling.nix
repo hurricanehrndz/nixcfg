@@ -12,5 +12,6 @@
       };
     };
     js.enable = true;
+    golang.enable = true;
   };
 }
