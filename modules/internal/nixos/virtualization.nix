@@ -33,6 +33,20 @@ let
 in
 {
   options.hrndz.tooling.virtualization = {
+    podman = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable podman with docker compatibility.";
+      };
+
+      dockerCompat = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Create a docker alias for podman.";
+      };
+    };
+
     hardware.cpuVendor = mkOption {
       type = types.nullOr (
         types.enum [
@@ -119,6 +133,19 @@ in
         "vfio_pci"
         "vfio_virqfd"
       ];
+    })
+
+    (mkIf cfg.podman.enable {
+      virtualisation.podman = {
+        enable = true;
+        dockerCompat = mkDefault cfg.podman.dockerCompat;
+        defaultNetwork.settings.dns_enabled = true;
+        autoPrune = {
+          enable = true;
+          dates = "weekly";
+          flags = [ "--all" ];
+        };
+      };
     })
   ]);
 }
