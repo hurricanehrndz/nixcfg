@@ -47,6 +47,15 @@ alias ta='tmux attach -t'
 alias tk='tmux kill-session -t'
 
 #######################################
+# zellij aliases
+#######################################
+alias zj='zellij'
+alias zm='zellij attach main --create'
+alias zl='zellij list-sessions'
+alias za='zellij attach'
+alias zk='zellij kill-session'
+
+#######################################
 # utility aliases
 #######################################
 alias xsh='TERM=xterm-256color ssh'
