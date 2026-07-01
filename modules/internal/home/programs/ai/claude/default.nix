@@ -55,7 +55,6 @@ let
         "Bash(reboot:*)"
         "Bash(rm -rf /:*)"
         "Bash(rm -rf ~:*)"
-        "Bash(:(){:|:&};:)" # fork bomb
         "Bash(diskutil:*)"
         "Bash(nix-collect-garbage:*)"
       ];
