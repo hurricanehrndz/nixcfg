@@ -38,6 +38,7 @@ in
         # keybind = "super+t=new_window";
         macos-titlebar-style = "hidden";
         window-padding-y = "6,0";
+        macos-option-as-alt = true;
         # window-padding-color = "extend";
       };
     };
