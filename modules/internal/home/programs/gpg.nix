@@ -80,9 +80,6 @@ in
           # keyserver hkps://hkps.pool.sks-keyservers.net
           # keyserver hkps://pgp.ocf.berkeley.edu
 
-          # Refuse to run if secure (non-swappable) memory can't be locked,
-          # so key material never leaks to swap.
-          require-secmem = true;
           # Suppress the startup copyright banner.
           no-greeting = true;
           # Default all output to ASCII armor instead of binary.
