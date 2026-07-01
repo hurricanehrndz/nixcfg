@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   ...
@@ -6,6 +7,9 @@
 let
   inherit (lib) mkIf;
   cfg = osConfig.hrndz;
+  # Restricted agent socket on the *local* machine, forwarded to remotes.
+  # Resolves per-host: /Users/hurricane on muthur, /Users/chernand on the work mac.
+  localGpgExtraSocket = "${config.home.homeDirectory}/.gnupg/S.gpg-agent.extra";
 in
 {
   config = mkIf cfg.cli.enable {
@@ -19,7 +23,7 @@ in
           ForwardAgent = true;
           RemoteForward = [
             {
-              host.address = "/Users/chernand/.gnupg/S.gpg-agent";
+              host.address = localGpgExtraSocket;
               bind.address = "/run/user/1000/gnupg/S.gpg-agent";
             }
           ];
@@ -30,7 +34,7 @@ in
           ForwardAgent = true;
           RemoteForward = [
             {
-              host.address = "/Users/chernand/.gnupg/S.gpg-agent";
+              host.address = localGpgExtraSocket;
               bind.address = "/run/user/1000/gnupg/S.gpg-agent";
             }
           ];
@@ -41,7 +45,7 @@ in
           ForwardAgent = true;
           RemoteForward = [
             {
-              host.address = "/Users/chernand/.gnupg/S.gpg-agent";
+              host.address = localGpgExtraSocket;
               bind.address = "/run/user/1000/gnupg/S.gpg-agent";
             }
           ];
@@ -54,7 +58,7 @@ in
           StrictHostKeyChecking = "no";
           RemoteForward = [
             {
-              host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
+              host.address = localGpgExtraSocket;
               bind.address = "/run/user/3576/gnupg/S.gpg-agent";
             }
           ];
@@ -67,7 +71,7 @@ in
           StrictHostKeyChecking = "no";
           RemoteForward = [
             {
-              host.address = "/Users/chernand/.gnupg/S.gpg-agent.extra";
+              host.address = localGpgExtraSocket;
               bind.address = "/run/user/3712/gnupg/S.gpg-agent";
             }
           ];
