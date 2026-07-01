@@ -1,5 +1,4 @@
 {
-  self,
   pkgs,
   lib,
   ...
@@ -27,10 +26,14 @@ in
     isHidden = false;
     shell = pkgs.zsh;
   };
-  
+
   home-manager.users."${username}" = {
     home.stateVersion = "26.05";
   };
+
+  homebrew.casks = [
+    "1password"
+  ];
 
   system.primaryUser = "${username}";
   system.stateVersion = lib.mkForce 7;
