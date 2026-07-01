@@ -67,12 +67,26 @@ in
         # https://github.com/drduh/config/blob/master/gpg.conf
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Esoteric-Options.html
+        # Most drduh hardening (cipher/digest/compress prefs, cert-digest-algo,
+        # s2k-*, no-comments, no-emit-version, no-symkey-cache, keyid-format,
+        # list/verify-options, with-fingerprint, require-cross-certification)
+        # is already applied by home-manager's defaults; only the delta is set
+        # here. Deprecated no-ops in GnuPG 2.x (use-agent, charset, fixed-list-
+        # mode) are intentionally omitted.
         settings = {
           # Keyserver URL
           keyserver = "hkps://keys.openpgp.org";
           # keyserver hkps://keyserver.ubuntu.com:443
           # keyserver hkps://hkps.pool.sks-keyservers.net
           # keyserver hkps://pgp.ocf.berkeley.edu
+
+          # Refuse to run if secure (non-swappable) memory can't be locked,
+          # so key material never leaks to swap.
+          require-secmem = true;
+          # Suppress the startup copyright banner.
+          no-greeting = true;
+          # Default all output to ASCII armor instead of binary.
+          armor = true;
         };
       };
     }
