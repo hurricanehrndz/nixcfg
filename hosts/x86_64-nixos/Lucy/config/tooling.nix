@@ -13,5 +13,6 @@
     };
     js.enable = true;
     golang.enable = true;
+    extras.enable = true;
   };
 }
