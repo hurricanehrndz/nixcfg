@@ -12,8 +12,8 @@ in
   # Terminal AI coding agents, managed for both NixOS and Darwin via
   # home-manager.
   #
-  # pi is managed by its own vendored module (./pi/module.nix) which installs
-  # the (wrapped) pi package itself — so it is not listed here.
+  # pi is managed by the pi.nix Home Manager module, which installs the
+  # wrapped package itself — so it is not listed here.
   config = mkIf cfg.tooling.ai.enable {
     home.packages = [
       pkgs.master.claude-code

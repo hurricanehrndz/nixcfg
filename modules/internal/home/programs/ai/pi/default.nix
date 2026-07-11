@@ -1,5 +1,6 @@
 {
   osConfig,
+  inputs,
   lib,
   pkgs,
   ...
@@ -8,17 +9,12 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  # pi terminal coding agent — vendored module (./module.nix) provides
-  # CLI-flag-based extension/skill/theme wiring without managing
-  # ~/.pi/agent/settings.json (which remains pi-owned at runtime).
-  #
-  # The wrapper only *adds* CLI flags; pi still auto-discovers anything under
-  # ~/.pi/agent. Extensions (e.g. rtk's) are contributed to the
-  # programs.pi.coding-agent.extensions option from their owning modules.
-  imports = [ ./module.nix ];
+  # The upstream module's wrapper only adds CLI flags; pi still owns
+  # ~/.pi/agent/settings.json and auto-discovers anything under ~/.pi/agent.
+  # Extensions (e.g. rtk's) are contributed from their owning modules.
+  imports = [ inputs.pi.homeModules.default ];
 
   programs.pi.coding-agent.enable = cfg.tooling.ai.enable;
-  programs.pi.coding-agent.package = pkgs.master.pi-coding-agent;
 
   # Ensure my personal pi-ext bundle is checked out for development and keep a
   # set of pi packages registered (the local pi-ext checkout plus remote
