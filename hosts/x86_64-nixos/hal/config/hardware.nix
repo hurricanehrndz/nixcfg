@@ -24,7 +24,7 @@
   boot.kernelModules = [ ];
 
   # Enables DHCP on each ethernet and wireless interface starting with en*.
-  hrndz.nixos.networkd-dhcp.enable = true;
+  hrndz.networking.networkdDhcp.enable = true;
   # Static IP for the network-controller host (ported from the old config).
   # Verify the interface name on the target before deploying.
   systemd.network.networks."50-enp2s0" = {

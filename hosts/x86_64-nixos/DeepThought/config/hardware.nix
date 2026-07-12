@@ -28,7 +28,7 @@
   };
 
   # Enables DHCP on each ethernet and wireless interface starting with en*.
-  hrndz.nixos.networkd-dhcp.enable = true;
+  hrndz.networking.networkdDhcp.enable = true;
   # Override specific interface with static ip
   systemd.network.networks."10-enp0s31f6" = {
     matchConfig.Name = "enp0s31f6";

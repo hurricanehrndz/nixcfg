@@ -8,10 +8,10 @@ let
     mkIf
     mkEnableOption
     ;
-  cfg = config.hrndz.nixos.networkd-dhcp;
+  cfg = config.hrndz.networking.networkdDhcp;
 in
 {
-  options.hrndz.nixos.networkd-dhcp = {
+  options.hrndz.networking.networkdDhcp = {
     enable = mkEnableOption "Enable networkd DHCP" // {
       default = false;
     };
