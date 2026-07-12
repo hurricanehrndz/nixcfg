@@ -100,8 +100,12 @@ in
               set -g @catppuccin_status_right_separator "█"
               set -g @catppuccin_status_connect_separator "yes"
 
-              # Right status
-              set -g status-right "#{E:@catppuccin_status_application}#{E:@catppuccin_status_date_time}"
+              # Right status. The host block is appended only when the client is
+              # attached over SSH: SSH_CONNECTION is refreshed in the session
+              # environment on every attach via update-environment (see above),
+              # so the hostname (just left of the clock) shows on remote sessions
+              # and stays hidden locally.
+              set -g status-right "#{E:@catppuccin_status_application}#{?SSH_CONNECTION,#{E:@catppuccin_status_host},}#{E:@catppuccin_status_date_time}"
 
               # Left status
               # are we controlling tmux or the content of the panes?

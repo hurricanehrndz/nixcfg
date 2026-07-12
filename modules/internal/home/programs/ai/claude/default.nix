@@ -82,12 +82,58 @@ let
       ];
     };
   };
+
+  settingsFile = pkgs.writeText "claude-settings.json" (builtins.toJSON settings);
 in
 {
+  # Claude DOES write to ~/.claude/settings.json — installing a plugin persists
+  # `enabledPlugins` there, and `/config` writes preference changes — so it
+  # cannot be a read-only Nix store symlink (that fails with EROFS). Instead of
+  # `home.file` (always a store symlink), seed a real, writable file and
+  # jq-merge our declarative baseline over it on every switch: the baseline wins
+  # on the keys it sets, while runtime-only keys Claude adds (enabledPlugins,
+  # marketplaces, /config tweaks) are preserved. Mirrors the ai/pi approach.
   config = mkIf cfg.tooling.ai.enable {
-    # User-scope settings: Claude reads this at startup but never writes to
-    # it (runtime state — auth, MCP, permission approvals — lives in
-    # ~/.claude.json), so a read-only Nix store symlink is safe here.
-    home.file.".claude/settings.json".text = builtins.toJSON settings;
+    home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      export PATH="${
+        lib.makeBinPath [
+          pkgs.jq
+          pkgs.coreutils
+        ]
+      }:$PATH"
+
+      settings="$HOME/.claude/settings.json"
+      baseline=${settingsFile}
+
+      $DRY_RUN_CMD mkdir -p "$(dirname "$settings")"
+
+      # Migrate away from the old read-only store symlink, if present.
+      if [ -L "$settings" ]; then
+        $DRY_RUN_CMD rm -f "$settings"
+      fi
+
+      tmp="$(mktemp)"
+      ok=0
+      if [ -f "$settings" ]; then
+        # `.[0] * .[1]`: recursive object merge, baseline (.[1]) wins conflicts;
+        # runtime-only keys present only in the existing file survive.
+        jq -s '.[0] * .[1]' "$settings" "$baseline" > "$tmp" && ok=1
+      else
+        cp "$baseline" "$tmp" && ok=1
+      fi
+
+      if [ "$ok" -eq 1 ]; then
+        # Skip the write (and mtime bump) when nothing changed.
+        if [ -f "$settings" ] && cmp -s "$tmp" "$settings"; then
+          rm -f "$tmp"
+        else
+          $DRY_RUN_CMD mv "$tmp" "$settings"
+          $DRY_RUN_CMD chmod 600 "$settings"
+        fi
+      else
+        rm -f "$tmp"
+        echo "claudeSettings: could not update $settings (invalid JSON?); left unchanged" >&2
+      fi
+    '';
   };
 }
