@@ -79,7 +79,7 @@ Modules are organized into two categories:
   - `modules/internal/shared/` - Common modules for both Darwin and NixOS
   - `modules/internal/darwin/` - Darwin-specific internal modules
   - `modules/internal/nixos/` - NixOS-specific internal modules
-  - `modules/internal/home/` - home-manager modules. Program modules under `home/programs/` are grouped by concern: `ai/` (Claude + pi agents, rtk), `languages/` (per-language toolchains), `extras.nix` (a small misc-utils bucket), and individual tools at the top level.
+  - `modules/internal/home/` - home-manager modules. Program modules under `home/programs/` are grouped by concern: `ai/` (Claude + pi agents, rtk), `languages/` (per-language toolchains), `document-tools.nix` (document authoring/conversion tools), and individual tools at the top level.
 
 The `import-tree` utility automatically imports all Nix files in a directory tree, enabling a directory-based module organization pattern.
 
@@ -98,7 +98,7 @@ Host capabilities are toggled through `hrndz.*` options defined in `modules/inte
 - `roles.developerWorkstation` — graphical developer workstation. It implies `terminalDeveloper`.
 - `roles.swiftDeveloper` — Darwin-only Swift development role. It implies `terminalDeveloper`.
 - `roles.vmHost` — VM hosting role. It implies `terminalUser` and provides platform-specific virtualization tooling.
-- `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `extras`, `macadmin`.
+- `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `documentTools`, `macAdmin`.
 
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.
 

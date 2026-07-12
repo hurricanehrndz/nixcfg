@@ -29,11 +29,11 @@ in
     roles.developerWorkstation.enable = true;
     roles.swiftDeveloper.enable = true;
     roles.vmHost.enable = true;
-    tooling.macadmin.enable = true;
+    tooling.macAdmin.enable = true;
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.golang.enable = true;
-    tooling.extras.enable = true;
+    tooling.documentTools.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
     tooling.ai.localInference.enable = true;

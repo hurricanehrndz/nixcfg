@@ -10,7 +10,7 @@ in
 {
   options.hrndz = {
     tooling = {
-      macadmin.enable = mkEnableOption "Enable MacAdmin tooling";
+      macAdmin.enable = mkEnableOption "Enable MacAdmin tooling";
 
       python.enable = mkEnableOption "Enable Python tooling";
 
@@ -28,7 +28,7 @@ in
 
       golang.enable = mkEnableOption "Enable Golang tooling";
 
-      extras.enable = mkEnableOption "Enable extra cmdline utils";
+      documentTools.enable = mkEnableOption "Enable document authoring and conversion tooling";
     };
 
     roles = {

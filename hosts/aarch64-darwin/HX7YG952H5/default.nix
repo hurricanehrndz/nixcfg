@@ -29,7 +29,7 @@ in
     roles.developerWorkstation.enable = true;
     roles.swiftDeveloper.enable = true;
     roles.vmHost.enable = true;
-    tooling.macadmin.enable = true;
+    tooling.macAdmin.enable = true;
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.js.enable = true;

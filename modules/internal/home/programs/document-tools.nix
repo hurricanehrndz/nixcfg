@@ -10,7 +10,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.tooling.extras.enable {
+  config = mkIf cfg.tooling.documentTools.enable {
     home.packages = with pkgs; [
       pandoc
       local.html-to-markdown

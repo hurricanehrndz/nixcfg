@@ -16,7 +16,7 @@ in
   hrndz = {
     roles.developerWorkstation.enable = true;
     roles.vmHost.enable = true;
-    tooling.extras.enable = true;
+    tooling.documentTools.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
   };

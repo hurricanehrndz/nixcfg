@@ -8,7 +8,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.tooling.macadmin.enable {
+  config = mkIf cfg.tooling.macAdmin.enable {
     homebrew.brews = [
       "carthage"
       "makensis"
