@@ -27,7 +27,8 @@ in
   # system customization via gated options
   hrndz = {
     roles.guiDeveloper.enable = true;
-    tooling.virtualization.enable = true;
+    roles.swiftDeveloper.enable = true;
+    roles.vmHost.enable = true;
     tooling.macadmin.enable = true;
     tooling.python.enable = true;
     tooling.ruby.enable = true;

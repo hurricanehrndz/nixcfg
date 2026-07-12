@@ -15,7 +15,7 @@ let
     optionals
     types
     ;
-  cfg = config.hrndz.tooling.virtualization;
+  cfg = config.hrndz.roles.vmHost;
   cpuModule =
     if cfg.hardware.cpuVendor == "intel" then
       "kvm-intel"
@@ -32,7 +32,7 @@ let
       null;
 in
 {
-  options.hrndz.tooling.virtualization = {
+  options.hrndz.roles.vmHost = {
     podman = {
       enable = mkOption {
         type = types.bool;
@@ -98,7 +98,7 @@ in
       assertions = [
         {
           assertion = cfg.hardware.cpuVendor != null;
-          message = "hrndz.tooling.virtualization.enable requires hrndz.tooling.virtualization.hardware.cpuVendor to be set to \"intel\" or \"amd\".";
+          message = "hrndz.roles.vmHost.enable requires hrndz.roles.vmHost.hardware.cpuVendor to be set to \"intel\" or \"amd\".";
         }
       ];
 
@@ -110,6 +110,8 @@ in
       users.users = lib.genAttrs cfg.users (_: {
         extraGroups = [ "kvm" ] ++ optional cfg.libvirt.enable "libvirtd";
       });
+
+      environment.systemPackages = [ pkgs.vncdo ];
     }
 
     (mkIf cfg.libvirt.enable {

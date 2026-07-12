@@ -13,8 +13,6 @@ in
     cli.enable = mkEnableOption "Enable CLI/TUI programs";
 
     tooling = {
-      virtualization.enable = mkEnableOption "Enable virtualization tooling";
-
       macadmin.enable = mkEnableOption "Enable MacAdmin tooling";
 
       python.enable = mkEnableOption "Enable Python tooling";
@@ -36,9 +34,13 @@ in
       extras.enable = mkEnableOption "Enable extra cmdline utils";
     };
 
-    roles.terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";
+    roles = {
+      terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";
 
-    roles.guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment";
+      guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment";
+
+      vmHost.enable = mkEnableOption "Enable VM hosting";
+    };
   };
 
   config.hrndz = mkMerge [
@@ -47,6 +49,10 @@ in
     })
 
     (mkIf cfg.roles.guiDeveloper.enable {
+      roles.terminalDeveloper.enable = true;
+    })
+
+    (mkIf cfg.roles.vmHost.enable {
       roles.terminalDeveloper.enable = true;
     })
   ];

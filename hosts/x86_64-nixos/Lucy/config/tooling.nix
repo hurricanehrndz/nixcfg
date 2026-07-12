@@ -1,7 +1,7 @@
 { ... }:
 {
-  hrndz.tooling = {
-    virtualization = {
+  hrndz = {
+    roles.vmHost = {
       enable = true;
       hardware.cpuVendor = "intel";
       users = [ "hurricane" ];
@@ -11,8 +11,8 @@
         ignoreMsrs = true;
       };
     };
-    js.enable = true;
-    golang.enable = true;
-    extras.enable = true;
+    tooling.js.enable = true;
+    tooling.golang.enable = true;
+    tooling.extras.enable = true;
   };
 }

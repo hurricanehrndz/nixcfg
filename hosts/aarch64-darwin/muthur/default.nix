@@ -9,13 +9,13 @@ let
 in
 {
   age = {
-    secrets = {};
+    secrets = { };
   };
 
   # system customization via gated options
   hrndz = {
     roles.guiDeveloper.enable = true;
-    tooling.virtualization.enable = true;
+    roles.vmHost.enable = true;
     tooling.extras.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
