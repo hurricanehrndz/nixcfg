@@ -74,7 +74,7 @@ in
   };
 
   config = mkMerge [
-    (mkIf config.hrndz.roles.guiDeveloper.enable {
+    (mkIf config.hrndz.roles.developerWorkstation.enable {
       hrndz.desktop.hyprland.enable = mkDefault true;
     })
 

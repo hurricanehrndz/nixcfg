@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = lib.mkIf cfg.cli.enable {
+  config = lib.mkIf cfg.roles.terminalUser.enable {
     home.packages = with pkgs; [
       # modern coreutils alternatives
       just

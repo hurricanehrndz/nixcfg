@@ -184,7 +184,7 @@ let
   ];
 in
 {
-  config = mkIf cfg.cli.enable {
+  config = mkIf cfg.roles.terminalUser.enable {
     home.extraOutputsToInstall = [
       "/share/zsh"
       # TODO: is this already implied by `/share/zsh`?

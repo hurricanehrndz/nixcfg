@@ -10,7 +10,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.roles.developerWorkstation.enable {
     environment.systemPackages =
       with pkgs;
       mkIf isLinux [

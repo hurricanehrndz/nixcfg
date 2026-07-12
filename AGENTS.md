@@ -93,9 +93,11 @@ Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.
 
 ### Host Capability Options (`hrndz`)
 Host capabilities are toggled through `hrndz.*` options defined in `modules/internal/shared/options.nix`, then enabled per-host (typically in `hosts/<arch>/<host>/config/users/hurricane.nix` or the host `default.nix`):
-- `roles.terminalDeveloper` / `roles.guiDeveloper` — developer-environment roles. `guiDeveloper` implies `terminalDeveloper`, which defaults `cli.enable = true`.
+- `roles.terminalUser` — baseline interactive shell environment.
+- `roles.terminalDeveloper` — terminal-based development environment. It implies `terminalUser`.
+- `roles.developerWorkstation` — graphical developer workstation. It implies `terminalDeveloper`.
 - `roles.swiftDeveloper` — Darwin-only Swift development role. It implies `terminalDeveloper`.
-- `roles.vmHost` — VM hosting role. It implies `terminalDeveloper` and provides platform-specific virtualization tooling.
+- `roles.vmHost` — VM hosting role. It implies `terminalUser` and provides platform-specific virtualization tooling.
 - `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `extras`, `macadmin`.
 
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.

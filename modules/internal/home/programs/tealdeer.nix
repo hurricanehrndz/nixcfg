@@ -9,7 +9,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = lib.mkIf cfg.cli.enable {
+  config = lib.mkIf cfg.roles.terminalUser.enable {
     programs.tealdeer.enable = true;
     programs.tealdeer.settings = {
       display = {

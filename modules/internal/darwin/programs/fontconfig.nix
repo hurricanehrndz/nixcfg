@@ -5,7 +5,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.roles.developerWorkstation.enable {
     homebrew.brews = [
       "fontconfig"
     ];

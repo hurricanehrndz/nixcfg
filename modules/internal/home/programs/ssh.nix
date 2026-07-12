@@ -12,7 +12,7 @@ let
   localGpgExtraSocket = "${config.home.homeDirectory}/.gnupg/S.gpg-agent.extra";
 in
 {
-  config = mkIf cfg.cli.enable {
+  config = mkIf cfg.roles.terminalUser.enable {
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;

@@ -66,7 +66,7 @@ in
       ];
     }
 
-    (mkIf (config.hrndz.roles.guiDeveloper.enable || config.hrndz.desktop.hyprland.enable) {
+    (mkIf (config.hrndz.roles.developerWorkstation.enable || config.hrndz.desktop.hyprland.enable) {
       hrndz.desktop.browser.browsers = mkDefault [ "zen" ];
     })
 

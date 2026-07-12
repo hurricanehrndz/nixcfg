@@ -8,7 +8,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = l.mkIf cfg.cli.enable {
+  config = l.mkIf cfg.roles.terminalUser.enable {
     programs.zellij = {
       enable = true;
       # Don't auto-start zellij on shell launch; tmux is the primary

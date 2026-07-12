@@ -9,7 +9,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.roles.developerWorkstation.enable {
     hrndz.services.aerospace.enable = true;
     hrndz.services.aerospace.package = pkgs.unstable.aerospace;
     hrndz.services.aerospace.settings = builtins.readFile ./aerospace.toml;

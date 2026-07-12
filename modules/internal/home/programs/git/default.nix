@@ -9,7 +9,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.cli.enable {
+  config = mkIf cfg.roles.terminalUser.enable {
     home.packages = with pkgs; [
       delta
       difftastic

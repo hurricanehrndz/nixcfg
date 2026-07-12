@@ -2,7 +2,6 @@
 let
   inherit (lib)
     mkEnableOption
-    mkDefault
     mkIf
     mkMerge
     ;
@@ -10,8 +9,6 @@ let
 in
 {
   options.hrndz = {
-    cli.enable = mkEnableOption "Enable CLI/TUI programs";
-
     tooling = {
       macadmin.enable = mkEnableOption "Enable MacAdmin tooling";
 
@@ -35,9 +32,11 @@ in
     };
 
     roles = {
+      terminalUser.enable = mkEnableOption "Enable the terminal user environment";
+
       terminalDeveloper.enable = mkEnableOption "Enable terminal-based development environment";
 
-      guiDeveloper.enable = mkEnableOption "Enable graphical-based development environment";
+      developerWorkstation.enable = mkEnableOption "Enable the graphical developer workstation";
 
       vmHost.enable = mkEnableOption "Enable VM hosting";
     };
@@ -45,15 +44,15 @@ in
 
   config.hrndz = mkMerge [
     (mkIf cfg.roles.terminalDeveloper.enable {
-      cli.enable = mkDefault true;
+      roles.terminalUser.enable = true;
     })
 
-    (mkIf cfg.roles.guiDeveloper.enable {
+    (mkIf cfg.roles.developerWorkstation.enable {
       roles.terminalDeveloper.enable = true;
     })
 
     (mkIf cfg.roles.vmHost.enable {
-      roles.terminalDeveloper.enable = true;
+      roles.terminalUser.enable = true;
     })
   ];
 }

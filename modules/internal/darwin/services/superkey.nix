@@ -4,7 +4,7 @@ let
   cfg = config.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.roles.developerWorkstation.enable {
     hrndz.services.superkey.enable = true;
   };
 }

@@ -11,7 +11,7 @@ let
   cfg = osConfig.hrndz;
 in
 {
-  config = mkIf cfg.roles.guiDeveloper.enable {
+  config = mkIf cfg.roles.developerWorkstation.enable {
     # Noctis themes, vendored from https://github.com/EastSun5566/noctis-themes
     # (not built into ghostty). Links the repo's ghostty/ dir into
     # $XDG_CONFIG_HOME/ghostty/themes/, making every theme selectable by name.

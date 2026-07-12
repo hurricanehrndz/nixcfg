@@ -14,7 +14,7 @@ in
 
   # system customization via gated options
   hrndz = {
-    roles.guiDeveloper.enable = true;
+    roles.developerWorkstation.enable = true;
     roles.vmHost.enable = true;
     tooling.extras.enable = true;
     tooling.js.enable = true;
