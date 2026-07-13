@@ -61,7 +61,7 @@ When patterns or requirements conflict, choose one using evidence such as recenc
 
 ### 8. Keep explicit checkpoints
 
-- Run subagents serially by default. Avoid parallel subagents unless the user explicitly directs parallel execution.
+- Do not use subagents unless the user explicitly directs their use.
 - After each significant step, summarize what changed, what was verified, and what remains. Do not continue from a state you cannot accurately describe.
 
 ### 9. Confirm high-impact actions
