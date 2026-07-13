@@ -52,6 +52,14 @@ alias tk='tmux kill-session -t'
 alias zj='zellij'
 alias zm='zellij attach main --create'
 
+
+#######################################
+# ai aliases
+#######################################
+alias clauded='claude --dangerously-skip-permissions'
+alias claudex='CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1  CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-terra" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol"'
+alias claudedx='CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1  CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-terra" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol" --dangerously-skip-permissions'
+
 #######################################
 # utility aliases
 #######################################
@@ -71,5 +79,4 @@ alias rgv="rg --line-number --with-filename --color=always --field-match-separat
     --preview 'bat --color=always --highlight-line {2} {1}' \
     --preview-window 'right,50%,+{2}-3,~3'"
 alias mdcat='glow'
-alias clauded='claude --dangerously-skip-permissions'
 alias pi='env -u AWS_PROFILE pi'
