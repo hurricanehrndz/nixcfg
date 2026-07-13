@@ -11,6 +11,10 @@ in
   nixpkgs = {
     config = {
       allowUnfree = true;
+      permittedInsecurePackages = [
+        # Required by Prettier; remove when nixpkgs stops building it with pnpm_9.
+        "pnpm-9.15.9"
+      ];
     };
 
     overlays = [
