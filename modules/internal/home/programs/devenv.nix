@@ -10,7 +10,10 @@ let
 in
 {
   config = mkIf cfg.roles.terminalDeveloper.enable {
-    # spin up devenv-based dev environments in other projects
-    home.packages = with pkgs; [ devenv ];
+    # spin up project-specific development environments
+    home.packages = with pkgs; [
+      devenv
+      mise
+    ];
   };
 }
