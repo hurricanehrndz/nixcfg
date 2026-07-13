@@ -127,7 +127,7 @@ ctrl-shift-alt-r = 'workspace R' # ramblings (chat)
 ctrl-shift-alt-s = 'workspace S' # scratch thoughts
 ctrl-shift-alt-n = 'workspace N' # notes
 ctrl-shift-alt-t = ['workspace T', 'layout h_accordion'] # terminal
-ctrl-shift-alt-v = 'workspace V' # video
+ctrl-shift-alt-v = ['workspace V', 'layout floating'] # virtual machines
 ctrl-shift-alt-c = 'workspace C' # code (vs)
 ctrl-shift-alt-b = 'workspace B' # books
 ctrl-shift-alt-d = 'workspace D' # docs
@@ -140,7 +140,7 @@ ctrl-shift-alt-cmd-a = 'move-node-to-workspace A' # audio
 ctrl-shift-alt-cmd-s = 'move-node-to-workspace S' # scratch thoughts
 ctrl-shift-alt-cmd-n = 'move-node-to-workspace N' # notes
 ctrl-shift-alt-cmd-t = ['move-node-to-workspace T', 'workspace T', 'layout h_accordion'] # terminal
-ctrl-shift-alt-cmd-v = 'move-node-to-workspace V' # video
+ctrl-shift-alt-cmd-v = ['move-node-to-workspace V', 'workspace V', 'layout floating'] # virtual machines
 ctrl-shift-alt-cmd-c = 'move-node-to-workspace C' # code (vs)
 ctrl-shift-alt-cmd-b = 'move-node-to-workspace B' # books
 ctrl-shift-alt-cmd-d = 'move-node-to-workspace D' # docs
@@ -215,8 +215,16 @@ if.app-id = 'com.microsoft.VSCode'
 run = "move-node-to-workspace C"
 
 [[on-window-detected]]
+if.app-id = 'com.utmapp.UTM'
+run = ['layout floating', 'move-node-to-workspace V']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.ScreenSharing'
+run = ['layout floating', 'move-node-to-workspace V']
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.WindowsApp'
-run = ['layout floating', 'move-node-to-workspace C']
+run = ['layout floating', 'move-node-to-workspace V']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
