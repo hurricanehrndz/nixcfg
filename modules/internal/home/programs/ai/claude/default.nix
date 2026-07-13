@@ -94,6 +94,8 @@ in
   # on the keys it sets, while runtime-only keys Claude adds (enabledPlugins,
   # marketplaces, /config tweaks) are preserved. Mirrors the ai/pi approach.
   config = mkIf cfg.tooling.ai.enable {
+    home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+
     home.activation.claudeSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       export PATH="${
         lib.makeBinPath [
