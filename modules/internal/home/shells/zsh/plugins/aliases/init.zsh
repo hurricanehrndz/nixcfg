@@ -57,8 +57,9 @@ alias zm='zellij attach main --create'
 # ai aliases
 #######################################
 alias clauded='claude --dangerously-skip-permissions'
-alias claudex='CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1  CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]"'
-alias claudedx='CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1  CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]" --dangerously-skip-permissions'
+alias claudex='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]"'
+alias claudedx='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]" --dangerously-skip-permissions'
+alias claudedxo='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="claude-code-opus-4-8" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]" --dangerously-skip-permissions'
 
 #######################################
 # utility aliases
