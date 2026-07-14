@@ -15,6 +15,7 @@ in
     hrndz.roles.terminalDeveloper.enable = true;
 
     environment.systemPackages = with pkgs; [
+      sourcekit-lsp
       swiftformat
       swiftlint
       tuist
