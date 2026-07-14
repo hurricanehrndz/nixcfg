@@ -218,9 +218,14 @@ run = "move-node-to-workspace C"
 if.app-id = 'com.utmapp.UTM'
 run = ['layout floating', 'move-node-to-workspace V']
 
+# ponytail: resize the first window once; use an AX helper if concurrent sessions need exact targeting.
 [[on-window-detected]]
 if.app-id = 'com.apple.ScreenSharing'
-run = ['layout floating', 'move-node-to-workspace V']
+run = [
+  'layout floating',
+  'move-node-to-workspace V',
+  "exec-and-forget osascript -e 'tell application \"System Events\" to set size of first window of process \"Screen Sharing\" to {1024, 768}'",
+]
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.WindowsApp'
