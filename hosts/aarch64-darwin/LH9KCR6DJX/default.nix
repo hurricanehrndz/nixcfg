@@ -33,6 +33,7 @@ in
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.golang.enable = true;
+    tooling.zig.enable = true;
     tooling.documentTools.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;

@@ -28,6 +28,8 @@ in
 
       golang.enable = mkEnableOption "Enable Golang tooling";
 
+      zig.enable = mkEnableOption "Enable Zig tooling";
+
       documentTools.enable = mkEnableOption "Enable document authoring and conversion tooling";
     };
 
