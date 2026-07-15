@@ -59,10 +59,10 @@ alias zm='zellij attach main --create'
 alias clauded='claude --dangerously-skip-permissions'
 
 claudex() {
-  local model=openai/gpt-5.6-so1
+  local model="openai/gpt-5.6-sol[1m]"
   local -a proxy_env=()
   if [[ ${AWS_PROFILE:-} != cpe ]]; then
-    model=gpt-5.6-so1
+    model="gpt-5.6-so1"
     proxy_env=(
       ANTHROPIC_BASE_URL=http://127.0.0.1:8317
       ANTHROPIC_AUTH_TOKEN=local
@@ -70,7 +70,7 @@ claudex() {
   fi
 
   env "${proxy_env[@]}" \
-    "CLAUDE_CODE_SUBAGENT_MODEL=$model" \
+    CLAUDE_CODE_SUBAGENT_MODEL="\"$model\"" \
     CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
     CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
     ENABLE_TOOL_SEARCH=false \
