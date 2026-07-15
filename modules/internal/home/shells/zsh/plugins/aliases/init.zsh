@@ -57,9 +57,27 @@ alias zm='zellij attach main --create'
 # ai aliases
 #######################################
 alias clauded='claude --dangerously-skip-permissions'
-alias claudex='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]"'
-alias claudedx='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="openai/gpt-5.6-sol[1m]" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]" --dangerously-skip-permissions'
-alias claudedxo='CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 CLAUDE_CODE_SUBAGENT_MODEL="claude-code-opus-4-8" CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 claude --model "openai/gpt-5.6-sol[1m]" --dangerously-skip-permissions'
+
+claudex() {
+  local model=openai/gpt-5.6-so1
+  local -a proxy_env=()
+  if [[ ${AWS_PROFILE:-} != cpe ]]; then
+    model=gpt-5.6-so1
+    proxy_env=(
+      ANTHROPIC_BASE_URL=http://127.0.0.1:8317
+      ANTHROPIC_AUTH_TOKEN=local
+    )
+  fi
+
+  env "${proxy_env[@]}" \
+    "CLAUDE_CODE_SUBAGENT_MODEL=$model" \
+    CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
+    CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
+    ENABLE_TOOL_SEARCH=false \
+    claude --model "$model" "$@"
+}
+
+alias claudedx='claudex --dangerously-skip-permissions'
 
 #######################################
 # utility aliases
