@@ -53,7 +53,7 @@ in
         "dev" = {
           User = "chernand";
           ForwardAgent = true;
-          HostName = "cpedev1";
+          HostName = "chernand-main.devbox.yelpcorp.com";
           UserKnownHostsFile = "/dev/null";
           StrictHostKeyChecking = "no";
           RemoteForward = [
