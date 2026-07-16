@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   osConfig,
   ...
 }:
@@ -20,6 +21,10 @@ in
       # nix-direnv is sourced separately via direnv/lib, so this stdlib only
       # adds the custom layout.
       stdlib = ''
+        use_mise() {
+          direnv_load ${lib.getExe pkgs.mise} direnv exec
+        }
+
         layout_poetry() {
           if [[ ! -f pyproject.toml ]]; then
             log_error 'No pyproject.toml found. Use `poetry new` or `poetry init` to create one first.'
