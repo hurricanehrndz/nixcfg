@@ -33,10 +33,6 @@ in
         });
 
         local = self.packages.${system};
-        master = import inputs.nixpkgs-master {
-          inherit system;
-          config.allowUnfree = true;
-        };
         unstable = import inputs.nixpkgs-unstable {
           inherit system;
           config.allowUnfree = true;

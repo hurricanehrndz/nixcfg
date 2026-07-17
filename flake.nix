@@ -3,22 +3,20 @@
     extra-substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
-      "https://pi.cachix.org"
-      "https://codex-cli.cachix.org"
       "https://cache.lix.systems"
       "https://nixpkgs-update.cachix.org"
       "https://hurricanehrndz.cachix.org"
       "https://devenv.cachix.org"
+      "https://cache.numtide.com"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "pi.cachix.org-1:lGeoGJaZ5ZDabuRzkcD5EBTNnDM4HJ1vqeOxlWk1Flk="
-      "codex-cli.cachix.org-1:1Br3H1hHoRYG22n//cGKJOk3cQXgYobUel6O8DgSing="
       "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
       "nixpkgs-update.cachix.org-1:6y6Z2JdoL3APdu6/+Iy8eZX2ajf09e4EE9SnxSML1W8="
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
     experimental-features = [
       "nix-command"
@@ -33,7 +31,6 @@
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixpkgs-master.url = "github:NixOS/nixpkgs/master";
     # Browser packages that have not landed in nixpkgs yet.
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     # nix-darwin
@@ -100,7 +97,7 @@
 
     # coding agents
     pi.url = "github:lukasl-dev/pi.nix";
-    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
     # bootstrap flag
     bootstrap.url = "github:boolean-option/false";

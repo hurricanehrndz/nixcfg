@@ -103,11 +103,11 @@ Host capabilities are toggled through `hrndz.*` options defined in `modules/inte
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.
 
 ### AI Coding Agents (`modules/internal/home/programs/ai/`)
-All agents are gated on `tooling.ai` and managed via home-manager. Two share a clear ownership boundary worth respecting when editing:
+All agents are gated on `tooling.ai` and managed via home-manager. Their packages come from `inputs.llm-agents`; `inputs.pi` remains only for pi's Home Manager module. Two share a clear ownership boundary worth respecting when editing:
 
-- **Claude** (`claude/`): comes from the `nix-claude-code` flake input. We own `~/.claude/settings.json` as a read-only Nix store symlink (runtime state like auth/MCP lives in `~/.claude.json`, which we never touch). The rtk integration is a `PreToolUse` Bash hook (`rtk hook claude`) declared in that settings.json.
-- **pi** (`pi/`): managed via `inputs.pi.homeModules.default` (the `programs.pi.coding-agent` module), **not** a bare package — so extensions/skills/themes/prompts/rules can be wired declaratively. The module installs its own wrapped `pi`; do not add pi to `home.packages`.
-- **rtk** (`rtk/`): the `pkgs.unstable.rtk` proxy that trims command output. Its pi extension is contributed to `programs.pi.coding-agent.extensions` from the rtk module itself (the option is a list and merges across modules), keeping the extension co-located with its dependency.
+- **Claude** (`claude/`): Nix merges a declarative baseline into the writable `~/.claude/settings.json`, preserving runtime-managed keys such as plugins. The rtk integration is a `PreToolUse` Bash hook (`rtk hook claude`) declared in that settings file.
+- **pi** (`pi/`): managed via `inputs.pi.homeModules.default` (the `programs.pi.coding-agent` module), **not** a bare package — so extensions/skills/themes/prompts/rules can be wired declaratively. Its `package` option points to the `llm-agents` build; the module installs the wrapped result, so do not add pi to `home.packages`.
+- **rtk** (`rtk/`): the `llm-agents` package that trims command output. Its pi extension is contributed to `programs.pi.coding-agent.extensions` from the rtk module itself (the option is a list and merges across modules), keeping the extension co-located with its dependency.
 
 **pi ownership boundary (deliberate):** `~/.pi/agent/settings.json` is **100% pi-owned** (theme, provider, model, the `packages` array, compaction) and written by pi at runtime via `pi install` / `pi config`. Do **not** set `programs.pi.coding-agent.settings` or `.models` — that would convert those files into Nix store symlinks and fight pi. Note the module merges settings with `jq '.[0] * .[1]'`, where `*` *replaces* arrays, so Nix-managing `packages` would stomp pi's list entirely.
 

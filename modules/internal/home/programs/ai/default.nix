@@ -1,12 +1,14 @@
 {
   lib,
   pkgs,
+  inputs,
   osConfig,
   ...
 }:
 let
   inherit (lib) mkIf;
   cfg = osConfig.hrndz;
+  packages = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   # Terminal AI coding agents, managed for both NixOS and Darwin via
@@ -16,12 +18,12 @@ in
   # wrapped package itself — so it is not listed here.
   config = mkIf cfg.tooling.ai.enable {
     home.packages = [
-      pkgs.master.claude-code
+      packages.claude-code
     ]
     # agent-browser drives a real Chrome via CDP; on headless hosts it has no
     # usable browser (and its `install` download won't run on NixOS), so gate
     # it on the GUI role. The pi web extension detects its absence on PATH and
     # disables browser rendering accordingly.
-    ++ lib.optional cfg.roles.developerWorkstation.enable pkgs.unstable.agent-browser;
+    ++ lib.optional cfg.roles.developerWorkstation.enable packages.agent-browser;
   };
 }

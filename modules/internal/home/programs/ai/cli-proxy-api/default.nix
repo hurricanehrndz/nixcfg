@@ -2,12 +2,13 @@
   config,
   lib,
   pkgs,
+  inputs,
   osConfig,
   ...
 }:
 let
   cfg = osConfig.hrndz;
-  package = pkgs.local.cli-proxy-api;
+  package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.cli-proxy-api;
   configPath = "${config.xdg.configHome}/cli-proxy-api/config.yaml";
   settings = {
     host = "127.0.0.1";

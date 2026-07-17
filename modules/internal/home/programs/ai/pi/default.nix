@@ -14,7 +14,10 @@ in
   # Extensions (e.g. rtk's) are contributed from their owning modules.
   imports = [ inputs.pi.homeModules.default ];
 
-  programs.pi.coding-agent.enable = cfg.tooling.ai.enable;
+  programs.pi.coding-agent = {
+    enable = cfg.tooling.ai.enable;
+    package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
+  };
 
   # Ensure my personal pi-ext bundle is checked out for development and keep a
   # set of pi packages registered (the local pi-ext checkout plus remote
