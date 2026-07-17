@@ -52,8 +52,8 @@ usually means the OAuth login has not completed.
 
 The shell wrapper chooses the route from `AWS_PROFILE`:
 
-- `AWS_PROFILE=cpe`: use `openai/gpt-5.6-so1` directly, without CLIProxyAPI.
-- Any other value, or an unset profile: use `gpt-5.6-so1` through CLIProxyAPI.
+- `AWS_PROFILE=cpe`: use `openai/gpt-5.6-sol[1m]` directly, without CLIProxyAPI.
+- Any other value, or an unset profile: use `gpt-5.6-sol` through CLIProxyAPI.
 
 ```sh
 unset AWS_PROFILE
