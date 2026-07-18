@@ -1,0 +1,14 @@
+# Schema for secrets/home/agent-notifications/config.toml.age.
+# Keep real Apprise URLs in the encrypted secret, not this plaintext example.
+
+[events]
+afk = true
+assistance = true
+progress = false
+
+[apprise]
+urls = [
+  # Examples: https://github.com/caronc/apprise/wiki
+  # "tgram://BOT_TOKEN/CHAT_ID",
+  # "discord://WEBHOOK_ID/WEBHOOK_TOKEN",
+]

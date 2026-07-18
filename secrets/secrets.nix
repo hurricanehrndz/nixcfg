@@ -29,6 +29,9 @@ in
   "home/zsh/env_vars.age".publicKeys =
     (builtins.attrValues machineKeys) ++ (builtins.attrValues yubikeys);
 
+  "home/agent-notifications/config.toml.age".publicKeys =
+    (builtins.attrValues machineKeys) ++ (builtins.attrValues yubikeys);
+
   "services/snapraid-runner/apprise.yaml.age".publicKeys = deepthoughtKeys;
   "services/ingress/env.age".publicKeys = deepthoughtKeys ++ [ machineKeys.hal ];
   "services/homarr/env.age".publicKeys = deepthoughtKeys;
