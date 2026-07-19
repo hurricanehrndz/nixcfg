@@ -1,7 +1,7 @@
 let
   # set ssh public keys here for your system and user
   machineKeys = {
-    Lucy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINF+1D/p54Xvp1lOrbl84UvY4VNtncU7SHCBdwXBCg2F";
+    Lucy = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKkRFf/Ko2VicwQFmGxLfBMcNyNiKPV2RGPy3Kx4qMn";
     DeepThought = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFGfyxfjRIvGOAC70fSG6Xe6DTZkvzhYa+iqeG9Fp7ff";
     LH9KCR6DJX = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDZGnhXNa4z8Ty4NtnR56yz6kuoCBcBgFNCg3EbnMEIY";
     HX7YG952H5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAcp1c7b48MG7QwMIt7Sgv32JajcbdPG/f/f4+1AH7CB";
@@ -9,8 +9,9 @@ let
     hal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWYoQyoNQ4dFZfPIyzZ/bRDnUo/dSQFu+gxr626kHua";
   };
   yubikeys = {
-    yubikey-5c-5f449e60 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
-    yubikey-5nfc-0b55362f = "age1yubikey1q0v4s9zc0c7jtkqmfkhfmmyay00typ05rz3wvak5uw7gjejz944xsjf8uys";
+    yubikey-5cNFC-20497165 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
+    yubikey-5cNFC-20497186 = "age1yubikey1qtl8vgsdswdzxkksnr088ezlgj8vu7t632a4x8fckgzs7yxkufrk676gs7r";
+    yubikey-5NFC-10327455 = "age1yubikey1q0v4s9zc0c7jtkqmfkhfmmyay00typ05rz3wvak5uw7gjejz944xsjf8uys";
   };
   deepthoughtKeys = [
     machineKeys.DeepThought

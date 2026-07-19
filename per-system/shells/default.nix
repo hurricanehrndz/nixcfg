@@ -45,11 +45,15 @@
               command = ''
                 root=$(${pkgs.git}/bin/git rev-parse --show-toplevel) || exit 1
                 # cd "$root/secrets" || exit 1
-                exec ${agenix-age}/bin/agenix --identity "$root/identities/age/yubikey-id-5f449e60.txt" "$@"
+                if [[ -n "''${YUBIKEY_SERIAL:-}" ]]; then
+                  exec ${agenix-age}/bin/agenix --identity "$root/identities/age/yubikey-''${YUBIKEY_SERIAL}.txt" "$@"
+                fi
+                exec ${agenix-age}/bin/agenix "$@"
               '';
             }
             (pkgWithCategory "secrets" age)
             (pkgWithCategory "secrets" age-plugin-yubikey)
+            (pkgWithCategory "secrets" yubikey-manager)
             (pkgWithCategory "secrets" local.git-age-filter)
             (pkgWithCategory "shortcuts" just)
             {
