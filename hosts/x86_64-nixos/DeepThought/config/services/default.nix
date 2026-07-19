@@ -9,6 +9,7 @@
   # scrutiny.nix and any siblings here are imported automatically by the
   # host's import-tree, so no explicit imports list is needed.
   hrndz.services.autoUpdateContainers.enable = true;
+  hrndz.services.tailscale.enable = true;
 
   age.secrets = lib.mkIf (!isBootstrap) {
     "ingress.env".file = "${self}/secrets/services/ingress/env.age";
