@@ -70,7 +70,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # System tools
-    snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/hrndz";
+    snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/v2.0.0";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";
     # formatting
     treefmt-nix.url = "github:numtide/treefmt-nix";

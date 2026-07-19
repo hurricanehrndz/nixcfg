@@ -101,7 +101,9 @@
     };
     notification = {
       enable = true;
+      quiet = true;
       config = config.age.secrets."snapraid-runner.apprise.yaml".path;
     };
+    report.enable = true;
   };
 }
