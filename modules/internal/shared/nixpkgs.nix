@@ -32,6 +32,21 @@ in
           ];
         });
 
+        # paho-mqtt 2.1.0's test_callback_v2_mqtt3 races on whether the
+        # on_disconnect callback fires before its final assertion, so the check
+        # phase flakes (and the build is never cached). It's pulled in as a
+        # dependency of apprise (agent-notify, snapraid-runner). Deselect the
+        # flaky test across every Python package set so apprise builds.
+        pythonPackagesExtensions = (prev.pythonPackagesExtensions or [ ]) ++ [
+          (pyfinal: pyprev: {
+            paho-mqtt = pyprev.paho-mqtt.overridePythonAttrs (old: {
+              disabledTests = (old.disabledTests or [ ]) ++ [
+                "test_callback_v2_mqtt3"
+              ];
+            });
+          })
+        ];
+
         local = self.packages.${system};
         unstable = import inputs.nixpkgs-unstable {
           inherit system;
