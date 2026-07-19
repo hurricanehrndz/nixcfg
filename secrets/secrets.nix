@@ -39,6 +39,9 @@ in
   "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
   "services/searxng/env.age".publicKeys = deepthoughtKeys;
 
+  # added 2026-07-19 + 30 day expiration
+  "services/tailscale/auth.age".publicKeys = deepthoughtKeys ++ [ machineKeys.Lucy machineKeys.hal];
+
   # Scrutiny Telegram notification URL (Shoutrrr). Notifier runs on the
   # DeepThought scrutiny web instance, so only DeepThought needs to decrypt it.
   "services/scrutiny/notify-url.age".publicKeys = deepthoughtKeys;
