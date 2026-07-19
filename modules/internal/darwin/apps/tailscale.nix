@@ -1,0 +1,16 @@
+{
+  config,
+  lib,
+  ...
+}:
+let
+  inherit (lib) mkIf;
+  cfg = config.hrndz;
+in
+{
+  config = mkIf cfg.roles.developerWorkstation.enable {
+    homebrew.casks = [
+      "tailscale-app"
+    ];
+  };
+}
