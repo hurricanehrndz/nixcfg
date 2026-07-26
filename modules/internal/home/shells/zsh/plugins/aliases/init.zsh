@@ -73,31 +73,14 @@ claudex() {
     CLAUDE_CODE_SUBAGENT_MODEL="$model" \
     CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
     CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
-    CLAUDE_CODE_AUTO_COMPACT_WINDOW=372000 \
+    CLAUDE_CODE_AUTO_COMPACT_WINDOW=350000 \
+    CLAUDE_CODE_MAX_CONTEXT_TOKENS=372000 \
     API_TIMEOUT_MS=3000000 \
     ENABLE_TOOL_SEARCH=false \
     claude --model "$model" "$@"
 }
 
 alias claudedx='claudex --dangerously-skip-permissions'
-
-fabelsol() {
-  if [[ ${AWS_PROFILE:-} == cpe ]]; then
-    echo "fabelsol is unavailable with AWS_PROFILE=cpe" >&2
-    return 1
-  fi
-
-  env \
-    ANTHROPIC_BASE_URL=http://127.0.0.1:8317 \
-    ANTHROPIC_AUTH_TOKEN=local \
-    SUB_AGENT_ID=GPT-5.6-Sol \
-    ORCHESTRATOR_MODE=Fable-5 \
-    CLAUDE_CODE_SUBAGENT_MODEL=gpt-5.6-sol \
-    CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \
-    CLAUDE_CODE_MAX_TOOL_USE_CONCURRENCY=3 \
-    ENABLE_TOOL_SEARCH=false \
-    claude --model fable "$@"
-}
 
 #######################################
 # utility aliases
