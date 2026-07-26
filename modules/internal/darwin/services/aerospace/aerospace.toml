@@ -218,7 +218,7 @@ run = "move-node-to-workspace C"
 if.app-id = 'com.utmapp.UTM'
 run = ['layout floating', 'move-node-to-workspace V']
 
-# ponytail: resize the first window once; use an AX helper if concurrent sessions need exact targeting.
+# CEILING: resize the first window once; use an AX helper if concurrent sessions need exact targeting.
 [[on-window-detected]]
 if.app-id = 'com.apple.ScreenSharing'
 run = [

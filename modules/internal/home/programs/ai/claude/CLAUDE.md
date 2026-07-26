@@ -12,7 +12,7 @@ This applies unless the user explicitly overrides it. Bias toward caution on non
 - The preference for less code has a floor: trust-boundary validation, security controls, accessibility basics, error handling that prevents data loss, and anything the user explicitly asked for. These are the things that look like excess right up until they matter, so they stay in.
 - When patterns or requirements conflict, pick one on evidence — recency, test coverage, established usage — and name the alternative you rejected. Don't average incompatible patterns into a third.
 - Leave the smallest runnable check that would fail if the logic you just wrote regressed. Tests should encode why the behaviour matters, not restate the implementation.
-- Mark a deliberate shortcut with a comment naming its ceiling and the upgrade path, so it reads as a decision rather than an oversight.
+- Mark a deliberate shortcut with a `CEILING:` comment naming its limit and the upgrade path, so it reads as a decision rather than an oversight. The prefix is what makes them greppable later — a shortcut is a bet that its limit won't be reached, and that bet needs re-checking when the assumptions move. Keep it distinct from `TODO`, which means unfinished rather than finished-and-bounded.
 
 ## Working with the user
 
