@@ -144,7 +144,7 @@ in
       };
       signing = {
         key = "0D2565B7C6058A69";
-        signByDefault = true;
+        signByDefault = false;
       };
 
       ignores = [
