@@ -86,7 +86,7 @@ alias claudedx='claudex --dangerously-skip-permissions'
 # utility aliases
 #######################################
 alias xsh='TERM=xterm-256color ssh'
-alias devbox='xsh dev'
+alias devbox='xsh devbox-chernand-main'
 alias vi='v'
 alias lg='lazygit'
 alias mkdir='mkdir -p'

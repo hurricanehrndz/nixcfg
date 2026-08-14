@@ -196,7 +196,6 @@ in
         ".pi/pi-debug.log"
         ".pi/.ENABLE_PI_DOCS"
 
-
         # tmp directories
         ########################
         ".tmp/"
