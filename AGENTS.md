@@ -105,16 +105,17 @@ These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** 
 ### AI Coding Agents (`modules/internal/home/programs/ai/`)
 All agents are gated on `tooling.ai` and managed via home-manager. Their packages come from `inputs.llm-agents`; `inputs.pi` remains only for pi's Home Manager module. Keep these ownership boundaries in mind when editing:
 
-- **Shared context**: nixcfg intentionally does not own `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.pi/agent/APPEND_SYSTEM.md`, or `~/.prime/agent/APPEND_SYSTEM.md`. The personal agent-toolkit owns their source at `context/working-style.md` and manages the links with `toolkit:sync`.
+- **Shared context**: nixcfg does not create `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.pi/agent/APPEND_SYSTEM.md`, or `~/.prime/agent/APPEND_SYSTEM.md` directly. The personal agent-toolkit owns their source at `context/working-style.md` and their link semantics. The pi activation bootstraps that checkout and invokes its reconciler after Home Manager's link phase.
 - **Claude** (`claude/`): Nix merges a declarative baseline into the writable `~/.claude/settings.json`, preserving runtime-managed keys such as plugins. The rtk integration is a `PreToolUse` Bash hook (`rtk hook claude`) declared in that settings file.
-- **pi** (`pi/`): managed via `inputs.pi.homeModules.default` (the `programs.pi.coding-agent` module), **not** a bare package — so extensions/skills/themes/prompts/rules can be wired declaratively. Its `package` option points to the `llm-agents` build; the module installs the wrapped result, so do not add pi to `home.packages`.
-- **Prime Agent**: installed from `inputs.llm-agents` as a normal home package; nixcfg does not own its global context.
+- **pi** (`pi/`): managed via `inputs.pi.homeModules.default` (the `programs.pi.coding-agent` module), **not** a bare package. Its `package` option points to the `llm-agents` build. The `agentToolkit` activation clones the personal toolkit only when absent, validates an existing checkout without updating it, ensures the required Pi package entries, and runs the toolkit's direct `.mjs` CLI with Nix-pinned Node 24.
+- **Prime Agent**: installed from `inputs.llm-agents` as a normal home package; nixcfg does not implement its global-context link.
 - **rtk** (`rtk/`): the `llm-agents` package that trims command output. Its pi extension is contributed to `programs.pi.coding-agent.extensions` from the rtk module itself (the option is a list and merges across modules), keeping the extension co-located with its dependency.
 
-**pi ownership boundary (deliberate):** `~/.pi/agent/settings.json` is **100% pi-owned** (theme, provider, model, the `packages` array, compaction) and written by pi at runtime via `pi install` / `pi config`. Do **not** set `programs.pi.coding-agent.settings` or `.models` — that would convert those files into Nix store symlinks and fight pi. Note the module merges settings with `jq '.[0] * .[1]'`, where `*` *replaces* arrays, so Nix-managing `packages` would stomp pi's list entirely.
+**pi ownership boundary (deliberate):** `~/.pi/agent/settings.json` remains a real, writable, Pi-owned file. Do **not** set `programs.pi.coding-agent.settings` or `.models` — that would convert those files into Nix store symlinks and fight Pi. Nix has one narrow exception: the `agentToolkit` activation additively ensures the personal toolkit and Catppuccin package entries and removes only the exact legacy `~/src/me/pi-ext` entry. It preserves every other setting and package.
 
-- **Nix owns** flag-based resources only (`--extension`/`--skill`/`--theme`/`--prompt-template`/`--append-system-prompt`), which never touch `settings.json`.
-- **pi owns** everything in `settings.json`, including which extension *packages* load. Personal/work extension bundles (e.g. a `pi-ext` repo) are added with `pi install git:github.com/<you>/<repo>`; pi clones them to `~/.pi/agent/git/` and refreshes via `pi update`. Nix never sees them.
+- **Nix owns** Pi's package/wrapper, flag-based resources contributed by their own modules, and the narrow bootstrap orchestration above.
+- **Agent Toolkit owns** the safety and reconciliation rules for its per-agent skill and global-context links. Nix calls its direct CLI instead of reimplementing those rules.
+- **Pi owns** all other runtime settings and package-list changes made through `pi install`, `pi update`, and `pi config`.
 
 ### Per-System Configuration
 `per-system/` contains flake-parts perSystem configuration:

@@ -19,15 +19,16 @@ in
     package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
   };
 
-  # Ensure my personal pi-ext bundle is checked out for development and keep a
-  # set of pi packages registered (the local pi-ext checkout plus remote
-  # bundles). This edits ~/.pi/agent/settings.json imperatively rather than via
-  # programs.pi.coding-agent.settings: that option would turn the (pi-owned)
-  # file into a read-only store symlink and stomp pi's `packages` array. The jq
-  # merge only *appends* missing entries (order is irrelevant to pi), so it
-  # never rewrites on a no-op switch and never clobbers invalid JSON.
-  home.activation.piExtRepo = lib.mkIf cfg.tooling.ai.enable (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  # Bootstrap the personal Agent Toolkit without updating or otherwise touching
+  # an existing checkout. The toolkit remains the sole owner of its skill and
+  # global-context links; this activation only invokes its reconciler after Home
+  # Manager has finished removing and creating links for the new generation.
+  #
+  # pi owns settings.json at runtime. Nix narrowly ensures the package entries
+  # required on every AI-enabled host, preserves all other settings/packages,
+  # and removes only the exact legacy ~/src/me/pi-ext entry.
+  home.activation.agentToolkit = lib.mkIf cfg.tooling.ai.enable (
+    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
       export PATH="${
         lib.makeBinPath [
           pkgs.git
@@ -36,39 +37,131 @@ in
         ]
       }:$PATH"
 
-      repo="$HOME/src/me/pi-ext"
+      repo="$HOME/src/me/agent-toolkit"
+      legacy_repo="$HOME/src/me/pi-ext"
       settings="$HOME/.pi/agent/settings.json"
+      expected_https="https://github.com/hurricanehrndz/agent-toolkit.git"
+      expected_ssh="git@github.com:hurricanehrndz/agent-toolkit.git"
+      toolkit="$repo/scripts/agent-toolkit.mjs"
 
-      # Clone once; never touch the working tree afterwards.
-      if [ ! -d "$repo/.git" ]; then
-        $DRY_RUN_CMD git clone https://github.com/hurricanehrndz/pi-ext.git "$repo"
+      repo_ready=0
+      if [ ! -e "$repo" ]; then
+        $DRY_RUN_CMD git clone "$expected_https" "$repo"
       fi
 
-      # Packages to keep registered: local pi-ext checkout plus remote bundles.
-      want=(
-        "$repo"
-        "git:github.com/otahontas/pi-coding-agent-catppuccin"
-      )
-      wantjson="$(jq -n '$ARGS.positional' --args "''${want[@]}")"
+      if [ -e "$repo" ]; then
+        if [ ! -d "$repo" ] || [ "$(git -C "$repo" rev-parse --is-inside-work-tree 2>/dev/null || true)" != "true" ]; then
+          echo "agentToolkit: $repo exists but is not a Git checkout; left unchanged" >&2
+          exit 1
+        fi
+        checkout_root="$(git -C "$repo" rev-parse --show-toplevel)"
+        if [ "$(realpath "$checkout_root")" != "$(realpath "$repo")" ]; then
+          echo "agentToolkit: $repo is not the checkout root; left unchanged" >&2
+          exit 1
+        fi
 
-      # Append any desired entry that is not already listed.
-      if [ -e "$settings" ] && jq -e --argjson want "$wantjson" '(.packages // []) as $cur | all($want[]; . as $x | $cur | index($x))' "$settings" >/dev/null 2>&1; then
-        : # all registered
+        origin="$(git -C "$repo" remote get-url origin 2>/dev/null || true)"
+        case "$origin" in
+          "$expected_https" | "''${expected_https%.git}" | "$expected_ssh" | "''${expected_ssh%.git}" | "ssh://git@github.com/hurricanehrndz/agent-toolkit.git" | "ssh://git@github.com/hurricanehrndz/agent-toolkit")
+            ;;
+          *)
+            echo "agentToolkit: $repo has unexpected origin '$origin'; left unchanged" >&2
+            exit 1
+            ;;
+        esac
+
+        if [ ! -f "$toolkit" ] || [ ! -f "$repo/context/working-style.md" ]; then
+          echo "agentToolkit: $repo is missing the installer or global context source; update it before activating" >&2
+          exit 1
+        fi
+        repo_ready=1
       else
-        $DRY_RUN_CMD mkdir -p "$(dirname "$settings")"
-        tmp="$(mktemp)"
-        ok=0
-        if [ -e "$settings" ]; then
-          jq --argjson want "$wantjson" '.packages = ((.packages // []) as $cur | $cur + [ $want[] | select(. as $x | ($cur | index($x)) == null) ])' "$settings" > "$tmp" && ok=1
-        else
-          jq -n --argjson want "$wantjson" '{packages: $want}' > "$tmp" && ok=1
+        # During a Home Manager dry-run, the clone is printed rather than
+        # performed, so there is no checkout to validate or reconcile yet.
+        echo "agentToolkit: checkout would be reconciled after clone"
+      fi
+
+      if [ "$repo_ready" -eq 1 ]; then
+        # Preflight the complete reconciliation before changing settings or
+        # links. Existing files and links owned by another checkout are errors.
+        ${pkgs.nodejs_24}/bin/node "$toolkit" sync --dry-run --home "$HOME"
+
+        if [ -L "$settings" ]; then
+          echo "agentToolkit: $settings is a symlink; refusing to replace it" >&2
+          exit 1
         fi
-        if [ "$ok" -eq 1 ]; then
-          $DRY_RUN_CMD mv "$tmp" "$settings"
-        else
-          rm -f "$tmp"
-          echo "piExtRepo: could not update $settings (invalid JSON?); left unchanged" >&2
+        if [ -e "$settings" ] && [ ! -f "$settings" ]; then
+          echo "agentToolkit: $settings is not a regular file; left unchanged" >&2
+          exit 1
         fi
+
+        if [ -e "$settings" ] && ! ${pkgs.python3}/bin/python3 -c 'import textwrap; exec(textwrap.dedent("""
+          import json
+          import sys
+
+          def unique_object(items):
+              result = {}
+              for key, value in items:
+                  if key in result:
+                      raise ValueError(f"duplicate object key: {key!r}")
+                  result[key] = value
+              return result
+
+          def reject_constant(value):
+              raise ValueError(f"invalid JSON constant: {value}")
+
+          try:
+              with open(sys.argv[1], encoding="utf-8") as source:
+                  json.load(source, object_pairs_hook=unique_object, parse_constant=reject_constant)
+          except (OSError, UnicodeError, ValueError) as error:
+              print(error, file=sys.stderr)
+              raise SystemExit(1)
+        """))' "$settings"; then
+          echo "agentToolkit: $settings is not strict JSON; left unchanged" >&2
+          exit 1
+        fi
+
+        wantjson="$(
+          jq -n '$ARGS.positional' --args \
+            "$repo" \
+            "git:github.com/otahontas/pi-coding-agent-catppuccin"
+        )"
+        settings_dir="$(dirname "$settings")"
+        if [ -n "''${DRY_RUN_CMD:-}" ]; then
+          tmp_template="''${TMPDIR:-/tmp}/agent-toolkit-settings.XXXXXX"
+        else
+          mkdir -p "$settings_dir"
+          tmp_template="$settings_dir/.agent-toolkit-settings.XXXXXX"
+        fi
+
+        (
+          set -e
+          tmp="$(mktemp "$tmp_template")"
+          trap 'rm -f "$tmp"' EXIT
+
+          if [ -e "$settings" ]; then
+            jq --arg legacy "$legacy_repo" --argjson want "$wantjson" '
+              if type != "object" then
+                error("top level must be an object")
+              elif has("packages") and .packages != null and (.packages | type) != "array" then
+                error("packages must be an array")
+              else
+                (.packages // []) as $current
+                | [$current[] | select(. != $legacy)] as $kept
+                | .packages = ($kept + [$want[] | select(. as $entry | ($kept | index($entry)) == null)])
+              end
+            ' "$settings" > "$tmp"
+          else
+            jq -n --argjson want "$wantjson" '{packages: $want}' > "$tmp"
+          fi
+
+          if [ ! -e "$settings" ] || ! cmp -s "$tmp" "$settings"; then
+            $DRY_RUN_CMD mv "$tmp" "$settings"
+            $DRY_RUN_CMD chmod 600 "$settings"
+          fi
+        )
+
+        $DRY_RUN_CMD ${pkgs.nodejs_24}/bin/node "$toolkit" sync --home "$HOME"
       fi
     ''
   );
