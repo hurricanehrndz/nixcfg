@@ -97,7 +97,7 @@
 
     # coding agents
     pi.url = "github:lukasl-dev/pi.nix";
-    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents.url = "github:connerohnesorge/llm-agents.nix/update-prime-agent-0.7.4";
 
     # bootstrap flag
     bootstrap.url = "github:boolean-option/false";

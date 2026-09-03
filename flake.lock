@@ -584,15 +584,16 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787216589,
-        "narHash": "sha256-XtBw86QXg9HtTU1IlD3yTpIHAG0r5df6SCrpDVG/1Cc=",
-        "owner": "numtide",
+        "lastModified": 1787764684,
+        "narHash": "sha256-MdXYKpQd+QAGapk8PCRRvDYYaSueTO6K6WwcbAnW4KI=",
+        "owner": "connerohnesorge",
         "repo": "llm-agents.nix",
-        "rev": "5aad5f64e621fc35fed0fddcc2b6e17ab662cf78",
+        "rev": "7a0f5e62d0f5dc0c3af9834c79aa816b48ee6060",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
+        "owner": "connerohnesorge",
+        "ref": "update-prime-agent-0.7.4",
         "repo": "llm-agents.nix",
         "type": "github"
       }
