@@ -80,6 +80,14 @@ in
           User = "chernand";
           UserKnownHostsFile = "/dev/null";
           StrictHostKeyChecking = "no";
+          LocalForward = [
+            {
+              bind.address = "127.0.0.1";
+              bind.port = 1314;
+              host.address = "127.0.0.1";
+              host.port = 1313;
+            }
+          ];
           RemoteForward = [
             {
               host.address = localGpgExtraSocket;
