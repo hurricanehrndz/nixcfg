@@ -19,7 +19,7 @@ in
             })
           )
           (i: i.withLib lib)
-          (i: i.leafs ../modules/exported/darwin)
+          (i: i.leaves ../modules/exported/darwin)
         ]
       ))
       // {

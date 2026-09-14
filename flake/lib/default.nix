@@ -2,7 +2,7 @@
 let
   inherit (inputs) import-tree;
 
-  # Transform import-tree leafs into attribute set keyed by filename (without .nix extension)
+  # Transform import-tree leaves into attribute set keyed by filename (without .nix extension)
   # Example: src/fast-zsh-lib.nix -> { fast-zsh-lib = <module>; }
   mkLibs =
     paths:
@@ -18,7 +18,7 @@ in
     lib = mkLibs (
       lib.pipe import-tree [
         (i: i.withLib lib)
-        (i: i.leafs ./src)
+        (i: i.leaves ./src)
       ]
     );
   };

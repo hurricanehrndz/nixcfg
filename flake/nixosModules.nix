@@ -19,7 +19,7 @@ in
             })
           )
           (i: i.withLib lib)
-          (i: i.leafs ../modules/exported/nixos)
+          (i: i.leaves ../modules/exported/nixos)
         ]
       ))
       // {
