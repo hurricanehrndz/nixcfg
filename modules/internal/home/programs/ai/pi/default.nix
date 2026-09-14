@@ -21,8 +21,8 @@ in
 
   # Bootstrap the personal Agent Toolkit without updating or otherwise touching
   # an existing checkout. The toolkit remains the sole owner of its skill and
-  # global-context links; this activation only invokes its reconciler after Home
-  # Manager has finished removing and creating links for the new generation.
+  # global-context links and the respec binary; this activation invokes its sync
+  # wrapper after Home Manager has updated links for the new generation.
   #
   # pi owns settings.json at runtime. Nix narrowly ensures the package entries
   # required on every AI-enabled host, preserves all other settings/packages,
@@ -34,6 +34,7 @@ in
           pkgs.git
           pkgs.jq
           pkgs.coreutils
+          pkgs.mise
         ]
       }:$PATH"
 
@@ -42,7 +43,7 @@ in
       settings="$HOME/.pi/agent/settings.json"
       expected_https="https://github.com/hurricanehrndz/agent-toolkit.git"
       expected_ssh="git@github.com:hurricanehrndz/agent-toolkit.git"
-      toolkit="$repo/scripts/agent-toolkit.mjs"
+      toolkit="$repo/scripts/toolkit-sync.mjs"
 
       repo_ready=0
       if [ ! -e "$repo" ]; then
