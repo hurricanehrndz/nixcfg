@@ -35,3 +35,6 @@ ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern)
 # FZF
 # disable fzf history search for atuin
 export FZF_CTRL_R_COMMAND=
+
+# Machine-local variables; this file is untracked and may not exist everywhere.
+[[ -f "$HOME/.env_vars" ]] && source "$HOME/.env_vars"
