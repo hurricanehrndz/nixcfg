@@ -87,6 +87,18 @@ alias claudedx='claudex --dangerously-skip-permissions'
 #######################################
 alias xsh='TERM=xterm-256color ssh'
 alias devbox='xsh devbox-chernand-main'
+
+#######################################
+# devbox mcporter OAuth tunnel
+#######################################
+# No ExitOnForwardFailure: the devboxctl SSH config carries a GPG
+# RemoteForward whose bind failure must not kill the OAuth tunnel.
+alias devbox-auth-tunnel="ssh -N \
+  -o ForwardAgent=no \
+  -o UserKnownHostsFile=\$HOME/.ssh/known_hosts \
+  -o StrictHostKeyChecking=accept-new \
+  -L 127.0.0.1:38471:127.0.0.1:38471 \
+  devbox-chernand-main"
 alias vi='v'
 alias lg='lazygit'
 alias mkdir='mkdir -p'
