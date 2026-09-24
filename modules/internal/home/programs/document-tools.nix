@@ -15,6 +15,7 @@ in
       pandoc
       local.html-to-markdown
       mermaid-cli
+      graphviz
     ];
   };
 }
