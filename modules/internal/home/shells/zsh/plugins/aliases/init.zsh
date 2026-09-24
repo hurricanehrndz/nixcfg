@@ -114,3 +114,4 @@ alias rgv="rg --line-number --with-filename --color=always --field-match-separat
     --preview-window 'right,50%,+{2}-3,~3'"
 alias mdcat='glow'
 alias pi='env -u AWS_PROFILE pi'
+alias jira='env GLAMOUR_STYLE=light command jira'
