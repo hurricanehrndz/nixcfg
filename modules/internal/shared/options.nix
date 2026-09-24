@@ -31,6 +31,8 @@ in
       zig.enable = mkEnableOption "Enable Zig tooling";
 
       documentTools.enable = mkEnableOption "Enable document authoring and conversion tooling";
+
+      atlassianCli.enable = mkEnableOption "Enable Atlassian CLI tools";
     };
 
     roles = {

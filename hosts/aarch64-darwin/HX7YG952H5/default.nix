@@ -30,6 +30,7 @@ in
     roles.swiftDeveloper.enable = true;
     roles.vmHost.enable = true;
     tooling.macAdmin.enable = true;
+    tooling.atlassianCli.enable = true;
     tooling.python.enable = true;
     tooling.ruby.enable = true;
     tooling.js.enable = true;
