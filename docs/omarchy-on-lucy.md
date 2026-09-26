@@ -87,10 +87,22 @@ and switch again.
 
 ## Login and remote access
 
-greetd autologs into the Omarchy session. The session locks itself immediately:
-it retries the Quickshell lock until the shell is up, and falls back to
-`hyprlock` if the shell never answers. WayVNC listens on `127.0.0.1:5900`
-(`hrndz.desktop.omarchy.remote`), so reach it through an SSH tunnel.
+greetd autologs into the Omarchy session, and one start script then runs these
+steps in order:
+
+1. If no display is connected (Lucy is usually headless), it creates a virtual
+   1920×1080 output, `VNC-1`.
+2. It locks the session with Omarchy's Quickshell lock, retrying until the shell
+   is up. If the shell never answers, it falls back to `hyprlock`.
+3. Only then does it start WayVNC on `127.0.0.1:5900`
+   (`hrndz.desktop.omarchy.remote`), so VNC never shows an unlocked desktop.
+
+Connect through an SSH tunnel: `ssh -L 5900:127.0.0.1:5900 lucy`, then point a
+VNC client at `localhost:5900`.
+
+On a headless boot, `omarchy-hyprland-session-locked` cannot tell whether the
+session is locked until an output exists. To check the lock directly, run
+`omarchy-shell lock isLocked`.
 
 ## Rolling back
 
