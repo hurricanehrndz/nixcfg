@@ -58,15 +58,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784665499,
-        "narHash": "sha256-9BMxlTxCCDAeoNLtb1a/st7udtTIJep+wpUzquA29VU=",
-        "owner": "nix-community",
+        "lastModified": 1790001035,
+        "narHash": "sha256-1/SLBjSYBzDdDhvLQ83wrzBakyS/xNGgtxHGNuveOEQ=",
+        "owner": "Mic92",
         "repo": "bun2nix",
-        "rev": "0f2a1f0b6f42cebe3b149bf62d38754c5e0e9729",
+        "rev": "07a5bfc8ac36c5370199343fa620b69f63186e33",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
+        "owner": "Mic92",
+        "ref": "llm-agents",
         "repo": "bun2nix",
         "type": "github"
       }
@@ -547,16 +548,15 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1787764684,
-        "narHash": "sha256-MdXYKpQd+QAGapk8PCRRvDYYaSueTO6K6WwcbAnW4KI=",
-        "owner": "connerohnesorge",
+        "lastModified": 1790416022,
+        "narHash": "sha256-DjGLaiqnHlHQ9d8EfKhklMlCRoEC97FkI9XRgznopL8=",
+        "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "7a0f5e62d0f5dc0c3af9834c79aa816b48ee6060",
+        "rev": "03aa73a454d7468e0a3d44faee511fa6ae7c7ded",
         "type": "github"
       },
       "original": {
-        "owner": "connerohnesorge",
-        "ref": "update-prime-agent-0.7.4",
+        "owner": "numtide",
         "repo": "llm-agents.nix",
         "type": "github"
       }
