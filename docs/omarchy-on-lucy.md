@@ -8,8 +8,8 @@ modules are deliberately **not** imported.
 | Piece | Where |
 | --- | --- |
 | Flake input (pinned tag, no `follows`, so builds hit `nixarchy.cachix.org`) | `flake.nix` → `nixarchy` |
-| System side: session, greetd, fonts, PAM, desktop services | `modules/internal/nixos/desktop/omarchy.nix` (`hrndz.desktop.omarchy`) |
-| User side: bindings, autostart, menu, seeded config, first theme | `modules/internal/home/desktop/omarchy.nix` |
+| System side: session, greetd, fonts, PAM, desktop services, `desktop-vnc` | `modules/internal/nixos/desktop/omarchy.nix` (`hrndz.desktop.omarchy`) |
+| User side: bindings, menu, seeded config, first theme | `modules/internal/home/desktop/omarchy.nix` |
 | Lucy's settings | `hosts/x86_64-nixos/Lucy/config/desktop.nix` |
 
 ## Installing apps
@@ -81,28 +81,45 @@ To see everything that is bound: `omarchy menu keybindings --print`.
 
 Omarchy's tools edit these files, so they are copied in once as real files and
 never overwritten: `~/.config/{omarchy,hypr,btop,imv,hyprland-preview-share-picker}`
-(everything except the Nix-managed `hypr/bindings.lua`, `hypr/autostart.lua` and
-the menu extension), plus `~/.config/xdg-terminals.list`. To reset one, delete it
+(everything except the Nix-managed `hypr/bindings.lua` and the menu extension), plus `~/.config/xdg-terminals.list`. To reset one, delete it
 and switch again.
 
 ## Login and remote access
 
-greetd autologs into the Omarchy session, and one start script then runs these
-steps in order:
+Lucy boots to a normal tuigreet login on the console. There is no autologin,
+and nothing starts until someone logs in.
 
-1. If no display is connected (Lucy is usually headless), it creates a virtual
-   1920×1080 output, `VNC-1`.
-2. It locks the session with Omarchy's Quickshell lock, retrying until the shell
-   is up. If the shell never answers, it falls back to `hyprlock`.
-3. Only then does it start WayVNC on `127.0.0.1:5900`
-   (`hrndz.desktop.omarchy.remote`), so VNC never shows an unlocked desktop.
+For remote access, which is mostly for agents or a rare check, run
+`desktop-vnc` over SSH:
 
-Connect through an SSH tunnel: `ssh -L 5900:127.0.0.1:5900 lucy`, then point a
-VNC client at `localhost:5900`.
+```console
+ssh lucy desktop-vnc start     # then: ssh -L 5900:127.0.0.1:5900 lucy
+ssh lucy desktop-vnc status
+ssh lucy desktop-vnc stop
+```
 
-On a headless boot, `omarchy-hyprland-session-locked` cannot tell whether the
-session is locked until an output exists. To check the lock directly, run
-`omarchy-shell lock isLocked`.
+`start` does three things:
+
+1. **Session.** It attaches to a running Omarchy session (a console login). If
+   there is none, it starts a headless one as the `omarchy-headless` user unit.
+   That session uses libseat's `noop` backend, so it opens the GPU with your
+   `video` group access and needs no login, seat or monitor. If a monitor
+   happens to be plugged in, the new session would show up on it, so the tool
+   locks the session before serving VNC.
+2. **Output.** If no display is connected, it adds the virtual output `VNC-1`
+   (1920×1080).
+3. **VNC.** It starts WayVNC as the `desktop-vnc` user unit, listening on
+   `127.0.0.1:5900` only. Reach it through an SSH tunnel.
+
+`stop` removes only what `start` created. It stops WayVNC, removes the virtual
+output, and stops the headless session. It never stops a console login.
+
+Your user has **linger** enabled (`users.users.<primaryUser>.linger`), so a
+session started over SSH survives the SSH connection closing.
+
+Agents can drive the session over VNC, for example
+`uvx --from vncdotool vncdo -s 127.0.0.1::5900 key super-enter`, or screenshot
+it directly with `grim -o VNC-1`.
 
 ## Rolling back
 
