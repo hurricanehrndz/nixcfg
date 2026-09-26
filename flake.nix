@@ -104,15 +104,15 @@
     };
 
     # personalized neovim
+    # nixpkgs is deliberately not followed so builds hit hurricanehrndz.cachix.org.
     pdenv.url = "github:hurricanehrndz/pdenv";
-    pdenv.inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
 
     # coding agents
     pi.url = "github:lukasl-dev/pi.nix";
     pi.inputs.nixpkgs.follows = "nixos-unstable";
     pi.inputs.nixpkgs-x86_64-darwin.follows = "nixpkgs-darwin";
+    # nixpkgs is deliberately not followed so builds hit cache.numtide.com.
     llm-agents.url = "github:numtide/llm-agents.nix";
-    llm-agents.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # bootstrap flag
     bootstrap.url = "github:boolean-option/false";
