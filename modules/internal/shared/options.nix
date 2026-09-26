@@ -1,11 +1,22 @@
 { lib, config, ... }:
 let
   inherit (lib)
+    mkDefault
     mkEnableOption
     mkIf
     mkMerge
+    mkOption
+    types
     ;
   cfg = config.hrndz;
+
+  # base16 scheme -> closest stock Omarchy theme, for unified mode.
+  omarchyThemes = {
+    catppuccin-mocha = "catppuccin";
+    gruvbox-dark = "gruvbox";
+    rose-pine-dawn = "rose-pine";
+    tokyo-night-dark = "tokyo-night";
+  };
 in
 {
   options.hrndz = {
@@ -35,6 +46,33 @@ in
       atlassianCli.enable = mkEnableOption "Enable Atlassian CLI tools";
     };
 
+    theme = {
+      scheme = mkOption {
+        type = types.str;
+        default = "catppuccin-latte";
+        example = "rose-pine-dawn";
+        description = "base16 scheme (tinted-theming name) used for terminal tools.";
+      };
+
+      ghostty = mkOption {
+        type = types.nullOr types.str;
+        default = "noctis-lux";
+        description = "Ghostty theme name, or null to use the scheme.";
+      };
+
+      omarchy = {
+        theme = mkOption {
+          type = types.str;
+          default = "catppuccin-latte";
+          description = "Stock Omarchy theme for the desktop.";
+        };
+
+        pin = mkEnableOption "reapplying the Omarchy theme on every switch, instead of only on first login (after which the Style menu owns it)";
+      };
+
+      unified = mkEnableOption "the scheme everywhere: Ghostty follows it and Omarchy is pinned to its closest stock theme";
+    };
+
     roles = {
       terminalUser.enable = mkEnableOption "Enable the terminal user environment";
 
@@ -47,6 +85,14 @@ in
   };
 
   config.hrndz = mkMerge [
+    (mkIf cfg.theme.unified {
+      theme.ghostty = mkDefault null;
+      theme.omarchy = {
+        theme = mkDefault (omarchyThemes.${cfg.theme.scheme} or cfg.theme.scheme);
+        pin = mkDefault true;
+      };
+    })
+
     (mkIf cfg.roles.terminalDeveloper.enable {
       roles.terminalUser.enable = true;
     })

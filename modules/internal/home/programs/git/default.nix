@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   osConfig,
@@ -77,10 +78,9 @@ in
           pager = "delta";
         };
         delta = {
-          light = true;
+          light = config.lib.stylix.colors.variant == "light";
           line-numbers = true;
-          features = "OneHalfLight";
-          syntax-theme = "OneHalfLight";
+          syntax-theme = config.programs.bat.config.theme;
         };
         interactive = {
           diffFilter = "delta --color-only";

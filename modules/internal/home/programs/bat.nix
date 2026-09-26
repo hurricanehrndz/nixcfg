@@ -6,6 +6,7 @@
 }:
 let
   cfg = osConfig.hrndz;
+  inherit (cfg.theme) scheme;
 in
 {
   config = lib.mkIf cfg.roles.terminalUser.enable {
@@ -22,12 +23,13 @@ in
     programs.bat = {
       enable = true;
       config = {
-        theme = "Catppuccin Latte";
+        # Otherwise Stylix supplies base16-stylix (see ../theme.nix).
+        theme = lib.mkIf (lib.hasPrefix "catppuccin-" scheme) (
+          "Catppuccin " + lib.toSentenceCase (lib.removePrefix "catppuccin-" scheme)
+        );
         style = "numbers,changes,header";
         italic-text = "always";
         pager = "less -RFK";
-        theme-dark = "OneHalfDark";
-        theme-light = "Catppuccin Latte";
         map-syntax = [
           ".*ignore:Git Ignore"
           ".gitconfig.local:Git Config"

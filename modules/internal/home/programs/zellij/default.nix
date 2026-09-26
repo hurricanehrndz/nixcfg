@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   ...
@@ -6,6 +7,8 @@
 let
   l = lib // builtins;
   cfg = osConfig.hrndz;
+  inherit (cfg.theme) scheme;
+  isCatppuccin = l.hasPrefix "catppuccin-" scheme;
 in
 {
   config = l.mkIf cfg.roles.terminalUser.enable {
@@ -16,7 +19,22 @@ in
       enableZshIntegration = false;
 
       settings = {
-        theme = "catppuccin-latte";
+        theme = if isCatppuccin then scheme else "stylix";
+        themes = l.mkIf (!isCatppuccin) {
+          stylix = with config.lib.stylix.colors.withHashtag; {
+            fg = base05;
+            bg = base02;
+            black = base00;
+            red = base08;
+            green = base0B;
+            yellow = base0A;
+            blue = base0D;
+            magenta = base0E;
+            cyan = base0C;
+            white = base07;
+            orange = base09;
+          };
+        };
         # Start locked (like tmux's prefix model) — Ctrl-a toggles control.
         default_mode = "locked";
         web_client.font = "monospace";

@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   osConfig,
@@ -7,6 +8,24 @@
 let
   l = lib // builtins;
   cfg = osConfig.hrndz;
+  c = config.lib.stylix.colors.withHashtag;
+
+  # A block-edged status module: coloured icon cell, then a text cell.
+  module =
+    color: icon: text:
+    "#[fg=${color}]█#[fg=${c.base00},bg=${color}]${icon}#[fg=${c.base05},bg=${c.base01}] ${text}#[fg=${c.base01}]█";
+
+  flags = l.concatStrings [
+    "#{?window_activity_flag, 󱅫,}"
+    "#{?window_bell_flag, 󰂞,}"
+    "#{?window_silence_flag, 󰂛,}"
+    "#{?window_active, 󰖯,}"
+    "#{?window_last_flag, 󰖰,}"
+    "#{?window_marked_flag, 󰃀,}"
+    "#{?window_zoomed_flag, 󰁌,} "
+  ];
+  window =
+    numberBg: textBg: "#[fg=${c.base00},bg=${numberBg}] #I #[fg=${c.base05},bg=${textBg}] #W${flags}";
 in
 {
   config = l.mkIf cfg.roles.terminalUser.enable {
@@ -73,63 +92,55 @@ in
 
         set -gu default-command
         set -g default-shell "$SHELL"
+
+        ##: Theme (colours from hrndz.theme.scheme via Stylix)
+        set -g status-style "bg=${c.base00},fg=${c.base05}"
+        set -g status-left-length 100
+        set -g status-right-length 100
+        set -g message-style "fg=${c.base0C},bg=${c.base01},align=centre"
+        set -g message-command-style "fg=${c.base0C},bg=${c.base01},align=centre"
+        set -g mode-style "bg=${c.base01},bold"
+        set -g menu-selected-style "fg=${c.base05},bold,bg=${c.base02}"
+        set -g popup-style "bg=${c.base00},fg=${c.base05}"
+        set -g popup-border-style "fg=${c.base02}"
+        set -g clock-mode-colour "${c.base0D}"
+        set -g pane-border-style "fg=${c.base03}"
+        set -g pane-active-border-style "#{?pane_synchronized,fg=${c.base0E},fg=${c.base0D}}"
+
+        # Inactive panes defer to ghostty's background too (keep `dim` + a
+        # muted fg as the only inactive cue); active stays transparent.
+        set -g window-style "fg=${c.base03},bg=default,dim"
+        set -g window-active-style "fg=${c.base05},bg=default"
+
+        set -g window-status-format "${window c.base03 c.base01}"
+        set -g window-status-current-format "${window c.base0E c.base02}"
+        set -g window-status-activity-style "bg=${c.base0D},fg=${c.base00}"
+        set -g window-status-bell-style "bg=${c.base0A},fg=${c.base00}"
+
+        # Left status: the OS block turns red while the prefix is held; the
+        # session block stays a steady colour.
+        set -g status-left "#[bg=${c.base01},fg=${c.base05}]#{?client_prefix,#[bg=${c.base08}],}"
+        if-shell '[[ $(uname) = Darwin ]]' \
+          'set -ga status-left "  "' \
+          'set -ga status-left "  "'
+        set -ga status-left "${module c.base0B " " "#S"}"
+        set -ga status-left "#[fg=default,bg=${c.base00}] "
+
+        # Right status. The host block is appended only when the client is
+        # attached over SSH: SSH_CONNECTION is refreshed in the session
+        # environment on every attach via update-environment (see above), so
+        # the hostname (just left of the clock) shows on remote sessions and
+        # stays hidden locally. Modules live in options so their commas don't
+        # split the conditional.
+        set -g @status_application "${module c.base08 " " "#{pane_current_command}"}"
+        set -g @status_host "${module c.base0E "󰒋 " "#H"}"
+        set -g @status_date_time "${module c.base0C "󰃰 " "%Y-%m-%d %H:%M"}"
+        set -g status-right "#{E:@status_application}#{?SSH_CONNECTION,#{E:@status_host},}#{E:@status_date_time}"
       '';
       plugins =
         with pkgs;
         with tmuxPlugins;
         [
-          {
-            plugin = catppuccin;
-            extraConfig = ''
-              # Theme
-              set -g @catppuccin_flavor 'latte'
-              set -g @catppuccin_window_status_style "basic"
-              set -g @catppuccin_window_text " #W"
-              set -g @catppuccin_window_current_text " #W"
-              set -g @catppuccin_window_flags "icon"
-
-              set -g @catppuccin_pane_left_separator "█"
-              set -g @catppuccin_pane_middle_separator "█"
-              set -g @catppuccin_pane_right_separator "█"
-
-              # Make the status line pretty
-              set -g status-right-length 100
-              set -g status-left-length 100
-              set -g @catppuccin_status_left_separator "█"
-              set -g @catppuccin_status_middle_separator ""
-              set -g @catppuccin_status_right_separator "█"
-              set -g @catppuccin_status_connect_separator "yes"
-
-              # Right status. The host block is appended only when the client is
-              # attached over SSH: SSH_CONNECTION is refreshed in the session
-              # environment on every attach via update-environment (see above),
-              # so the hostname (just left of the clock) shows on remote sessions
-              # and stays hidden locally.
-              set -g status-right "#{E:@catppuccin_status_application}#{?SSH_CONNECTION,#{E:@catppuccin_status_host},}#{E:@catppuccin_status_date_time}"
-
-              # Left status
-              # are we controlling tmux or the content of the panes?
-              set -g status-left "#[bg=#{@thm_surface_0}]#[fg=#{@thm_text}]#{?client_prefix,#[bg=#{@thm_red}],}"
-              if-shell '[[ $(uname) = Darwin ]]' \
-                'set -ga status-left "  "' \
-                'set -ga status-left "  "'
-              # Keep the session block a steady color; the prefix-red indicator
-              # above is the only thing that should react to controlling tmux.
-              # Pin icon_bg directly: @catppuccin_session_color only feeds icon_bg
-              # via a set-if-empty guard, so it's captured once at server start
-              # and overriding the color later (e.g. on reload) is a no-op.
-              set -g @catppuccin_status_session_icon_bg "#{E:@thm_green}"
-              set -ga status-left "#{E:@catppuccin_status_session}"
-              # Gap matching the inter-window window-status-separator (bar bg, not surface_0)
-              set -ga status-left "#[fg=default,bg=#{@thm_mantle}] "
-
-              # window style
-              # Inactive panes defer to ghostty's background too (keep `dim` +
-              # a muted fg as the only inactive cue); active stays transparent.
-              set -g window-style "fg=#{@thm_overlay_1},bg=default,dim"
-              set -g window-active-style "fg=#{@thm_fg},bg=default"
-            '';
-          }
           {
             plugin = extrakto;
             extraConfig = ''

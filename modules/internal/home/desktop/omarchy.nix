@@ -13,6 +13,8 @@ let
   omarchyPath = "${cfg.package}/share/omarchy";
   stateDir = "${config.home.homeDirectory}/.local/state/omarchy";
 
+  inherit (osConfig.hrndz.theme.omarchy) theme pin;
+
   # Chords, spelled the way AeroSpace's are on macOS.
   meh = "CTRL + SHIFT + ALT";
   hyper = "SUPER + CTRL + SHIFT + ALT";
@@ -112,9 +114,6 @@ in
       "omarchy/extensions/omarchy-menu.jsonc".text = menuExtension;
     };
 
-    # Ghostty follows the Omarchy theme (optional include; absent until set).
-    programs.ghostty.settings.config-file = "?${stateDir}/current/theme/ghostty.conf";
-
     # Omarchy's tools write to these, so they are seeded as real files, never
     # store links, and never overwritten once present.
     home.activation.omarchySeed = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
@@ -124,6 +123,12 @@ in
         run mkdir -p "$dest"
         run ${pkgs.coreutils}/bin/cp -r --update=none --no-preserve=mode,ownership \
           "$src"/. "$dest"/
+      }
+
+      set_theme() {
+        run env OMARCHY_PATH="${omarchyPath}" OMARCHY_THEME_HEADLESS=1 \
+          PATH="${cfg.package}/bin:${lib.makeBinPath cfg.package.passthru.runtimeDeps}:$PATH" \
+          ${cfg.package}/bin/omarchy-theme-set "$1" || true
       }
 
       seed_file() {
@@ -155,12 +160,20 @@ in
         run sh -c 'echo com.mitchellh.ghostty.desktop > "${config.xdg.configHome}/xdg-terminals.list"'
       fi
 
-      # First-run theme; afterwards the Style menu owns it.
-      if [ ! -e "${stateDir}/current/theme.name" ]; then
-        run env OMARCHY_PATH="${omarchyPath}" OMARCHY_THEME_HEADLESS=1 \
-          PATH="${cfg.package}/bin:${lib.makeBinPath cfg.package.passthru.runtimeDeps}:$PATH" \
-          ${cfg.package}/bin/omarchy-theme-set "${cfg.theme}" || true
-      fi
+      # With pin, Nix owns the theme; otherwise it is set on first login only
+      # and the Style menu owns it afterwards.
+      ${
+        if pin then
+          ''
+            if [ "$(cat "${stateDir}/current/theme.name" 2>/dev/null)" != "${theme}" ]; then
+              set_theme "${theme}"
+            fi''
+        else
+          ''
+            if [ ! -e "${stateDir}/current/theme.name" ]; then
+              set_theme "${theme}"
+            fi''
+      }
     '';
   };
 }

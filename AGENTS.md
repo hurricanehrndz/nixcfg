@@ -98,6 +98,7 @@ Host capabilities are toggled through `hrndz.*` options defined in `modules/inte
 - `roles.developerWorkstation` — graphical developer workstation. It implies `terminalDeveloper`.
 - `roles.swiftDeveloper` — Darwin-only Swift development role. It implies `terminalDeveloper`.
 - `roles.vmHost` — VM hosting role. It implies `terminalUser` and provides platform-specific virtualization tooling.
+- `theme.*` — every colour choice in one place. `scheme` (default `catppuccin-latte`) is a base16 scheme applied via Stylix (`modules/internal/home/theme.nix`) to tmux (styled natively, no plugin), zellij, bat/delta, fzf and lazygit; zellij and bat use the official ports for Catppuccin schemes. `ghostty` is a Ghostty theme name (default `noctis-lux`; null follows the scheme). `omarchy.theme` is the Omarchy desktop theme, set on first login unless `omarchy.pin` reapplies it every switch. `unified` defaults the other two to the scheme.
 - `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `documentTools`, `macAdmin`.
 
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.

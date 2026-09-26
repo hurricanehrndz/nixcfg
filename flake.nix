@@ -93,6 +93,12 @@
       flake = false;
     };
 
+    # base16 palette applied across home-manager apps
+    stylix.url = "github:nix-community/stylix/release-26.05";
+    stylix.inputs.nixpkgs.follows = "nixpkgs";
+    stylix.inputs.flake-parts.follows = "flake-parts";
+    stylix.inputs.systems.follows = "systems";
+
     # ghostty themes (vendored; not built into ghostty)
     noctis-themes-src = {
       url = "github:EastSun5566/noctis-themes";

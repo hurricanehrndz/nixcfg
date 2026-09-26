@@ -224,12 +224,6 @@ in
       default = "/home/${config.system.primaryUser}/src/me/nixcfg";
       description = "Flake Omarchy's Update menu rebuilds from (via nh).";
     };
-
-    theme = mkOption {
-      type = types.str;
-      default = "catppuccin-latte";
-      description = "Omarchy theme applied on first login; change it later from the Style menu.";
-    };
   };
 
   config = mkIf cfg.enable {

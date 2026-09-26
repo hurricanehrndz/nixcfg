@@ -9,13 +9,17 @@ let
   inherit (lib) mkIf;
   inherit (pkgs.stdenv.hostPlatform) isDarwin;
   cfg = osConfig.hrndz;
+  noctisThemes = "${inputs.noctis-themes-src}/ghostty";
 in
 {
   config = mkIf cfg.roles.developerWorkstation.enable {
     # Noctis themes, vendored from https://github.com/EastSun5566/noctis-themes
-    # (not built into ghostty). Links the repo's ghostty/ dir into
-    # $XDG_CONFIG_HOME/ghostty/themes/, making every theme selectable by name.
-    xdg.configFile."ghostty/themes".source = "${inputs.noctis-themes-src}/ghostty";
+    # (not built into ghostty). Each file is linked into
+    # $XDG_CONFIG_HOME/ghostty/themes/, making every theme selectable by name
+    # while leaving room for the Stylix theme.
+    xdg.configFile = lib.mapAttrs' (
+      name: _: lib.nameValuePair "ghostty/themes/${name}" { source = "${noctisThemes}/${name}"; }
+    ) (builtins.readDir noctisThemes);
     programs.ghostty = {
       # ghostty installed via Homebrew
       package = if isDarwin then pkgs.ghostty-bin else pkgs.unstable.ghostty;
@@ -23,8 +27,9 @@ in
       # disable nix's integration
       enableZshIntegration = false;
       settings = {
-        theme = "noctis-lux";
-        window-theme = "light";
+        # null means Stylix sets it from the scheme (see ../theme.nix).
+        theme = mkIf (cfg.theme.ghostty != null) cfg.theme.ghostty;
+        window-theme = "ghostty";
         # disable automatic injection - we do it in zsh
         shell-integration = "none";
         # background-opacity = 0.80;

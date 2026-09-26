@@ -39,13 +39,13 @@ update inputs, so run `git pull` / `just update` first.
 These stay imperative, as upstream designed them:
 
 - `Style` menu / `omarchy theme set <name>`: the choice is written to
-  `~/.local/state/omarchy/current/`. `hrndz.desktop.omarchy.theme` only picks
-  the **first-login** theme.
+  `~/.local/state/omarchy/current/`. `hrndz.theme.omarchy.theme` only picks
+  the **first-login** theme, unless `hrndz.theme.omarchy.pin` (or
+  `hrndz.theme.unified`) makes every switch reapply it.
 - `omarchy plugin add <git-url>` clones into `~/.config/omarchy/plugins/`.
 
-Ghostty on Lucy follows the Omarchy theme through an optional
-`config-file = ?~/.local/state/omarchy/current/theme/ghostty.conf` include. The
-Mac hosts keep `noctis-lux`.
+Ghostty does not follow the Omarchy theme; it uses `hrndz.theme.ghostty`
+(`noctis-lux` by default) on every host.
 
 ## Keybindings
 
