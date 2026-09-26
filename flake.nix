@@ -98,6 +98,7 @@
     # coding agents
     pi.url = "github:lukasl-dev/pi.nix";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # bootstrap flag
     bootstrap.url = "github:boolean-option/false";
