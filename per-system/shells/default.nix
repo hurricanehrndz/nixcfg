@@ -19,7 +19,7 @@
 
           # Override agenix to use age with age-plugin-yubikey
           agenix-age = pkgs.agenix.override {
-            ageBin = "PATH=$PATH:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
+            ageBin = "PATH=\${PATH}:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
           };
         in
         {
