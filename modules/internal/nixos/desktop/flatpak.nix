@@ -71,7 +71,7 @@ in
   };
 
   config = mkMerge [
-    (mkIf config.hrndz.desktop.hyprland.enable {
+    (mkIf config.hrndz.desktop.omarchy.enable {
       hrndz.desktop.flatpak.enable = mkDefault true;
     })
 

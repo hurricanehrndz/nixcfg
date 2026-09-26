@@ -1,6 +1,8 @@
 { ... }:
 {
-  hrndz.desktop.hyprland = {
+  hrndz.desktop.omarchy = {
+    enable = true;
+
     autologin = {
       enable = true;
       user = "hurricane";
@@ -10,14 +12,6 @@
       enable = true;
       bind = "127.0.0.1";
       port = 5900;
-    };
-
-    terminal = "ghostty";
-    launcher = "rofi -show drun";
-
-    theme = {
-      source = "omarchy";
-      variant = "light";
     };
   };
 }

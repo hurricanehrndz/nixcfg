@@ -8,6 +8,8 @@
       "https://hurricanehrndz.cachix.org"
       "https://devenv.cachix.org"
       "https://cache.numtide.com"
+      "https://nixarchy.cachix.org"
+      "https://hyprland.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
@@ -17,6 +19,8 @@
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
       "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "nixarchy.cachix.org-1:05JOuIlsQOWY2/5DQMq7JEA1hwlhgvmMWowMfka8mMM="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIITemDosxrE9/Kb+PfYvE="
     ];
     experimental-features = [
       "nix-command"
@@ -70,6 +74,11 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Omarchy desktop, vendored for NixOS. Only the package (and its tested
+    # Hyprland) is used; nixarchy's modules and app installer are not imported.
+    # nixpkgs is deliberately not followed so builds hit nixarchy's cache.
+    nixarchy.url = "github:olafkfreund/nixarchy/v4.0.4-1";
 
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/v2.0.0";
