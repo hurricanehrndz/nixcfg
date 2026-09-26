@@ -6,14 +6,12 @@
   ...
 }:
 let
-  inherit (lib) mkIf optionalString;
+  inherit (lib) mkIf;
   inherit (pkgs.stdenv.hostPlatform) isLinux;
   cfg = osConfig.hrndz.desktop.omarchy or { };
   enabled = (cfg.enable or false) && isLinux;
   omarchyPath = "${cfg.package}/share/omarchy";
   stateDir = "${config.home.homeDirectory}/.local/state/omarchy";
-  autologin = cfg.autologin or { };
-  remote = cfg.remote or { };
 
   # Chords, spelled the way AeroSpace's are on macOS.
   meh = "CTRL + SHIFT + ALT";
@@ -96,40 +94,6 @@ let
     ) namedWorkspaces}
   '';
 
-  # Runs once per session, in order:
-  #  1. With no display connected (Lucy is usually headless), give Hyprland a
-  #     virtual output, so the lock and WayVNC have a screen to draw on.
-  #  2. Lock the autologin session. The Quickshell lock needs the shell up, so
-  #     retry it; if it never answers, fall back to hyprlock rather than leave
-  #     the session open.
-  #  3. Only then start WayVNC, so it never shows an unlocked desktop.
-  sessionStart = pkgs.writeShellScript "omarchy-session-start" ''
-    output=""
-    ${optionalString (remote.enable or false) ''
-      if ! grep -qx connected /sys/class/drm/card*-*/status 2>/dev/null; then
-        hyprctl output create headless VNC-1 >/dev/null && output=VNC-1
-      fi
-    ''}
-    ${optionalString (autologin.enable or false) ''
-      locked=""
-      for _ in $(seq 1 40); do
-        omarchy-shell lock lock >/dev/null 2>&1 && { locked=1; break; }
-        sleep 0.5
-      done
-      [ -n "$locked" ] || hyprlock &
-    ''}
-    ${optionalString (remote.enable or false) ''
-      exec ${pkgs.wayvnc}/bin/wayvnc ''${output:+-o "$output"} ${remote.bind} ${toString remote.port}
-    ''}
-  '';
-
-  autostartLua = ''
-    -- Managed by Nix: modules/internal/home/desktop/omarchy.nix.
-    hl.on("hyprland.start", function()
-      hl.exec_cmd("${sessionStart}")
-    end)
-  '';
-
   # Menu rows that assume pacman or nixarchy's app installer. Apps come from
   # this flake's modules instead; `when = "false"` hides a row.
   menuExtension = builtins.toJSON {
@@ -145,7 +109,6 @@ in
 
     xdg.configFile = {
       "hypr/bindings.lua".text = bindingsLua;
-      "hypr/autostart.lua".text = autostartLua;
       "omarchy/extensions/omarchy-menu.jsonc".text = menuExtension;
     };
 

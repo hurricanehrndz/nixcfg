@@ -11,7 +11,6 @@ let
     mkEnableOption
     mkIf
     mkOption
-    optionalAttrs
     types
     ;
   cfg = config.hrndz.desktop.omarchy;
@@ -75,29 +74,6 @@ in
       default = "catppuccin-latte";
       description = "Omarchy theme applied on first login; change it later from the Style menu.";
     };
-
-    autologin = {
-      enable = mkEnableOption "greetd autologin into a locked Omarchy session";
-      user = mkOption {
-        type = types.str;
-        default = config.system.primaryUser;
-        description = "User for greetd's initial Omarchy autologin session.";
-      };
-    };
-
-    remote = {
-      enable = mkEnableOption "WayVNC startup inside the Omarchy session";
-      bind = mkOption {
-        type = types.str;
-        default = "127.0.0.1";
-        description = "Address passed to wayvnc.";
-      };
-      port = mkOption {
-        type = types.port;
-        default = 5900;
-        description = "Port passed to wayvnc.";
-      };
-    };
   };
 
   config = mkIf cfg.enable {
@@ -128,12 +104,6 @@ in
         default_session = {
           command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${sessionLauncher}";
           user = "greeter";
-        };
-      }
-      // optionalAttrs cfg.autologin.enable {
-        initial_session = {
-          command = "${sessionLauncher}";
-          user = cfg.autologin.user;
         };
       };
     };
