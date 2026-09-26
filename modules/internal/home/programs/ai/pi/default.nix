@@ -85,7 +85,7 @@ in
       if [ "$repo_ready" -eq 1 ]; then
         # Preflight the complete reconciliation before changing settings or
         # links. Existing files and links owned by another checkout are errors.
-        ${pkgs.nodejs_24}/bin/node "$toolkit" sync --dry-run --home "$HOME"
+        ${pkgs.nodejs_24}/bin/node "$toolkit" --dry-run --home "$HOME"
 
         if [ -L "$settings" ]; then
           echo "agentToolkit: $settings is a symlink; refusing to replace it" >&2
@@ -162,7 +162,7 @@ in
           fi
         )
 
-        $DRY_RUN_CMD ${pkgs.nodejs_24}/bin/node "$toolkit" sync --home "$HOME"
+        $DRY_RUN_CMD ${pkgs.nodejs_24}/bin/node "$toolkit" --home "$HOME"
       fi
     ''
   );
