@@ -87,7 +87,8 @@ let
 
       # Prints "<instance signature> <wayland socket>" of the running Hyprland.
       instance() {
-        hyprctl instances -j 2>/dev/null | jq -r 'first(.[] | "\(.instance) \(.wl_socket)") // empty'
+        # Without a running Hyprland this prints non-JSON; treat that as none.
+        hyprctl instances -j 2>/dev/null | jq -r 'first(.[] | "\(.instance) \(.wl_socket)") // empty' 2>/dev/null || true
       }
 
       unit_active() {
@@ -103,7 +104,7 @@ let
           -E XDG_SESSION_TYPE=wayland \
           -E XDG_CURRENT_DESKTOP=Hyprland \
           -E XDG_SESSION_DESKTOP=Hyprland \
-          Hyprland --config "${omarchyPath}/config/hypr/hyprland.lua"
+          start-hyprland -- --config "${omarchyPath}/config/hypr/hyprland.lua"
         for _ in $(seq 1 30); do
           [ -n "$(instance)" ] && return 0
           sleep 0.5
