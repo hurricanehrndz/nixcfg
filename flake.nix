@@ -33,6 +33,7 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     # Browser packages that have not landed in nixpkgs yet.
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    zen-browser.inputs.nixpkgs.follows = "nixos-unstable";
     # nix-darwin
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 
@@ -58,6 +59,7 @@
 
     # devshell
     devshell.url = "github:numtide/devshell";
+    devshell.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # secrets
     agenix.url = "github:ryantm/agenix";
@@ -94,9 +96,12 @@
 
     # personalized neovim
     pdenv.url = "github:hurricanehrndz/pdenv";
+    pdenv.inputs.nixpkgs-unstable.follows = "nixpkgs-unstable";
 
     # coding agents
     pi.url = "github:lukasl-dev/pi.nix";
+    pi.inputs.nixpkgs.follows = "nixos-unstable";
+    pi.inputs.nixpkgs-x86_64-darwin.follows = "nixpkgs-darwin";
     llm-agents.url = "github:numtide/llm-agents.nix";
     llm-agents.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
