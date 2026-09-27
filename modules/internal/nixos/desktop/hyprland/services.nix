@@ -68,5 +68,11 @@ in
     services.gnome.gnome-keyring.enable = mkDefault true;
     networking.networkmanager.enable = mkDefault true;
     hardware.bluetooth.enable = mkDefault true;
+
+    # The shell's Tailscale panel runs tailscale as the desktop user: up/down,
+    # exit nodes, account switching.
+    services.tailscale.extraSetFlags = mkIf config.services.tailscale.enable [
+      "--operator=${config.system.primaryUser}"
+    ];
   };
 }
