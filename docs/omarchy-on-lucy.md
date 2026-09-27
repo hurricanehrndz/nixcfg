@@ -8,7 +8,7 @@ modules are deliberately **not** imported.
 | Piece | Where |
 | --- | --- |
 | Flake input (pinned tag, nixpkgs follows `nixos-unstable` like the desktops) | `flake.nix` → `nixarchy` |
-| System side: session, greetd, fonts, PAM, desktop services, `desktop-vnc` | `modules/internal/nixos/desktop/omarchy.nix` (`hrndz.desktop.omarchy`) |
+| System side: session, SDDM, boot splash, fonts, PAM, logind, desktop services, `desktop-vnc` | `modules/internal/nixos/desktop/omarchy.nix` (`hrndz.desktop.omarchy`) |
 | User side: bindings, menu, seeded config, first theme | `modules/internal/home/desktop/omarchy.nix` |
 | Lucy's settings | `hosts/x86_64-nixos/Lucy/config/desktop.nix` |
 
@@ -101,8 +101,14 @@ and switch again.
 
 ## Login and remote access
 
-Lucy boots to a normal tuigreet login on the console. There is no autologin,
-and nothing starts until someone logs in.
+The desktops boot through Omarchy's Plymouth splash (with `quiet` so kernel
+messages stay off it) to SDDM with Omarchy's own theme. There is no autologin,
+and nothing starts until someone logs in. Both themes come from the Omarchy
+package, the same ones nixarchy's `displayManager` and `bootSplash` options
+use.
+
+The power button opens Omarchy's power menu (`HandlePowerKey=ignore`), and
+logind waits up to 15 seconds for the screen to lock before suspending.
 
 For remote access, which is mostly for agents or a rare check, run
 `desktop-vnc` over SSH:
@@ -115,7 +121,7 @@ ssh lucy desktop-vnc stop
 
 `start` does three things:
 
-1. **Session.** It attaches to a running Omarchy session (a console login). If
+1. **Session.** It attaches to a running Omarchy session (a login at SDDM). If
    there is none, it starts a headless one as the `omarchy-headless` user unit.
    That session uses libseat's `noop` backend, so it opens the GPU with your
    `video` group access and needs no login, seat or monitor. If a monitor
@@ -127,7 +133,7 @@ ssh lucy desktop-vnc stop
    `127.0.0.1:5900` only. Reach it through an SSH tunnel.
 
 `stop` removes only what `start` created. It stops WayVNC, removes the virtual
-output, and stops the headless session. It never stops a console login.
+output, and stops the headless session. It never stops a session you logged in to.
 
 Your user has **linger** enabled (`users.users.<primaryUser>.linger`), so a
 session started over SSH survives the SSH connection closing.

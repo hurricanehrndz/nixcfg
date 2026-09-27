@@ -6,7 +6,6 @@
       "https://cache.lix.systems"
       "https://hurricanehrndz.cachix.org"
       "https://cache.numtide.com"
-      "https://nixarchy.cachix.org"
       "https://hyprland.cachix.org"
     ];
     extra-trusted-public-keys = [
@@ -15,7 +14,6 @@
       "cache.lix.systems:aBnZUw8zA7H35Cz2RyKFVs3H4PlGTLawyY5KRbvJR8o="
       "hurricanehrndz.cachix.org-1:rKwB3P3FZ0T0Ck1KierCaO5PITp6njsQniYlXPVhFuA="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-      "nixarchy.cachix.org-1:05JOuIlsQOWY2/5DQMq7JEA1hwlhgvmMWowMfka8mMM="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIITemDosxrE9/Kb+PfYvE="
     ];
     experimental-features = [

@@ -236,28 +236,46 @@ in
       withUWSM = true;
     };
 
+    # nixarchy.cachix is not listed: nixarchy follows our nixpkgs, so none of
+    # its outputs can match. Hyprland keeps its own nixpkgs and still hits.
     nix.settings = {
-      substituters = [
-        "https://nixarchy.cachix.org"
-        "https://hyprland.cachix.org"
-      ];
+      substituters = [ "https://hyprland.cachix.org" ];
       trusted-public-keys = [
-        "nixarchy.cachix.org-1:05JOuIlsQOWY2/5DQMq7JEA1hwlhgvmMWowMfka8mMM="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIITemDosxrE9/Kb+PfYvE="
       ];
     };
 
-    ##: Login screen - greetd + tuigreet, offering the Omarchy session
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${sessionLauncher}";
-          user = "greeter";
-        };
+    ##: Login screen - SDDM with Omarchy's theme, offering the Omarchy session
+    # The theme ships in the package at share/sddm/themes/omarchy, linked into
+    # the system profile through environment.systemPackages.
+    services.displayManager = {
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+        theme = "omarchy";
       };
+      sessionPackages = [ sessionPackage ];
     };
-    services.displayManager.sessionPackages = [ sessionPackage ];
+
+    ##: Boot splash - Plymouth with Omarchy's theme
+    boot.plymouth = {
+      enable = true;
+      themePackages = [ cfg.package ];
+      theme = "omarchy";
+    };
+    # Keep kernel and initrd messages off the splash (plymouth adds "splash").
+    boot.kernelParams = [ "quiet" ];
+    boot.consoleLogLevel = 3;
+    boot.initrd.verbose = false;
+
+    services.logind.settings.Login = {
+      # Omarchy binds the power button to its power menu; logind's default
+      # "poweroff" would shut the machine down before the menu could open.
+      HandlePowerKey = "ignore";
+      # omarchy-sleep-lock holds a delay inhibitor while the shell secures the
+      # screen; logind's 5s default can suspend before the lock is up.
+      InhibitDelayMaxSec = 15;
+    };
 
     # Keep the user manager running without a login, so a session started by
     # desktop-vnc over SSH survives the SSH connection closing.
