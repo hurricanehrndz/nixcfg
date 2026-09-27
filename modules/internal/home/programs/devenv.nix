@@ -13,7 +13,6 @@ in
     # spin up project-specific development environments
     home.packages = with pkgs; [
       devenv
-      mise
     ];
   };
 }
