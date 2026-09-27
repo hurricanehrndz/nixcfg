@@ -185,11 +185,25 @@ in
       "omarchy/extensions/omarchy-menu.jsonc".text = menuExtension;
     };
 
-    home.activation.omarchyWorkspacesPlugin = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    home.activation.omarchyWorkspacesPlugin = lib.hm.dag.entryAfter [ "omarchySeed" ] ''
       dest="${config.xdg.configHome}/omarchy/plugins/${workspacesPluginId}"
       run rm -rf "$dest"
       run mkdir -p "$dest"
       run ${pkgs.coreutils}/bin/install -m 0644 ${workspacesPlugin}/* "$dest"/
+
+      # A third-party widget is enabled by sitting in the bar layout; swap it in
+      # where the built-in sits, as `omarchy plugin clone` does.
+      shell_json="${config.xdg.configHome}/omarchy/shell.json"
+      if [ -f "$shell_json" ] && ${pkgs.jq}/bin/jq -e '.bar.layout | .. | objects | select(.id? == "omarchy.workspaces")' "$shell_json" >/dev/null 2>&1; then
+        if [[ -v DRY_RUN ]]; then
+          echo "Would swap omarchy.workspaces for ${workspacesPluginId} in $shell_json"
+        else
+          ${pkgs.jq}/bin/jq --arg id "${workspacesPluginId}" \
+            '.bar.layout |= walk(if type == "object" and .id? == "omarchy.workspaces" then .id = $id else . end)' \
+            "$shell_json" > "$shell_json.tmp"
+          mv "$shell_json.tmp" "$shell_json"
+        fi
+      fi
     '';
 
     # Omarchy's tools write to these, so they are seeded as real files, never
