@@ -49,6 +49,11 @@ let
     -- Loaded after Omarchy's defaults. Keys Omarchy already binds are unbound
     -- first, so these replace them; everything else is added alongside.
 
+    -- Mouse wheel scrolls the content, not the viewport (macOS direction).
+    -- Here because this is the one Nix-managed file hyprland.lua requires,
+    -- and it loads after hypr/input.lua.
+    hl.config({ input = { natural_scroll = true } })
+
     -- Replaced Omarchy defaults.
     hl.unbind("SUPER + L")
     hl.unbind("ALT + TAB")
@@ -108,6 +113,17 @@ in
 {
   config = mkIf enabled {
     home.sessionVariables.OMARCHY_PATH = omarchyPath;
+
+    # Omarchy sets no cursor theme; Arch's default index.theme supplies one and
+    # NixOS has none, so Hyprland would fall back to its built-in cursor.
+    home.pointerCursor = {
+      enable = true;
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 24;
+      gtk.enable = true;
+      hyprcursor.enable = true;
+    };
 
     xdg.configFile = {
       "hypr/bindings.lua".text = bindingsLua;

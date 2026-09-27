@@ -77,6 +77,21 @@ Hyper = `Super+Ctrl+Shift+Alt`):
 
 To see everything that is bound: `omarchy menu keybindings --print`.
 
+## Cursor, scrolling and fonts
+
+- **Cursor**: Bibata Modern Classic, set with `home.pointerCursor` (GTK,
+  XCursor and hyprcursor). Omarchy sets none; on Arch the distro's default
+  cursor theme fills in, and on NixOS Hyprland would fall back to its built-in
+  cursor.
+- **Mouse wheel**: natural (inverted) scrolling, via
+  `hl.config({ input = { natural_scroll = true } })` at the top of the
+  Nix-managed `hypr/bindings.lua`, which `hyprland.lua` loads after
+  `hypr/input.lua`.
+- **Fonts**: the same set as Omarchy's Arch base packages: Noto (with CJK sans
+  and serif, and colour emoji), JetBrainsMono Nerd Font, Font Awesome,
+  Liberation (what `50-omarchy.conf` maps serif to), the iA Writer family, and
+  Omarchy's own icon font from the package.
+
 ## Files that are seeded, not managed
 
 Omarchy's tools edit these files, so they are copied in once as real files and

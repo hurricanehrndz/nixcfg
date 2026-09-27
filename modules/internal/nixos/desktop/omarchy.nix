@@ -313,10 +313,15 @@ in
     ++ (with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
       noto-fonts-color-emoji
       nerd-fonts.jetbrains-mono
       font-awesome
       liberation_ttf
+      # Arch's ttf-ia-writer; Mono shows up in the Style > Font picker.
+      ia-writer-mono
+      ia-writer-duospace
+      ia-writer-quattro
     ]);
 
     ##: Portals

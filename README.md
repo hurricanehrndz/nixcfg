@@ -58,9 +58,19 @@ devshell, so enter it first. To decrypt (one-time Yubikey touch):
 ```console
 nix develop --impure                       # enter devshell (provides git-age-filter, age)
 git-age-filter install                     # configure the per-repo filter
-age -d -i "$PRJ_ROOT/identities/age/yubikey-id-5f449e60.txt" "$PRJ_ROOT/.age/local-key.age" > "$PRJ_ROOT/.age/local-key"
-chmod 600 "$PRJ_ROOT/.age/local-key"
+(umask 077; age -d -i "$PRJ_ROOT/identities/age/yubikey-<serial>.txt" "$PRJ_ROOT/.age/local-key.age" > "$PRJ_ROOT/.age/local-key")
 git-age-filter unlock                      # decrypt the working tree
+```
+
+Use the identity file for the YubiKey that is plugged in; they are named by
+serial (`identities/age/yubikey-*.txt`).
+
+Alternatively, copy an already-unlocked checkout from another machine. Include
+`.git` and `.age/local-key` so the filter keeps working; its config lives in
+`.git/config`, so it comes along too and no YubiKey touch is needed:
+
+```console
+rsync -a --delete --exclude result --exclude '.direnv/' ./ <host>:src/me/nixcfg/
 ```
 
 See the [git-age-filter README](per-system/pkgs/by-name/git-age-filter/README.md)
