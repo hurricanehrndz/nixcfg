@@ -61,7 +61,9 @@ reload() {
 }
 
 if ((clear)); then
-  rm -f "$dir/video" "$dir/still.jpg" "$dir/start"
+  rm -f "$dir/video" "$dir/still.png" "$dir/still.jpg" "$dir/start"
+  # Keeps the boot-time default (ambient.default) from reinstalling one.
+  touch "$dir/cleared"
   reload
   exit 0
 fi
@@ -108,9 +110,10 @@ pick() {
     awk -F, '$2 ~ /K/ { print $1 }')
   keys=$(awk -v n="$(wc -l <<<"$keys")" 'BEGIN { step = int((n + 239) / 240) } (NR - 1) % step == 0' <<<"$keys")
   mkdir "$work/frames"
-  # shellcheck disable=SC2016 # the positional parameters are sh's
+  # $BASH, not sh: a systemd service's PATH (ambient-default) has no sh.
+  # shellcheck disable=SC2016 # the positional parameters are the inner shell's
   awk '{ printf "%04d %s\n", NR, $0 }' <<<"$keys" |
-    xargs -P "$(nproc)" -L1 sh -c \
+    xargs -P "$(nproc)" -L1 "$BASH" -c \
       'ffmpeg -loglevel error -nostdin -ss "$4" -i "$1" -frames:v 1 -vf scale=640:-2 "$2/$3.png"' \
       _ "$work/video.mkv" "$work/frames"
   # Frame n of the image sequence sits at pts n-1; the nth key time maps it back.
@@ -147,12 +150,15 @@ else
 fi
 echo "still at ${start}s"
 
-ffmpeg -loglevel error -ss "$start" -i "$work/video.mkv" -frames:v 1 -q:v 2 "$work/still.jpg"
+# Lossless, at the stream's full resolution: the wallpaper is this frame.
+ffmpeg -loglevel error -ss "$start" -i "$work/video.mkv" -frames:v 1 -pix_fmt rgb24 "$work/still.png"
 echo "$start" >"$work/start"
 
-chmod 0644 "$work/video.mkv" "$work/still.jpg" "$work/start"
+chmod 0644 "$work/video.mkv" "$work/still.png" "$work/start"
 mv -f "$work/video.mkv" "$dir/video"
-mv -f "$work/still.jpg" "$dir/still.jpg"
+mv -f "$work/still.png" "$dir/still.png"
+rm -f "$dir/still.jpg"
 mv -f "$work/start" "$dir/start"
+rm -f "$dir/cleared"
 reload
 echo "ambient video installed in $dir"

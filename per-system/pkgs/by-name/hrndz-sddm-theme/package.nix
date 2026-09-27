@@ -16,6 +16,7 @@
   },
   font ? "monospace",
   ambientDir ? "/var/lib/ambient",
+  playbackRate ? 1.0,
 }:
 stdenvNoCC.mkDerivation {
   pname = "hrndz-sddm-theme";
@@ -37,7 +38,8 @@ stdenvNoCC.mkDerivation {
       --subst-var-by base08 "${colors.base08}" \
       --subst-var-by base0D "${colors.base0D}" \
       --subst-var-by font "${font}" \
-      --subst-var-by ambientDir "${ambientDir}"
+      --subst-var-by ambientDir "${ambientDir}" \
+      --subst-var-by playbackRate "${toString playbackRate}"
 
     runHook postInstall
   '';

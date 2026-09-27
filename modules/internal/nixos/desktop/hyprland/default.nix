@@ -24,6 +24,8 @@ in
       internal = true;
       default = pkgs.callPackage ../../../../../per-system/pkgs/by-name/hrndz-shell/package.nix {
         hyprland = config.programs.hyprland.package;
+        inherit (cfg.ambient) playbackRate;
+        lockBlankSeconds = cfg.idle.lockBlank;
       };
     };
 
@@ -34,6 +36,26 @@ in
       readOnly = true;
       internal = true;
       default = cfg.shellPackage.ambientDir;
+    };
+
+    ambient.default = mkOption {
+      type = types.nullOr types.str;
+      default = "https://www.youtube.com/watch?v=qKJUWWTwPO0";
+      description = ''
+        Video (a URL yt-dlp can fetch, or a local path) installed with
+        ambient-set when the machine has none, so a fresh install boots into
+        the usual wallpaper and screensaver. Not re-applied after
+        `ambient-set --clear`. Null for none.
+      '';
+    };
+
+    ambient.playbackRate = mkOption {
+      type = types.numbers.between 0.1 4.0;
+      default = 0.5;
+      description = ''
+        Playback speed of the ambient video on the screensaver, lock screen
+        and login screen; 1.0 is the video's own speed.
+      '';
     };
 
     # Seconds of inactivity; hypridle (Home Manager) acts on them.
@@ -52,6 +74,11 @@ in
         type = types.ints.positive;
         default = 330;
         description = "When the displays turn off.";
+      };
+      lockBlank = mkOption {
+        type = types.ints.positive;
+        default = 60;
+        description = "How long the lock screen stays lit after the last input.";
       };
     };
 

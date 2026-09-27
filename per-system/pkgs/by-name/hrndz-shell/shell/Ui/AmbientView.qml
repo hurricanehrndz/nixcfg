@@ -45,6 +45,7 @@ Rectangle {
         id: player
         source: Ambient.videoUrl
         loops: MediaPlayer.Infinite
+        playbackRate: @playbackRate@
         videoOutput: output
         // No audioOutput: nothing is decoded for sound.
         onErrorOccurred: function(error, message) { console.warn("ambient: " + message) }

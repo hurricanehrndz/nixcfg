@@ -10,6 +10,8 @@
   lib,
   # Where `ambient-set` (NixOS module) keeps the ambient video and still.
   ambientDir ? "/var/lib/ambient",
+  playbackRate ? 1.0,
+  lockBlankSeconds ? 60,
   stdenvNoCC,
   writeShellApplication,
   writeTextFile,
@@ -229,6 +231,8 @@ stdenvNoCC.mkDerivation {
         substituteInPlace "$f" \
           --subst-var-by shareDir "$share" \
           --subst-var-by ambientDir "${ambientDir}" \
+          --subst-var-by playbackRate "${toString playbackRate}" \
+          --subst-var-by lockBlankMs "${toString (lockBlankSeconds * 1000)}" \
           --subst-var-by hrndzShell "$out/bin/hrndz-shell" \
           --subst-var-by fcMatch "${lib.getExe' fontconfig "fc-match"}" \
           --subst-var-by gtkLaunch "${lib.getExe' gtk3 "gtk-launch"}" \

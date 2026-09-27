@@ -45,6 +45,9 @@
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "schedutil";
 
+  # amdgpu in the initrd: the boot splash comes up at native resolution.
+  hardware.amdgpu.initrd.enable = true;
+
   hrndz.hardware = {
     gpu.vendor = "amd";
     razerLeviathanV2X.enable = true;

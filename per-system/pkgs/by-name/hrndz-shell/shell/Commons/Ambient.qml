@@ -27,7 +27,7 @@ Singleton {
 
   readonly property string videoUrl: hasVideo ? "file://" + dir + "/video" : ""
   readonly property string imageUrl: hasStill
-    ? "file://" + dir + "/still.jpg?v=" + version
+    ? "file://" + dir + "/still.png?v=" + version
     : (hasStylixImage ? "file://" + stylixImage.split("/").map(encodeURIComponent).join("/") : "")
 
   // Runtime state, from the lock service, hypridle and the dpms helper.
@@ -46,7 +46,7 @@ Singleton {
     id: probe
     running: true
     command: ["bash", "-c",
-      "[[ -r $0/video ]] && echo video; [[ -r $0/still.jpg ]] && echo still; "
+      "[[ -r $0/video ]] && echo video; [[ -r $0/still.png ]] && echo still; "
       + "[[ -e $1 ]] && echo image; [[ -r $0/start ]] && echo \"start=$(<$0/start)\"; true",
       root.dir, root.stylixImage]
     stdout: StdioCollector {

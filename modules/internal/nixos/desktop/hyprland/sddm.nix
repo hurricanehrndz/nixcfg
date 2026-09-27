@@ -12,6 +12,7 @@ let
     colors = config.lib.stylix.colors.withHashtag;
     font = lib.head config.fonts.fontconfig.defaultFonts.monospace;
     inherit (cfg) ambientDir;
+    inherit (cfg.ambient) playbackRate;
   };
 in
 {

@@ -318,7 +318,8 @@ Item {
 
   Timer {
     id: idleBlankTimer
-    interval: 5000
+    // hrndz.desktop.hyprland.idle.lockBlank
+    interval: @lockBlankMs@
     repeat: false
     property double armedAt: 0
     onTriggered: {
