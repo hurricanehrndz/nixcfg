@@ -44,7 +44,7 @@ in
   config = mkIf cfg.enable (mkMerge [
     {
       services.udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="054a", RUN+="${pkgs.alsa-utils}/bin/amixer -q -c %n cset 'name=PCM Playback Volume,index=1' ${toString cfg.internalVolume}%"
+        ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="054a", RUN+="${pkgs.alsa-utils}/bin/amixer -q -c %n cset 'name=PCM Playback Volume,index=1' ${toString cfg.internalVolume}%%"
       '';
     }
 
