@@ -27,6 +27,34 @@ in
       };
     };
 
+    # Where ambient-set keeps the video and still the screensaver, lock screen
+    # and login screen share (ambient.nix). The shell reads it from there.
+    ambientDir = mkOption {
+      type = types.str;
+      readOnly = true;
+      internal = true;
+      default = cfg.shellPackage.ambientDir;
+    };
+
+    # Seconds of inactivity; hypridle (Home Manager) acts on them.
+    idle = {
+      screensaver = mkOption {
+        type = types.nullOr types.ints.positive;
+        default = 240;
+        description = "When the ambient video screensaver starts; null for none.";
+      };
+      lock = mkOption {
+        type = types.ints.positive;
+        default = 300;
+        description = "When the session locks.";
+      };
+      displaysOff = mkOption {
+        type = types.ints.positive;
+        default = 330;
+        description = "When the displays turn off.";
+      };
+    };
+
     # A fixed place rather than IP geolocation, which is wrong behind a VPN
     # and costs a lookup per refresh.
     weather.location = mkOption {

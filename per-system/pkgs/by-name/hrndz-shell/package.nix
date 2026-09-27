@@ -8,6 +8,8 @@
 # `omarchy.bar` keep their upstream names.
 {
   lib,
+  # Where `ambient-set` (NixOS module) keeps the ambient video and still.
+  ambientDir ? "/var/lib/ambient",
   stdenvNoCC,
   writeShellApplication,
   writeTextFile,
@@ -33,6 +35,7 @@
   procps,
   pulseaudio,
   python3,
+  qt6,
   quickshell,
   ripgrep,
   satty,
@@ -47,6 +50,12 @@
   zenity,
 }:
 let
+  # The screensaver and lock screen play video through QtMultimedia (its
+  # FFmpeg backend), which nixpkgs' Quickshell leaves out.
+  quickshell' = quickshell.overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ [ qt6.qtmultimedia ];
+  });
+
   script =
     name: runtimeInputs:
     writeShellApplication {
@@ -74,7 +83,7 @@ let
     hyprpicker
     jq
     procps
-    quickshell
+    quickshell'
     satty
     slurp
     systemd
@@ -118,6 +127,7 @@ let
       jq
     ];
     dpms = [
+      cli
       hyprland
       jq
     ];
@@ -207,6 +217,7 @@ stdenvNoCC.mkDerivation {
       while IFS= read -r -d "" f; do
         substituteInPlace "$f" \
           --subst-var-by shareDir "$share" \
+          --subst-var-by ambientDir "${ambientDir}" \
           --subst-var-by hrndzShell "$out/bin/hrndz-shell" \
           --subst-var-by fcMatch "${lib.getExe' fontconfig "fc-match"}" \
           --subst-var-by gtkLaunch "${lib.getExe' gtk3 "gtk-launch"}" \
@@ -221,6 +232,11 @@ stdenvNoCC.mkDerivation {
 
     runHook postInstall
   '';
+
+  passthru = {
+    inherit ambientDir;
+    quickshell = quickshell';
+  };
 
   meta = {
     description = "Personal Quickshell desktop shell, forked from Omarchy's";

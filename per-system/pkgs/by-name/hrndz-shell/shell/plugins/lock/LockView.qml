@@ -1,13 +1,12 @@
 import QtQuick
 import QtQuick.Effects
+import Quickshell
 import qs.Commons
 import qs.Ui
 
 Item {
   id: root
 
-  property string backgroundPath: ""
-  property int backgroundVersion: 0
   property bool fingerprintConfigured: false
   property bool authenticatingPassword: false
   property string failureMessage: ""
@@ -43,14 +42,11 @@ Item {
   signal clearFailureRequested()
   signal wakeRequested()
 
-  // Cache-busts the lock background by appending `?v=`. Adding a query
-  // string keeps Image's loader happy while forcing it to reload when the
-  // user picks a new background mid-session.
-  function fileUrl(path) {
-    if (!path) return ""
-    var encoded = String(path).split("/").map(encodeURIComponent).join("/")
-    return "file://" + encoded + "?v=" + backgroundVersion
-  }
+  // The clock sits on the ambient video or image, dimmed, where the lighter of
+  // the scheme's two base colours reads; on the plain colour it is the text.
+  readonly property bool mediaBehind: Ambient.imageUrl !== "" || Ambient.hasVideo
+  readonly property color clockColor: !mediaBehind ? Color.foreground
+    : (Color.foreground.hslLightness > Color.background.hslLightness ? Color.foreground : Color.background)
 
   function forcePasswordFocus() {
     passwordInput.forceActiveFocus()
@@ -90,26 +86,62 @@ Item {
     anchors.fill: parent
     color: Color.background
 
-    Image {
+    // The ambient video, softly blurred and dimmed, from the wallpaper's
+    // frame or from where the screensaver was. It pauses with the displays
+    // off.
+    AmbientView {
       id: wallpaper
       anchors.fill: parent
-      source: root.loadBackground ? root.fileUrl(root.backgroundPath) : ""
-      fillMode: Image.PreserveAspectCrop
-      asynchronous: true
-      cache: false
-      sourceSize.width: width
-      sourceSize.height: height
+      visible: false
+      video: root.loadBackground
+      playing: Ambient.displaysOn
+      resume: true
     }
 
     MultiEffect {
       anchors.fill: wallpaper
       source: wallpaper
       autoPaddingEnabled: false
-      blurEnabled: root.loadBackground && wallpaper.status === Image.Ready
-      blur: 1.0
-      blurMax: 128
-      blurMultiplier: 1.25
-      contrast: -0.08
+      blurEnabled: root.mediaBehind
+      blur: 0.35
+      blurMax: 64
+      brightness: root.mediaBehind ? -0.18 : 0
+    }
+
+    SystemClock {
+      id: clock
+      precision: SystemClock.Minutes
+    }
+
+    // A large clock above the field, as on macOS.
+    Column {
+      anchors.horizontalCenter: parent.horizontalCenter
+      y: Math.round(parent.height * 0.12)
+      spacing: 0
+      layer.enabled: root.mediaBehind
+      layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowOpacity: 0.35
+        shadowBlur: 0.6
+      }
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: Qt.formatDate(clock.date, "dddd d MMMM")
+        color: root.clockColor
+        font.family: Style.font.family
+        font.pixelSize: Math.round(root.height * 0.028)
+        font.weight: Font.Medium
+      }
+
+      Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: Qt.formatTime(clock.date, "H:mm")
+        color: root.clockColor
+        font.family: Style.font.family
+        font.pixelSize: Math.round(root.height * 0.15)
+        font.weight: Font.DemiBold
+      }
     }
 
     MouseArea {

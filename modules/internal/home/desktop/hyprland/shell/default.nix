@@ -16,6 +16,8 @@ in
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     programs.quickshell = {
       enable = true;
+      # Built with QtMultimedia, for the ambient video.
+      package = shell.quickshell;
       # The name `hrndz-shell ipc` looks the running instance up by.
       configs.hrndz-shell = "${shell}/share/hrndz-shell/shell";
       activeConfig = "hrndz-shell";

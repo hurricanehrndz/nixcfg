@@ -34,13 +34,8 @@ in
       withUWSM = true;
     };
 
-    ##: Login screen
-    # Stock SDDM theme until the Phase 3 login theme lands.
+    ##: Sessions (the login screen is sddm.nix)
     services.displayManager = {
-      sddm = {
-        enable = true;
-        wayland.enable = true;
-      };
       # CEILING: forcing the list drops sessions any other module registers.
       # Fine while this is the host's only desktop (asserted against Omarchy);
       # filter the list instead if another desktop can sit alongside it.

@@ -63,7 +63,12 @@ in
                 ...
               }:
               {
-                imports = [ (channelInputs channel).home-manager.nixosModules.home-manager ];
+                imports = with channelInputs channel; [
+                  home-manager.nixosModules.home-manager
+                  # Off unless a module enables it (the Hyprland desktop's boot
+                  # splash and login screen).
+                  stylix.nixosModules.stylix
+                ];
               }
             )
             agenix.nixosModules.default

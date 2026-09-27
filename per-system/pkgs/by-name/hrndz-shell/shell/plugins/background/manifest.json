@@ -4,7 +4,7 @@
   "name": "Background",
   "version": "1.0.0",
   "author": "Omarchy",
-  "description": "Desktop background renderer with click handling and transitions",
+  "description": "Ambient video wallpaper and screensaver",
   "kinds": [
     "service"
   ],

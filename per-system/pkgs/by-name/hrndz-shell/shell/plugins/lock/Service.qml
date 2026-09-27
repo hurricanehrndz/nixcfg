@@ -13,7 +13,6 @@ Item {
 
   readonly property string home: Quickshell.env("HOME")
   readonly property string userName: Quickshell.env("USER") || Quickshell.env("LOGNAME")
-  readonly property string currentBackgroundLink: home + "/.config/hrndz-shell/background"
   // The NixOS module defines this PAM service (security.pam.services).
   readonly property string pamService: "desktop-lock"
 
@@ -26,8 +25,6 @@ Item {
   property string pendingPassword: ""
   property string failureMessage: ""
   property int failedAttempts: 0
-  property string backgroundPath: ""
-  property int backgroundVersion: 0
   property string lastEvent: "init"
   property string lastEventAt: ""
   property bool strandedLock: false
@@ -99,10 +96,6 @@ Item {
     beginLock()
   }
 
-  function refreshBackground() {
-    if (!readlinkProc.running) readlinkProc.running = true
-  }
-
   function logEvent(event) {
     lastEvent = event
     lastEventAt = new Date().toISOString()
@@ -129,8 +122,6 @@ Item {
     armBlankTimer()
     logEvent("lock-requested")
     queueSessionLock()
-
-    Qt.callLater(root.refreshBackground)
 
     return true
   }
@@ -236,8 +227,6 @@ Item {
       LockView {
         id: lockView
         anchors.fill: parent
-        backgroundPath: root.backgroundPath
-        backgroundVersion: root.backgroundVersion
         authenticatingPassword: root.authenticatingPassword
         failureMessage: root.failureMessage
         failedAttempts: root.failedAttempts
@@ -265,8 +254,6 @@ Item {
 
     LockView {
       anchors.fill: parent
-      backgroundPath: root.backgroundPath
-      backgroundVersion: root.backgroundVersion
       authenticatingPassword: false
       failureMessage: ""
       failedAttempts: 0
@@ -301,21 +288,6 @@ Item {
 
     onError: function(error) {
       root.handlePasswordFailure()
-    }
-  }
-
-  Process {
-    id: readlinkProc
-    command: ["readlink", "-e", root.currentBackgroundLink]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: {
-        var next = String(text || "").trim()
-        if (next !== root.backgroundPath) {
-          root.backgroundPath = next
-          root.backgroundVersion += 1
-        }
-      }
     }
   }
 
@@ -432,9 +404,13 @@ Item {
     checkStrandedLock()
   }
 
-  Component.onCompleted: {
-    refreshBackground()
-    checkStrandedLock()
+  Component.onCompleted: checkStrandedLock()
+
+  // The wallpaper and screensaver pause behind the lock.
+  Binding {
+    target: Ambient
+    property: "locked"
+    value: root.locked
   }
 
   IpcHandler {
@@ -466,7 +442,6 @@ Item {
     }
 
     function preview(): string {
-      root.refreshBackground()
       root.previewVisible = true
       return "ok"
     }

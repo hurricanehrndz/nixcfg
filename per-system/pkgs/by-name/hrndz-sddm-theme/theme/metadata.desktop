@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=hrndz
+Description=The ambient video behind a clock and password field, as on the lock screen
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+QtVersion=6
