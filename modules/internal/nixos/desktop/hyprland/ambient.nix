@@ -45,10 +45,28 @@ in
       environment.systemPackages = [ ambientSet ];
     }
 
-    # A fresh machine gets the default video on its first boot with network,
-    # in the background. It retries until the download works; an existing
-    # video, or a deliberate `ambient-set --clear`, skips it.
+    # A fresh machine gets the default video while it is built: activation
+    # (nixos-install, or the first switch) is the one time the network is
+    # known to work, whereas the first boot may have none yet. An existing
+    # video, or a deliberate `ambient-set --clear`, skips both paths. If the
+    # download fails there (an offline install), activation only warns and
+    # the service below retries once the machine is online.
     (mkIf (cfg.ambient.default != null) {
+      system.activationScripts.ambientDefault = {
+        deps = [
+          "users"
+          "groups"
+        ];
+        text = ''
+          if [ ! -e ${cfg.ambientDir}/video ] && [ ! -e ${cfg.ambientDir}/cleared ]; then
+            install -d -m 2775 -o root -g ambient ${cfg.ambientDir}
+            echo "installing the default ambient video (one-time download)..."
+            ${lib.getExe ambientSet} ${lib.escapeShellArg cfg.ambient.default} ||
+              echo "warning: default ambient video not installed; ambient-default.service retries at boot" >&2
+          fi
+        '';
+      };
+
       systemd.services.ambient-default = {
         description = "Install the default ambient video";
         wantedBy = [ "multi-user.target" ];
