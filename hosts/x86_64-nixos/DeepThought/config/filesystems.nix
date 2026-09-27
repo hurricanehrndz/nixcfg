@@ -50,16 +50,6 @@ in
           "compress=zstd"
         ];
       };
-      "/volumes/books" = {
-        device = "/dev/disk/by-label/books";
-        fsType = "btrfs";
-        options = [
-          "defaults"
-          "noatime"
-          "nofail"
-          "compress=zstd"
-        ];
-      };
       "/volumes/storage" = {
         device = "/volumes/cache:/volumes/data*";
         fsType = "fuse.mergerfs";
@@ -100,10 +90,7 @@ in
     fileSystems = [
       "/"
       "/home"
-      "/var"
-      "/backups"
       "/volumes/cache"
-      "/volumes/books"
     ];
   };
 

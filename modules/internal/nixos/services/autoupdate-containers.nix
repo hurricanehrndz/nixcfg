@@ -41,6 +41,8 @@ in
       serviceConfig = {
         Type = "oneshot";
         ExecStart = lib.getExe (pkgs.writeShellScriptBin "update-containers" updateScript);
+        # Pulls leave the replaced images dangling; drop them so /var doesn't fill up.
+        ExecStartPost = "${pkgs.podman}/bin/podman image prune --force";
       };
     };
   };
