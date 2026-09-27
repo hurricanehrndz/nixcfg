@@ -6,8 +6,7 @@
 let
   inherit (import ./_lib.nix { inherit lib; }) bindWith exec;
 
-  # Volume, brightness and media keys work now; the OSD call after each is a
-  # shell placeholder.
+  # Volume and brightness keys show the shell's OSD after the change.
   cmd =
     command: kind: exec (command + lib.optionalString (kind != null) " && hrndz-shell osd ${kind}");
   held =

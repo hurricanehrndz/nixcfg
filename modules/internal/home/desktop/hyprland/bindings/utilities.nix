@@ -17,10 +17,6 @@ let
     P = "power";
     D = "display";
   };
-
-  # PRINT saves a region to ~/Pictures and the clipboard; SHIFT + PRINT opens
-  # the region in satty for annotation.
-  shot = ''dir="''${XDG_PICTURES_DIR:-$HOME/Pictures}"; mkdir -p "$dir"; f="$dir/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"; region="$(slurp -d)" || exit 0; '';
 in
 {
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
@@ -30,7 +26,7 @@ in
       (shell "SUPER + L" "Lock screen" "lock")
       (shell "SUPER + CTRL + L" "Lock screen" "lock")
 
-      ##: Shell features (placeholders until Phase 2, see shell.nix)
+      ##: Shell features (hrndz-shell, see ../shell)
       (shell "SUPER + SPACE" "Launcher" "launcher")
       (shell "SUPER + ALT + SPACE" "Menu" "menu")
       (shell "SUPER + ESCAPE" "System menu" "system-menu")
@@ -52,13 +48,10 @@ in
       (shell "SUPER + CTRL + ALT + D" "Panel: calendar" "panel calendar")
 
       ##: Screenshots
-      (bind "PRINT" "Screenshot" (
-        exec ''${shot}grim -g "$region" "$f" && wl-copy --type image/png < "$f"''
-      ))
-      (bind "SHIFT + PRINT" "Screenshot and annotate" (
-        exec ''${shot}grim -g "$region" - | satty --filename - --output-filename "$f" --early-exit --copy-command wl-copy''
-      ))
-      (bind "SUPER + PRINT" "Color picker" (exec "pkill hyprpicker || hyprpicker -a"))
+      # A region to ~/Pictures and the clipboard; SHIFT opens it in satty.
+      (shell "PRINT" "Screenshot" "screenshot region")
+      (shell "SHIFT + PRINT" "Screenshot and annotate" "screenshot region --edit")
+      (shell "SUPER + PRINT" "Color picker" "color-picker")
 
       ##: Zoom
       (bind "SUPER + CTRL + Z" "Zoom in" ''

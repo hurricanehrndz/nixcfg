@@ -13,16 +13,14 @@ in
     security.polkit.enable = true;
     services.dbus.enable = true;
 
-    # The Phase 2 lock screen authenticates through this PAM service. The
-    # forked shell must be pointed at this name (Omarchy's uses
-    # omarchy-lock-password).
+    # The shell's lock screen authenticates through this PAM service.
     security.pam.services.desktop-lock = { };
 
     services.logind.settings.Login = {
       # The shell's power menu owns the power button; logind's default
       # "poweroff" would shut down before the menu could open.
       HandlePowerKey = "ignore";
-      # Room for a sleep-lock inhibitor (Phase 2) to secure the screen.
+      # Room for hypridle's sleep delay inhibitor to lock the screen first.
       InhibitDelayMaxSec = 15;
     };
 

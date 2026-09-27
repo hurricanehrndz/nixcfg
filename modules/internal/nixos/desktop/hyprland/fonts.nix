@@ -6,11 +6,14 @@
 }:
 let
   inherit (lib) mkIf;
+  cfg = config.hrndz.desktop.hyprland;
 in
 {
-  # The shell's icon font arrives with the shell in Phase 2.
-  config = mkIf config.hrndz.desktop.hyprland.enable {
+  config = mkIf cfg.enable {
     fonts.packages = with pkgs; [
+      # The shell's icon font.
+      cfg.shellPackage.font
+
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif

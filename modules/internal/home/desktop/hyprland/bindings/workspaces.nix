@@ -4,21 +4,12 @@
   ...
 }:
 let
-  inherit (import ./_lib.nix { inherit lib; }) meh hyper bind;
-
-  # Named workspaces mirror the AeroSpace config.
-  namedWorkspaces = [
-    "W"
-    "A"
-    "R"
-    "S"
-    "T"
-    "V"
-    "C"
-    "B"
-    "D"
-    "F"
-  ];
+  inherit (import ./_lib.nix { inherit lib; })
+    meh
+    hyper
+    bind
+    namedWorkspaces
+    ;
 
   focus = target: "hl.dsp.focus({ ${target} })";
   moveWindow = target: "hl.dsp.window.move({ ${target} })";

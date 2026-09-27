@@ -27,12 +27,8 @@ in
     environment.systemPackages = with pkgs; [
       btop
       brightnessctl
-      grim
-      hyprpicker
       nautilus
       playerctl
-      satty
-      slurp
       udiskie
       wl-clipboard
       xdg-utils

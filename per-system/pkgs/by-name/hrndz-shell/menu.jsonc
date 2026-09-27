@@ -1,0 +1,37 @@
+{
+  // The menu tree. IDs are object keys; a dotted id sits under its prefix.
+  // A row with "action" runs it (bash -lc); one without is a submenu;
+  // "provider":"apps" fills a submenu with desktop entries. "aliases" are
+  // extra routes for `hrndz-shell ipc shell toggle omarchy.menu`.
+  // package.nix fills in the path of the hrndz-shell command.
+  "apps": {"icon":"󰀻","label":"Apps","aliases":["app","applications"],"provider":"apps"},
+
+  "capture": {"icon":"","label":"Capture","aliases":["screenshot"]},
+  "capture.region": {"icon":"","label":"Screenshot region","action":"@hrndzShell@ screenshot region"},
+  "capture.window": {"icon":"","label":"Screenshot window","action":"@hrndzShell@ screenshot window"},
+  "capture.screen": {"icon":"","label":"Screenshot screen","action":"@hrndzShell@ screenshot screen"},
+  "capture.color": {"icon":"󰃉","label":"Color","action":"@hrndzShell@ color-picker"},
+
+  "clipboard": {"icon":"","label":"Clipboard","action":"@hrndzShell@ clipboard"},
+
+  "emoji": {"icon":"","label":"Emoji","aliases":["emojis"],"action":"@hrndzShell@ emoji"},
+
+  "toggle": {"icon":"󰔎","label":"Toggle","aliases":["toggles"]},
+  "toggle.nightlight": {"icon":"󰔎","label":"Nightlight","action":"@hrndzShell@ ipc nightlight toggle"},
+  "toggle.stay-awake": {"icon":"󰅶","label":"Stay Awake","action":"@hrndzShell@ ipc idle toggle"},
+  "toggle.bar": {"icon":"󰍜","label":"Bar","action":"@hrndzShell@ bar"},
+
+  "setup": {"icon":"","label":"Setup","aliases":["settings"]},
+  "setup.audio": {"icon":"","label":"Audio","action":"@hrndzShell@ panel audio"},
+  "setup.bluetooth": {"icon":"󰂯","label":"Bluetooth","action":"@hrndzShell@ panel bluetooth"},
+  "setup.network": {"icon":"󰛳","label":"Network","action":"@hrndzShell@ panel network"},
+  "setup.display": {"icon":"󰍹","label":"Display","action":"@hrndzShell@ panel display"},
+  "setup.power": {"icon":"󰐥","label":"Power","action":"@hrndzShell@ panel power"},
+
+  "system": {"icon":"","label":"System","aliases":["power-menu"]},
+  "system.lock": {"icon":"","label":"Lock","action":"@hrndzShell@ lock"},
+  "system.suspend": {"icon":"󰒲","label":"Suspend","action":"systemctl suspend"},
+  "system.logout": {"icon":"󰍃","label":"Logout","action":"uwsm stop"},
+  "system.reboot": {"icon":"󰜉","label":"Reboot","action":"systemctl reboot"},
+  "system.shutdown": {"icon":"󰐥","label":"Shutdown","action":"systemctl poweroff"},
+}

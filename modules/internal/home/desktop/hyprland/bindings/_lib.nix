@@ -9,6 +9,21 @@ rec {
   meh = "CTRL + SHIFT + ALT";
   hyper = "SUPER + CTRL + SHIFT + ALT";
 
+  # Named workspaces mirror the AeroSpace config; the shell's workspaces
+  # widget shows them in this order.
+  namedWorkspaces = [
+    "W"
+    "A"
+    "R"
+    "S"
+    "T"
+    "V"
+    "C"
+    "B"
+    "D"
+    "F"
+  ];
+
   # One settings.bind entry: hl.bind(keys, <dispatcher>, { description, ... }).
   # dispatcher is a Lua expression.
   bindWith = opts: keys: description: dispatcher: {

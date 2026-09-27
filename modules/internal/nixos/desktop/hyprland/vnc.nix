@@ -16,6 +16,7 @@ let
   desktopVnc = pkgs.writeShellApplication {
     name = "desktop-vnc";
     runtimeInputs = [
+      cfg.shellPackage
       config.programs.hyprland.package
       pkgs.coreutils
       pkgs.gnugrep
@@ -55,11 +56,16 @@ let
         systemctl --user is-active --quiet "$1"
       }
 
-      # A monitor is plugged in, so a session started here is visible on it.
-      # TODO(phase2): lock through the forked shell's lock screen before
-      # anything is served; until then this only warns.
+      # A monitor is plugged in, so a session started here is visible on it:
+      # lock it before anything is served. Unlocking takes the password,
+      # through VNC or at the machine.
       lock_session() {
-        echo "desktop-vnc: no lock screen yet; this session is visible on the attached display." >&2
+        if ! hrndz-shell lock --wait; then
+          echo "desktop-vnc: could not lock the session; stopping it." >&2
+          systemctl --user stop "$session_unit" || true
+          rm -f "$state/session"
+          exit 1
+        fi
       }
 
       start_session() {
@@ -131,7 +137,8 @@ let
           rm -f "$state/output"
         fi
         if [ -e "$state/session" ]; then
-          systemctl --user stop "$session_unit" 2>/dev/null || true
+          # The shell's unit outlives the compositor it drew on.
+          systemctl --user stop "$session_unit" quickshell.service 2>/dev/null || true
           rm -f "$state/session"
           echo "Stopped VNC and the headless session."
         else

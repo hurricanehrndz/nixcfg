@@ -12,10 +12,10 @@
           function()
             -- Hand the whole session environment, including the env set in
             -- this config, to systemd and D-Bus activated services.
-            hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1)")
-            hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+            -- Then start the shell: uwsm's graphical-session.target already
+            -- has, but a session desktop-vnc starts has no such target.
+            hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1); dbus-update-activation-environment --systemd --all; hrndz-shell start")
 
-            hl.exec_cmd("hrndz-shell start")
             hl.exec_cmd("uwsm-app -- udiskie --automount --no-notify --no-tray")
           end'')
       ];

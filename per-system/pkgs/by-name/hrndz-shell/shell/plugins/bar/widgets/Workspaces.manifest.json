@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "omarchy.workspaces",
+  "name": "Workspaces",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Named and numbered workspace indicators",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Workspaces.qml"
+  },
+  "barWidget": {
+    "displayName": "Workspaces",
+    "description": "Named and numbered workspace indicators",
+    "category": "Compositor",
+    "allowMultiple": false
+  }
+}
