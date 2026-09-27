@@ -298,6 +298,32 @@ in
       };
     };
 
+    # Omarchy's first run hardcodes a dark GNOME scheme (first-run/gnome-theme.sh),
+    # and the first theme is applied headless, which skips the hook that would
+    # match it. Re-apply the current theme's light/dark at each login, once
+    # first-run is done; GTK apps and Zen follow it.
+    systemd.user.services.omarchy-theme-gnome-sync = {
+      description = "Match GNOME light/dark to the current Omarchy theme";
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
+      path = [ "/run/current-system/sw" ];
+      unitConfig.ConditionEnvironment = "WAYLAND_DISPLAY";
+      environment.OMARCHY_PATH = "${cfg.package}/share/omarchy";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        TimeoutStartSec = "150s";
+      };
+      script = ''
+        for _ in $(seq 120); do
+          omarchy-done check first-run-user && break
+          sleep 1
+        done
+        omarchy-theme-set-gnome
+      '';
+    };
+
     # External-monitor brightness over DDC/CI (omarchy-brightness-display-ddc).
     hardware.i2c.enable = true;
 
