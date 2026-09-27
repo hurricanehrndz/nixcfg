@@ -36,7 +36,7 @@ in
             settings;
       }
 
-      (lib.mkIf pkgs.stdenv.isLinux {
+      (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         systemd.user.services.cli-proxy-api = {
           Unit.Description = "CLIProxyAPI";
           Service = {
@@ -48,7 +48,7 @@ in
         };
       })
 
-      (lib.mkIf pkgs.stdenv.isDarwin {
+      (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         launchd.agents.cli-proxy-api = {
           enable = true;
           config = {

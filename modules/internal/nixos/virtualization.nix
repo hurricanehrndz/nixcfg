@@ -111,7 +111,8 @@ in
         extraGroups = [ "kvm" ] ++ optional cfg.libvirt.enable "libvirtd";
       });
 
-      environment.systemPackages = [ pkgs.vncdo ];
+      # Renamed to vncdotool on nixos-unstable; 26.05 only has vncdo.
+      environment.systemPackages = [ (pkgs.vncdotool or pkgs.vncdo) ];
     }
 
     (mkIf cfg.libvirt.enable {

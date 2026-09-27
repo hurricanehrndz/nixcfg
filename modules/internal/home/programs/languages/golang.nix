@@ -15,7 +15,7 @@ in
       [
         go
       ]
-      ++ optionals stdenv.isLinux [
+      ++ optionals stdenv.hostPlatform.isLinux [
         gcc
       ];
   };
