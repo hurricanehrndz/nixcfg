@@ -45,7 +45,7 @@ platform-gated (`[macos]` / `[linux]`), so the same names work on both.
 ## Justfile Shortcuts
 - `just` / `just default` - list available recipes
 - `just build` - build the current-platform configuration (+ `nvd diff`)
-- `just switch` - build and activate
+- `just switch` - build and activate (takes a btrbk snapshot first on hosts that run btrbk)
 - `just bs` - build then switch
 - `just dev-switch` - switch with local `pdenv` overridden to `~/src/me/pdenv`
 - `just bootstrap <host>` - (macOS) run the Darwin bootstrap script
@@ -102,6 +102,15 @@ Host capabilities are toggled through `hrndz.*` options defined in `modules/inte
 - `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `documentTools`, `macAdmin`.
 
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.
+
+### Storage Layout (NixOS btrfs)
+Disks are declared with disko in `hosts/<arch>/<host>/config/disk-config.nix`.
+- Subvolumes are COW with `compress=zstd`. Never `chattr +C` a broad path such as `/var`, because NOCOW drops checksums and compression for everything under it.
+- NOCOW is only for container and VM storage (`/var/lib/containers`, `/var/lib/libvirt/images`, `/var/lib/machines`, rootless `~/.local/share/containers`). Each gets a subvolume nested under `@` and named by its real path (`"@/var/lib/containers"`), mounted explicitly, with `+C` set by a tmpfiles `h` rule. `nodatacow` and `compress` mount options apply to the whole filesystem, not per subvolume.
+- NixOS generations are the system rollback; don't snapshot `@` or `@nix`. Service state is snapshotted with btrbk (DeepThought: `/var`, `/volumes/books` and `/home` into `.snapshots`, sent to `/backups`, and `just switch` takes a snapshot first). `/.btrfs` automounts the top level for whole-subvolume rollbacks.
+- DeepThought keeps `/home` on its own partition so a full root can't block logins.
+- List one mountpoint per filesystem in `services.btrfs.autoScrub.fileSystems`.
+- Changing a live host's disko config does not reformat it. Create new subvolumes from a `subvolid=5` mount before switching to a config that mounts them, or the boot drops to emergency mode. Never rename a GPT partlabel that fstab uses on a running system: systemd unmounts everything on it.
 
 ### AI Coding Agents (`modules/internal/home/programs/ai/`)
 All agents are gated on `tooling.ai` and managed via home-manager. Their packages come from `inputs.llm-agents`; `inputs.pi` remains only for pi's Home Manager module. Keep these ownership boundaries in mind when editing:
