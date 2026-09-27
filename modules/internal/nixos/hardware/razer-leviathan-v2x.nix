@@ -9,8 +9,6 @@ let
     mkEnableOption
     mkIf
     mkMerge
-    mkOption
-    types
     ;
   cfg = config.hrndz.hardware.razerLeviathanV2X;
 
@@ -22,30 +20,59 @@ let
     rev = "4cf64b78dd99634f63ca3ed7675452799662eea8";
     hash = "sha256-2cRazHLy17RRb04ZvIVXOLKQJYIAP2GyZBtwOwIKR9w=";
   };
+
+  # When the kernel exposes both the per-channel and master volume, PipeWire
+  # drives only the per-channel one and the master ('PCM Playback Volume',
+  # index=1) keeps whatever it last held: ~29% from the factory, or wherever
+  # macOS left it. When the kernel disables the per-channel control as sticky,
+  # the master is PipeWire's slider and there is nothing to fix.
+  leviathanVolume = pkgs.writeShellApplication {
+    name = "leviathan-volume";
+    runtimeInputs = [ pkgs.alsa-utils ];
+    text = ''
+      level="''${1:-100}"
+      case "$level" in
+        "" | *[!0-9]*)
+          echo "usage: leviathan-volume [PERCENT]  (0-100, default 100)" >&2
+          exit 2
+          ;;
+      esac
+      if [ "$level" -gt 100 ]; then
+        echo "leviathan-volume: $level is above 100" >&2
+        exit 2
+      fi
+
+      card=""
+      for usbid in /proc/asound/card*/usbid; do
+        [ -r "$usbid" ] && [ "$(cat "$usbid")" = "1532:054a" ] || continue
+        card="''${usbid#/proc/asound/card}"
+        card="''${card%/usbid}"
+      done
+      if [ -z "$card" ]; then
+        echo "leviathan-volume: Razer Leviathan V2 X not found" >&2
+        exit 1
+      fi
+
+      control="name=PCM Playback Volume,index=1"
+      if amixer -c "$card" cget "$control" >/dev/null 2>&1; then
+        amixer -q -c "$card" cset "$control" "$level%"
+        echo "Set the hidden master volume on card $card to $level%."
+      else
+        echo "Card $card has no separate master volume; the desktop slider already controls it."
+      fi
+    '';
+  };
 in
 {
   options.hrndz.hardware.razerLeviathanV2X = {
     enable = mkEnableOption "Razer Leviathan V2 X (USB 1532:054a) soundbar support";
-
-    internalVolume = mkOption {
-      type = types.ints.between 0 100;
-      default = 100;
-      description = ''
-        Level, in percent, for the soundbar's hidden master volume
-        ('PCM Playback Volume',index=1; 100% is -0.06 dB). Some units boot it at
-        ~29%, which only Razer Synapse raises; PipeWire drives the per-channel
-        control, so unity here leaves the desktop slider in charge.
-      '';
-    };
 
     rgb.enable = mkEnableOption "RGB control through a patched OpenRazer driver and daemon";
   };
 
   config = mkIf cfg.enable (mkMerge [
     {
-      services.udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", ATTRS{idVendor}=="1532", ATTRS{idProduct}=="054a", RUN+="${pkgs.alsa-utils}/bin/amixer -q -c %n cset 'name=PCM Playback Volume,index=1' ${toString cfg.internalVolume}%%"
-      '';
+      environment.systemPackages = [ leviathanVolume ];
     }
 
     (mkIf cfg.rgb.enable {
