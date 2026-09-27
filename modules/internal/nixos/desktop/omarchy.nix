@@ -265,7 +265,13 @@ in
       theme = "omarchy";
     };
     # Keep kernel and initrd messages off the splash (plymouth adds "splash").
-    boot.kernelParams = [ "quiet" ];
+    boot.kernelParams = [
+      "quiet"
+      # USB devices stay awake (keyboards, the soundbar). A kernel parameter,
+      # not modprobe options: usbcore is built in (CONFIG_USB=y), so nixarchy's
+      # extraModprobeConfig form never reaches it.
+      "usbcore.autosuspend=-1"
+    ];
     boot.consoleLogLevel = 3;
     boot.initrd.verbose = false;
 
@@ -318,9 +324,6 @@ in
       else
         "DefaultLimitNOFILE=65536:524288";
     systemd.services."user@".serviceConfig.TimeoutStopSec = "15s";
-
-    # USB devices stay awake (keyboards, the soundbar); negligible on a desktop.
-    boot.extraModprobeConfig = "options usbcore autosuspend=-1";
 
     # Printing with network discovery; cups-browsed stays off, as in nixarchy.
     services.printing = {
