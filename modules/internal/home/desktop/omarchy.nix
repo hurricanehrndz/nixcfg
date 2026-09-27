@@ -101,6 +101,14 @@ let
     ) namedWorkspaces}
   '';
 
+  # Omarchy web-app launchers to drop. A user entry with Hidden=true shadows the
+  # package's share/applications file, which launchers treat as deleted.
+  hiddenLaunchers = [
+    "Basecamp"
+    "HEY"
+    "Zoom"
+  ];
+
   # Menu rows that assume pacman or nixarchy's app installer. Apps come from
   # this flake's modules instead; `when = "false"` hides a row.
   menuExtension = builtins.toJSON {
@@ -124,6 +132,18 @@ in
       gtk.enable = true;
       hyprcursor.enable = true;
     };
+
+    xdg.dataFile = lib.listToAttrs (
+      map (name: {
+        name = "applications/omarchy-${name}.desktop";
+        value.text = ''
+          [Desktop Entry]
+          Type=Application
+          Name=${name}
+          Hidden=true
+        '';
+      }) hiddenLaunchers
+    );
 
     xdg.configFile = {
       "hypr/bindings.lua".text = bindingsLua;

@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -268,6 +269,70 @@ in
     boot.consoleLogLevel = 3;
     boot.initrd.verbose = false;
 
+    ##: Settings adopted from nixarchy's module (which is not imported)
+    # Locks the screen before suspend; InhibitDelayMaxSec below gives it time.
+    systemd.user.services.omarchy-sleep-lock = {
+      description = "Lock Omarchy before suspend";
+      after = [
+        "dbus.socket"
+        "wayland-session-waitenv.service"
+      ];
+      requires = [ "dbus.socket" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
+      path = [ "/run/current-system/sw" ];
+      unitConfig.ConditionEnvironment = "WAYLAND_DISPLAY";
+      # The monitor finds its companion omarchy-system-sleep-lock via $OMARCHY_PATH.
+      environment.OMARCHY_PATH = "${cfg.package}/share/omarchy";
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${cfg.package}/bin/omarchy-system-sleep-monitor";
+        Restart = "always";
+        RestartSec = 2;
+      };
+    };
+
+    # External-monitor brightness over DDC/CI (omarchy-brightness-display-ddc).
+    hardware.i2c.enable = true;
+
+    # Prebuilt binaries (downloaded language servers, npm/pip natives) and
+    # scripts with FHS shebangs just work; AppImages run directly.
+    programs.nix-ld.enable = true;
+    services.envfs.enable = true;
+    programs.appimage = {
+      enable = true;
+      binfmt = true;
+    };
+
+    # Proton/Wine and file watchers want more than the default 1024 soft limit.
+    # A 15s stop timeout (nixarchy uses 5s) still lets VMs and containers shut
+    # down cleanly while avoiding 90s hangs.
+    systemd.settings.Manager = {
+      DefaultLimitNOFILE = "65536:524288";
+      DefaultTimeoutStopSec = "15s";
+    };
+    # systemd.user.settings is unstable-only; 26.05 still has extraConfig.
+    systemd.user.${if options.systemd.user ? settings then "settings" else "extraConfig"} =
+      if options.systemd.user ? settings then
+        { Manager.DefaultLimitNOFILE = "65536:524288"; }
+      else
+        "DefaultLimitNOFILE=65536:524288";
+    systemd.services."user@".serviceConfig.TimeoutStopSec = "15s";
+
+    # USB devices stay awake (keyboards, the soundbar); negligible on a desktop.
+    boot.extraModprobeConfig = "options usbcore autosuspend=-1";
+
+    # Printing with network discovery; cups-browsed stays off, as in nixarchy.
+    services.printing = {
+      enable = true;
+      browsed.enable = false;
+    };
+    services.avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+
     services.logind.settings.Login = {
       # Omarchy binds the power button to its power menu; logind's default
       # "poweroff" would shut the machine down before the menu could open.
@@ -279,7 +344,11 @@ in
 
     # Keep the user manager running without a login, so a session started by
     # desktop-vnc over SSH survives the SSH connection closing.
-    users.users.${config.system.primaryUser}.linger = true;
+    # i2c: DDC/CI brightness for external monitors (hardware.i2c below).
+    users.users.${config.system.primaryUser} = {
+      linger = true;
+      extraGroups = [ "i2c" ];
+    };
 
     ##: Omarchy tree and what its scripts shell out to
     environment.sessionVariables = {
