@@ -3,6 +3,8 @@
   options,
   pkgs,
   inputs,
+  channel,
+  channelInputs,
   ...
 }:
 let
@@ -39,7 +41,7 @@ in
       # makes every input resolvable as `<name>`.
       nix.nixPath = [
         "nixpkgs=${pkgs.path}"
-        "home-manager=${inputs.home-manager}"
+        "home-manager=${(channelInputs channel).home-manager}"
         "/etc/nix/inputs"
       ]
       ++ (l.optional pkgs.stdenv.hostPlatform.isDarwin "nix-darwin=${inputs.nix-darwin}");

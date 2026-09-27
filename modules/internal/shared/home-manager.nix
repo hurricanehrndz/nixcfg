@@ -5,6 +5,8 @@
   inputs',
   lib,
   config,
+  channel,
+  channelInputs,
   ...
 }:
 let
@@ -24,9 +26,9 @@ in
       inherit
         self
         self'
-        inputs
         inputs'
         ;
+      inputs = inputs // channelInputs channel;
     };
 
     users.${config.system.primaryUser} = {

@@ -292,9 +292,8 @@ in
       adwaita-icon-theme
       bibata-cursors
       wayvnc
-    ])
-    # Screen-share picker; nixos-26.05 does not carry it yet.
-    ++ [ inputs.nixarchy.inputs.nixpkgs.legacyPackages.${system}.hyprland-preview-share-picker ];
+      hyprland-preview-share-picker
+    ]);
 
     environment.etc = {
       "omarchy/xcompose".source = "${cfg.package}/share/omarchy/default/xcompose";

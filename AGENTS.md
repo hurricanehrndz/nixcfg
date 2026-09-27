@@ -91,6 +91,8 @@ Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.
 - Applies class-specific modules (darwin or nixos) from `modules/internal/`
 - Integrates home-manager, agenix, and (NixOS only) disko modules
 
+The Omarchy desktops (`desktopHostNames` in `hosts/default.nix`: Lucy, mastercontrol) run `nixos-unstable` with main-branch home-manager and stylix, selected by the `channel = "unstable"` specialArg through `channelInputs`. Every other host stays on the 26.05 release. Shared modules must therefore evaluate on both channels: where an option or package exists on only one, branch on its presence (`options.services.journald ? settings`, `pkgs.vncdotool or pkgs.vncdo`) rather than on the host name.
+
 ### Host Capability Options (`hrndz`)
 Host capabilities are toggled through `hrndz.*` options defined in `modules/internal/shared/options.nix`, then enabled per-host (typically in `hosts/<arch>/<host>/config/users/hurricane.nix` or the host `default.nix`):
 - `roles.terminalUser` — baseline interactive shell environment.

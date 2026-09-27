@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  options,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkDefault mkForce;
 in
@@ -69,10 +74,22 @@ in
   ##: services
   services.earlyoom.enable = true;
 
-  services.journald.extraConfig = ''
-    SystemMaxUse=500M
-    RuntimeMaxUse=100M
-  '';
+  # nixos-unstable replaced extraConfig with settings; 26.05 only has the former.
+  services.journald =
+    if options.services.journald ? settings then
+      {
+        settings.Journal = {
+          SystemMaxUse = "500M";
+          RuntimeMaxUse = "100M";
+        };
+      }
+    else
+      {
+        extraConfig = ''
+          SystemMaxUse=500M
+          RuntimeMaxUse=100M
+        '';
+      };
 
   ##: kernel
   boot.kernel.sysctl = {

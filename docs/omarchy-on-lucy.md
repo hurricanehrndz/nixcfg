@@ -7,7 +7,7 @@ modules are deliberately **not** imported.
 
 | Piece | Where |
 | --- | --- |
-| Flake input (pinned tag, no `follows`, so builds hit `nixarchy.cachix.org`) | `flake.nix` → `nixarchy` |
+| Flake input (pinned tag, nixpkgs follows `nixos-unstable` like the desktops) | `flake.nix` → `nixarchy` |
 | System side: session, greetd, fonts, PAM, desktop services, `desktop-vnc` | `modules/internal/nixos/desktop/omarchy.nix` (`hrndz.desktop.omarchy`) |
 | User side: bindings, menu, seeded config, first theme | `modules/internal/home/desktop/omarchy.nix` |
 | Lucy's settings | `hosts/x86_64-nixos/Lucy/config/desktop.nix` |
