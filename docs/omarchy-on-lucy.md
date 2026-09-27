@@ -19,9 +19,12 @@ same way as on every other host: roles (`hrndz.roles.*`), tooling
 (`hrndz.tooling.*`), `environment.systemPackages`, `home.packages`, or the
 browser/flatpak modules.
 
-The menu's **Install**, **Remove**, **Update → Channel** and **Update → Config**
-rows are hidden (`~/.config/omarchy/extensions/omarchy-menu.jsonc`). They
-assume either pacman or nixarchy's installer:
+The menu's **Install**, **Remove**, **Learn**, **Setup → Add Plugin**,
+**Update → Channel**, **Update → Config** and **Update → Extra Themes** rows are
+hidden (`~/.config/omarchy/extensions/omarchy-menu.jsonc`). Learn is only web
+links; the others install at runtime, assuming pacman, downloads, or
+nixarchy's installer. So are the Basecamp, HEY and Zoom web-app launchers, and
+foot is not installed (Ghostty is the terminal). For the install rows:
 
 - nixarchy's installer writes picks to `~/.config/nixarchy/apps.nix`, and then
   `nixarchy-apply` **copies those files into the flake** (at the repo root,

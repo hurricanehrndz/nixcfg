@@ -109,13 +109,17 @@ let
     "Zoom"
   ];
 
-  # Menu rows that assume pacman or nixarchy's app installer. Apps come from
-  # this flake's modules instead; `when = "false"` hides a row.
+  # Menu rows to hide; `when = "false"` hides a row and everything under it.
+  # Install/remove/plugins/extra themes assume pacman or runtime downloads;
+  # apps come from this flake's modules instead. Learn is just web links.
   menuExtension = builtins.toJSON {
     install.when = "false";
     remove.when = "false";
+    learn.when = "false";
+    "setup.plugin.add".when = "false";
     "update.channel".when = "false";
     "update.config".when = "false";
+    "update.themes".when = "false";
   };
 in
 {

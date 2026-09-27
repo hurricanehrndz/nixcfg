@@ -399,7 +399,11 @@ in
       desktopVnc
     ]
     # The session's Hyprland comes from programs.hyprland, not the tree's deps.
-    ++ builtins.filter (d: !(lib.hasPrefix "hyprland-" (d.name or ""))) cfg.package.passthru.runtimeDeps
+    # Foot is dropped: Ghostty is the terminal, and Omarchy only touches foot
+    # when it is installed or chosen as the default.
+    ++ builtins.filter (
+      d: !(lib.hasPrefix "hyprland-" (d.name or "")) && !(lib.hasPrefix "foot-" (d.name or ""))
+    ) cfg.package.passthru.runtimeDeps
     ++ (with pkgs; [
       glib
       gsettings-desktop-schemas
