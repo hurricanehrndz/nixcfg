@@ -55,25 +55,26 @@ in
       };
     };
 
-    # A fixed place rather than IP geolocation, which is wrong behind a VPN
-    # and costs a lookup per refresh.
     weather.location = mkOption {
-      type = types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            description = "Name the weather panel shows.";
+      type = types.nullOr (
+        types.submodule {
+          options = {
+            name = mkOption {
+              type = types.str;
+              description = "Name the weather panel shows.";
+            };
+            latitude = mkOption { type = types.float; };
+            longitude = mkOption { type = types.float; };
           };
-          latitude = mkOption { type = types.float; };
-          longitude = mkOption { type = types.float; };
-        };
-      };
-      default = {
-        name = "Edmonton";
-        latitude = 53.5461;
-        longitude = -113.4938;
-      };
-      description = "Where the bar's weather widget reports for.";
+        }
+      );
+      default = null;
+      description = ''
+        Where the bar's weather widget reports for. Null locates the machine
+        from nearby Wi-Fi through GeoClue and BeaconDB, falling back to
+        wttr.in's public-IP lookup. Set it for a fixed place, e.g. behind a
+        VPN exit node.
+      '';
     };
   };
 

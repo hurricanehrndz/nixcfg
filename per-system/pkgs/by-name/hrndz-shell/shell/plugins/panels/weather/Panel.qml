@@ -72,9 +72,14 @@ Panel {
 
   // The location is the widget's `location` setting ({ name, latitude,
   // longitude }), which the Nix bar layout fills from
-  // hrndz.desktop.hyprland.weather.location. There is no in-panel picker and
-  // no IP lookup. The query is the wttr.in path segment.
-  readonly property var configuredLocationState: Model.parseLocation(setting("location", null))
+  // hrndz.desktop.hyprland.weather.location. Without one it is located on
+  // each refresh through GeoClue's Wi-Fi source; if that finds nothing the
+  // empty query lets wttr.in locate by IP. The query is the wttr.in path
+  // segment.
+  readonly property var fixedLocationState: Model.parseLocation(setting("location", null))
+  readonly property bool autoLocate: fixedLocationState.latitude === null
+  property var autoLocation: null
+  readonly property var configuredLocationState: autoLocate ? Model.parseLocation(autoLocation) : fixedLocationState
   readonly property string configuredLocation: configuredLocationState.name
   readonly property string locationQuery: Model.wttrLocationQuery(configuredLocationState.name, configuredLocationState.latitude, configuredLocationState.longitude)
 
@@ -86,7 +91,7 @@ Panel {
     dailyForecastRetries = 0
     forecastProc.running = false
     dailyForecastProc.running = false
-    Qt.callLater(refresh)
+    Qt.callLater(fetch)
   }
 
   property int forecastRetries: 0
@@ -124,6 +129,14 @@ Panel {
   }
 
   function refresh() {
+    if (autoLocate) {
+      if (!locateProc.running) locateProc.running = true
+      return
+    }
+    fetch()
+  }
+
+  function fetch() {
     // Each full refresh cycle gets a fresh retry budget, so an earlier
     // exhausted round (e.g. waking with the network still down) doesn't
     // starve retries for the rest of the session.
@@ -209,6 +222,26 @@ Panel {
   // wttr.in weather code → nerd-font glyph, as Omarchy's weather-icon had it.
   function iconForCode(code, night) {
     return Model.iconForCode(code, night)
+  }
+
+  Process {
+    id: locateProc
+    command: ["@shareDir@/bin/locate"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: {
+        var parts = String(text || "").trim().split(/\s+/)
+        var located = Model.parseLocation({ latitude: parts[0], longitude: parts[1] })
+        // A new fix changes locationQuery, which fetches; otherwise fetch
+        // for the unchanged (or IP-detected) location now.
+        if (located.latitude !== null) {
+          var previous = root.locationQuery
+          root.autoLocation = located
+          if (root.locationQuery !== previous) return
+        }
+        root.fetch()
+      }
+    }
   }
 
   Process {

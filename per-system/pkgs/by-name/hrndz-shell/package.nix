@@ -19,6 +19,7 @@
   findutils,
   fontconfig,
   gawk,
+  geoclue2,
   gnugrep,
   gnused,
   grim,
@@ -36,6 +37,7 @@
   pulseaudio,
   python3,
   qt6,
+  runCommand,
   quickshell,
   ripgrep,
   satty,
@@ -176,6 +178,15 @@ let
       coreutils
       libnotify
       zenity
+    ];
+    # GeoClue's demo client, the one CLI that asks the geoclue service.
+    locate = [
+      coreutils
+      gawk
+      (runCommand "where-am-i" { } ''
+        mkdir -p $out/bin
+        ln -s ${geoclue2}/libexec/geoclue-2.0/demos/where-am-i $out/bin/
+      '')
     ];
     # codex, which the Codex collector asks for its limits, too.
     agent-usage-update = [

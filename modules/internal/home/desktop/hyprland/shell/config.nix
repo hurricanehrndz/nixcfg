@@ -6,6 +6,7 @@
 }:
 let
   inherit (import ../bindings/_lib.nix { inherit lib; }) namedWorkspaces;
+  inherit (osConfig.hrndz.desktop.hyprland) weather;
 
   # The whole shell config: the shell reads it and never writes it. Settings
   # changed in the UI (tray pins, clock format and the like) go to
@@ -32,10 +33,12 @@ let
             formatAlt = "d MMMM 'W'ww yyyy";
             verticalFormat = "HH\n—\nmm";
           }
-          {
-            id = "omarchy.weather";
-            inherit (osConfig.hrndz.desktop.hyprland.weather) location;
-          }
+          (
+            {
+              id = "omarchy.weather";
+            }
+            // lib.optionalAttrs (weather.location != null) { inherit (weather) location; }
+          )
         ];
         # The agents widget hides itself until a usage record has numbers.
         right = map (id: { id = "omarchy.${id}"; }) (

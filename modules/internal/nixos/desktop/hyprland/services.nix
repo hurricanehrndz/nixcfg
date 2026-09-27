@@ -69,6 +69,16 @@ in
     networking.networkmanager.enable = mkDefault true;
     hardware.bluetooth.enable = mkDefault true;
 
+    # The weather widget locates the machine unless a location is fixed. The
+    # shell's locate helper asks through GeoClue's where-am-i client.
+    services.geoclue2 = mkIf (config.hrndz.desktop.hyprland.weather.location == null) {
+      enable = true;
+      appConfig.geoclue-where-am-i = {
+        isAllowed = true;
+        isSystem = false;
+      };
+    };
+
     # The shell's Tailscale panel runs tailscale as the desktop user: up/down,
     # exit nodes, account switching.
     services.tailscale.extraSetFlags = mkIf config.services.tailscale.enable [
