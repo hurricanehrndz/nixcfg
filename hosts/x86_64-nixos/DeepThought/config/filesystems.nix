@@ -40,6 +40,30 @@ in
       "data4"
     ])
     // {
+      # Top level of the root fs, mounted on demand for whole-subvolume rollbacks.
+      "/.btrfs" = {
+        device = "/dev/disk/by-partlabel/disk-main-nixos";
+        fsType = "btrfs";
+        options = [
+          "subvolid=5"
+          "noatime"
+          "noauto"
+          "x-systemd.automount"
+          "x-systemd.idle-timeout=5min"
+        ];
+      };
+      # btrbk target. Its target dir only exists on this disk, so btrbk fails
+      # loudly instead of writing to / when the disk is missing.
+      "/backups" = {
+        device = "/dev/disk/by-label/backup";
+        fsType = "btrfs";
+        options = [
+          "defaults"
+          "noatime"
+          "nofail"
+          "compress=zstd"
+        ];
+      };
       "/volumes/cache" = {
         device = "/dev/disk/by-label/cache";
         fsType = "btrfs";
@@ -90,6 +114,7 @@ in
     fileSystems = [
       "/"
       "/home"
+      "/backups"
       "/volumes/cache"
     ];
   };

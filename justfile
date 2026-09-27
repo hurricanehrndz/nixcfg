@@ -22,7 +22,13 @@ build *args: lock
 [linux]
 switch *args:
     @just sudo-prime
+    @just pre-switch-snapshot
     sudo nixos-rebuild switch --accept-flake-config --flake . {{args}} |& nom
+
+# Snapshot service state before activating, on hosts that run btrbk.
+[linux]
+pre-switch-snapshot:
+    @if [ -e /etc/btrbk/btrbk.conf ]; then sudo btrbk snapshot --quiet; fi
 
 [group('nix')]
 [linux]
@@ -32,6 +38,7 @@ bs *args: (build args) (switch args)
 [linux]
 dev-switch *args: lock (build "--override-input" "pdenv" "path:$HOME/src/me/pdenv" args)
     @just sudo-prime
+    @just pre-switch-snapshot
     sudo nixos-rebuild switch --flake . --override-input pdenv path:../pdenv {{args}} |& nom
 alias nds := dev-switch
 
