@@ -202,6 +202,24 @@ let
     '';
   };
 
+  # Chromium/Brave toolbar colour from the Omarchy theme, as a managed policy.
+  # Omarchy's own hook (omarchy-theme-set-browser) needs root-owned policy dirs
+  # written through sudo at /usr/bin paths, so it can't run here; this is the
+  # same policy, computed the way omarchy-theme-set does, from the theme's
+  # colors.toml background. Omarchy web apps run in Chromium.
+  # CEILING: follows hrndz.theme.omarchy.theme at rebuild, not Style-menu
+  # switches. Upgrade path: a root oneshot that rewrites the file from
+  # ~/.local/state/omarchy/current/theme when the theme changes.
+  themeColors = "${inputs.nixarchy.inputs.omarchy}/themes/${config.hrndz.theme.omarchy.theme}/colors.toml";
+  browserThemePolicy.text = builtins.toJSON {
+    BrowserThemeColor =
+      if builtins.pathExists themeColors then
+        (builtins.fromTOML (builtins.readFile themeColors)).background
+      else
+        "#1c2027";
+    BrowserColorScheme = "device";
+  };
+
   # /etc files upstream installs on Arch that the Omarchy tree expects.
   installedEtc = lib.attrNames (
     lib.filterAttrs (_: row: row.class == "installed") (
@@ -417,6 +435,8 @@ in
 
     environment.etc = {
       "omarchy/xcompose".source = "${cfg.package}/share/omarchy/default/xcompose";
+      "chromium/policies/managed/omarchy-theme.json" = browserThemePolicy;
+      "brave/policies/managed/omarchy-theme.json" = browserThemePolicy;
     }
     // lib.genAttrs installedEtc (name: {
       source = "${cfg.package}/share/omarchy/etc/${name}";

@@ -101,6 +101,37 @@ let
     ) namedWorkspaces}
   '';
 
+  # Vendored workspaces widget, installed as a clone of omarchy.workspaces
+  # (the shell routes to a clone via omarchy.clonedFrom). Copied in as real
+  # files: Omarchy refuses symlinks inside a plugin folder.
+  workspacesPluginId = "${config.home.username}.workspaces";
+  workspacesPlugin = pkgs.runCommand "omarchy-workspaces-plugin" { } ''
+    mkdir -p $out
+    substitute ${./omarchy-workspaces/Workspaces.qml} $out/Workspaces.qml \
+      --replace-fail '@namedWorkspaces@' '${builtins.toJSON namedWorkspaces}'
+    cp ${
+      pkgs.writeText "manifest.json" (
+        builtins.toJSON {
+          schemaVersion = 1;
+          id = workspacesPluginId;
+          name = "My Workspaces";
+          version = "1.0.0";
+          author = config.home.username;
+          description = "Named (Meh+letter) and numbered workspace indicators";
+          kinds = [ "bar-widget" ];
+          entryPoints.barWidget = "Workspaces.qml";
+          barWidget = {
+            displayName = "My Workspaces";
+            description = "Named (Meh+letter) and numbered workspace indicators";
+            category = "Compositor";
+            allowMultiple = false;
+          };
+          omarchy.clonedFrom = "omarchy.workspaces";
+        }
+      )
+    } $out/manifest.json
+  '';
+
   # Omarchy web-app launchers to drop. A user entry with Hidden=true shadows the
   # package's share/applications file, which launchers treat as deleted.
   hiddenLaunchers = [
@@ -153,6 +184,13 @@ in
       "hypr/bindings.lua".text = bindingsLua;
       "omarchy/extensions/omarchy-menu.jsonc".text = menuExtension;
     };
+
+    home.activation.omarchyWorkspacesPlugin = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      dest="${config.xdg.configHome}/omarchy/plugins/${workspacesPluginId}"
+      run rm -rf "$dest"
+      run mkdir -p "$dest"
+      run ${pkgs.coreutils}/bin/install -m 0644 ${workspacesPlugin}/* "$dest"/
+    '';
 
     # Omarchy's tools write to these, so they are seeded as real files, never
     # store links, and never overwritten once present.
