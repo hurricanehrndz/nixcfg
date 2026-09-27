@@ -1,7 +1,7 @@
 { ... }:
 {
   hrndz.desktop = {
-    omarchy.enable = true;
+    hyprland.enable = true;
     gaming.enable = true;
     flatpak.packages = [ "sh.cider.Cider" ];
   };

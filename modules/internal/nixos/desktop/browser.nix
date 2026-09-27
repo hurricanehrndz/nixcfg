@@ -66,9 +66,16 @@ in
       ];
     }
 
-    (mkIf (config.hrndz.roles.developerWorkstation.enable || config.hrndz.desktop.omarchy.enable) {
-      hrndz.desktop.browser.browsers = mkDefault [ "zen" ];
-    })
+    (mkIf
+      (
+        config.hrndz.roles.developerWorkstation.enable
+        || config.hrndz.desktop.omarchy.enable
+        || config.hrndz.desktop.hyprland.enable
+      )
+      {
+        hrndz.desktop.browser.browsers = mkDefault [ "zen" ];
+      }
+    )
 
     (mkIf (browserPackages != [ ]) {
       environment.systemPackages = browserPackages;
