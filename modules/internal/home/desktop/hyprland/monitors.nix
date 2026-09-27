@@ -4,9 +4,9 @@
   ...
 }:
 {
-  # Monitors are not declared here: the shell's display panel (Phase 2)
-  # writes $XDG_CONFIG_HOME/hypr/monitors.lua at runtime, so that file stays
-  # user-owned. It loads from extraConfig because extraConfig is the only part
+  # Monitors are not declared here: the shell's display panel writes
+  # $XDG_CONFIG_HOME/hypr/monitors.lua when the scale changes (hrndz-shell's
+  # bin/monitor), so that file stays user-owned. It loads from extraConfig because extraConfig is the only part
   # rendered after the fallback rule below, which it must override.
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland = {

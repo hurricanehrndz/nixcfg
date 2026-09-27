@@ -42,8 +42,7 @@ Item {
   property string lastError: ""
 
   readonly property int refreshIntervalSec: intSetting("refreshIntervalSec", 30, 5, 3600)
-  readonly property bool busy: whichProcess.running || statusProcess.running || mullvadExitNodesProcess.running || accountsProcess.running || actionProcess.running || loginProcess.running || switchProcess.running || operatorProcess.running || exitNodeProcess.running
-  readonly property string userName: Quickshell.env("USER") || Quickshell.env("LOGNAME")
+  readonly property bool busy: whichProcess.running || statusProcess.running || mullvadExitNodesProcess.running || accountsProcess.running || actionProcess.running || loginProcess.running || switchProcess.running || exitNodeProcess.running
 
   property string _statusOutput: ""
   property string _statusError: ""
@@ -63,8 +62,6 @@ Item {
   property string _switchError: ""
   property string _exitNodeOutput: ""
   property string _exitNodeError: ""
-  property string _operatorOutput: ""
-  property string _operatorError: ""
 
   function setting(name, fallback) {
     var value = settings ? settings[name] : undefined
@@ -142,7 +139,7 @@ Item {
     if (!canSendFiles(peer)) return
     var target = peerAddress(peer)
     if (target === "") return
-    Quickshell.execDetached(["omarchy-tailscale-send", target])
+    Quickshell.execDetached(["@shareDir@/bin/tailscale-send", target])
   }
 
   function refresh(forceAccounts) {
@@ -345,15 +342,6 @@ Item {
     exitNodeProcess.running = true
   }
 
-  function authorizeTailscaleOperator() {
-    if (!installed || operatorProcess.running || userName === "") return
-    _operatorOutput = ""
-    _operatorError = ""
-    actionStatus = "Authorizing Tailscale operator..."
-    operatorProcess.command = ["pkexec", "tailscale", "set", "--operator=" + userName]
-    operatorProcess.running = true
-  }
-
   function runAction(command, label) {
     if (actionProcess.running) return
     _actionOutput = ""
@@ -373,7 +361,7 @@ Item {
       _loginUrlOpened = true
       _loginInProgress = false
       loginTimeoutTimer.stop()
-      Quickshell.execDetached(["omarchy-launch-browser", url])
+      Quickshell.execDetached(["@xdgOpen@", url])
       return true
     }
     return false
@@ -500,7 +488,7 @@ Item {
         root.parseAccounts("")
         if (/profiles access denied/i.test(stderr) || /profiles access denied/i.test(stdout)) {
           root.accountsAccessDenied = true
-          root.lastError = "Authorize Tailscale operator to show connections"
+          root.lastError = "Not the Tailscale operator; see services.tailscale.extraSetFlags"
         } else {
           root.lastError = elideStatus(stderr || stdout || "Could not list Tailscale connections")
         }
@@ -607,30 +595,6 @@ Item {
         root.actionStatus = ""
       }
       root.settingExitNodeId = ""
-      delayedRefresh.restart()
-    }
-  }
-
-  Process {
-    id: operatorProcess
-    running: false
-    command: []
-    stdout: StdioCollector { id: operatorStdout; waitForEnd: true; onStreamFinished: root._operatorOutput = text }
-    stderr: StdioCollector { id: operatorStderr; waitForEnd: true; onStreamFinished: root._operatorError = text }
-    onExited: function(exitCode) {
-      var stdout = String(operatorStdout.text || root._operatorOutput || "")
-      var stderr = String(operatorStderr.text || root._operatorError || "")
-      if (exitCode !== 0) {
-        root.lastError = elideStatus(stderr || stdout || "Tailscale authorization failed")
-        root.actionStatus = root.lastError
-        actionStatusTimer.restart()
-      } else {
-        root.accountsAccessDenied = false
-        root.lastError = ""
-        root.actionStatus = "Tailscale operator authorized"
-        actionStatusTimer.restart()
-        root._lastAccountsRefreshMs = 0
-      }
       delayedRefresh.restart()
     }
   }

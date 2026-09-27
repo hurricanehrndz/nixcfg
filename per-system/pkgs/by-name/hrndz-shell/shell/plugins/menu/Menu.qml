@@ -865,13 +865,14 @@ Item {
     }
   }
 
+  // menu.jsonc sits in the Nix store, so there is nothing to watch. Before
+  // omarchyPath arrives the path would be "/menu.jsonc", whose watch on the
+  // parent "" made QFileSystemWatcher warn.
   FileView {
     id: defaultMenuFile
-    path: root.defaultMenuPath
-    watchChanges: true
+    path: root.omarchyPath ? root.defaultMenuPath : ""
     printErrors: false
     onLoaded: { root.defaultMenuItems = root.parseMenuJsonc(text()); root.rebuildItemsFromSources() }
-    onFileChanged: reload()
   }
 
   // ---------------------------------------------------------------- guards

@@ -47,9 +47,6 @@ Panel {
     for (var i = 0; i < nodes.length; i++) {
       var n = nodes[i]
       if (!n || !n.isStream || !isPlaybackStream(n)) continue
-      // A tuning's output is a playback stream too, but it is the processing
-      // itself rather than an application, so it does not belong in the list.
-      if (String(n.name || "").indexOf("omarchy_speaker_tuning") === 0) continue
       list.push(n)
     }
     return list
@@ -109,39 +106,13 @@ Panel {
   property var displayAudioSources: []
   property var displayAudioStreams: []
 
-  // A DSP sink -- a speaker tuning, or EasyEffects -- can be the selected output
-  // without being where loudness lives: changing its volume alters the level going
-  // *into* the processing, so the slider would move while the speakers did not,
-  // and on a chain with a limiter it would change the tone as well.
-  //
-  // omarchy-audio-output-sink resolves the *current* default output through any
-  // such sink to the physical one, which is the same definition the volume keys
-  // and the output switcher use. Resolving the default (rather than "whatever a
-  // tuning fronts") is what keeps this correct when headphones or HDMI are
-  // selected while a tuning still exists.
-  property string volumeSinkName: ""
+  // Volume goes to the default sink itself. Omarchy resolved it through DSP
+  // sinks (speaker tunings, EasyEffects) to the physical one; this desktop
+  // has neither.
+  readonly property var volumeSink: sink
 
   // Carry sub-notch touchpad deltas between wheel events.
   property real wheelAccumulator: 0
-
-  readonly property var volumeSink: {
-    if (volumeSinkName === "" || !sink) return sink
-    if (volumeSinkName === String(sink.name)) return sink
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i]
-      if (n && n.isSink && !n.isStream && String(n.name) === volumeSinkName && n.audio)
-        return n
-    }
-    return sink
-  }
-
-  // Re-resolve whenever the selected output changes; the timer below is only a
-  // safety net for the tuning being applied or removed underneath us.
-  onSinkChanged: resolveVolumeSink()
-
-  function resolveVolumeSink() {
-    if (!volumeSinkProc.running) volumeSinkProc.running = true
-  }
 
   readonly property real outputVolume: volumeSink && volumeSink.audio ? volumeSink.audio.volume : 0
   readonly property bool outputMuted: volumeSink && volumeSink.audio ? volumeSink.audio.muted : false
@@ -465,7 +436,7 @@ Panel {
     Pipewire.preferredDefaultAudioSink = node
     if (node.id !== undefined && node.name) {
       Quickshell.execDetached([
-        "omarchy-audio-output-set-default",
+        "@shareDir@/bin/audio", "set-default", "output",
         String(node.id),
         String(node.name)
       ])
@@ -477,7 +448,7 @@ Panel {
     Pipewire.preferredDefaultAudioSource = node
     if (node.id !== undefined && node.name) {
       Quickshell.execDetached([
-        "omarchy-audio-input-set-default",
+        "@shareDir@/bin/audio", "set-default", "input",
         String(node.id),
         String(node.name)
       ])
@@ -585,19 +556,10 @@ Panel {
 
   Process {
     id: sinkAvailabilityProc
-    command: ["omarchy-audio-sink-availability"]
+    command: ["@shareDir@/bin/audio", "sink-availability"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.updateSinkAvailability(text)
-    }
-  }
-
-  Process {
-    id: volumeSinkProc
-    command: ["omarchy-audio-output-sink"]
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: root.volumeSinkName = String(text).trim()
     }
   }
 
@@ -607,17 +569,6 @@ Panel {
     repeat: true
     triggeredOnStart: true
     onTriggered: if (!sinkAvailabilityProc.running) sinkAvailabilityProc.running = true
-  }
-
-  // Runs whether or not the panel is open: the bar shows and scrolls the output
-  // volume too, so an unresolved sink there would read and change the virtual
-  // tuning sink instead of the speakers.
-  Timer {
-    interval: 15000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: root.resolveVolumeSink()
   }
 
   Timer {

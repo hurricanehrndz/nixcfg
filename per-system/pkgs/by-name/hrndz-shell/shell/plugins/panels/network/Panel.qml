@@ -32,7 +32,7 @@ Panel {
   property var info: ({})  // { iface, type, ip, prefix, gateway, speed, duplex, ssid, signal, freq, bitrate, rx_bytes, tx_bytes, router_ping_ms, internet_ping_ms }
 
   // Throughput tracking. Rates are computed as deltas between successive
-  // `omarchy-network-status --verbose` samples (~1.5s apart via detailsPoll).
+  // `network status` samples (~1.5s apart via detailsPoll).
   // We hold "prev" alongside a timestamp so the first sample after open or
   // after an interface switch doesn't manufacture a spike.
   property real prevRxBytes: 0
@@ -73,9 +73,7 @@ Panel {
   property var wifiNetworks: []
   property bool scanning: false
   property bool wifiStationAvailable: false
-  property string dnsProvider: ""
-  property string pendingDnsProvider: ""
-  // Wi-Fi band state from `omarchy-network-band`. `bandCurrent` is the band
+  // Wi-Fi band state from `network band`. `bandCurrent` is the band
   // the radio is actually on; `bandSelected` is the pinned choice ("auto" when
   // nothing is pinned), and the two differ whenever Auto is in effect.
   property string bandCurrent: ""
@@ -119,27 +117,22 @@ Panel {
   property bool cursorActive: false
 
   // Keyboard focus zone for the panel. j/k crosses row boundaries:
-  // header actions ⇄ band ⇄ DNS row ⇄ Wi-Fi networks. h/l move
-  // within header actions, band pills, or DNS providers.
-  property string focusSection: "dns"  // "header" | "band" | "dns" | "wifi"
+  // header actions ⇄ band ⇄ Wi-Fi networks. h/l move within header actions
+  // or band pills.
+  // System DNS is declared in the NixOS config, so the panel has no DNS
+  // picker; the QR share card and speed test were separate plugins, not kept.
+  property string focusSection: "header"  // "header" | "band" | "wifi"
   property int headerIndex: 0
   readonly property bool canDisconnect: !!connectedWifiNetwork
   readonly property bool headerHasDisconnect: false
-  readonly property bool canShareWifi: info.type === "wifi" && canShareNetwork(connectedWifiNetwork)
   // The hero switch is the Wi-Fi radio, so it only exists when there is a
   // radio to switch. On a wired box it would otherwise sit there reading
   // "off" beside a perfectly live Ethernet connection.
   readonly property bool canToggleWifi: networkManagerAvailable && wifiStationAvailable
-  readonly property int qrHeaderIndex: canShareWifi ? 0 : -1
-  readonly property int speedHeaderIndex: canRunSpeedTest ? (canShareWifi ? 1 : 0) : -1
-  readonly property int toggleHeaderIndex: canToggleWifi ? (canShareWifi ? 1 : 0) + (canRunSpeedTest ? 1 : 0) : -1
-  readonly property int headerActionCount: (canShareWifi ? 1 : 0) + (canRunSpeedTest ? 1 : 0) + (canToggleWifi ? 1 : 0)
-  readonly property bool qrHeaderHasCursor: cursorActive && focusSection === "header" && headerIndex === qrHeaderIndex
-  readonly property bool speedHeaderHasCursor: cursorActive && focusSection === "header" && headerIndex === speedHeaderIndex
+  readonly property int toggleHeaderIndex: canToggleWifi ? 0 : -1
+  readonly property int headerActionCount: canToggleWifi ? 1 : 0
   readonly property bool toggleHeaderHasCursor: cursorActive && focusSection === "header" && headerIndex === toggleHeaderIndex
   readonly property string toggleHint: Networking.wifiEnabled ? "Turn Wi-Fi off" : "Turn Wi-Fi on"
-  readonly property var dnsProviders: ["DHCP", "Cloudflare", "Google", "Custom"]
-  property int dnsIndex: 0
   // ["2.4", "5", ...], or empty when there is nothing to choose between.
   // Wi-Fi only: on Ethernet the band of a secondary radio is not what the
   // panel is describing.
@@ -161,9 +154,6 @@ Panel {
   readonly property bool bandPillsVisible: canSelectBand && bandPinned
   readonly property string bandSectionTitle: Model.bandSectionTitle(bandEffective, bandCurrent)
   readonly property bool bandBusy: pendingBand !== ""
-  // The speed test needs an interface to test, so its hero action only
-  // appears once there is one.
-  readonly property bool canRunSpeedTest: !!info.iface
   property int bandIndex: 0
   // The band section has up to two cursor rows: the Automatic switch on the
   // header line, then the pills. Same shape as wifiActionFocused.
@@ -180,7 +170,7 @@ Panel {
 
   onCanSelectBandChanged: {
     if (!canSelectBand && focusSection === "band") {
-      focusSection = "dns"
+      focusSection = wifiNetworks.length > 0 ? "wifi" : "header"
       bandAutoFocused = true
     }
   }
@@ -216,31 +206,16 @@ Panel {
     function hide() { root.close() }
     function toggle() { root.toggle() }
     function toggleNetwork() { root.toggleNetwork() }
-    // Compat routes for configs that summon the centered cards through the
-    // network target; both cards are their own plugins now.
-    function showQr() { root.summonWifiQr(true) }
-    function speedTest() { root.summonSpeedTest() }
   }
 
   function activateHeader() {
-    if (headerIndex === qrHeaderIndex) summonWifiQr()
-    else if (headerIndex === speedHeaderIndex) summonSpeedTest()
-    else if (headerIndex === toggleHeaderIndex) toggleNetwork()
+    if (headerIndex === toggleHeaderIndex) toggleNetwork()
   }
 
   function setHeaderCursor(index) {
     cursorActive = true
     focusSection = "header"
     headerIndex = index
-  }
-
-  function selectDnsByDelta(delta) {
-    dnsIndex = Math.max(0, Math.min(dnsProviders.length - 1, dnsIndex + delta))
-  }
-
-  function activateDns() {
-    if (dnsIndex < 0 || dnsIndex >= dnsProviders.length) return
-    setDns(dnsProviders[dnsIndex])
   }
 
   function selectBandByDelta(delta) {
@@ -285,7 +260,7 @@ Panel {
   }
 
   // Single cursor model: exactly one highlighted spot across the whole
-  // panel, located via `focusSection` + (`headerIndex` | `dnsIndex` |
+  // panel, located via `focusSection` + (`headerIndex` | `bandIndex` |
   // `selectedIndex`). Mouse hover and keyboard nav both mutate this state
   // at the root; items never read containsMouse for visuals. See
   // CursorSurface for the shared chrome shared by rows and pills.
@@ -322,9 +297,7 @@ Panel {
       refresh(true)
       selectedIndex = wifiNetworks.length > 0 ? 0 : -1
       wifiActionFocused = false
-      focusSection = wifiNetworks.length > 0 ? "wifi" : "dns"
-      var idx = dnsProviders.indexOf(dnsProvider)
-      dnsIndex = idx >= 0 ? idx : 0
+      focusSection = wifiNetworks.length > 0 ? "wifi" : "header"
       syncBandIndex()
       cursorActive = false
     } else {
@@ -360,12 +333,12 @@ Panel {
 
   // Keep selectedIndex valid as scans refresh the network list.
   // If the list empties (station gone, e.g. wifi off), bounce the cursor
-  // back to the DNS row so the panel doesn't end up with no cursor at all.
+  // back to the header so the panel doesn't end up with no cursor at all.
   onWifiNetworksChanged: {
     if (wifiNetworks.length === 0) {
       selectedIndex = -1
       wifiActionFocused = false
-      if (focusSection === "wifi") focusSection = "dns"
+      if (focusSection === "wifi") focusSection = "header"
     } else if (passwordSsid !== "") {
       var passwordIndex = wifiIndexForSsid(passwordSsid)
       if (passwordIndex >= 0) {
@@ -399,11 +372,6 @@ Panel {
 
   function canForgetNetwork(net) {
     return Model.canForgetNetwork(net)
-  }
-
-  function canShareNetwork(net) {
-    if (!net || !net.connected) return false
-    return net.security !== WifiSecurityType.Wpa2Eap && net.security !== WifiSecurityType.WpaEap
   }
 
   function selectWifiActionByDelta(delta) {
@@ -452,33 +420,10 @@ Panel {
 
   readonly property string icon: Model.connectionIcon(kind, signalStrength)
 
-  // The share card is its own panel plugin (omarchy.wifiqr) so a replacement
-  // design can take it over; summon() routes to whichever implementation is
-  // enabled. The panel's own button pins the interface it is showing. The
-  // IPC route forces self-detection instead: details polling stops while the
-  // panel is closed, so its cached interface can be stale.
-  function summonWifiQr(forceDetect) {
-    controller.hide()
-    cancelPasswordPrompt()
-    var payload = {}
-    if (!forceDetect && info.type === "wifi" && info.iface) {
-      payload.iface = info.iface
-      if (info.ssid) payload.ssid = info.ssid
-    }
-    bar.shell.summon("omarchy.wifiqr", JSON.stringify(payload))
-  }
-
   function refresh(scanWifi) {
     if (scanWifi === undefined) scanWifi = false
     if (!detailsProc.running) detailsProc.running = true
-    if (!dnsProc.running) {
-      dnsProc.command = ["bash", "-c", root.dnsCommand("")]
-      dnsProc.running = true
-    }
-    if (!bandProc.running) {
-      bandProc.command = ["omarchy-network-band"]
-      bandProc.running = true
-    }
+    if (!bandProc.running) bandProc.running = true
     // A closed panel has no nearby-network list to fill, and bare refresh()
     // reaches here from action completion, timeouts and construction.
     if (opened && wifiDevice) {
@@ -616,11 +561,6 @@ Panel {
     return Model.wifiIconFor(strength)
   }
 
-  function updateDns(raw) {
-    var value = String(raw || "").trim()
-    dnsProvider = value || "DHCP"
-  }
-
   function updateBand(raw) {
     var status = Model.parseBandStatus(raw)
 
@@ -641,43 +581,8 @@ Panel {
     if (!band || actionProc.running) return
 
     root.pendingBand = band
-    actionProc.command = ["omarchy-network-band", band]
+    actionProc.command = [root.networkCommand, "band", band]
     actionProc.running = true
-  }
-
-  // The speed test is its own panel plugin (omarchy.speedtest) so a
-  // replacement design can take it over; summon() routes to whichever
-  // implementation is enabled. The payload names the connection when this
-  // panel knows it; the plugin looks it up itself otherwise.
-  function summonSpeedTest() {
-    controller.hide()
-    cancelPasswordPrompt()
-    var connection = ""
-    if (info.type === "wifi") connection = info.ssid || "Wi-Fi"
-    else if (info.type === "ethernet") connection = "Ethernet"
-    bar.shell.summon("omarchy.speedtest", connection ? JSON.stringify({ connection: connection }) : "{}")
-  }
-
-  function dnsCommand(provider) {
-    var command = "omarchy-dns"
-    if (provider) command += " " + Util.shellQuote(provider)
-    return command
-  }
-
-  function setDns(provider) {
-    if (!root.bar || !provider || actionProc.running) return
-
-    if (provider === "Custom") {
-      var launcher = "omarchy-launch-floating-terminal-with-presentation"
-      root.bar.run(launcher + " " + Util.shellQuote(root.dnsCommand(provider)))
-      root.close()
-      return
-    }
-
-    root.pendingDnsProvider = provider
-    actionProc.command = ["bash", "-c", root.dnsCommand(provider)]
-    actionProc.running = true
-    root.close()
   }
 
   function requiresCredentials(security) {
@@ -806,10 +711,12 @@ Panel {
 
   Component.onCompleted: refresh()
 
+  readonly property string networkCommand: "@shareDir@/bin/network"
+
   // Pulls everything we want about the active route's interface in one shot.
   Process {
     id: detailsProc
-    command: ["omarchy-network-status", "--verbose"]
+    command: [root.networkCommand, "status"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.updateDetails(text)
@@ -836,15 +743,8 @@ Panel {
   }
 
   Process {
-    id: dnsProc
-    stdout: StdioCollector {
-      waitForEnd: true
-      onStreamFinished: root.updateDns(text)
-    }
-  }
-
-  Process {
     id: bandProc
+    command: [root.networkCommand, "band"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: root.updateBand(text)
@@ -858,24 +758,16 @@ Panel {
     interval: 4000
     repeat: true
     running: root.opened
-    onTriggered: {
-      if (bandProc.running) return
-      bandProc.command = ["omarchy-network-band"]
-      bandProc.running = true
-    }
+    onTriggered: if (!bandProc.running) bandProc.running = true
   }
 
-  // Action runner for DNS provider changes. Wi-Fi actions use the
+  // Action runner for band pinning. Wi-Fi actions use the
   // Quickshell.Networking NetworkManager backend directly.
   Process {
     id: actionProc
     stdout: StdioCollector { id: actionStdout; waitForEnd: true }
     stderr: StdioCollector { id: actionStderr; waitForEnd: true }
     onExited: function(exitCode) {
-      if (root.pendingDnsProvider !== "") {
-        if (exitCode === 0) root.dnsProvider = root.pendingDnsProvider
-        root.pendingDnsProvider = ""
-      }
       if (root.pendingBand !== "") {
         // A refused or reverted pin leaves bandSelected alone, so the pills
         // keep showing what is actually in force rather than what was asked.
@@ -1001,15 +893,16 @@ Panel {
           if (dy >= 0) return
         }
         if (dy !== 0) {
-          // Vertical order is header ⇄ band ⇄ DNS ⇄ wifi, with the band section
+          // Vertical order is header ⇄ band ⇄ wifi, with the band section
           // dropping out of the chain entirely when it isn't on screen.
           if (root.focusSection === "header") {
             if (dy > 0) {
               if (root.canSelectBand) {
                 root.focusSection = "band"
                 root.bandAutoFocused = true
-              } else {
-                root.focusSection = "dns"
+              } else if (root.wifiNetworks.length > 0) {
+                root.focusSection = "wifi"
+                if (root.selectedIndex < 0) root.selectedIndex = 0
               }
             }
           } else if (root.focusSection === "band") {
@@ -1024,30 +917,21 @@ Panel {
               }
             } else if (root.bandAutoFocused && root.bandPillsVisible) {
               root.bandAutoFocused = false
-            } else {
-              root.focusSection = "dns"
-            }
-          } else if (root.focusSection === "dns") {
-            // k from DNS moves up into the band section when it's on screen,
-            // then the disconnect button; otherwise stays put. j drops into the
-            // wifi list if there's anywhere to land.
-            if (dy < 0) {
-              if (root.canSelectBand) {
-                root.focusSection = "band"
-                root.bandAutoFocused = !root.bandPillsVisible
-              } else if (root.headerActionCount > 0) {
-                root.focusSection = "header"
-                root.headerIndex = 0
-              }
             } else if (root.wifiNetworks.length > 0) {
               root.focusSection = "wifi"
               if (root.selectedIndex < 0) root.selectedIndex = 0
             }
           } else {  // wifi
-            // k from the top row escapes back up to the DNS row rather than
-            // wrapping around to the bottom of the list.
+            // k from the top row escapes back up to the band section or the
+            // header rather than wrapping around to the bottom of the list.
             if (dy < 0 && root.selectedIndex <= 0) {
-              root.focusSection = "dns"
+              if (root.canSelectBand) {
+                root.focusSection = "band"
+                root.bandAutoFocused = !root.bandPillsVisible
+              } else {
+                root.focusSection = "header"
+                root.headerIndex = 0
+              }
               root.wifiActionFocused = false
             }
             else root.selectByDelta(dy)
@@ -1056,7 +940,6 @@ Panel {
         if (dx !== 0) {
           if (root.focusSection === "header") root.selectHeaderByDelta(dx)
           else if (root.focusSection === "band") { if (!root.bandAutoFocused) root.selectBandByDelta(dx) }
-          else if (root.focusSection === "dns") root.selectDnsByDelta(dx)
           else if (root.focusSection === "wifi") root.selectWifiActionByDelta(dx)
         }
       }
@@ -1064,7 +947,6 @@ Panel {
         if (root.cursorActive) {
           if (root.focusSection === "header") root.activateHeader()
           else if (root.focusSection === "band") root.activateBand()
-          else if (root.focusSection === "dns") root.activateDns()
           else root.activateSelected()
         }
       }
@@ -1100,45 +982,11 @@ Panel {
           anchors.verticalCenter: parent.verticalCenter
         }
 
-        // Sharing belongs to the connected-network hero rather than the scan
-        // result row. The radio switch remains beside it as the other hero action.
         RowLayout {
           id: heroActions
           spacing: Style.space(8)
           anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
-
-          Button {
-            id: qrAction
-            visible: root.canShareWifi
-            iconText: "󰐲"
-            tooltipText: "Show QR code"
-            foreground: root.bar.foreground
-            fontFamily: root.bar.fontFamily
-            iconSize: Style.font.subtitle * 1.5
-            horizontalPadding: Style.space(5)
-            verticalPadding: Style.space(2)
-            hasCursor: root.qrHeaderHasCursor
-            Layout.alignment: Qt.AlignVCenter
-            onHovered: function(on) { if (on) root.setHeaderCursor(root.qrHeaderIndex) }
-            onClicked: root.summonWifiQr()
-          }
-
-          Button {
-            id: speedAction
-            visible: root.canRunSpeedTest
-            iconText: "󰓅"
-            tooltipText: "Run a speed test"
-            foreground: root.bar.foreground
-            fontFamily: root.bar.fontFamily
-            iconSize: Style.font.subtitle * 1.5
-            horizontalPadding: Style.space(5)
-            verticalPadding: Style.space(2)
-            hasCursor: root.speedHeaderHasCursor
-            Layout.alignment: Qt.AlignVCenter
-            onHovered: function(on) { if (on) root.setHeaderCursor(root.speedHeaderIndex) }
-            onClicked: root.summonSpeedTest()
-          }
 
           ToggleSwitch {
             id: powerSwitch
@@ -1398,64 +1246,6 @@ Panel {
 
       }
 
-      // DNS provider selection.
-      PanelSeparator {
-        foreground: root.bar.foreground
-      }
-
-      Column {
-        width: parent.width
-        spacing: Style.space(10)
-
-        PanelSectionHeader {
-          text: "DNS PROVIDER"
-          foreground: root.bar.foreground
-          fontFamily: root.bar.fontFamily
-        }
-
-        Row {
-          id: dnsRow
-          width: parent.width
-          spacing: Style.space(6)
-
-          readonly property int count: 4
-          readonly property real cellWidth: (width - spacing * (count - 1)) / count
-
-          DnsProviderPill {
-            provider: "DHCP"
-            index: 0
-            tooltipText: "Use DNS from DHCP"
-            width: dnsRow.cellWidth
-            onClicked: root.setDns(provider)
-          }
-
-          DnsProviderPill {
-            provider: "Cloudflare"
-            index: 1
-            tooltipText: "Set DNS to Cloudflare"
-            width: dnsRow.cellWidth
-            onClicked: root.setDns(provider)
-          }
-
-          DnsProviderPill {
-            provider: "Google"
-            index: 2
-            tooltipText: "Set DNS to Google"
-            width: dnsRow.cellWidth
-            onClicked: root.setDns(provider)
-          }
-
-          DnsProviderPill {
-            provider: "Custom"
-            index: 3
-            tooltipText: "Set custom DNS servers"
-            width: dnsRow.cellWidth
-            onClicked: root.setDns(provider)
-          }
-        }
-      }
-
-
       // Wi-Fi networks (only if a Wi-Fi station is available).
       PanelSeparator {
         visible: root.wifiStationAvailable
@@ -1556,36 +1346,6 @@ Panel {
       root.cursorActive = true
       root.focusSection = "band"
       root.bandIndex = pill.slot
-    }
-  }
-
-  // One DNS provider pill. The cursor + current visuals come entirely from
-  // CursorSurface; this component just binds them to the panel's cursor
-  // state and renders the label/tooltip/click target.
-  component DnsProviderPill: Button {
-    id: pill
-    required property string provider
-    required property int index
-
-    text: provider
-    fontSize: Style.font.bodySmall
-    foreground: root.bar.foreground
-    fontFamily: root.bar.fontFamily
-    horizontalPadding: Style.spacing.controlPaddingX
-    verticalPadding: Style.spacing.controlPaddingY + Style.space(2)
-    bordered: true
-
-    // Map the panel's domain semantics onto Button's structural props:
-    // `current DNS` is the pill's `active` fill; the keyboard cursor lights
-    // up `hasCursor`.
-    active: root.dnsProvider === provider
-    hasCursor: root.cursorActive && root.focusSection === "dns" && root.dnsIndex === index
-
-    onHovered: function(isHovered) {
-      if (!isHovered) return
-      root.cursorActive = true
-      root.focusSection = "dns"
-      root.dnsIndex = pill.index
     }
   }
 

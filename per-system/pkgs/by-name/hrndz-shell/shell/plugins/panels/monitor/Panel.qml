@@ -18,12 +18,9 @@ Panel {
   property int pendingBrightnessPercent: 0
   property bool brightnessSetQueued: false
   property bool brightnessAvailable: false
-  property string internalMonitor: ""
-  property string externalMonitor: ""
   property string focusedMonitor: ""
-  property bool internalEnabled: false
-  property bool mirrorEnabled: false
   property string monitorScale: ""
+  readonly property string monitorCommand: "@shareDir@/bin/monitor"
   property var displays: []
   property int enabledDisplayCount: 0
 
@@ -54,28 +51,11 @@ Panel {
   property int selectedIndex: 0
   property bool cursorActive: false
 
-  // Text size slider — curated macOS-style notches (px). The panel snaps to
-  // these stops; the CLI (omarchy-display-text-size) accepts any integer in range.
-  readonly property var textSizeStops: [9, 10, 11, 12, 14, 16, 20]
-  // While a change is in flight, the chosen stop index overrides the live
-  // base-size so the knob doesn't snap back during the file round-trip. -1 =
-  // no pending change; follow Style.font.baseSize.
-  property int textSizePreviewIndex: -1
-
-  // A text-size change reflows the whole panel (both font and spacing scale),
-  // which slides rows under a stationary pointer and fires synthetic hover.
-  // While true, hover is not allowed to hijack the keyboard focus section —
-  // otherwise h/l on the text-size slider can jump focus to another row.
-  property bool reflowingText: false
-  function markReflowing() {
-    root.reflowingText = true
-    reflowSettle.restart()
-  }
-
+  // Omarchy's text-size slider is gone: shell, GTK and terminal font sizes
+  // come from Stylix (stylix.fonts.sizes), so a runtime knob would fight it.
   readonly property var visibleSections: {
     var list = []
     if (brightnessAvailable) list.push("brightness")
-    list.push("textsize")
     list.push("scale")
     if (displays.length > 1) list.push("monitors")
     return list
@@ -83,19 +63,18 @@ Panel {
 
   function sectionCount(section) {
     if (section === "brightness") return 0  // only the slider sentinel at -1
-    if (section === "textsize") return 0    // slider sentinel at -1, like brightness
     if (section === "scale") return scaleValues.length
     if (section === "monitors") return displays.length
     return 0
   }
 
   function sectionIsSingleRow(section) {
-    // brightness and text size are lone sliders; scale presets sit horizontally.
-    return section === "brightness" || section === "textsize" || section === "scale"
+    // brightness is a lone slider; scale presets sit horizontally.
+    return section === "brightness" || section === "scale"
   }
 
   function sectionFirstIndex(section) {
-    if (section === "brightness" || section === "textsize") return -1
+    if (section === "brightness") return -1
     return 0
   }
 
@@ -168,8 +147,8 @@ Panel {
     }
     var count = sectionCount(focusSection)
     if (sectionIsSingleRow(focusSection)) {
-      // brightness/text size use the -1 sentinel; scale clamps into the presets.
-      if (focusSection === "brightness" || focusSection === "textsize") selectedIndex = -1
+      // brightness uses the -1 sentinel; scale clamps into the presets.
+      if (focusSection === "brightness") selectedIndex = -1
       else if (selectedIndex < 0 || selectedIndex >= count) selectedIndex = 0
       return
     }
@@ -244,7 +223,7 @@ Panel {
     }
 
     root.brightnessSetQueued = false
-    setBrightnessProc.command = ["omarchy-brightness-display", "--no-osd", "--monitor", root.focusedMonitor, percent + "%"]
+    setBrightnessProc.command = [root.monitorCommand, "brightness", String(percent)]
     setBrightnessProc.running = true
   }
 
@@ -304,46 +283,10 @@ Panel {
     if (!actionProc.running) actionProc.running = true
   }
 
+  // Applies live and persists to ~/.config/hypr/monitors.lua (bin/monitor).
   function setScale(scale) {
-    actionProc.command = ["bash", "-c", "omarchy-hyprland-monitor-scaling " + scale]
+    actionProc.command = [root.monitorCommand, "scale", String(scale)]
     if (!actionProc.running) actionProc.running = true
-  }
-
-  // ---- Text size (shell base font + GTK text-scaling, via one CLI) ----
-  function nearestTextStop(px) {
-    var best = 0
-    var bestDist = 1e9
-    for (var i = 0; i < textSizeStops.length; i++) {
-      var d = Math.abs(textSizeStops[i] - px)
-      if (d < bestDist) { bestDist = d; best = i }
-    }
-    return best
-  }
-
-  // Effective stop index: the pending choice while a change is in flight,
-  // otherwise whatever Style's live base-size rounds to.
-  function currentTextIndex() {
-    return textSizePreviewIndex >= 0 ? textSizePreviewIndex : nearestTextStop(Style.font.baseSize)
-  }
-
-  // px shown in the header: the pending stop if any, else the true base-size
-  // (which may be an off-notch value set from the CLI).
-  function displayedTextPx() {
-    return textSizePreviewIndex >= 0 ? textSizeStops[textSizePreviewIndex] : Style.font.baseSize
-  }
-
-  function setTextSize(px) {
-    textScaleProc.command = ["omarchy-display-text-size", String(px)]
-    if (!textScaleProc.running) textScaleProc.running = true
-  }
-
-  function adjustTextSize(deltaSteps) {
-    var idx = currentTextIndex() + deltaSteps
-    if (idx < 0) idx = 0
-    if (idx > textSizeStops.length - 1) idx = textSizeStops.length - 1
-    markReflowing()
-    textSizePreviewIndex = idx
-    setTextSize(textSizeStops[idx])
   }
 
   implicitWidth: button.implicitWidth
@@ -385,21 +328,17 @@ Panel {
 
   Process {
     id: stateProc
-    command: ["omarchy-monitor-state"]
+    command: [root.monitorCommand, "state"]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
         var lines = String(text || "").split("\n")
         var brightness = String(lines[0] || "").trim()
-        root.brightnessAvailable = brightness !== "unavailable" && brightness !== ""
+        root.brightnessAvailable = brightness !== ""
         root.brightnessPercent = root.brightnessAvailable ? Math.max(0, Math.min(100, parseInt(brightness, 10))) : 0
-        root.internalMonitor = String(lines[1] || "").trim()
-        root.externalMonitor = String(lines[2] || "").trim()
-        root.internalEnabled = String(lines[3] || "").trim() !== ""
-        root.mirrorEnabled = String(lines[4] || "").trim() === root.externalMonitor && root.externalMonitor !== ""
-        root.focusedMonitor = String(lines[5] || "").trim()
-        root.monitorScale = root.normalizeScale(String(lines[6] || "").trim())
-        root.updateDisplays(String(lines[7] || "[]").trim())
+        root.focusedMonitor = String(lines[1] || "").trim()
+        root.monitorScale = root.normalizeScale(String(lines[2] || "").trim())
+        root.updateDisplays(String(lines[3] || "[]").trim())
       }
     }
   }
@@ -416,7 +355,7 @@ Panel {
     stdout: StdioCollector { waitForEnd: true }
     // Do NOT call refresh() after a brightness set completes. The local
     // brightnessPercent we just wrote is authoritative; re-reading via
-    // `omarchy-brightness-display` races the hardware/driver and can
+    // `monitor state` races the hardware/driver and can
     // return an empty string, which the parser then coerces to 0 —
     // visible as a "bounce to zero" after h/l keypresses. External
     // brightness changes are still picked up by the 5s periodic refresh,
@@ -433,36 +372,6 @@ Panel {
     id: actionProc
     stdout: StdioCollector { waitForEnd: true }
     onRunningChanged: if (!running) root.refresh()
-  }
-
-  // Applies text size via the CLI, which rewrites the shell override file;
-  // Style picks the new base-size up through its own file watch, so there's
-  // nothing to refresh here.
-  Process {
-    id: textScaleProc
-    stdout: StdioCollector { waitForEnd: true }
-  }
-
-  // Clears the hover-suppression flag once the reflow triggered by a text-size
-  // change has settled.
-  Timer {
-    id: reflowSettle
-    interval: 300
-    repeat: false
-    onTriggered: root.reflowingText = false
-  }
-
-  // Once Style's base-size catches up to the pending choice, drop the preview
-  // so the slider tracks the live value again. The change itself reflows the
-  // panel, so suppress hover for a beat while it lands.
-  Connections {
-    target: Style
-    function onFontBaseSizeChanged() {
-      root.markReflowing()
-      if (root.textSizePreviewIndex >= 0
-          && root.nearestTextStop(Style.font.baseSize) === root.textSizePreviewIndex)
-        root.textSizePreviewIndex = -1
-    }
   }
 
   BarIconButton {
@@ -499,7 +408,6 @@ Panel {
         if (dy !== 0) root.moveCursor(dy)
         else if (dx !== 0) {
           if (root.focusSection === "brightness") root.adjustBrightness(dx * 5)
-          else if (root.focusSection === "textsize") root.adjustTextSize(dx)
           else if (root.focusSection === "scale") root.moveCursorH(dx)
         }
       }
@@ -644,81 +552,9 @@ Panel {
               }
 
               HoverHandler {
-                onHoveredChanged: if (hovered && !root.reflowingText) {
+                onHoveredChanged: if (hovered) {
                   root.cursorActive = true
                   root.focusSection = "brightness"
-                  root.selectedIndex = -1
-                }
-              }
-            }
-          }
-
-          // ---------- Text size ----------
-          PanelSeparator {
-            foreground: root.bar.foreground
-          }
-
-          Column {
-            width: parent.width
-            spacing: Style.space(6)
-
-            Item {
-              width: parent.width
-              implicitHeight: Math.max(textSizeHeader.implicitHeight, textSizePx.implicitHeight)
-
-              PanelSectionHeader {
-                id: textSizeHeader
-                text: "TEXT SIZE"
-                foreground: root.bar.foreground
-                fontFamily: root.bar.fontFamily
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-              }
-
-              Text {
-                id: textSizePx
-                textFormat: Text.PlainText
-                text: (textSizeSlider.dragging
-                       ? root.textSizeStops[Math.round(textSizeSlider.liveValue)]
-                       : root.displayedTextPx()) + "px"
-                color: Qt.darker(root.bar.foreground, 1.4)
-                font.family: root.bar.fontFamily
-                font.pixelSize: Style.font.caption
-                font.bold: true
-                anchors.right: parent.right
-                anchors.rightMargin: Style.space(6)
-                anchors.verticalCenter: parent.verticalCenter
-              }
-            }
-
-            CursorSurface {
-              id: textSizeRow
-              width: parent.width
-              height: textSizeSlider.implicitHeight + Style.spacing.controlGap
-              hasCursor: root.cursorActive && root.focusSection === "textsize" && root.selectedIndex === -1
-              onHasCursorChanged: if (hasCursor) root.ensureCursorVisible(textSizeRow)
-              foreground: root.bar.foreground
-              outline: true
-
-              PanelSlider {
-                id: textSizeSlider
-                bar: root.bar
-                anchors.fill: parent
-                anchors.leftMargin: Style.space(6)
-                anchors.rightMargin: Style.space(6)
-                minimum: 0
-                maximum: root.textSizeStops.length - 1
-                step: 1
-                integer: true
-                tickCount: root.textSizeStops.length
-                value: root.currentTextIndex()
-                onReleased: function(v) { root.setTextSize(root.textSizeStops[Math.round(v)]) }
-              }
-
-              HoverHandler {
-                onHoveredChanged: if (hovered && !root.reflowingText) {
-                  root.cursorActive = true
-                  root.focusSection = "textsize"
                   root.selectedIndex = -1
                 }
               }
@@ -848,7 +684,7 @@ Panel {
 
     onClicked: root.setScale(scaleValue)
     onHovered: function(isHovered) {
-      if (!isHovered || root.reflowingText) return
+      if (!isHovered) return
       root.cursorActive = true
       root.focusSection = "scale"
       root.selectedIndex = pill.scaleIndex
@@ -918,7 +754,7 @@ Panel {
       anchors.fill: parent
       hoverEnabled: true
       cursorShape: monitorRow.canToggle ? Qt.PointingHandCursor : Qt.ArrowCursor
-      onContainsMouseChanged: if (containsMouse && !root.reflowingText) {
+      onContainsMouseChanged: if (containsMouse) {
         root.cursorActive = true
         root.focusSection = "monitors"
         root.selectedIndex = monitorRow.rowIndex

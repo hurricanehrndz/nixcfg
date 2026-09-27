@@ -1,28 +1,19 @@
-// weather.json holds {"name": ..., "latitude": ..., "longitude": ...} (see
-// omarchy-weather-location, which owns the format). Missing, blank, or
-// unparseable means the location is auto-detected from the IP address.
-function parseLocationFile(raw) {
-  var unset = { name: "", latitude: null, longitude: null }
-  try {
-    var data = JSON.parse(String(raw || ""))
-    if (!data || typeof data !== "object") return unset
-
-    var latitude = parseFloat(data.latitude)
-    var longitude = parseFloat(data.longitude)
-    var hasCoordinates = !isNaN(latitude) && !isNaN(longitude)
-    return {
-      name: typeof data.name === "string" ? data.name.replace(/^\s+|\s+$/g, "") : "",
-      latitude: hasCoordinates ? latitude : null,
-      longitude: hasCoordinates ? longitude : null
-    }
-  } catch (e) {
-    return unset
+// The widget's `location` setting: { name, latitude, longitude }. Anything
+// missing or malformed reads as unset.
+function parseLocation(data) {
+  if (!data || typeof data !== "object") return { name: "", latitude: null, longitude: null }
+  var latitude = parseFloat(data.latitude)
+  var longitude = parseFloat(data.longitude)
+  var hasCoordinates = !isNaN(latitude) && !isNaN(longitude)
+  return {
+    name: typeof data.name === "string" ? data.name.replace(/^\s+|\s+$/g, "") : "",
+    latitude: hasCoordinates ? latitude : null,
+    longitude: hasCoordinates ? longitude : null
   }
 }
 
-// wttr.in path segment for a configured location: exact coordinates when
-// both are present, the URL-encoded name as a fallback (hand-edited
-// weather.loc files may only carry a name), empty for IP auto-detect.
+// wttr.in path segment for the location: exact coordinates when both are
+// present, else the URL-encoded name.
 function wttrLocationQuery(location, latitude, longitude) {
   var lat = parseFloat(String(latitude))
   var lon = parseFloat(String(longitude))
@@ -30,43 +21,6 @@ function wttrLocationQuery(location, latitude, longitude) {
 
   var name = String(location || "").replace(/^\s+|\s+$/g, "")
   return name === "" ? "" : encodeURIComponent(name)
-}
-
-// Open-Meteo geocoding response → suggestion rows for the location picker.
-function parseGeocodingResults(raw) {
-  try {
-    var data = JSON.parse(String(raw || "{}"))
-    var results = data.results
-    if (!results || !results.length) return []
-
-    var out = []
-    for (var i = 0; i < results.length; i++) {
-      var r = results[i]
-      if (!r || !r.name || r.latitude === undefined || r.longitude === undefined) continue
-      var region = [r.admin1, r.country].filter(function(part) { return !!part }).join(", ")
-      out.push({
-        name: String(r.name),
-        description: region,
-        latitude: r.latitude,
-        longitude: r.longitude
-      })
-    }
-    return out
-  } catch (e) {
-    return []
-  }
-}
-
-function locationCommit(text, suggestions, selectedIndex) {
-  var name = String(text || "").replace(/^\s+|\s+$/g, "")
-  if (name === "") return { name: "", latitude: null, longitude: null }
-
-  var choices = suggestions || []
-  var index = Math.max(0, Math.min(parseInt(selectedIndex, 10) || 0, choices.length - 1))
-  var suggestion = choices[index]
-  if (suggestion) return suggestion
-
-  return { name: name, latitude: null, longitude: null }
 }
 
 function isFutureForecastDate(dateString, todayString) {
@@ -188,10 +142,6 @@ function provisionalCurrentIcon(current, resolvedIcon) {
   return resolvedIcon || currentIcon(current, "")
 }
 
-function weatherResponseCompletesSave(hasConfiguredCoordinates, source) {
-  return hasConfiguredCoordinates ? source === "open-meteo" : source === "wttr"
-}
-
 function wttrNextForecastDays(report, todayString) {
   var days = report && report.weather ? report.weather : []
   var result = []
@@ -267,10 +217,8 @@ function iconForCode(code, night) {
 
 if (typeof module !== "undefined") {
   module.exports = {
-    parseLocationFile: parseLocationFile,
+    parseLocation: parseLocation,
     wttrLocationQuery: wttrLocationQuery,
-    parseGeocodingResults: parseGeocodingResults,
-    locationCommit: locationCommit,
     isFutureForecastDate: isFutureForecastDate,
     roundedTemp: roundedTemp,
     celsiusToFahrenheit: celsiusToFahrenheit,
@@ -284,7 +232,6 @@ if (typeof module !== "undefined") {
     openMeteoCurrentCondition: openMeteoCurrentCondition,
     currentIcon: currentIcon,
     provisionalCurrentIcon: provisionalCurrentIcon,
-    weatherResponseCompletesSave: weatherResponseCompletesSave,
     wttrNextForecastDays: wttrNextForecastDays,
     buildForecastDays: buildForecastDays,
     bareTempForDay: bareTempForDay,

@@ -59,8 +59,10 @@ Panel {
     usage.refreshAll(true)
   }
 
+  // Right click opens the agent whose tab is showing, in the terminal.
   function launchAgent() {
-    if (root.bar) root.bar.run("omarchy-agent --pick")
+    var command = { claude: "claude", codex: "codex" }[provider ? provider.providerId : ""]
+    if (root.bar && command) root.bar.run("uwsm-app -- xdg-terminal-exec " + command)
     root.close()
   }
 
@@ -288,7 +290,9 @@ Panel {
   function iconCandidatesForProvider(p, surfaceColor) {
     if (!p) return []
     var candidates = []
-    if (colorLuminance(surfaceColor || Color.background) >= 0.5)
+    // Only Codex ships a light-surface twin; asking for claude-light.svg
+    // logged a failed image load on every light theme.
+    if (p.providerId === "codex" && colorLuminance(surfaceColor || Color.background) >= 0.5)
       candidates.push(Qt.resolvedUrl("assets/" + p.providerId + "-light.svg"))
     candidates.push(Qt.resolvedUrl("assets/" + p.providerId + ".svg"))
     return candidates

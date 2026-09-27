@@ -153,12 +153,6 @@ QtObject {
     if (!foundMuted) muted = color8Value.length > 0 ? color8Value : foreground
   }
 
-  // Last theme-supplied and user-supplied shell.toml dicts, kept separate so
-  // either can be reloaded without re-reading the other. `shellValues` is
-  // always the merge of theme (base) and user (override) — see mergeShell.
-  property var themeShellValues: ({})
-  property var userShellValues: ({})
-
   // Single TOML walker for shell.toml. Both Color (surface roles) and Style
   // (typography, spacing, bar, control states) consume the resulting dict.
   // Accepts quoted strings, bare numeric values, bare width lists, and bare
@@ -187,25 +181,11 @@ QtObject {
     return parsed
   }
 
-  // Re-derive `shellValues` from theme base + user override and push it to
-  // Style. User keys win, so the runtime override in
-  // ~/.local/state/hrndz-shell/shell.toml sits on top of the Nix theme.
-  function mergeShell() {
-    var merged = {}
-    for (var tk in themeShellValues) merged[tk] = themeShellValues[tk]
-    for (var uk in userShellValues) merged[uk] = userShellValues[uk]
-    shellValues = merged
-    Style.applyShellValues(merged)
-  }
-
+  // The Nix-written shell.toml is the only source; Omarchy's runtime
+  // override (written by its text-size slider) is gone with the slider.
   function loadShell(raw) {
-    themeShellValues = parseShell(raw)
-    mergeShell()
-  }
-
-  function loadUserShell(raw) {
-    userShellValues = parseShell(raw)
-    mergeShell()
+    shellValues = parseShell(raw)
+    Style.applyShellValues(shellValues)
   }
 
   // Startup load only: the theme changes with a Home Manager switch, which
@@ -224,20 +204,5 @@ QtObject {
     printErrors: false
     onLoaded: root.loadShell(text())
     onLoadFailed: root.loadShell("")
-  }
-  // Runtime override, layered on top of the theme. The display panel's text
-  // size writes `[font] base-size` here. Watched so changes apply live;
-  // absent by default.
-  property FileView userShellFile: FileView {
-    id: userShellFile
-    path: root.home + "/.local/state/hrndz-shell/shell.toml"
-    watchChanges: true
-    printErrors: false
-    onLoaded: root.loadUserShell(text())
-    // Re-read on change (including first creation) before loading — `text()`
-    // is stale in the change signal itself, so route both paths through reload
-    // → onLoaded to always parse fresh content.
-    onFileChanged: reload()
-    onLoadFailed: root.loadUserShell("")
   }
 }

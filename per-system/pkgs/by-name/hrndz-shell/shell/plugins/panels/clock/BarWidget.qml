@@ -8,8 +8,8 @@ import "Model.js" as Model
 // Date/time label for the bar, and the host for the calendar popup.
 //
 // Left click reveals the calendar — asking "what is the date?" is what a
-// click on a clock means — right click walks the common label formats, and
-// middle click opens the timezone picker.
+// click on a clock means — and right click walks the common label formats.
+// There is no timezone picker: time.timeZone is set in the NixOS config.
 BarWidget {
   id: root
   moduleName: "omarchy.clock"
@@ -152,8 +152,7 @@ BarWidget {
 
     onPressed: function(b) {
       if (b === Qt.RightButton) root.cycleFormat()
-      else if (b === Qt.MiddleButton) { if (root.bar) root.bar.run("omarchy-menu-timezone") }
-      else root.togglePanel()
+      else if (b !== Qt.MiddleButton) root.togglePanel()
     }
 
     Column {

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  osConfig,
   ...
 }:
 let
@@ -31,15 +32,26 @@ let
             formatAlt = "d MMMM 'W'ww yyyy";
             verticalFormat = "HH\n—\nmm";
           }
+          {
+            id = "omarchy.weather";
+            inherit (osConfig.hrndz.desktop.hyprland.weather) location;
+          }
         ];
-        right = map (id: { id = "omarchy.${id}"; }) [
-          "tray"
-          "bluetooth"
-          "network"
-          "audio"
-          "monitor"
-          "power"
-        ];
+        # The agents widget hides itself until a usage record has numbers.
+        right = map (id: { id = "omarchy.${id}"; }) (
+          [ "tray" ]
+          ++ lib.optional osConfig.hrndz.tooling.ai.enable "agents"
+          ++ [
+            "bluetooth"
+            "network"
+          ]
+          ++ lib.optional osConfig.services.tailscale.enable "tailscale"
+          ++ [
+            "audio"
+            "monitor"
+            "power"
+          ]
+        );
       };
     };
     plugins = [ ];

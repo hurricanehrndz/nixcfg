@@ -10,29 +10,41 @@
   lib,
   stdenvNoCC,
   writeShellApplication,
-  runCommand,
+  writeTextFile,
+  bluez,
   brightnessctl,
   coreutils,
   findutils,
   fontconfig,
   gawk,
   gnugrep,
+  gnused,
   grim,
   gtk3,
   hyprland,
   hyprpicker,
+  iproute2,
+  iw,
   jq,
   libnotify,
+  networkmanager,
   perl,
+  power-profiles-daemon,
   procps,
+  pulseaudio,
+  python3,
   quickshell,
+  ripgrep,
   satty,
   slurp,
   systemd,
+  upower,
+  util-linux,
   wireplumber,
   wl-clipboard,
   wtype,
   xdg-utils,
+  zenity,
 }:
 let
   script =
@@ -40,6 +52,16 @@ let
     writeShellApplication {
       inherit name runtimeInputs;
       text = builtins.readFile ./scripts/${name}.sh;
+    };
+
+  # The agent usage collectors: Python, as Omarchy wrote them.
+  collector =
+    name:
+    writeTextFile {
+      inherit name;
+      executable = true;
+      destination = "/bin/${name}";
+      text = "#!${python3.interpreter}\n" + builtins.readFile ./scripts/${name}.py;
     };
 
   cli = script "hrndz-shell" [
@@ -99,13 +121,61 @@ let
       hyprland
       jq
     ];
-  };
 
-  # The icon font the bar and menu glyphs use. Its own derivation so the
-  # NixOS font list and the Home Manager package share one build.
-  font = runCommand "hrndz-shell-font" { } ''
-    install -Dm444 ${./fonts/omarchy.ttf} $out/share/fonts/truetype/omarchy.ttf
-  '';
+    # The panels' helpers. ping stays off these lists: the session PATH's
+    # /run/wrappers/bin/ping carries the capability a store ping lacks.
+    audio = [
+      coreutils
+      gawk
+      pulseaudio
+      wireplumber
+    ];
+    bluetooth = [
+      bluez
+      coreutils
+      gawk
+      util-linux
+    ];
+    network = [
+      coreutils
+      gawk
+      gnused
+      iproute2
+      iw
+      jq
+      networkmanager
+    ];
+    monitor = [
+      brightnessctl
+      coreutils
+      findutils
+      gawk
+      hyprland
+      jq
+    ];
+    power = [
+      coreutils
+      gawk
+      gnugrep
+      power-profiles-daemon
+      upower
+    ];
+    # tailscale comes from the session PATH, matching the daemon the NixOS
+    # module runs.
+    tailscale-send = [
+      coreutils
+      libnotify
+      zenity
+    ];
+    # codex, which the Codex collector asks for its limits, too.
+    agent-usage-update = [
+      coreutils
+      jq
+      ripgrep
+      (collector "agent-usage-claude")
+      (collector "agent-usage-codex")
+    ];
+  };
 in
 stdenvNoCC.mkDerivation {
   pname = "hrndz-shell";
@@ -141,7 +211,8 @@ stdenvNoCC.mkDerivation {
           --subst-var-by fcMatch "${lib.getExe' fontconfig "fc-match"}" \
           --subst-var-by gtkLaunch "${lib.getExe' gtk3 "gtk-launch"}" \
           --subst-var-by notifySend "${lib.getExe libnotify}" \
-          --subst-var-by systemdInhibit "${lib.getExe' systemd "systemd-inhibit"}"
+          --subst-var-by systemdInhibit "${lib.getExe' systemd "systemd-inhibit"}" \
+          --subst-var-by xdgOpen "${lib.getExe' xdg-utils "xdg-open"}"
       done
     if grep -rnE '@[a-zA-Z]+@' $share --include='*.qml' --include='*.js' --include='*.jsonc'; then
       echo "unsubstituted placeholders above" >&2
@@ -150,8 +221,6 @@ stdenvNoCC.mkDerivation {
 
     runHook postInstall
   '';
-
-  passthru = { inherit font; };
 
   meta = {
     description = "Personal Quickshell desktop shell, forked from Omarchy's";

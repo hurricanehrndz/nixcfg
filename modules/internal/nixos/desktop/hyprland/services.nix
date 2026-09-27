@@ -26,12 +26,7 @@ in
 
     # Keep the user manager running without a login, so a session started by
     # desktop-vnc over SSH survives the SSH connection closing.
-    # i2c: DDC/CI brightness for external monitors.
-    users.users.${config.system.primaryUser} = {
-      linger = true;
-      extraGroups = [ "i2c" ];
-    };
-    hardware.i2c.enable = true;
+    users.users.${config.system.primaryUser}.linger = true;
 
     # USB devices stay awake (keyboards, the soundbar). A kernel parameter:
     # usbcore is built in, so modprobe options never reach it.

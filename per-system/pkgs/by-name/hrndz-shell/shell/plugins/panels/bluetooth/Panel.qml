@@ -17,7 +17,7 @@ Panel {
   manageIpc: false
 
   // Address -> "connecting" | "disconnecting" | "forgetting".
-  // The actual Bluetooth sequencing lives in bin/omarchy-bluetooth-device;
+  // The actual Bluetooth sequencing lives in bin/bluetooth;
   // this map only keeps the panel responsive while BlueZ catches up.
   property var pendingActions: ({})
 
@@ -208,7 +208,7 @@ Panel {
     Pipewire.preferredDefaultAudioSink = sink
     if (sink.id !== undefined && sink.name) {
       Quickshell.execDetached([
-        "omarchy-audio-output-set-default",
+        "@shareDir@/bin/audio", "set-default", "output",
         String(sink.id),
         String(sink.name)
       ])
@@ -264,7 +264,7 @@ Panel {
   }
 
   function deviceCommand(action, address) {
-    return ["omarchy-bluetooth-device", action, address]
+    return ["@shareDir@/bin/bluetooth", action, address]
   }
 
   function runDeviceAction(device, action, pending) {
@@ -397,7 +397,7 @@ Panel {
   }
 
   // 'x' forgets remembered devices. For connected devices this first
-  // disconnects, then removes the BlueZ pairing record via omarchy-bluetooth-device.
+  // disconnects, then removes the BlueZ pairing record via bin/bluetooth.
   function deleteSelected() {
     if (focusSection !== "known" && focusSection !== "connected") return
     var dev = deviceAt(focusSection, selectedIndex)
@@ -625,7 +625,7 @@ Panel {
   }
 
   // Not adapter.enabled: that writes BlueZ's Powered, which nothing persists, so
-  // the adapter came back on at the next boot. omarchy-bluetooth-power moves the
+  // the adapter came back on at the next boot. bin/bluetooth power moves the
   // rfkill soft block instead, which systemd-rfkill restores across reboots.
   // Powered still follows the block, so the switch and icon read it as before.
   //
@@ -634,7 +634,7 @@ Panel {
   // would re-read the old state and undo the first.
   function toggleBluetooth() {
     if (!adapter) return
-    Quickshell.execDetached(["omarchy-bluetooth-power", adapter.enabled ? "off" : "on"])
+    Quickshell.execDetached(["@shareDir@/bin/bluetooth", "power", adapter.enabled ? "off" : "on"])
   }
 
   IpcHandler {

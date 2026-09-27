@@ -3,9 +3,11 @@ import Quickshell
 import Quickshell.Io
 
 // The display side of agent usage. All extraction lives behind
-// omarchy-agent-usage-update, which writes one JSON record per agent into
-// the usage directory; this file only discovers those records, watches them
-// for changes, and optionally merges snapshots synced from other machines.
+// bin/agent-usage-update, which writes one JSON record per agent into the
+// usage directory; a Home Manager timer runs it every 15 minutes, and this
+// file runs it only on demand (panel open, refresh, retry). It discovers the
+// records, watches them for changes, and optionally merges snapshots synced
+// from other machines.
 Item {
   id: root
   visible: false
@@ -114,16 +116,7 @@ Item {
 
   // -------------------------------------------------------------- refresh
 
-  property int refreshIntervalSec: Math.max(30, Number(setting("refreshIntervalSec", 900)))
   property string pendingUpdateKind: ""
-
-  Timer {
-    interval: root.refreshIntervalSec * 1000
-    running: true
-    repeat: true
-    triggeredOnStart: true
-    onTriggered: root.runUpdate("normal")
-  }
 
   Process {
     id: updateProcess
@@ -144,7 +137,7 @@ Item {
   }
 
   function updateCommand(kind, agentIds) {
-    var command = ["omarchy-agent-usage-update"]
+    var command = ["@shareDir@/bin/agent-usage-update"]
     if (kind === "force") command.push("--force")
     if (kind === "limits") command.push("--limits-only")
     var providers = settings && settings.providers ? settings.providers : {}

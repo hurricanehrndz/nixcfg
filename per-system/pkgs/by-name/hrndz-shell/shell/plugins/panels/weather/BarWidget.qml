@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import qs.Commons
 import qs.Ui
 
@@ -75,7 +76,7 @@ BarWidget {
 
     onPressed: function(b) {
       if (!root.bar) return
-      if (b === Qt.RightButton) root.bar.run("omarchy-notification-send \"$(omarchy-weather-status)\"")
+      if (b === Qt.RightButton && panelLoader.item) Quickshell.execDetached(["@notifySend@", "Weather", panelLoader.item.statusText()])
       else if (b === Qt.MiddleButton) root.refresh()
       else root.togglePanel()
     }

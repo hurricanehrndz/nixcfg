@@ -241,8 +241,6 @@ Panel {
     ensureCursor()
     if (focusSection === "header") {
       tailscale.toggleTailscale()
-    } else if (focusSection === "auth") {
-      tailscale.authorizeTailscaleOperator()
     } else if (focusSection === "accounts") {
       var account = selectedAccount()
       if (account) tailscale.switchAccount(account.id)
@@ -745,13 +743,10 @@ Panel {
 
     implicitHeight: row.implicitHeight + Style.spacing.rowPaddingX
 
-    MouseArea {
-      anchors.fill: parent
-      hoverEnabled: true
-      cursorShape: tailscale.busy ? Qt.ArrowCursor : Qt.PointingHandCursor
-      enabled: !tailscale.busy
-      onEntered: root.setAuthCursor()
-      onClicked: tailscale.authorizeTailscaleOperator()
+    // Read-only: the operator is declared in the NixOS config, so the row
+    // only explains why connections are hidden.
+    HoverHandler {
+      onHoveredChanged: if (hovered) root.setAuthCursor()
     }
 
     RowLayout {
@@ -777,7 +772,7 @@ Panel {
 
         Text {
           Layout.fillWidth: true
-          text: "Authorize Tailscale operator"
+          text: "Not the Tailscale operator"
           color: root.foreground
           font.family: root.fontFamily
           font.pixelSize: Style.font.body
@@ -786,7 +781,7 @@ Panel {
 
         Text {
           Layout.fillWidth: true
-          text: "Allow this user to operate this Tailscale profile"
+          text: "Set by services.tailscale.extraSetFlags; rebuild to apply"
           color: root.dim
           font.family: root.fontFamily
           font.pixelSize: Style.font.caption

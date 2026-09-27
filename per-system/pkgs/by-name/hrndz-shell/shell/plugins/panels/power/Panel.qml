@@ -14,7 +14,7 @@ Panel {
   // permits — needed for the togglePercentage method below.
   manageIpc: false
   property var batteryInfo: ({})
-  property var systemInfo: ({})
+  readonly property string powerCommand: "@shareDir@/bin/power"
   property var profiles: []
   property string activeProfile: ""
   property int profileIndex: 0
@@ -137,16 +137,14 @@ Panel {
 
     if (!batteryProc.running) batteryProc.running = true
     if (!profilesProc.running) profilesProc.running = true
-    if (!systemProc.running) systemProc.running = true
   }
 
-  function updateKeyValue(raw, targetName) {
+  function updateBattery(raw) {
     var next = Model.parseKeyValue(raw)
     // Keep last known good data if a refresh briefly returns nothing — happens
     // around AC plug/unplug events. Avoids the section collapsing mid-transition.
     if (Object.keys(next).length === 0) return
-    if (targetName === "battery") batteryInfo = next
-    else systemInfo = next
+    batteryInfo = next
   }
 
   function updateProfiles(raw) {
@@ -165,7 +163,7 @@ Panel {
 
   function setProfile(profile) {
     if (!profile || actionProc.running) return
-    actionProc.command = ["omarchy-powerprofiles-set", root.discharging ? "battery" : "ac", profile]
+    actionProc.command = [root.powerCommand, "set-profile", profile]
     actionProc.running = true
   }
 
@@ -187,8 +185,10 @@ Panel {
 
   onOpenedChanged: {
     if (opened) {
+      // Nothing to show without a battery. Closing from inside the change
+      // handler is a binding loop on `opened`, so defer it.
       if (!batteryPresent) {
-        close()
+        Qt.callLater(close)
         return
       }
 
@@ -207,20 +207,14 @@ Panel {
 
   Process {
     id: batteryProc
-    command: ["omarchy-battery-status", "--shell"]
-    stdout: StdioCollector { waitForEnd: true; onStreamFinished: root.updateKeyValue(text, "battery") }
+    command: [root.powerCommand, "battery"]
+    stdout: StdioCollector { waitForEnd: true; onStreamFinished: root.updateBattery(text) }
   }
 
   Process {
     id: profilesProc
-    command: ["omarchy-powerprofiles-list", "--active-state"]
+    command: [root.powerCommand, "profiles"]
     stdout: StdioCollector { waitForEnd: true; onStreamFinished: root.updateProfiles(text) }
-  }
-
-  Process {
-    id: systemProc
-    command: ["omarchy-system-stats"]
-    stdout: StdioCollector { waitForEnd: true; onStreamFinished: root.updateKeyValue(text, "system") }
   }
 
   Process {

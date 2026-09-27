@@ -11,9 +11,6 @@ in
 {
   config = mkIf cfg.enable {
     fonts.packages = with pkgs; [
-      # The shell's icon font.
-      cfg.shellPackage.font
-
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
