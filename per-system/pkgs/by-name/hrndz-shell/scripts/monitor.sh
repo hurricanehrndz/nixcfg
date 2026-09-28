@@ -4,7 +4,9 @@
 #   monitor state          four lines: brightness percent (empty without a
 #                          backlight on the focused display), focused output,
 #                          its scale, and a JSON array of the displays
-#   monitor scale <scale>  apply to the focused display now and persist it
+#   monitor scale <scale>  preview on the focused display for 15 seconds
+#   monitor confirm        persist the preview per display
+#   monitor revert         restore the previous scale
 #   monitor brightness <N> set the internal panel's backlight to N percent
 #
 # CEILING: brightness covers internal panels (eDP/LVDS/DSI) through
@@ -12,11 +14,20 @@
 # (ddcutil, hardware.i2c) would be the upgrade.
 #
 # Scale persists in $XDG_CONFIG_HOME/hypr/monitors.lua, which the Hyprland
-# config loads after its fallback rule. This rewrites the whole file.
-# CEILING: one catch-all rule, so every output gets the last scale set. Per
-# output rules keyed by name would be the upgrade once there are several.
+# config loads after its fallback rule. This rewrites the generated file.
+# CEILING: hand-written Lua in that file is replaced on confirmation; put
+# custom monitor rules in Hyprland's main config if they must coexist.
 
 monitors_lua="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/monitors.lua"
+preview_dir="${XDG_RUNTIME_DIR:-/run/user/$UID}/hrndz-monitor"
+preview_file="$preview_dir/scale-preview"
+preview_unit=hrndz-monitor-revert
+
+lock_preview() {
+  mkdir -p "$preview_dir"
+  exec 9>"$preview_dir/lock"
+  flock 9
+}
 
 internal() {
   [[ $1 =~ ^(eDP|LVDS|DSI)- ]]
@@ -69,41 +80,127 @@ clean_scale() {
     }'
 }
 
+valid_scale() {
+  [[ $1 =~ ^[0-9]+([.][0-9]+)?$ ]] && awk -v s="$1" 'BEGIN { exit !(s >= 0.5 && s <= 4) }'
+}
+
+apply_live() {
+  local name=$1 mode=$2 position=$3 scale=$4
+  hyprctl eval "hl.monitor({ output = \"$name\", mode = \"$mode\", position = \"$position\", scale = $scale })" >/dev/null
+}
+
+stop_preview_timer() {
+  systemctl --user stop "$preview_unit.timer" 2>/dev/null || true
+}
+
+read_preview() {
+  [[ -f $preview_file ]] || {
+    echo "monitor: no scale preview is pending" >&2
+    return 1
+  }
+  IFS=$'\t' read -r preview_name preview_mode preview_position preview_old_scale preview_new_scale <"$preview_file"
+}
+
 scale() {
-  local requested=$1 info name mode scale gdk tmp
-  if [[ ! $requested =~ ^[0-9]+([.][0-9]+)?$ ]] || ! awk -v s="$requested" 'BEGIN { exit !(s >= 1 && s <= 4) }'; then
-    echo "monitor: scale must be a number from 1 to 4" >&2
+  local requested=${1:-} info name mode position old_scale new_scale tmp variable
+  local -a timer_env=()
+  valid_scale "$requested" || {
+    echo "monitor: scale must be a number from 0.5 to 4" >&2
     return 2
-  fi
+  }
+  lock_preview
+  [[ ! -f $preview_file ]] || {
+    echo "monitor: finish the current scale preview first" >&2
+    return 1
+  }
 
   info=$(focused)
   name=$(jq -r .name <<<"$info")
-  # The name lands inside the Lua below; only a plain connector name may.
+  # Values land inside Lua; validate every interpolated field.
   [[ $name =~ ^[A-Za-z0-9._-]+$ ]] || {
     echo "monitor: refusing output name '$name'" >&2
     return 1
   }
   mode=$(jq -r '"\(.width)x\(.height)@\(.refreshRate)"' <<<"$info")
-  scale=$(clean_scale "$requested" "$(jq -r .width <<<"$info")" "$(jq -r .height <<<"$info")")
-  # GTK takes only whole GDK_SCALE factors, so it gets the nearest one.
-  gdk=$(awk -v s="$scale" 'BEGIN { printf "%d", int(s + 0.5) }')
+  position=$(jq -r '"\(.x)x\(.y)"' <<<"$info")
+  old_scale=$(jq -r '.scale | tostring' <<<"$info")
+  [[ $mode =~ ^[0-9]+x[0-9]+@[0-9]+([.][0-9]+)?$ && $position =~ ^-?[0-9]+x-?[0-9]+$ ]] || {
+    echo "monitor: invalid focused monitor geometry" >&2
+    return 1
+  }
+  new_scale=$(clean_scale "$requested" "$(jq -r .width <<<"$info")" "$(jq -r .height <<<"$info")")
+  [[ $new_scale != "$old_scale" ]] || return 0
 
-  hyprctl eval "hl.monitor({ output = \"$name\", mode = \"$mode\", position = \"auto\", scale = $scale })" >/dev/null
+  tmp=$(mktemp "$preview_file.XXXXXX")
+  printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$mode" "$position" "$old_scale" "$new_scale" >"$tmp"
+  mv "$tmp" "$preview_file"
+  systemctl --user reset-failed "$preview_unit.service" "$preview_unit.timer" 2>/dev/null || true
+  for variable in HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_RUNTIME_DIR; do
+    if [[ -n ${!variable:-} ]]; then timer_env+=("--setenv=$variable=${!variable}"); fi
+  done
+  if ! systemd-run --user --quiet --collect --unit="$preview_unit" --on-active=15s \
+    "${timer_env[@]}" "$0" revert; then
+    rm -f "$preview_file"
+    return 1
+  fi
+  if ! apply_live "$name" "$mode" "$position" "$new_scale"; then
+    stop_preview_timer
+    rm -f "$preview_file"
+    return 1
+  fi
+}
+
+write_scales() {
+  local target=$1 target_scale=$2 all name scale tmp
+  local -A scales=()
+  local -a names=()
+
+  # Carry forward disconnected outputs from the last generated file. Only
+  # strict generated rules are parsed; hand-written Lua is not executed here.
+  if [[ -f $monitors_lua ]]; then
+    while read -r name scale; do
+      if [[ $name =~ ^[A-Za-z0-9._-]+$ ]] && valid_scale "$scale"; then
+        scales[$name]=$scale
+      fi
+    done < <(sed -nE 's/^hl\.monitor\(\{ output = "([A-Za-z0-9._-]+)", mode = "preferred", position = "auto", scale = ([0-9]+(\.[0-9]+)?) \}\)$/\1 \2/p' "$monitors_lua")
+  fi
+
+  all=$(hyprctl monitors all -j) || return 1
+  while IFS=$'\t' read -r name scale; do
+    if [[ $name =~ ^[A-Za-z0-9._-]+$ ]] && valid_scale "$scale"; then
+      scales[$name]=$scale
+    fi
+  done < <(jq -r '.[] | select(.disabled != true) | [.name, (.scale | tostring)] | @tsv' <<<"$all")
+  scales[$target]=$target_scale
 
   mkdir -p "${monitors_lua%/*}"
   tmp=$(mktemp "$monitors_lua.XXXXXX")
-  cat >"$tmp" <<EOF
--- Written by the shell's display panel (hrndz-shell), which rewrites this
--- file on every scale change. Hand edits last until the next one.
--- GDK_SCALE applies to apps started after the next login.
-local scale = $scale
-local gdk_scale = $gdk
-hl.env("GDK_SCALE", tostring(gdk_scale))
-hl.monitor({ output = "", mode = "preferred", position = "auto", scale = scale })
-EOF
-  # mktemp makes it 0600; keep the usual mode of a config file.
+  mapfile -t names < <(printf '%s\n' "${!scales[@]}" | LC_ALL=C sort)
+  {
+    printf '%s\n' '-- Managed by hrndz-shell. Scale is stored per connector.'
+    for name in "${names[@]}"; do
+      printf 'hl.monitor({ output = "%s", mode = "preferred", position = "auto", scale = %s })\n' "$name" "${scales[$name]}"
+    done
+  } >"$tmp"
   chmod 644 "$tmp"
   mv "$tmp" "$monitors_lua"
+}
+
+confirm_scale() {
+  lock_preview
+  read_preview || return 1
+  write_scales "$preview_name" "$preview_new_scale" || return 1
+  rm -f "$preview_file"
+  stop_preview_timer
+}
+
+revert_scale() {
+  lock_preview
+  [[ -f $preview_file ]] || return 0
+  read_preview || return 1
+  apply_live "$preview_name" "$preview_mode" "$preview_position" "$preview_old_scale" || return 1
+  rm -f "$preview_file"
+  stop_preview_timer
 }
 
 brightness() {
@@ -120,9 +217,11 @@ brightness() {
 case ${1:-} in
 state) state ;;
 scale) scale "${2:-}" ;;
+confirm) confirm_scale ;;
+revert) revert_scale ;;
 brightness) brightness "${2:-}" ;;
 *)
-  echo "usage: monitor state | scale <scale> | brightness <percent>" >&2
+  echo "usage: monitor state | scale <scale> | confirm | revert | brightness <percent>" >&2
   exit 2
   ;;
 esac

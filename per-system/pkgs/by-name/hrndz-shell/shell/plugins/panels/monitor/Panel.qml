@@ -20,6 +20,10 @@ Panel {
   property bool brightnessAvailable: false
   property string focusedMonitor: ""
   property string monitorScale: ""
+  property bool scalePreviewActive: false
+  property bool scaleStartRequested: false
+  property string scaleFinishRequested: ""
+  property int scalePreviewSeconds: 0
   readonly property string monitorCommand: "@shareDir@/bin/monitor"
   property var displays: []
   property int enabledDisplayCount: 0
@@ -278,15 +282,25 @@ Panel {
   function toggleDisplay(name, enabled) {
     if (!name) return
     if (enabled && root.enabledDisplayCount <= 1) return
+    if (actionProc.running || root.scalePreviewActive) return
 
     actionProc.command = ["hyprctl", "keyword", "monitor", name + (enabled ? ",disable" : ",preferred,auto,auto")]
-    if (!actionProc.running) actionProc.running = true
+    actionProc.running = true
   }
 
-  // Applies live and persists to ~/.config/hypr/monitors.lua (bin/monitor).
+  // The helper previews live and rolls back after 15 seconds unless kept.
   function setScale(scale) {
+    if (actionProc.running || root.scalePreviewActive || root.effectiveScale(scale) === root.monitorScale) return
+    root.scaleStartRequested = true
     actionProc.command = [root.monitorCommand, "scale", String(scale)]
-    if (!actionProc.running) actionProc.running = true
+    actionProc.running = true
+  }
+
+  function finishScalePreview(keep) {
+    if (!root.scalePreviewActive || actionProc.running) return
+    root.scaleFinishRequested = keep ? "confirm" : "revert"
+    actionProc.command = [root.monitorCommand, root.scaleFinishRequested]
+    actionProc.running = true
   }
 
   implicitWidth: button.implicitWidth
@@ -350,6 +364,16 @@ Panel {
     onTriggered: root.setBrightness(root.brightnessPercent)
   }
 
+  Timer {
+    interval: 1000
+    repeat: true
+    running: root.scalePreviewActive
+    onTriggered: {
+      root.scalePreviewSeconds--
+      if (root.scalePreviewSeconds <= 0) root.finishScalePreview(false)
+    }
+  }
+
   Process {
     id: setBrightnessProc
     stdout: StdioCollector { waitForEnd: true }
@@ -371,7 +395,23 @@ Panel {
   Process {
     id: actionProc
     stdout: StdioCollector { waitForEnd: true }
-    onRunningChanged: if (!running) root.refresh()
+    onExited: function(exitCode) {
+      if (root.scaleStartRequested && exitCode === 0) {
+        root.scalePreviewSeconds = 15
+        root.scalePreviewActive = true
+      }
+      if (root.scaleFinishRequested) {
+        if (exitCode === 0) {
+          root.scalePreviewActive = false
+          root.scalePreviewSeconds = 0
+        } else {
+          console.warn("display scale " + root.scaleFinishRequested + " failed")
+        }
+      }
+      root.scaleStartRequested = false
+      root.scaleFinishRequested = ""
+      root.refresh()
+    }
   }
 
   BarIconButton {
@@ -411,8 +451,14 @@ Panel {
           else if (root.focusSection === "scale") root.moveCursorH(dx)
         }
       }
-      onActivateRequested: if (root.cursorActive) root.activateCursor()
-      onCloseRequested: root.close()
+      onActivateRequested: {
+        if (root.scalePreviewActive) root.finishScalePreview(true)
+        else if (root.cursorActive) root.activateCursor()
+      }
+      onCloseRequested: {
+        if (root.scalePreviewActive) root.finishScalePreview(false)
+        root.close()
+      }
       onTabRequested: function(direction) { root.switchPanel(direction) }
 
       ScrollView {
@@ -621,6 +667,36 @@ Panel {
                   scaleValue: modelData
                   scaleIndex: index
                   width: scaleRow.cellWidth
+                }
+              }
+            }
+
+            Column {
+              visible: root.scalePreviewActive
+              width: parent.width
+              spacing: Style.space(6)
+
+              Text {
+                textFormat: Text.PlainText
+                text: "Keep this scale? Reverting in " + root.scalePreviewSeconds + "s"
+                color: root.bar.foreground
+                font.family: root.bar.fontFamily
+                font.pixelSize: Style.font.caption
+              }
+
+              Row {
+                spacing: Style.space(8)
+                Button {
+                  text: "Revert"
+                  foreground: root.bar.foreground
+                  fontFamily: root.bar.fontFamily
+                  onClicked: root.finishScalePreview(false)
+                }
+                Button {
+                  text: "Keep"
+                  foreground: root.bar.foreground
+                  fontFamily: root.bar.fontFamily
+                  onClicked: root.finishScalePreview(true)
                 }
               }
             }

@@ -166,6 +166,8 @@ let
       gawk
       hyprland
       jq
+      systemd
+      util-linux
     ];
     power = [
       coreutils
