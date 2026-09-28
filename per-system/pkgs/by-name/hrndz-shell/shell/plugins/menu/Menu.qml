@@ -264,7 +264,6 @@ Item {
     root.items = mergedMenu.items
     root.itemOrder = mergedMenu.itemOrder
     root.rowsLoaded = true
-    root.evaluateGuards()
     if (root.opened) {
       root.rebuildDisplay()
       if (!root.dmenuActive && (root.activeMenu === "root" || root.activeMenu === "apps")) root.loadApps()
@@ -302,8 +301,6 @@ Item {
         action: "",
         provider: "",
         aliases: aliases,
-        when: "",
-        checked: "",
         order: 0
       })
     }
@@ -340,16 +337,8 @@ Item {
     return MenuModel.childCount(root.items, root.itemOrder, id)
   }
 
-  // Guarded items are hidden when their `when:` evaluates false. Static
-  // submenus are also hidden when none of their descendants are visible;
-  // provider-backed menus stay visible because their rows load on demand.
   function isVisible(entry) {
-    return MenuModel.isVisible(root.items, root.itemOrder, root.whenResults, entry)
-  }
-
-  // Label with the ✓ marker baked in when `checked:` evaluated truthy.
-  function labelFor(entry) {
-    return MenuModel.labelFor(entry, root.checkedResults)
+    return MenuModel.isVisible(root.items, root.itemOrder, entry)
   }
 
   function searchableToken(value) {
@@ -374,7 +363,7 @@ Item {
 
   function matchesQuery(entry, query) {
     return MenuModel.matchesQuery(root.items, entry, query,
-      MenuModel.isSearchVisible(root.items, root.itemOrder, root.whenResults, entry))
+      MenuModel.isSearchVisible(root.items, root.itemOrder, entry))
   }
 
   function searchScore(entry, query) {
@@ -382,7 +371,7 @@ Item {
   }
 
   function displayRow(entry, detail, score, section) {
-    return MenuModel.displayRow(root.items, root.itemOrder, root.checkedResults, entry, detail, score, section)
+    return MenuModel.displayRow(root.items, root.itemOrder, entry, detail, score, section)
   }
 
   function rebuildDmenuDisplay() {
@@ -648,7 +637,6 @@ Item {
     selectedIndex = 0
     cursorActive = true
     root.disarmPointer()
-    root.evaluateGuards()
     opened = true
     rebuildDisplay()
     if (activeMenu === "root" || activeMenu === "apps") loadApps()
@@ -752,82 +740,6 @@ Item {
     onLoaded: { root.defaultMenuItems = root.parseMenuJsonc(text()); root.rebuildItemsFromSources() }
   }
 
-  // ---------------------------------------------------------------- guards
-  //
-  // `when:` (visibility) and `checked:` (✓ marker) are bash expressions the
-  // shell wasn't allowed to evaluate before the perf rewrite. Now the shell
-  // batches them into one bash subprocess per (re)load so the open path
-  // never has to wait on them.
-
-  property var whenResults: ({})       // id → true|false (allow visibility)
-  property var checkedResults: ({})    // id → true|false (show ✓)
-  property bool guardsPending: false
-
-  function evaluateGuards() {
-    // Process ignores a command change while it is running, and `collected`
-    // belongs to the run in flight, so a second evaluation cannot overwrite
-    // the first: it would throw away the lines already read and never start.
-    // The surviving tail then lands as the whole answer, and every id lost
-    // with it goes back to showing, since a `when:` only hides on an explicit
-    // false. Wait for the run in flight and evaluate once it lands instead.
-    if (guardProc.running) {
-      root.guardsPending = true
-      return
-    }
-    root.guardsPending = false
-
-    var script = MenuModel.guardScript(root.items)
-    if (!script) {
-      root.whenResults = ({})
-      root.checkedResults = ({})
-      return
-    }
-    guardProc.collected = ""
-    guardProc.command = ["bash", "-lc", script]
-    guardProc.running = true
-  }
-
-  Process {
-    id: guardProc
-    property string collected: ""
-    stdout: SplitParser {
-      onRead: function(data) { guardProc.collected += data + "\n" }
-    }
-    onExited: function(exitCode, exitStatus) {
-      // A batch that was killed rather than finished has only told us about
-      // the rows it reached, and a row whose `when:` went unanswered shows.
-      // Keep the last complete set rather than let a half-read one through.
-      // A signal leaves the exit code at 0, so the status is what tells us.
-      if (exitCode !== 0 || exitStatus !== 0) {
-        if (root.guardsPending) Qt.callLater(function() { root.evaluateGuards() })
-        return
-      }
-
-      var nextWhen = ({})
-      var nextChecked = ({})
-      var lines = guardProc.collected.split("\n")
-      for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim()
-        if (!line) continue
-        var colon = line.lastIndexOf(":")
-        if (colon < 0) continue
-        var value = line.substring(colon + 1) === "1"
-        var rest = line.substring(0, colon)
-        var tagAt = rest.lastIndexOf(":")
-        if (tagAt < 0) continue
-        var id = rest.substring(0, tagAt)
-        var tag = rest.substring(tagAt + 1)
-        if (tag === "w") nextWhen[id] = value
-        else if (tag === "c") nextChecked[id] = value
-      }
-      root.whenResults = nextWhen
-      root.checkedResults = nextChecked
-      if (root.opened) root.rebuildDisplay()
-      // Run the evaluation that had to stand aside. Deferred by a turn so the
-      // process is settled before its command is set again.
-      if (root.guardsPending) Qt.callLater(function() { root.evaluateGuards() })
-    }
-  }
   PanelWindow {
     id: panel
     visible: root.opened && root.rowsLoaded
