@@ -40,4 +40,6 @@
   "system.logout": {"icon":"󰍃","label":"Logout","action":"uwsm stop"},
   "system.reboot": {"icon":"󰜉","label":"Reboot","action":"systemctl reboot"},
   "system.shutdown": {"icon":"󰐥","label":"Shutdown","action":"systemctl poweroff"},
+
+  "about": {"icon":"","label":"About","aliases":["fastfetch"],"action":"uwsm-app -- xdg-terminal-exec bash -c 'fastfetch; read -rsn1'"},
 }
