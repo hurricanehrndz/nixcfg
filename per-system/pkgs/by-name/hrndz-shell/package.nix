@@ -40,6 +40,7 @@
   libnotify,
   mpv,
   networkmanager,
+  nodejs-slim,
   omasnap,
   perl,
   power-profiles-daemon,
@@ -249,10 +250,14 @@ stdenvNoCC.mkDerivation {
   };
 
   doCheck = true;
-  nativeCheckInputs = [ jq ];
+  nativeCheckInputs = [
+    jq
+    nodejs-slim
+  ];
   checkPhase = ''
     runHook preCheck
     bash tests/monitor-scale.sh
+    node tests/answers.js
     runHook postCheck
   '';
 

@@ -5,6 +5,7 @@ import QtQuick
 import qs.Commons
 import qs.Ui
 import "MenuModel.js" as MenuModel
+import "Answers.js" as Answers
 
 Item {
   id: root
@@ -147,6 +148,7 @@ Item {
     var row = root.currentRow
     if (!row) return ""
     if (row.kind === "menu" || row.kind === "link" || row.kind === "app") return "Open"
+    if (row.kind === "answer") return "Copy"
     return "Run"
   }
   readonly property string crumbText: {
@@ -459,6 +461,14 @@ Item {
         if (a.score !== b.score) return a.score - b.score
         return a.path.localeCompare(b.path)
       })
+
+      // A sum or conversion answers above the matches, so ↵ copies it.
+      var answer = active === "root" ? Answers.answer(query) : null
+      if (answer) rows.unshift({
+        itemId: "answer", kind: "answer", icon: answer.icon, iconFont: "", appIcon: "", appId: "",
+        label: answer.title, target: "", detail: answer.detail, path: answer.detail, childCount: 0,
+        action: answer.copy, provider: "", score: 0, section: ""
+      })
     } else {
       for (var j = 0; j < root.itemOrder.length; j++) {
         var child = root.item(root.itemOrder[j])
@@ -601,6 +611,8 @@ Item {
     var row = displayModel.get(index)
     if (row.kind === "menu" || row.kind === "link") {
       root.setActiveMenu(row.target || row.itemId, true, fromPointer)
+    } else if (row.kind === "answer") {
+      root.applySelected(row.itemId, "printf %s " + Util.shellQuote(row.action) + " | wl-copy")
     } else if (row.kind === "app") {
       var appId = row.appId
       var label = row.label
