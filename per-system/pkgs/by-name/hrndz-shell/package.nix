@@ -14,8 +14,11 @@
   ambientDir ? "/var/lib/ambient",
   playbackRate ? 1.0,
   lockBlankSeconds ? 60,
+  # Host-specific menu rows, keyed by id like menu.jsonc.
+  extraMenuItems ? { },
   stdenvNoCC,
   writeShellApplication,
+  writeText,
   writeTextFile,
   bluez,
   brightnessctl,
@@ -264,6 +267,18 @@ stdenvNoCC.mkDerivation {
     share=$out/share/hrndz-shell
     mkdir -p $share/bin $out/bin
     cp -r shell theme menu.jsonc $share/
+    ${lib.optionalString (extraMenuItems != { }) ''
+      # Replace the closing brace with the extra rows and close it again.
+      sed -i '$d' $share/menu.jsonc
+      cat ${
+        writeText "extra-menu" (
+          lib.concatMapAttrsStringSep "\n" (
+            id: item: "  ${builtins.toJSON id}: ${builtins.toJSON item},"
+          ) extraMenuItems
+        )
+      } >> $share/menu.jsonc
+      printf '\n}\n' >> $share/menu.jsonc
+    ''}
     ln -s ${lib.getExe cli} $out/bin/hrndz-shell
     ln -s ${lib.getExe notificationSend} $out/bin/omarchy-notification-send
     ${lib.concatMapAttrsStringSep "\n" (

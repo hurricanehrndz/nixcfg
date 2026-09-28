@@ -30,7 +30,17 @@ in
         };
         inherit (cfg.ambient) playbackRate;
         lockBlankSeconds = cfg.idle.lockBlank;
+        extraMenuItems = cfg.menuItems;
       };
+    };
+
+    menuItems = mkOption {
+      type = types.attrsOf (types.attrsOf types.anything);
+      default = { };
+      description = ''
+        Host-specific rows added to the shell menu, keyed by menu id, in the
+        same shape as menu.jsonc (for example `"setup.foo".action`).
+      '';
     };
 
     # Where ambient-set keeps the video and still the screensaver, lock screen

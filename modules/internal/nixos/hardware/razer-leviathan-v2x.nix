@@ -53,6 +53,40 @@ let
       fi
     '';
   };
+
+  # Breathing and static take their colours from the theme, when there is one.
+  colors =
+    config.lib.stylix.colors or {
+      base0D = "44D62C";
+      base0E = "00A0FF";
+    };
+  leviathanLighting = pkgs.writeShellApplication {
+    name = "leviathan-lighting";
+    runtimeInputs = [ config.services.hardware.openrgb.package ];
+    text = ''
+      case "''${1:-}" in
+        breathing) args=(-m Breathing -c "${colors.base0D},${colors.base0E}") ;;
+        spectrum) args=(-m "Spectrum Cycle") ;;
+        wave) args=(-m Wave) ;;
+        static) args=(-m Static -c "${colors.base0D}") ;;
+        off) args=(-m Off) ;;
+        *)
+          echo "usage: leviathan-lighting breathing|spectrum|wave|static|off" >&2
+          exit 2
+          ;;
+      esac
+      # Through the server: standalone openrgb exits before sending the change.
+      exec openrgb --client localhost:${toString config.services.hardware.openrgb.server.port} \
+        --noautoconnect -d "Razer Leviathan V2 X" "''${args[@]}"
+    '';
+  };
+  lightingModes = {
+    breathing = "Breathing";
+    spectrum = "Spectrum cycle";
+    wave = "Wave";
+    static = "Static";
+    off = "Off";
+  };
 in
 {
   options.hrndz.hardware.razerLeviathanV2X = {
@@ -74,6 +108,27 @@ in
         package = pkgs.openrgb.withPlugins [ pkgs.openrgb-plugin-effects ];
         motherboard = null;
       };
+      environment.systemPackages = [ leviathanLighting ];
+
+      hrndz.desktop.hyprland.menuItems = {
+        "setup.lighting" = {
+          icon = "󰌵";
+          label = "Soundbar lighting";
+          aliases = [
+            "lighting"
+            "rgb"
+            "soundbar"
+          ];
+        };
+      }
+      // lib.mapAttrs' (
+        mode: label:
+        lib.nameValuePair "setup.lighting.${mode}" {
+          icon = "󰌵";
+          inherit label;
+          action = "${lib.getExe leviathanLighting} ${mode}";
+        }
+      ) lightingModes;
     })
   ]);
 }
