@@ -196,12 +196,6 @@ let
 in
 {
   config = mkIf cfg.roles.terminalUser.enable {
-    home.extraOutputsToInstall = [
-      "/share/zsh"
-      # TODO: is this already implied by `/share/zsh`?
-      "/share/zsh/site-functions"
-    ];
-
     # Add plugin files to dotDir
     home.file = fzl.mkPluginFiles {
       inherit
