@@ -385,32 +385,6 @@ ShellRoot {
     return shell.manifestHasKind(manifest, "bar")
   }
 
-  function pluginIsIndicatorsClone(manifest) {
-    var metadata = manifest && Util.isPlainObject(manifest.omarchy) ? manifest.omarchy : null
-    return shell.manifestHasKind(manifest, "bar-widget")
-      && !!metadata && String(metadata.clonedFrom || "") === "omarchy.indicators"
-  }
-
-  function publicIdleConfigFor(manifest) {
-    var metadata = manifest && Util.isPlainObject(manifest.omarchy) ? manifest.omarchy : null
-    if (!metadata || String(metadata.clonedFrom || "") !== "omarchy.idle") return ({})
-    var idle = shell.shellConfig && Util.isPlainObject(shell.shellConfig.idle)
-      ? shell.shellConfig.idle : ({})
-    return JSON.parse(JSON.stringify(idle))
-  }
-
-  function pluginCloneMaySummon(manifest, requestedId) {
-    var metadata = manifest && Util.isPlainObject(manifest.omarchy) ? manifest.omarchy : null
-    var sourceId = metadata ? String(metadata.clonedFrom || "") : ""
-    var allowed = {
-      "omarchy.audio": ["omarchy.osd"],
-      "omarchy.media": ["omarchy.osd"],
-      "omarchy.monitor": ["omarchy.osd"]
-    }
-    var targets = allowed[sourceId] || []
-    return targets.indexOf(String(requestedId || "")) !== -1
-  }
-
   function pluginOwnsTarget(pluginId, requestedId) {
     var caller = String(pluginId || "")
     if (!caller) return false
@@ -554,7 +528,6 @@ ShellRoot {
     return [
       allowOwnService ? "own-service" : "no-own-service",
       barCapabilities ? "bar" : "no-bar",
-      allowOwnService && shell.pluginIsIndicatorsClone(manifest) ? "indicators" : "no-indicators",
       shell.manifestHasKind(manifest, "menu") ? "menu" : "no-menu"
     ].join("|")
   }
@@ -619,9 +592,7 @@ ShellRoot {
     // property, even though the resulting proxy is otherwise acyclic.
     var firstPartyServices = ({})
     var serviceIds = barCapabilities
-      ? ["omarchy.idle", "omarchy.media", "omarchy.nightlight", "omarchy.notifications"]
-      : (allowOwnService && shell.pluginIsIndicatorsClone(manifest)
-        ? ["omarchy.idle", "omarchy.nightlight", "omarchy.notifications"] : [])
+      ? ["omarchy.idle", "omarchy.media", "omarchy.nightlight", "omarchy.notifications"] : []
     for (var i = 0; i < serviceIds.length; i++) {
       var serviceId = serviceIds[i]
       firstPartyServices[serviceId] = shell.pluginFirstPartyServiceFor(cacheKey, key, serviceId)
@@ -633,20 +604,14 @@ ShellRoot {
         ? shell.pluginAppLibraryFor(cacheKey, key) : null,
       bar: shell.pluginBarStateFor(cacheKey, key),
       barConfig: shell.publicBarConfig(),
-      idleConfig: shell.publicIdleConfigFor(manifest),
+      idleConfig: ({}),
       _serviceLookup: function(requestedId) {
         return allowOwnService ? shell.pluginServiceFor(key, requestedId) : null
       },
       _firstPartyServiceLookup: function(requestedId) {
         if (allowOwnService && shell.pluginOwnsTarget(key, requestedId))
           return shell.pluginServiceFor(key, requestedId)
-        // Indicators clones have no service of their own. Under the trusted
-        // bar they need only these prebuilt non-authentication proxies, not
-        // full-bar capabilities or access to another plugin's live service.
-        var indicatorsAllowed = allowOwnService && shell.pluginIsIndicatorsClone(currentManifest())
-          && shell.activeBarManifest && shell.activeBarManifest.__isFirstParty
-          && shell.pluginRegistry.isEnabled(key) && shell.barEntryConfigured(key)
-        return hasCurrentBarCapabilities() || indicatorsAllowed
+        return hasCurrentBarCapabilities()
           ? (firstPartyServices[requestedId] || null) : null
       },
       _barEntryShellLookup: function(ownerId, moduleName) {
@@ -655,8 +620,7 @@ ShellRoot {
       },
       _summon: function(requestedId, payloadJson) {
         if (!shell.pluginOwnsTarget(key, requestedId)
-            && !shell.barPluginMayControl(currentManifest(), requestedId)
-            && !shell.pluginCloneMaySummon(currentManifest(), requestedId)) return false
+            && !shell.barPluginMayControl(currentManifest(), requestedId)) return false
         return shell.summon(shell.pluginRegistry.resolveEnabledId(requestedId), payloadJson)
       },
       _hide: function(requestedId) {
@@ -727,17 +691,11 @@ ShellRoot {
         === shell.pluginRegistry.resolveEnabledId(target)
     }
 
-    function currentManifest() {
-      var id = shell.pluginRegistry.resolveEnabledId(target)
-      return shell.pluginRegistry.installedPlugins[id] || null
-    }
-
     var api = pluginShellApiComponent.createObject(null, {
       pluginId: target,
       barConfig: shell.publicBarConfig(),
       _summon: function(requestedId, payloadJson) {
-        if (!owns(requestedId)
-            && !shell.pluginCloneMaySummon(currentManifest(), requestedId)) return false
+        if (!owns(requestedId)) return false
         return shell.summon(shell.pluginRegistry.resolveEnabledId(requestedId), payloadJson)
       },
       _hide: function(requestedId) {
@@ -903,10 +861,8 @@ ShellRoot {
     }
     for (var shellKey in _pluginShellApis) {
       var shellApi = _pluginShellApis[shellKey]
-      var descriptor = _pluginShellApiDescriptors[shellKey]
-      var shellManifest = descriptor ? plugins[descriptor.pluginId] : null
       shellApi.barConfig = shell.publicBarConfig()
-      shellApi.idleConfig = shell.publicIdleConfigFor(shellManifest)
+      shellApi.idleConfig = ({})
     }
     for (var entryKey in _pluginBarEntryShellApis)
       _pluginBarEntryShellApis[entryKey].barConfig = shell.publicBarConfig()
@@ -1628,8 +1584,6 @@ ShellRoot {
         var isBarOption = Array.isArray(kinds) && kinds.indexOf("bar") !== -1
         var isBarWidget = Array.isArray(kinds) && kinds.indexOf("bar-widget") !== -1
         var active = isBarOption && shell.isActiveBarOption(id)
-        var metadata = plugins[id].omarchy
-        var clonedFrom = Util.isPlainObject(metadata) ? String(metadata.clonedFrom || "") : ""
         out.push({
           id: id,
           name: plugins[id].name,
@@ -1644,8 +1598,7 @@ ShellRoot {
           // that a caller offering the verbs does not have to read kinds and
           // work it out again.
           canDisable: !isBarOption,
-          firstParty: !!plugins[id].__isFirstParty,
-          clonedFrom: clonedFrom
+          firstParty: !!plugins[id].__isFirstParty
         })
       }
       // Consumers should not each invent their own presentation order.

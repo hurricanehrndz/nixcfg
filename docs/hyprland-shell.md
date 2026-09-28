@@ -53,7 +53,7 @@ adopt a feature.
 
 The palette and controls follow this model, but the host still discovers
 bundled components through `PluginRegistry.qml`. `shell.qml` also retains
-clone, capability, and mutable bar-layout code inherited from Omarchy.
+scoped plugin APIs and mutable bar-layout code inherited from Omarchy.
 Simplifying that host is separate work: move each live component to a direct,
 fixed reference, keep its behavior, then delete the registry path it no longer
 uses.
