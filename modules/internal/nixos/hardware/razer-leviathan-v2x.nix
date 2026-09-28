@@ -54,21 +54,18 @@ let
     '';
   };
 
-  # Breathing and static take their colours from the theme, when there is one.
-  colors =
-    config.lib.stylix.colors or {
-      base0D = "44D62C";
-      base0E = "00A0FF";
-    };
+  # Static takes the theme's accent, when there is one.
+  accent = config.lib.stylix.colors.base0D or "44D62C";
   leviathanLighting = pkgs.writeShellApplication {
     name = "leviathan-lighting";
     runtimeInputs = [ config.services.hardware.openrgb.package ];
     text = ''
       case "''${1:-}" in
-        breathing) args=(-m Breathing -c "${colors.base0D},${colors.base0E}") ;;
+        # Random colours, as the soundbar breathes from the factory.
+        breathing) args=(-m Breathing -c random) ;;
         spectrum) args=(-m "Spectrum Cycle") ;;
         wave) args=(-m Wave) ;;
-        static) args=(-m Static -c "${colors.base0D}") ;;
+        static) args=(-m Static -c "${accent}") ;;
         off) args=(-m Off) ;;
         *)
           echo "usage: leviathan-lighting breathing|spectrum|wave|static|off" >&2
