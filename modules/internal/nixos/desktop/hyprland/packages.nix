@@ -38,6 +38,7 @@ in
       gnome-themes-extra
       adwaita-icon-theme
 
+      grim
       speedtest-cli
     ];
   };
