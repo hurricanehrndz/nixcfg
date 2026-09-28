@@ -22,7 +22,6 @@ in
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland.settings.bind = [
       ##: Session
-      (bind "SUPER + M" "Exit session" (exec "uwsm stop"))
       (shell "SUPER + L" "Lock screen" "lock")
       (shell "SUPER + CTRL + L" "Lock screen" "lock")
 
@@ -46,21 +45,16 @@ in
       (shell "SUPER + CTRL + ALT + D" "Panel: calendar" "panel calendar")
 
       ##: Capture
-      # omasnap: drag a region or click a window or monitor. The preview it
-      # leaves has an Edit button.
-      (shell "PRINT" "Screenshot" "screenshot")
-      (shell "SHIFT + PRINT" "Screenshot screen" "screenshot screen")
-      # The same keys start and stop a recording, to ~/Videos.
-      (shell "ALT + PRINT" "Screen recording" "screenrecord region --audio")
-      (shell "ALT + SHIFT + PRINT" "Screen recording with microphone" "screenrecord screen --audio --mic")
-      (shell "ALT + CTRL + PRINT" "Screen recording with microphone and webcam"
-        "screenrecord screen --audio --mic --webcam"
-      )
+      # macOS's Cmd+Shift+3/4/5, since there is no Print key. omasnap drags a
+      # region or clicks a window or monitor; its preview has an Edit button.
+      # The recording keys start and stop it, to ~/Videos. The other capture
+      # modes are in the launcher's Capture menu.
+      (shell "SUPER + SHIFT + code:12" "Screenshot screen" "screenshot screen")
+      (shell "SUPER + SHIFT + code:13" "Screenshot" "screenshot")
+      (shell "SUPER + SHIFT + code:14" "Screen recording" "screenrecord region --audio")
       # code:34 and code:35 are the [ and ] keys.
       (shell "SUPER + ALT + code:34" "Make webcam overlay smaller" "webcam smaller")
       (shell "SUPER + ALT + code:35" "Make webcam overlay larger" "webcam larger")
-      (shell "SUPER + PRINT" "Color picker" "color-picker")
-      (shell "SUPER + CTRL + PRINT" "Copy text from a region (OCR)" "ocr")
 
       ##: Zoom
       (bind "SUPER + CTRL + Z" "Zoom in" ''

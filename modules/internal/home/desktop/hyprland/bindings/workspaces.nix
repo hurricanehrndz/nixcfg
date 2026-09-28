@@ -22,27 +22,10 @@ let
   };
 in
 {
-  # Numbered on SUPER, named on Meh/Hyper as in AeroSpace.
+  # Named workspaces on Meh/Hyper, as in AeroSpace.
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland.settings.bind =
-      # code:10 .. code:19 are the 1 .. 0 keys.
-      lib.concatMap (
-        workspace:
-        let
-          key = "code:${toString (workspace + 9)}";
-          ws = toString workspace;
-        in
-        [
-          (bind "SUPER + ${key}" "Workspace ${ws}" (focus ''workspace = "${ws}"''))
-          (bind "SUPER + SHIFT + ${key}" "Move window to workspace ${ws}" (
-            moveWindow ''workspace = "${ws}"''
-          ))
-          (bind "SUPER + SHIFT + ALT + ${key}" "Move window silently to workspace ${ws}" (
-            moveWindow ''workspace = "${ws}", follow = false''
-          ))
-        ]
-      ) (lib.range 1 10)
-      ++ lib.concatMap (name: [
+      lib.concatMap (name: [
         (bind "${meh} + ${name}" "Workspace ${name}" (focus ''workspace = "name:${name}"''))
         (bind "${hyper} + ${name}" "Move window to workspace ${name}" (
           moveWindow ''workspace = "name:${name}"''

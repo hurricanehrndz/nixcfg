@@ -3,6 +3,9 @@
   lib,
   ...
 }:
+let
+  inherit (import ./bindings/_lib.nix { inherit lib; }) namedWorkspaces;
+in
 {
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland.settings.on = {
@@ -17,6 +20,10 @@
             hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1); dbus-update-activation-environment --systemd --all; hrndz-shell start")
 
             hl.exec_cmd("uwsm-app -- udiskie --automount --no-notify --no-tray")
+
+            -- Start on the first named workspace instead of "1". A default
+            -- workspace rule would have to name the monitor.
+            hl.dispatch(hl.dsp.focus({ workspace = "name:${builtins.head namedWorkspaces}" }))
           end'')
       ];
     };

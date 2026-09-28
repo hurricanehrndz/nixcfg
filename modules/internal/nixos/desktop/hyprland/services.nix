@@ -33,6 +33,20 @@ in
     # usbcore is built in, so modprobe options never reach it.
     boot.kernelParams = [ "usbcore.autosuspend=-1" ];
 
+    ##: Keyboard
+    # Caps Lock is Meh (Ctrl+Shift+Alt), as Superkey makes it on macOS; with
+    # Super it makes Hyper. xkb has no option for a modifier chord.
+    services.keyd = {
+      enable = true;
+      keyboards.default = {
+        ids = [ "*" ];
+        settings = {
+          main.capslock = "layer(meh)";
+          "meh:C-S-A" = { };
+        };
+      };
+    };
+
     ##: Limits
     # Proton/Wine and file watchers want more than the default 1024 soft limit.
     # A 15s stop timeout lets VMs and containers shut down cleanly while
