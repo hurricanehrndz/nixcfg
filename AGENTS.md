@@ -83,6 +83,20 @@ Modules are organized into two categories:
 
 The `import-tree` utility automatically imports all Nix files in a directory tree, enabling a directory-based module organization pattern.
 
+### Hyprland shell adoption
+
+When changing `modules/internal/{home,nixos}/desktop/hyprland/` or
+`per-system/pkgs/by-name/hrndz-shell/`, read
+[docs/hyprland-shell.md](docs/hyprland-shell.md). Follow the curated shell
+model: Nix owns installed apps and services; one searchable menu shows apps and
+actions; volume and display controls stay in the UI. Port only the parts of an
+Omarchy plugin this desktop uses. Prefer Quickshell or existing helpers; add a
+script only for an OS command boundary. Do not add package installation,
+runtime plugin installation, cloning, or a second menu. Record the source and
+license of copied code. The existing plugin registry is legacy infrastructure,
+not a pattern for new features; remove it only as its callers are migrated and
+verified on a live Hyprland session.
+
 ### Host Configuration
 Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.nix`. The easy-hosts module:
 - Automatically discovers hosts from the directory structure under `hosts/`
