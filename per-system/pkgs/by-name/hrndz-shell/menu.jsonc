@@ -22,10 +22,10 @@
   "toggle.bar": {"icon":"󰍜","label":"Bar","action":"@hrndzShell@ bar"},
 
   "setup": {"icon":"","label":"Setup","aliases":["settings"]},
-  "setup.audio": {"icon":"","label":"Audio","action":"@hrndzShell@ panel audio"},
+  "setup.audio": {"icon":"","label":"Volume & audio","aliases":["volume","sound"],"action":"@hrndzShell@ panel audio"},
   "setup.bluetooth": {"icon":"󰂯","label":"Bluetooth","action":"@hrndzShell@ panel bluetooth"},
   "setup.network": {"icon":"󰛳","label":"Network","action":"@hrndzShell@ panel network"},
-  "setup.display": {"icon":"󰍹","label":"Display","action":"@hrndzShell@ panel display"},
+  "setup.display": {"icon":"󰍹","label":"Display scale","aliases":["scaling","monitor"],"action":"@hrndzShell@ panel display"},
   "setup.power": {"icon":"󰐥","label":"Power","action":"@hrndzShell@ panel power"},
 
   "system": {"icon":"","label":"System","aliases":["power-menu"]},

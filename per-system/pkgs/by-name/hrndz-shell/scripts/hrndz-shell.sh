@@ -218,7 +218,7 @@ feature=${1:-}
 shift || true
 case $feature in
 start) systemctl --user start "$unit" ;;
-launcher) menu apps ;;
+launcher) menu root ;;
 menu) menu root ;;
 system-menu) menu system ;;
 keybindings) keybindings ;;

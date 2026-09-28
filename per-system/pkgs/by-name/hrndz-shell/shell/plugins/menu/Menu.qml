@@ -101,7 +101,7 @@ Item {
   property int dividerHeight: Style.space(17)
   property bool searchDivider: false
   property int layoutSerial: 0
-  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : (Style.space(300)), panel.width - Style.gapsOut * 2)
+  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : Style.space(520), panel.width - Style.gapsOut * 2)
   property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider)
   property int cardHeight: root.dmenuActive
     ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
@@ -246,6 +246,7 @@ Item {
       root.rebuildDisplay()
       if (!root.dmenuActive) {
         if (root.filterText.trim()) root.loadProvidersForSearch()
+        else if (root.activeMenu === "root") root.loadProviderForMenu("apps")
         else root.loadProviderForMenu(root.activeMenu)
       }
     }
@@ -472,7 +473,8 @@ Item {
   }
 
   function matchesQuery(entry, query) {
-    return MenuModel.matchesQuery(entry, query, root.isVisible(entry))
+    return MenuModel.matchesQuery(root.items, entry, query,
+      MenuModel.isSearchVisible(root.items, root.itemOrder, root.whenResults, entry))
   }
 
   function searchScore(entry, query) {
@@ -551,9 +553,6 @@ Item {
     root.searchDivider = false
 
     if (query) {
-      var currentRows = []
-      var drilldownRows = []
-
       for (var i = 0; i < root.itemOrder.length; i++) {
         var entry = root.item(root.itemOrder[i])
         if (!entry || entry.id === "root") continue
@@ -561,34 +560,24 @@ Item {
         if (!root.matchesQuery(entry, query)) continue
 
         var detail = root.parentPathFor(entry.id)
-        var row = root.displayRow(entry, detail, root.searchScore(entry, query))
-        if (entry.parent === active) currentRows.push(row)
-        else drilldownRows.push(row)
+        rows.push(root.displayRow(entry, detail, root.searchScore(entry, query)))
       }
 
-      var searchSort = function(a, b) {
+      rows.sort(function(a, b) {
         if (a.score !== b.score) return a.score - b.score
         return a.path.localeCompare(b.path)
-      }
-
-      currentRows.sort(searchSort)
-      drilldownRows.sort(searchSort)
-      root.searchDivider = currentRows.length > 0 && drilldownRows.length > 0
-      if (root.searchDivider) {
-        for (var d = 0; d < drilldownRows.length; d++) drilldownRows[d].section = "drilldown"
-      }
-      rows = currentRows.concat(drilldownRows)
+      })
     } else {
       for (var j = 0; j < root.itemOrder.length; j++) {
         var child = root.item(root.itemOrder[j])
-        if (!child || child.parent !== active) continue
+        if (!child || (active === "root" ? child.kind !== "app" : child.parent !== active)) continue
         if (!root.isVisible(child)) continue
         rows.push(root.displayRow(child, child.description, child.order))
       }
 
       // DesktopEntries can reorder its values when an application starts.
-      // Keep the Apps menu alphabetical independently of provider refreshes.
-      if (active === "apps") {
+      // Keep the palette and Apps route alphabetical independently of provider refreshes.
+      if (active === "root" || active === "apps") {
         rows.sort(function(a, b) {
           var aLabel = String(a.label || "").toLowerCase()
           var bLabel = String(b.label || "").toLowerCase()
@@ -600,6 +589,14 @@ Item {
           if (aId > bId) return 1
           return 0
         })
+      }
+      if (active === "root") {
+        // Direct actions follow the app list; typing searches both together.
+        for (var a = 0; a < root.itemOrder.length; a++) {
+          var action = root.item(root.itemOrder[a])
+          if (action && action.kind === "action" && root.isVisible(action))
+            rows.push(root.displayRow(action, root.parentPathFor(action.id), action.order))
+        }
       }
     }
 
@@ -757,7 +754,7 @@ Item {
     opened = true
     rebuildDisplay()
     invalidateVolatileProvider(activeMenu)
-    loadProviderForMenu(activeMenu)
+    loadProviderForMenu(activeMenu === "root" ? "apps" : activeMenu)
     // The shell may start before first-install packages have finished placing
     // their icons. Refresh here even when the desktop entry list did not change.
     if (root.appLibrary) root.appLibrary.refreshIcons()
@@ -1064,7 +1061,7 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            text: root.filterText || (root.dmenuActive ? (root.dmenuPrompt + "…") : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…"))
+            text: root.filterText || (root.dmenuActive ? (root.dmenuPrompt + "…") : (root.activeMenu === "root" ? "Search apps and actions…" : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…")))
             color: root.foreground
             opacity: root.filterText ? 1 : 0.58
             font.family: root.fontFamily

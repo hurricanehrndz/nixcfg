@@ -27,9 +27,7 @@ in
       (shell "SUPER + CTRL + L" "Lock screen" "lock")
 
       ##: Shell features (hrndz-shell, see ../shell)
-      (shell "SUPER + SPACE" "Launcher" "launcher")
-      (shell "SUPER + ALT + SPACE" "Menu" "menu")
-      (shell "SUPER + ESCAPE" "System menu" "system-menu")
+      (shell "SUPER + SPACE" "Apps and actions" "launcher")
       (bindWith { locked = true; } "XF86PowerOff" "Power menu" (exec "hrndz-shell system-menu"))
       (shell "SUPER + K" "Keybindings" "keybindings")
       (shell "SUPER + CTRL + E" "Emojis" "emoji")

@@ -270,6 +270,17 @@ function isVisible(items, itemOrder, whenResults, entry, depth) {
   return false
 }
 
+function isSearchVisible(items, itemOrder, whenResults, entry) {
+  var current = entry
+  var guard = 0
+  while (current && current.id !== "root" && guard < 32) {
+    if (!isVisible(items, itemOrder, whenResults, current)) return false
+    current = item(items, current.parent)
+    guard++
+  }
+  return !!current
+}
+
 function labelFor(entry, checkedResults) {
   if (!entry) return ""
   if (entry.checked && checkedResults && checkedResults[entry.id]) return entry.label + " ✓"
@@ -309,18 +320,29 @@ function descriptionTextMatches(query, text) {
   return true
 }
 
-function matchesQuery(entry, query, visible) {
+function fuzzySubsequence(needle, text) {
+  if (needle.length < 4) return false
+  var next = 0
+  var haystack = String(text || "").toLowerCase()
+  for (var i = 0; i < haystack.length && next < needle.length; i++)
+    if (haystack[i] === needle[next]) next++
+  return next === needle.length
+}
+
+function matchesQuery(items, entry, query, visible) {
   if (!entry || entry.id === "root") return false
   if (!visible) return false
 
   var nameText = nameSearchText(entry)
   var descriptionText = String(entry.description || "").toLowerCase()
+  var pathText = pathFor(items, entry.id).toLowerCase()
+  var searchable = [nameText, descriptionText, pathText].join(" ")
   var terms = String(query || "").toLowerCase().trim().split(/\s+/)
 
   for (var i = 0; i < terms.length; i++) {
     if (!terms[i]) continue
-    if (nameText.indexOf(terms[i]) >= 0) continue
-    if (termInSearchWords(terms[i], descriptionText)) continue
+    if (searchable.indexOf(terms[i]) >= 0) continue
+    if (fuzzySubsequence(terms[i], pathText)) continue
     return false
   }
 
@@ -342,6 +364,8 @@ function searchScore(items, entry, query) {
   else if (label.indexOf(needle) >= 0) score = 30
   else if (nameText.indexOf(needle) >= 0) score = 40
   else if (descriptionTextMatches(needle, descriptionText)) score = 60
+  else if (pathFor(items, entry.id).toLowerCase().indexOf(needle) >= 0) score = 65
+  else score = 75
 
   if (entry.kind === "menu" || entry.kind === "link") score -= 2
   // App rows sort after all menu items, so they lose the tiebreak below to an
@@ -414,12 +438,14 @@ if (typeof module !== "undefined") {
     isDescendantOf: isDescendantOf,
     childCount: childCount,
     isVisible: isVisible,
+    isSearchVisible: isSearchVisible,
     labelFor: labelFor,
     searchableToken: searchableToken,
     leafIdFor: leafIdFor,
     nameSearchText: nameSearchText,
     termInSearchWords: termInSearchWords,
     descriptionTextMatches: descriptionTextMatches,
+    fuzzySubsequence: fuzzySubsequence,
     matchesQuery: matchesQuery,
     searchScore: searchScore,
     displayRow: displayRow
