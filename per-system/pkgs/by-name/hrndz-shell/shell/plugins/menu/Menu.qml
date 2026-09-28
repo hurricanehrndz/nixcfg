@@ -89,22 +89,67 @@ Item {
   readonly property real rowReservedBorderLeft: Border.left(selectedBorderSpec)
   readonly property real rowReservedBorderRight: Border.right(selectedBorderSpec)
   readonly property int cornerRadius: Style.cornerRadius
-  property int contentMargin: Style.spacing.panelPadding
-  property int headerHeight: Math.max(Style.space(34), Style.font.title + Style.spacing.controlPaddingY * 2)
-  property int contentSpacing: Style.spacing.md
-  property int baseRowHeight: Math.max(Style.space(50), Style.font.body + Style.spacing.rowPaddingX * 2)
-  property int detailRowHeight: Math.max(Style.space(58), Style.font.body + Style.font.caption + Style.spacing.rowPaddingX * 2)
+  readonly property color accent: Color.accent
+  readonly property color muted: Util.alpha(root.foreground, 0.55)
+  readonly property color hairline: Util.alpha(root.foreground, 0.1)
+  property int headerHeight: Style.space(62)
+  property int crumbHeight: Style.space(30)
+  property int footerHeight: Style.space(44)
+  // Vertical room around the rows: the gap under the header and above the
+  // footer (or the card's bottom edge for a dmenu picker).
+  property int listInset: Style.space(10)
+  property int baseRowHeight: Math.max(Style.space(44), Style.font.heading + Style.spacing.rowPaddingX * 2)
+  property int detailRowHeight: Math.max(Style.space(54), Style.font.heading + Style.font.bodySmall + Style.spacing.rowPaddingX * 2)
   // How much of the first hidden row stays visible at the fold — enough to
   // read as a cut-off row rather than a bottom border.
   property int rowPeek: Math.round(baseRowHeight * 0.55)
   property int rowSpacing: Style.spacing.xs
   property int dividerHeight: Style.space(17)
   property int layoutSerial: 0
-  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : Style.space(520), panel.width - Style.gapsOut * 2)
-  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText)
-  property int cardHeight: root.dmenuActive
-    ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
-    : Math.min(contentMargin * 2 + headerHeight + contentSpacing + visibleRowsHeight, panel.height - Style.gapsOut * 2)
+  // A dmenu picker is sized by its caller and its rows; the palette is sized
+  // by the output (paletteRect).
+  property int dmenuCardWidth: Math.min(Style.space(root.dmenuWidth), panel.width - Style.gapsOut * 2)
+  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : 0
+  property int dmenuCardHeight: Math.min(headerHeight + (mode === "input" ? 0 : 1 + listInset * 2 + visibleRowsHeight), panel.height - Style.gapsOut * 2)
+
+  // The palette card grows with the output, 40% × 54% of it, between the
+  // base size and 1.5× it, so a wide monitor gets a wide palette instead of
+  // a narrow column. It sits a little above centre and clear of the bar.
+  // Adapted from olafkfreund/nixarchy-menu core/Geometry.js (MIT), rev
+  // 2cce175c6ffd4747dc42f571760071dc2650282f.
+  function paletteRect(outW, outH, bar) {
+    function reserve(edge) { return bar && !bar.barHidden && bar.position === edge ? bar.barSize : 0 }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)) }
+    var baseW = Style.space(640), baseH = Style.space(520), margin = Style.space(16)
+    var availW = outW - reserve("left") - reserve("right") - 2 * margin
+    var availH = outH - reserve("top") - reserve("bottom") - 2 * margin
+    var width = Math.min(availW, clamp(Math.round(0.40 * outW), baseW, 1.5 * baseW))
+    var height = Math.min(availH, clamp(Math.round(0.54 * outH), baseH, 1.5 * baseH))
+    return {
+      x: reserve("left") + margin + Math.round((availW - width) / 2),
+      y: reserve("top") + margin + Math.round((availH - height) * 0.38),
+      width: width,
+      height: height
+    }
+  }
+
+  // The row under the cursor, for the footer. Reads layoutSerial so it
+  // follows a rebuilt model as well as a moved cursor.
+  readonly property var currentRow: {
+    root.layoutSerial
+    return displayModel.count > 0 && root.selectedIndex < displayModel.count ? displayModel.get(root.selectedIndex) : null
+  }
+  readonly property string currentVerb: {
+    var row = root.currentRow
+    if (!row) return ""
+    if (row.kind === "menu" || row.kind === "link" || row.kind === "app") return "Open"
+    return "Run"
+  }
+  readonly property string crumbText: {
+    if (root.filterText) return "Search results"
+    if (root.activeMenu !== "root") return root.pathFor(root.activeMenu)
+    return "Apps and actions · type to search"
+  }
 
   function finishRequest(selection) {
     if (!root.requestActive || !root.doneFile) {
@@ -133,21 +178,19 @@ Item {
     Util.execDetached(command)
   }
 
-  // Menu rows only surface their detail while a search is narrowing them;
-  // dmenu rows carry caller-supplied subtext that must always be visible.
   function rowHeightForDetail(detail) {
-    return (root.filterText || root.dmenuActive) && detail ? root.detailRowHeight : root.baseRowHeight
+    return detail ? root.detailRowHeight : root.baseRowHeight
   }
 
-  // Height the card can devote to rows before running off the screen — or
-  // past the frozen top edge once a search has pinned the card in place.
+  // Height a dmenu card can devote to rows before running off the screen —
+  // or past the frozen top edge once a search has pinned the card in place.
   // Uses panel.cardTop rather than effectiveCardTop: the centered top is
   // derived from the card height, which this value feeds.
   function availableRowsHeight() {
     var top = panel.cardTop >= 0 ? panel.cardTop : Style.gapsOut
-    var available = panel.height - top - Style.gapsOut - root.contentMargin * 2 - root.headerHeight - root.contentSpacing
-    // The starting menu sets the ceiling along with the offset: drilling into
-    // a longer submenu scrolls behind the fold instead of growing the card.
+    var available = panel.height - top - Style.gapsOut - root.headerHeight - 1 - root.listInset * 2
+    // The starting list sets the ceiling along with the offset: filtering
+    // never grows the card past where it opened.
     if (panel.maxRowsHeight >= 0) available = Math.min(available, panel.maxRowsHeight)
     // A card that swallows the whole screen reads as a page, not a menu.
     return Math.min(available, Math.round(panel.height * 0.7))
@@ -168,25 +211,6 @@ Item {
     if (full < 1) return Math.max(available, root.baseRowHeight)
 
     return totals[full - 1] + root.rowSpacing + peek
-  }
-
-  function rowListHeight(_serial, _count, _filter) {
-    if (displayModel.count === 0) return root.baseRowHeight
-
-    var totals = []
-    var total = 0
-    var previousSection = ""
-
-    for (var i = 0; i < displayModel.count; i++) {
-      var row = displayModel.get(i)
-      if (i > 0) total += root.rowSpacing
-      if (row.section && row.section !== previousSection) total += root.dividerHeight
-      total += root.rowHeightForDetail(row.detail)
-      previousSection = row.section
-      totals.push(total)
-    }
-
-    return foldedListHeight(totals, availableRowsHeight())
   }
 
   function dmenuRowListHeight(_serial, _count, _filter) {
@@ -635,6 +659,7 @@ Item {
 
   function openDmenu(payload) {
     requestSerial += 1
+    panel.unfreezeCardTop()
     mode = payload.mode === "input" ? "input" : "select"
     dmenuPrompt = String(payload.prompt || (mode === "input" ? "Input" : "Select"))
     dmenuOptions = Array.isArray(payload.options) ? payload.options : []
@@ -811,23 +836,25 @@ Item {
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     exclusionMode: ExclusionMode.Ignore
 
-    // The card opens centered exactly as always. The first search keystroke
-    // or submenu move freezes the top line where it currently sits — from
-    // then on the card grows and shrinks downward instead of re-centering
-    // on every resize, which made the menu jump around. The rows height is
-    // frozen at the same moment, so the starting menu also caps how tall the
-    // card may grow from there. Closing unfreezes both.
+    // The palette card is sized by the output and never moves. A dmenu card
+    // is sized by its rows: it opens centered, and the first search keystroke
+    // freezes the top line where it sits — from then on the card grows and
+    // shrinks downward instead of re-centering on every resize, which made
+    // it jump around. The rows height is frozen at the same moment, so the
+    // starting list also caps how tall the card may grow. Closing or a new
+    // request unfreezes both.
     property int cardTop: -1
     property int maxRowsHeight: -1
-    readonly property int centeredTop: Math.max(Style.gapsOut, Math.round((height - root.cardHeight) / 2))
+    readonly property int centeredTop: Math.max(Style.gapsOut, Math.round((height - root.dmenuCardHeight) / 2))
     readonly property int effectiveCardTop: cardTop >= 0 ? cardTop : centeredTop
     function freezeCardTop() {
-      if (visible && cardTop < 0) {
+      if (root.dmenuActive && visible && cardTop < 0) {
         cardTop = effectiveCardTop
         maxRowsHeight = root.visibleRowsHeight
       }
     }
-    onVisibleChanged: if (!visible) { cardTop = -1; maxRowsHeight = -1 }
+    function unfreezeCardTop() { cardTop = -1; maxRowsHeight = -1 }
+    onVisibleChanged: if (!visible) unfreezeCardTop()
 
     Rectangle {
       anchors.fill: parent
@@ -841,171 +868,241 @@ Item {
 
     BorderSurface {
       id: card
-      width: root.cardWidth
-      height: Math.min(root.cardHeight, panel.height - Style.gapsOut - panel.effectiveCardTop)
+      readonly property var rect: root.paletteRect(panel.width, panel.height, root.shell ? root.shell.bar : null)
+      x: root.dmenuActive ? Math.round((panel.width - width) / 2) : rect.x
+      y: root.dmenuActive ? panel.effectiveCardTop : rect.y
+      width: root.dmenuActive ? root.dmenuCardWidth : rect.width
+      height: root.dmenuActive ? Math.min(root.dmenuCardHeight, panel.height - Style.gapsOut - panel.effectiveCardTop) : rect.height
       radius: root.cornerRadius
-      anchors.horizontalCenter: parent.horizontalCenter
-      y: panel.effectiveCardTop
       color: root.background
       borderSpec: root.borderSpec
-      padding: root.contentMargin
+      clip: true
 
       MouseArea { anchors.fill: parent; onClicked: {} }
 
-      Column {
-        anchors.fill: parent
-        anchors.topMargin: card.contentTopInset
-        anchors.rightMargin: card.contentRightInset
-        anchors.bottomMargin: card.contentBottomInset
-        anchors.leftMargin: card.contentLeftInset
-        spacing: root.contentSpacing
+      // Header: a drawn magnifier (no icon-font dependency), the field, esc.
+      Item {
+        id: header
+        x: card.borderLeft + Style.space(20)
+        y: card.borderTop
+        width: parent.width - card.borderLeft - card.borderRight - Style.space(40)
+        height: root.headerHeight
 
-        Rectangle {
-          width: parent.width
-          height: root.headerHeight
-          radius: root.cornerRadius
-          color: "transparent"
+        Item {
+          id: glyph
+          anchors.left: parent.left
+          anchors.verticalCenter: parent.verticalCenter
+          width: Style.space(22)
+          height: width
+          Rectangle { x: 1; y: 1; width: Style.space(15); height: width; radius: width / 2; color: "transparent"; border.color: root.accent; border.width: 1.8 }
+          Rectangle { x: Style.space(13); y: Style.space(13); width: Style.space(9); height: 1.8; radius: 0.9; rotation: 45; transformOrigin: Item.Left; color: root.accent }
+        }
 
-          TextField {
-            id: searchField
-            anchors.fill: parent
-            foreground: root.foreground
-            accent: root.selectedText
-            font.family: root.fontFamily
-            font.pixelSize: Style.font.heading
-            placeholderText: root.dmenuActive ? root.dmenuPrompt + "…"
-              : root.activeMenu === "root" ? "Search apps and actions…"
-              : (root.item(root.activeMenu) ? root.item(root.activeMenu).label : "Search") + "…"
-            onTextEdited: root.setFilter(text)
+        TextField {
+          id: searchField
+          anchors.left: glyph.right
+          anchors.leftMargin: Style.space(4)
+          anchors.right: escCap.left
+          anchors.rightMargin: Style.space(8)
+          anchors.verticalCenter: parent.verticalCenter
+          background: null
+          foreground: root.foreground
+          accent: root.accent
+          placeholderTextColor: Util.alpha(root.foreground, 0.42)
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.heading
+          placeholderText: root.dmenuActive ? root.dmenuPrompt + "…"
+            : root.activeMenu === "root" ? "What would you like to do?"
+            : "Search " + (root.item(root.activeMenu) ? root.item(root.activeMenu).label.toLowerCase() : "") + "…"
+          onTextEdited: root.setFilter(text)
 
-            Keys.priority: Keys.BeforeItem
-            Keys.onPressed: function(event) {
-              if (event.key === Qt.Key_Escape) {
-                if (root.filterText) root.setFilter("")
-                else root.cancel()
-                event.accepted = true
-              } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
-                root.goBack()
-                event.accepted = true
-              } else if (event.key === Qt.Key_Up) {
-                root.select(-1)
-                event.accepted = true
-              } else if (event.key === Qt.Key_Down) {
-                root.select(1)
-                event.accepted = true
-              } else if (event.key === Qt.Key_PageUp) {
-                root.select(-6)
-                event.accepted = true
-              } else if (event.key === Qt.Key_PageDown) {
-                root.select(6)
-                event.accepted = true
-              } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                if (root.dmenuActive) {
-                  if (root.mode === "input") root.applyDmenuSelection(root.filterText)
-                  else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
-                } else if (root.cursorActive) root.activateIndex(root.selectedIndex)
-                else if (displayModel.count > 0) root.cursorActive = true
-                event.accepted = true
-              } else if (event.key === Qt.Key_U && event.modifiers === Qt.ControlModifier) {
-                root.setFilter("")
-                event.accepted = true
-              }
+          Keys.priority: Keys.BeforeItem
+          Keys.onPressed: function(event) {
+            if (event.key === Qt.Key_Escape) {
+              if (root.filterText) root.setFilter("")
+              else root.cancel()
+              event.accepted = true
+            } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
+              root.goBack()
+              event.accepted = true
+            } else if (event.key === Qt.Key_Up) {
+              root.select(-1)
+              event.accepted = true
+            } else if (event.key === Qt.Key_Down) {
+              root.select(1)
+              event.accepted = true
+            } else if (event.key === Qt.Key_PageUp) {
+              root.select(-6)
+              event.accepted = true
+            } else if (event.key === Qt.Key_PageDown) {
+              root.select(6)
+              event.accepted = true
+            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+              if (root.dmenuActive) {
+                if (root.mode === "input") root.applyDmenuSelection(root.filterText)
+                else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
+              } else if (root.cursorActive) root.activateIndex(root.selectedIndex)
+              else if (displayModel.count > 0) root.cursorActive = true
+              event.accepted = true
+            } else if (event.key === Qt.Key_U && event.modifiers === Qt.ControlModifier) {
+              root.setFilter("")
+              event.accepted = true
+            }
+          }
+        }
+
+        Keycap {
+          id: escCap
+          anchors.right: parent.right
+          anchors.verticalCenter: parent.verticalCenter
+          label: "esc"
+          foreground: root.foreground
+        }
+      }
+
+      Rectangle {
+        visible: !(root.dmenuActive && root.mode === "input")
+        x: card.borderLeft
+        y: header.y + header.height
+        width: parent.width - card.borderLeft - card.borderRight
+        height: 1
+        color: root.hairline
+      }
+
+      // Breadcrumb: where the palette is and what the field will search.
+      Row {
+        id: crumbs
+        visible: !root.dmenuActive
+        x: card.borderLeft + Style.space(22)
+        y: header.y + header.height + Style.space(6)
+        height: root.crumbHeight
+        spacing: Style.space(10)
+
+        Text {
+          id: brand
+          anchors.verticalCenter: parent.verticalCenter
+          text: "HRNDZ"
+          textFormat: Text.PlainText
+          color: root.accent
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.caption
+          font.letterSpacing: 2
+          font.weight: Font.Bold
+        }
+        Text {
+          anchors.baseline: brand.baseline
+          text: root.activeMenu !== "root" && !root.filterText ? "›" : "/"
+          textFormat: Text.PlainText
+          color: Util.alpha(root.foreground, 0.35)
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.bodySmall
+        }
+        Text {
+          anchors.baseline: brand.baseline
+          width: Math.max(0, card.width - crumbs.x * 2 - brand.width - Style.space(30))
+          text: root.crumbText
+          textFormat: Text.PlainText
+          elide: Text.ElideRight
+          color: root.muted
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.bodySmall
+        }
+      }
+
+      Item {
+        id: content
+        x: card.borderLeft + Style.space(12)
+        y: root.dmenuActive ? header.y + header.height + 1 + root.listInset : crumbs.y + crumbs.height + Style.space(4)
+        width: parent.width - card.borderLeft - card.borderRight - Style.space(24)
+        height: root.dmenuActive ? root.visibleRowsHeight : footer.y - 1 - root.listInset - y
+        visible: !(root.dmenuActive && root.mode === "input")
+
+        ListView {
+          id: resultList
+          anchors.fill: parent
+          model: displayModel
+          clip: true
+          spacing: root.rowSpacing
+          boundsBehavior: Flickable.StopAtBounds
+
+          section.property: "section"
+          section.criteria: ViewSection.FullString
+          section.delegate: Item {
+            required property string section
+
+            width: ListView.view.width
+            height: section ? root.dividerHeight : 0
+            visible: !!section
+
+            Text {
+              anchors.left: parent.left
+              anchors.leftMargin: Style.space(14)
+              anchors.bottom: parent.bottom
+              anchors.bottomMargin: Style.space(2)
+              text: section
+              textFormat: Text.PlainText
+              color: Util.alpha(root.foreground, 0.5)
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.caption
+              font.weight: Font.Medium
+              font.letterSpacing: 0.5
             }
           }
 
-        }
+          // Layout adapted from olafkfreund/nixarchy-menu ui/ResultRow.qml
+          // (MIT), rev 2cce175c6ffd4747dc42f571760071dc2650282f.
+          delegate: BorderSurface {
+            id: row
+            required property int index
+            required property string itemId
+            required property string kind
+            required property string icon
+            required property string iconFont
+            required property string appIcon
+            required property string appId
+            required property string label
+            required property string target
+            required property string detail
+            required property string path
+            required property string action
+            required property int childCount
 
-        Item {
-          width: parent.width
-          height: root.visibleRowsHeight
+            readonly property bool hasCursor: root.cursorActive && row.index === root.selectedIndex
+            readonly property bool isApp: row.kind === "app"
+            readonly property bool leadsSomewhere: row.kind === "menu" || row.kind === "link"
+            readonly property color textColor: row.hasCursor ? root.selectedText : root.foreground
 
-          ListView {
-            id: resultList
-            anchors.fill: parent
-            model: displayModel
-            clip: true
-            spacing: root.rowSpacing
-            boundsBehavior: Flickable.StopAtBounds
+            width: ListView.view.width
+            height: root.rowHeightForDetail(row.detail)
+            radius: root.cornerRadius
+            color: row.hasCursor ? root.selectedBackground : "transparent"
+            borderSpec: row.hasCursor ? root.selectedBorderSpec : Border.none()
 
-            section.property: "section"
-            section.criteria: ViewSection.FullString
-            section.delegate: Item {
-              required property string section
-
-              width: ListView.view.width
-              height: section ? root.dividerHeight : 0
-              visible: !!section
-
-              Text {
-                anchors.left: parent.left
-                anchors.leftMargin: Style.space(10)
-                anchors.verticalCenter: parent.verticalCenter
-                text: section
-                color: Util.alpha(root.foreground, 0.6)
-                font.family: root.fontFamily
-                font.pixelSize: Style.font.caption
-                font.bold: true
-              }
-            }
-
-            delegate: BorderSurface {
-              id: row
-              required property int index
-              required property string itemId
-              required property string kind
-              required property string icon
-              required property string iconFont
-              required property string appIcon
-              required property string appId
-              required property string label
-              required property string target
-              required property string detail
-              required property string path
-              required property string action
-              required property int childCount
-
-              readonly property bool hasCursor: root.cursorActive && row.index === root.selectedIndex
-              readonly property bool isApp: row.kind === "app"
-              readonly property bool hasIcon: row.icon.length > 0 || row.isApp
-
-              width: ListView.view.width
-              height: root.rowHeightForDetail(row.detail)
-              radius: root.cornerRadius
-              color: row.hasCursor ? root.selectedBackground : "transparent"
-              borderSpec: row.hasCursor ? root.selectedBorderSpec : Border.none()
-
-              Rectangle {
-                visible: false
-                width: Style.space(4)
-                height: parent.height - Style.space(18)
-                radius: Math.min(root.cornerRadius, Style.space(4))
-                color: root.selectedBackground
-                anchors.left: parent.left
-                anchors.leftMargin: root.rowReservedBorderLeft + Style.space(8)
-                anchors.verticalCenter: parent.verticalCenter
-              }
+            Rectangle {
+              id: iconChip
+              x: root.rowReservedBorderLeft + Style.space(10)
+              anchors.verticalCenter: parent.verticalCenter
+              width: Style.space(30)
+              height: width
+              radius: Math.min(root.cornerRadius, Style.space(7))
+              visible: row.icon.length > 0 || row.isApp
+              color: row.isApp && appIconImage.status === Image.Ready ? "transparent" : Util.alpha(root.foreground, 0.07)
 
               Text {
-                id: iconText
+                anchors.centerIn: parent
+                visible: !row.isApp || appIconImage.status !== Image.Ready
+                text: row.isApp ? row.label.charAt(0).toUpperCase() : row.icon
                 textFormat: Text.PlainText
-                visible: row.hasIcon && !row.isApp
-                text: row.icon
-                color: row.hasCursor ? root.selectedText : root.foreground
+                color: Util.alpha(row.textColor, 0.85)
                 font.family: row.iconFont.length > 0 ? row.iconFont : root.fontFamily
                 font.pixelSize: Style.font.iconLarge
-                width: Style.space(36)
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.left: parent.left
-                anchors.leftMargin: root.rowReservedBorderLeft + Style.space(8)
-                y: contentColumn.y + labelText.y + (labelText.height - height) / 2
               }
 
               Image {
                 id: appIconImage
-                visible: row.isApp
-                width: Style.font.iconLarge
-                height: Style.font.iconLarge
+                anchors.fill: parent
+                anchors.margins: Style.space(2)
+                visible: row.isApp && status === Image.Ready
                 fillMode: Image.PreserveAspectFit
                 // Decode at physical pixels — a logical-size decode leaves
                 // PNG icons upscaled and blurry on HiDPI displays.
@@ -1013,166 +1110,229 @@ Item {
                 sourceSize.height: height * Screen.devicePixelRatio
                 source: row.isApp && root.appLibrary ? root.appLibrary.iconSource(row.appIcon) : ""
                 asynchronous: true
-                anchors.left: parent.left
-                anchors.leftMargin: root.rowReservedBorderLeft + Style.space(8) + (Style.space(36) - width) / 2
-                y: contentColumn.y + labelText.y + (labelText.height - height) / 2
-              }
-
-              Column {
-                id: contentColumn
-                anchors.left: row.hasIcon ? iconText.right : parent.left
-                anchors.leftMargin: row.hasIcon ? Style.space(6) : root.rowReservedBorderLeft + Style.space(18)
-                anchors.right: trail.left
-                anchors.rightMargin: Style.space(6)
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: Style.space(3)
-
-                Text {
-                  id: labelText
-                  textFormat: Text.PlainText
-                  width: parent.width
-                  text: row.label
-                  color: row.hasCursor ? root.selectedText : root.foreground
-                  font.family: root.fontFamily
-                  font.pixelSize: Style.font.heading
-                  font.weight: Font.Medium
-                  elide: Text.ElideRight
-                }
-
-                Text {
-                  textFormat: Text.PlainText
-                  width: parent.width
-                  text: row.detail
-                  visible: (root.filterText || row.kind === "dmenu") && row.detail.length > 0
-                  color: root.foreground
-                  opacity: 0.52
-                  font.family: root.fontFamily
-                  font.pixelSize: Style.font.bodySmall
-                  elide: Text.ElideRight
-                }
-              }
-
-              Row {
-                id: trail
-                width: Style.space(14)
-                anchors.right: parent.right
-                anchors.rightMargin: root.rowReservedBorderRight + Style.space(8)
-                y: contentColumn.y + labelText.y + (labelText.height - height) / 2
-                spacing: 0
-
-                Text {
-                  textFormat: Text.PlainText
-                  visible: false
-                  text: row.childCount
-                  color: root.foreground
-                  opacity: 0.45
-                  font.family: root.fontFamily
-                  font.pixelSize: Style.font.body
-                  anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                  textFormat: Text.PlainText
-                  text: row.kind === "menu" || row.kind === "link" ? "›" : ""
-                  color: row.hasCursor ? root.selectedText : root.foreground
-                  opacity: row.kind === "menu" || row.kind === "link" ? 0.36 : 0
-                  font.family: root.fontFamily
-                  font.pixelSize: Style.font.heading
-                  font.weight: Font.Normal
-                  anchors.verticalCenter: parent.verticalCenter
-                }
-              }
-
-              MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onEntered: root.selectFromPointer(row.index, row, {
-                  x: mouseArea.mouseX,
-                  y: mouseArea.mouseY
-                })
-                onPositionChanged: function(mouse) {
-                  root.selectFromPointer(row.index, row, mouse)
-                }
-                onClicked: {
-                  root.cursorActive = true
-                  root.selectedIndex = row.index
-                  root.activateIndex(row.index, true)
-                }
               }
             }
-          }
 
-          // Scroll scrims. The clipped row already marks the fold at rest;
-          // these keep both edges honest once the list has been scrolled,
-          // when content hides above the card top as well as below. Strength
-          // tracks the distance still hidden past each edge rather than
-          // animating on a clock, so a programmatic jump — wrapping from the
-          // last row back to the first — lands with the fade already applied.
-          Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            height: Math.min(Style.space(28), parent.height / 2)
-            visible: opacity > 0
-            opacity: resultList.contentHeight > resultList.height
-              ? Math.max(0, Math.min(1, (resultList.contentY - resultList.originY) / height))
-              : 0
-            gradient: Gradient {
-              GradientStop { position: 0; color: root.background }
-              GradientStop { position: 1; color: Util.alpha(root.background, 0) }
+            Column {
+              anchors.left: iconChip.visible ? iconChip.right : parent.left
+              anchors.leftMargin: iconChip.visible ? Style.space(12) : root.rowReservedBorderLeft + Style.space(14)
+              anchors.right: trail.left
+              anchors.rightMargin: Style.space(8)
+              anchors.verticalCenter: parent.verticalCenter
+              spacing: Style.space(2)
+
+              Text {
+                width: parent.width
+                text: row.label
+                textFormat: Text.PlainText
+                color: row.textColor
+                font.family: root.fontFamily
+                font.pixelSize: Style.font.title
+                font.weight: row.hasCursor ? Font.DemiBold : Font.Medium
+                elide: Text.ElideRight
+              }
+
+              Text {
+                width: parent.width
+                visible: row.detail.length > 0
+                text: row.detail
+                textFormat: Text.PlainText
+                color: Util.alpha(row.textColor, row.hasCursor ? 0.72 : 0.55)
+                font.family: root.fontFamily
+                font.pixelSize: Style.font.bodySmall
+                elide: Text.ElideRight
+              }
             }
-          }
 
-          Rectangle {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            height: Math.min(Style.space(28), parent.height / 2)
-            visible: opacity > 0
-            opacity: resultList.contentHeight > resultList.height
-              ? Math.max(0, Math.min(1, (resultList.originY + resultList.contentHeight - resultList.height - resultList.contentY) / height))
-              : 0
-            gradient: Gradient {
-              GradientStop { position: 0; color: Util.alpha(root.background, 0) }
-              GradientStop { position: 1; color: root.background }
-            }
-          }
-
-          Column {
-            anchors.centerIn: parent
-            spacing: Style.space(8)
-            visible: displayModel.count === 0 && root.mode !== "input"
-
+            // A submenu shows where it leads; the cursor row shows what ↵ does.
             Text {
-              text: "󰈉"
-              color: root.selectedText
-              opacity: 0.8
-              font.family: root.fontFamily
-              font.pixelSize: Style.font.displayLarge
-              horizontalAlignment: Text.AlignHCenter
-              width: Style.space(320)
-            }
-
-            Text {
+              id: trail
+              anchors.right: parent.right
+              anchors.rightMargin: root.rowReservedBorderRight + Style.space(12)
+              anchors.verticalCenter: parent.verticalCenter
+              text: row.leadsSomewhere ? "›" : row.hasCursor ? "↵" : ""
               textFormat: Text.PlainText
-              text: root.filterText ? "No matches for “" + root.filterText + "”" : "Nothing here yet"
-              color: root.foreground
-              opacity: 0.7
+              color: Util.alpha(row.textColor, row.hasCursor ? 0.7 : 0.4)
               font.family: root.fontFamily
-              font.pixelSize: Style.font.title
-              horizontalAlignment: Text.AlignHCenter
-              width: Style.space(320)
+              font.pixelSize: Style.font.heading
+            }
+
+            MouseArea {
+              id: mouseArea
+              anchors.fill: parent
+              hoverEnabled: true
+              cursorShape: Qt.PointingHandCursor
+              onEntered: root.selectFromPointer(row.index, row, {
+                x: mouseArea.mouseX,
+                y: mouseArea.mouseY
+              })
+              onPositionChanged: function(mouse) {
+                root.selectFromPointer(row.index, row, mouse)
+              }
+              onClicked: {
+                root.cursorActive = true
+                root.selectedIndex = row.index
+                root.activateIndex(row.index, true)
+              }
             }
           }
         }
 
-        Item {
-          width: parent.width
-          height: 0
+        // Scroll scrims. The clipped row already marks the fold at rest;
+        // these keep both edges honest once the list has been scrolled,
+        // when content hides above the card top as well as below. Strength
+        // tracks the distance still hidden past each edge rather than
+        // animating on a clock, so a programmatic jump — wrapping from the
+        // last row back to the first — lands with the fade already applied.
+        Rectangle {
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.top: parent.top
+          height: Math.min(Style.space(28), parent.height / 2)
+          visible: opacity > 0
+          opacity: resultList.contentHeight > resultList.height
+            ? Math.max(0, Math.min(1, (resultList.contentY - resultList.originY) / height))
+            : 0
+          gradient: Gradient {
+            GradientStop { position: 0; color: root.background }
+            GradientStop { position: 1; color: Util.alpha(root.background, 0) }
+          }
+        }
+
+        Rectangle {
+          anchors.left: parent.left
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          height: Math.min(Style.space(28), parent.height / 2)
+          visible: opacity > 0
+          opacity: resultList.contentHeight > resultList.height
+            ? Math.max(0, Math.min(1, (resultList.originY + resultList.contentHeight - resultList.height - resultList.contentY) / height))
+            : 0
+          gradient: Gradient {
+            GradientStop { position: 0; color: Util.alpha(root.background, 0) }
+            GradientStop { position: 1; color: root.background }
+          }
+        }
+
+        Column {
+          anchors.centerIn: parent
+          spacing: Style.space(8)
+          visible: displayModel.count === 0 && root.mode !== "input"
+
+          Text {
+            text: "󰈉"
+            color: root.accent
+            opacity: 0.8
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.displayLarge
+            horizontalAlignment: Text.AlignHCenter
+            width: Style.space(320)
+          }
+
+          Text {
+            textFormat: Text.PlainText
+            text: root.filterText ? "No matches for “" + root.filterText + "”" : "Nothing here yet"
+            color: root.foreground
+            opacity: 0.7
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.title
+            horizontalAlignment: Text.AlignHCenter
+            width: Style.space(320)
+          }
         }
       }
+
+      // Footer: the cursor row's place in the menu, and the keys that act.
+      Rectangle {
+        visible: !root.dmenuActive
+        x: card.borderLeft
+        y: footer.y - 1
+        width: parent.width - card.borderLeft - card.borderRight
+        height: 1
+        color: root.hairline
+      }
+
+      Item {
+        id: footer
+        visible: !root.dmenuActive
+        x: card.borderLeft + Style.space(22)
+        y: card.height - card.borderBottom - root.footerHeight
+        width: card.width - card.borderLeft - card.borderRight - Style.space(44)
+        height: root.footerHeight
+
+        Text {
+          anchors.left: parent.left
+          anchors.right: keys.left
+          anchors.rightMargin: Style.space(16)
+          anchors.verticalCenter: parent.verticalCenter
+          text: root.currentRow ? (root.currentRow.kind === "app" ? "Applications" : root.currentRow.path) : ""
+          textFormat: Text.PlainText
+          elide: Text.ElideRight
+          color: root.muted
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.bodySmall
+        }
+
+        Row {
+          id: keys
+          anchors.right: parent.right
+          anchors.verticalCenter: parent.verticalCenter
+          spacing: Style.space(16)
+
+          Row {
+            visible: root.activeMenu !== "root" && !root.filterText
+            spacing: Style.space(8)
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: "Back"
+              textFormat: Text.PlainText
+              color: root.muted
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.bodySmall
+            }
+            Keycap { label: "⌫"; foreground: root.foreground }
+          }
+
+          Row {
+            visible: root.currentVerb.length > 0
+            spacing: Style.space(8)
+            Text {
+              anchors.verticalCenter: parent.verticalCenter
+              text: root.currentVerb
+              textFormat: Text.PlainText
+              color: Util.alpha(root.foreground, 0.8)
+              font.family: root.fontFamily
+              font.pixelSize: Style.font.bodySmall
+            }
+            Keycap { label: "↵"; bright: true; foreground: root.foreground }
+          }
+        }
+      }
+    }
+  }
+
+  // Adapted from olafkfreund/nixarchy-menu ui/Keycap.qml (MIT), rev
+  // 2cce175c6ffd4747dc42f571760071dc2650282f.
+  component Keycap: Rectangle {
+    id: keycap
+    property string label: ""
+    property bool bright: false
+    property color foreground: Color.menu.text
+    implicitWidth: Math.max(implicitHeight, keyText.implicitWidth + Style.space(12))
+    implicitHeight: Style.space(22)
+    radius: Math.min(Style.cornerRadius, Style.space(5))
+    color: Util.alpha(keycap.foreground, keycap.bright ? 0.14 : 0.07)
+    border.width: 1
+    border.color: Util.alpha(keycap.foreground, keycap.bright ? 0.28 : 0.14)
+
+    Text {
+      id: keyText
+      anchors.centerIn: parent
+      text: keycap.label
+      textFormat: Text.PlainText
+      color: Util.alpha(keycap.foreground, keycap.bright ? 0.95 : 0.6)
+      font.family: Style.font.menuFamily
+      font.pixelSize: Style.font.caption
     }
   }
 }

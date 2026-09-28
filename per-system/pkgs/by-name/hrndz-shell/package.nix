@@ -5,7 +5,9 @@
 # omarchy-* scripts it called are replaced by scripts/, and its theme,
 # config and plugin-install machinery by files Home Manager writes (see
 # modules/internal/home/desktop/hyprland/shell/). Internal ids such as
-# `omarchy.bar` keep their upstream names.
+# `omarchy.bar` keep their upstream names. The menu's palette layout and
+# sizing are adapted from olafkfreund/nixarchy-menu (MIT), rev
+# 2cce175c6ffd4747dc42f571760071dc2650282f.
 {
   lib,
   # Where `ambient-set` (NixOS module) keeps the ambient video and still.
