@@ -8,7 +8,7 @@ let
   inherit (lib) mkIf;
   cfg = config.hrndz.desktop.hyprland;
 
-  # On-demand VNC into the desktop for bounded agent and test runs.
+  # On-demand VNC into the desktop, mostly for agents and rare checks.
   # Attaches to a running session, or starts a seatless one (libseat noop:
   # the GPU is opened with the user's video-group access, so no login or
   # monitor is needed). Adds a virtual output only when no display is plugged
@@ -30,16 +30,13 @@ let
       output_name=VNC-1
       session_unit=hyprland-headless
       vnc_unit=desktop-vnc
-      expiry_unit=desktop-vnc-expire
       export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
       state="$XDG_RUNTIME_DIR/desktop-vnc"
 
       usage() {
-        echo "usage: desktop-vnc run <test command> | start | stop | status"
+        echo "usage: desktop-vnc start|stop|status"
         echo
-        echo "  run     serve VNC while the command runs, then stop and clean up"
         echo "  start   attach to (or start) the Hyprland session and serve it over VNC"
-        echo "          for at most 10 minutes; use run for automated tests"
         echo "          on $bind:$port. Connect with: ssh -L $port:$bind:$port $(uname -n)"
         echo "  stop    stop VNC; also stops the session and virtual output if start made them"
         echo "  status  show session, output and VNC state"
@@ -124,14 +121,6 @@ let
         sleep 1
         if ! unit_active "$vnc_unit"; then
           echo "desktop-vnc: wayvnc exited; see: journalctl --user -u $vnc_unit" >&2
-          cmd_stop
-          exit 1
-        fi
-        systemctl --user reset-failed "$expiry_unit.service" "$expiry_unit.timer" 2>/dev/null || true
-        if ! systemd-run --user --quiet --collect --unit="$expiry_unit" --on-active=10m \
-          "$0" stop; then
-          echo "desktop-vnc: could not schedule automatic cleanup" >&2
-          cmd_stop
           exit 1
         fi
         echo "VNC on $bind:$port''${output:+ (virtual output $output)}."
@@ -139,7 +128,6 @@ let
       }
 
       cmd_stop() {
-        systemctl --user stop "$expiry_unit.timer" 2>/dev/null || true
         systemctl --user stop "$vnc_unit" 2>/dev/null || true
         if [ -e "$state/output" ]; then
           read -r sig _ < <(instance) || true
@@ -174,15 +162,6 @@ let
       }
 
       case "''${1:-}" in
-        run)
-          shift
-          if [ "$#" -eq 0 ]; then usage >&2; exit 2; fi
-          trap 'cmd_stop' EXIT
-          trap 'exit 130' INT
-          trap 'exit 143' TERM
-          cmd_start
-          "$@"
-          ;;
         start) cmd_start ;;
         stop) cmd_stop ;;
         status) cmd_status ;;

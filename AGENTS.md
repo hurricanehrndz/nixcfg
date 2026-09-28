@@ -97,6 +97,17 @@ license of copied code. The existing plugin registry is legacy infrastructure,
 not a pattern for new features; remove it only as its callers are migrated and
 verified on a live Hyprland session.
 
+### Desktop VNC (`desktop-vnc`)
+
+On the Hyprland desktops, `desktop-vnc start` serves the session over VNC on
+`127.0.0.1:5900`, starting a headless session and a virtual output if needed
+(`modules/internal/nixos/desktop/hyprland/vnc.nix`). Nothing stops it
+automatically. An agent that runs `start` must run `desktop-vnc stop` when it
+finishes, including on failure, unless the user asked to keep it up. `stop`
+removes only what `start` created, so it never ends a session someone logged
+in to. Check `desktop-vnc status` first: if VNC is already running, someone
+else started it, so leave it running.
+
 ### Host Configuration
 Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.nix`. The easy-hosts module:
 - Automatically discovers hosts from the directory structure under `hosts/`

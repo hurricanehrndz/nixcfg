@@ -41,6 +41,22 @@ just update          # update flake inputs
 just gc              # garbage collection
 ```
 
+### Remote desktop (Hyprland hosts)
+
+`desktop-vnc` serves the Hyprland session over VNC for testing. It attaches to
+the running session, or starts a headless one if nobody is logged in. It
+listens on localhost only, so reach it through an SSH tunnel:
+
+```console
+ssh <host> desktop-vnc start
+ssh -L 5900:127.0.0.1:5900 <host>   # then point a VNC client at localhost:5900
+ssh <host> desktop-vnc status
+ssh <host> desktop-vnc stop
+```
+
+It keeps running until you stop it. `stop` removes only what `start` created,
+so a session you logged in to stays up.
+
 ## Secrets
 
 Secrets are managed with [agenix](https://github.com/ryantm/agenix) and a
