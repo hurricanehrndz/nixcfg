@@ -97,6 +97,11 @@ license of copied code. The existing plugin registry is legacy infrastructure,
 not a pattern for new features; remove it only as its callers are migrated and
 verified on a live Hyprland session.
 
+To test on the live desktop, SSH to mastercontrol as `hurricane@172.24.225.1`
+or `hurricane@mastercontrol`. Login uses a YubiKey-backed key, so a
+non-interactive `ssh` fails with "agent refused operation" until the user
+touches the key.
+
 ### Desktop VNC (`desktop-vnc`)
 
 On the Hyprland desktops, `desktop-vnc start` serves the session over VNC on

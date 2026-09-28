@@ -1,13 +1,11 @@
-# Types an emoji into the focused window. The copy is sensitive so the
-# clipboard history skips it, and only lives until the paste has landed.
+# Copies an emoji to the clipboard and pastes it into the focused window
+# with Shift+Insert. The primary selection gets it too, since terminals such
+# as Ghostty paste the primary selection on Shift+Insert.
 emoji=${1:-}
 [[ -n $emoji ]] || exit 0
 
-printf '%s' "$emoji" | wl-copy --type text/plain --sensitive --foreground &
-copy_pid=$!
+printf '%s' "$emoji" | wl-copy --type text/plain
+printf '%s' "$emoji" | wl-copy --primary --type text/plain
 
 sleep 0.15
 wtype -M shift -k Insert -m shift 2>/dev/null || true
-sleep 0.2
-
-kill "$copy_pid" 2>/dev/null || true
