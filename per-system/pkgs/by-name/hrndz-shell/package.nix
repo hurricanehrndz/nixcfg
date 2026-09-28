@@ -261,6 +261,25 @@ stdenvNoCC.mkDerivation {
     runHook postCheck
   '';
 
+  # The installed menu.jsonc gains the host's extra rows; a slip in splicing
+  # them would leave the menu empty at runtime rather than fail the build.
+  doInstallCheck = extraMenuItems != { };
+  nativeInstallCheckInputs = [ nodejs-slim ];
+  installCheckPhase = ''
+    runHook preInstallCheck
+    node -e '
+      const fs = require("fs")
+      const MenuModel = require(process.argv[1])
+      const items = MenuModel.parseMenuJsonc(fs.readFileSync(process.argv[2], "utf8"))
+      const ids = new Set(items.map((i) => i.id))
+      for (const id of JSON.parse(process.argv[3]))
+        if (!ids.has(id)) throw new Error("menu.jsonc is missing " + id)
+      if (!ids.has("about")) throw new Error("menu.jsonc lost its own rows")
+    ' $out/share/hrndz-shell/shell/plugins/menu/MenuModel.js $out/share/hrndz-shell/menu.jsonc \
+      ${lib.escapeShellArg (builtins.toJSON (builtins.attrNames extraMenuItems))}
+    runHook postInstallCheck
+  '';
+
   installPhase = ''
     runHook preInstall
 
