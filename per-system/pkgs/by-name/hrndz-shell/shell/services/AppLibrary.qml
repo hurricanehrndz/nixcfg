@@ -116,14 +116,15 @@ Item {
   function iconIndexScanCommand() {
     // List app/device icons across the XDG icon dirs and /usr/share/pixmaps as
     // "<path>" lines. Some desktop entries, such as Print Settings, use device
-    // icons like "printer" instead of app icons. SVGs are emitted before PNGs
-    // so the parser, which keeps the first hit per name, prefers scalable icons.
+    // icons like "printer" instead of app icons. -L because Nix profiles are
+    // symlink trees: Home Manager's share/icons/hicolor is itself a link into
+    // the store, and a plain find never enters it.
     return [
       'dirs="$HOME/.icons $HOME/.local/share/icons";',
       'IFS=":"; for d in ${XDG_DATA_DIRS:-/usr/local/share:/usr/share}; do dirs="$dirs $d/icons"; done; unset IFS;',
       'for ext in svg png; do',
       '  for base in $dirs; do',
-      '    [[ -d $base ]] && find "$base" \\( -path "*/apps/*" -o -path "*/devices/*" \\) -name "*.$ext" 2>/dev/null;',
+      '    [[ -d $base ]] && find -L "$base" \\( -path "*/apps/*" -o -path "*/devices/*" \\) -name "*.$ext" 2>/dev/null;',
       '  done;',
       '  find /usr/share/pixmaps -maxdepth 1 -name "*.$ext" 2>/dev/null;',
       'done'
@@ -137,8 +138,18 @@ Item {
     var file = slash >= 0 ? value.slice(slash + 1) : value
     var dot = file.lastIndexOf(".")
     var name = dot > 0 ? file.slice(0, dot) : file
-    if (name.length > 0 && root.pendingIconIndex[name] === undefined)
+    if (name.length === 0) return
+    var current = root.pendingIconIndex[name]
+    if (current === undefined || root.iconRank(value) > root.iconRank(current))
       root.pendingIconIndex[name] = value
+  }
+
+  // Scalable beats any bitmap, and a bigger bitmap beats a smaller one:
+  // find's order is the filesystem's, so the first hit may be a 16px icon.
+  function iconRank(path) {
+    if (/\.svg$/.test(path)) return Number.MAX_VALUE
+    var size = /\/(\d+)x\d+(@\d+)?\//.exec(path)
+    return size ? Number(size[1]) : 0
   }
 
   function hiddenEntryScanCommand() {
