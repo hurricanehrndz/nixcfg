@@ -14,8 +14,11 @@ export MOCK_TIMERS="$test_dir/timers"
 export HOME="$test_dir/home"
 export PATH="$test_dir/bin:$PATH"
 
-cat >"$test_dir/bin/hyprctl" <<'EOF'
-#!/usr/bin/env bash
+# Mocks use this bash: the build sandbox has no /usr/bin/env.
+shebang="#!$BASH"
+{
+  echo "$shebang"
+  cat <<'EOF'
 if [[ $1 == monitors ]]; then
   cat "$MOCK_MONITORS"
 elif [[ $1 == eval ]]; then
@@ -24,13 +27,14 @@ else
   exit 1
 fi
 EOF
+} >"$test_dir/bin/hyprctl"
 for name in flock systemctl; do
-  printf '#!/usr/bin/env bash\nexit 0\n' >"$test_dir/bin/$name"
+  printf '%s\nexit 0\n' "$shebang" >"$test_dir/bin/$name"
 done
-cat >"$test_dir/bin/systemd-run" <<'EOF'
-#!/usr/bin/env bash
-printf '%s\n' "$*" >>"$MOCK_TIMERS"
-EOF
+{
+  echo "$shebang"
+  echo 'printf "%s\n" "$*" >>"$MOCK_TIMERS"'
+} >"$test_dir/bin/systemd-run"
 chmod +x "$test_dir/bin/"*
 
 cat >"$MOCK_MONITORS" <<'EOF'
@@ -43,11 +47,17 @@ EOF
 monitor="$source_dir/scripts/monitor.sh"
 run_monitor() { bash -euo pipefail "$monitor" "$@"; }
 
+# Asking for the current scale previews nothing, so the panel shows no prompt.
+status=0
+run_monitor scale 1 || status=$?
+[[ $status == 3 && ! -e $XDG_RUNTIME_DIR/hrndz-monitor/scale-preview ]]
+
 run_monitor scale 1.5
 [[ -f $XDG_RUNTIME_DIR/hrndz-monitor/scale-preview ]]
 [[ ! -e $XDG_CONFIG_HOME/hypr/monitors.lua ]]
 grep -q 'output = "eDP-1".*scale = 1.5' "$MOCK_EVALS"
-grep -q -- '--on-active=15s' "$MOCK_TIMERS"
+# The backstop fires after the panel's 15-second countdown.
+grep -q -- '--on-active=20s' "$MOCK_TIMERS"
 
 run_monitor revert
 [[ ! -e $XDG_RUNTIME_DIR/hrndz-monitor/scale-preview ]]
@@ -58,6 +68,7 @@ run_monitor confirm
 config_file="$XDG_CONFIG_HOME/hypr/monitors.lua"
 grep -q 'output = "eDP-1".*scale = 1.5' "$config_file"
 grep -q 'output = "DP-1".*scale = 1.25' "$config_file"
+grep -qx 'hl.env("GDK_SCALE", "1")' "$config_file"
 
 cat >"$MOCK_MONITORS" <<'EOF'
 [
@@ -70,3 +81,5 @@ run_monitor confirm
 grep -q 'output = "eDP-1".*scale = 1.5' "$config_file"
 grep -q 'output = "DP-1".*scale = 2' "$config_file"
 [[ $(grep -c '^hl.monitor' "$config_file") == 2 ]]
+# XWayland apps follow the largest enabled scale, rounded to a whole factor.
+grep -qx 'hl.env("GDK_SCALE", "2")' "$config_file"

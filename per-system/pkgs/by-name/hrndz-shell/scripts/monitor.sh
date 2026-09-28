@@ -4,7 +4,8 @@
 #   monitor state          four lines: brightness percent (empty without a
 #                          backlight on the focused display), focused output,
 #                          its scale, and a JSON array of the displays
-#   monitor scale <scale>  preview on the focused display for 15 seconds
+#   monitor scale <scale>  preview on the focused display for 15 seconds;
+#                          exits 3 when the display is already at that scale
 #   monitor confirm        persist the preview per display
 #   monitor revert         restore the previous scale
 #   monitor brightness <N> set the internal panel's backlight to N percent
@@ -129,7 +130,7 @@ scale() {
     return 1
   }
   new_scale=$(clean_scale "$requested" "$(jq -r .width <<<"$info")" "$(jq -r .height <<<"$info")")
-  [[ $new_scale != "$old_scale" ]] || return 0
+  [[ $new_scale != "$old_scale" ]] || return 3
 
   tmp=$(mktemp "$preview_file.XXXXXX")
   printf '%s\t%s\t%s\t%s\t%s\n' "$name" "$mode" "$position" "$old_scale" "$new_scale" >"$tmp"
@@ -138,7 +139,9 @@ scale() {
   for variable in HYPRLAND_INSTANCE_SIGNATURE WAYLAND_DISPLAY XDG_RUNTIME_DIR; do
     if [[ -n ${!variable:-} ]]; then timer_env+=("--setenv=$variable=${!variable}"); fi
   done
-  if ! systemd-run --user --quiet --collect --unit="$preview_unit" --on-active=15s \
+  # The panel reverts at 15 seconds. This timer is the backstop if the shell
+  # dies, late enough that a last-second Keep still finds the preview.
+  if ! systemd-run --user --quiet --collect --unit="$preview_unit" --on-active=20s \
     "${timer_env[@]}" "$0" revert; then
     rm -f "$preview_file"
     return 1
@@ -151,7 +154,7 @@ scale() {
 }
 
 write_scales() {
-  local target=$1 target_scale=$2 all name scale tmp
+  local target=$1 target_scale=$2 all name scale tmp gdk_scale
   local -A scales=()
   local -a names=()
 
@@ -176,8 +179,15 @@ write_scales() {
   mkdir -p "${monitors_lua%/*}"
   tmp=$(mktemp "$monitors_lua.XXXXXX")
   mapfile -t names < <(printf '%s\n' "${!scales[@]}" | LC_ALL=C sort)
+  # XWayland apps are unscaled (force_zero_scaling) and GTK takes only whole
+  # factors, so GDK_SCALE is the largest enabled output's scale, rounded.
+  # The preview is live while confirming, so this includes the new scale.
+  gdk_scale=$(jq -r '[.[] | select(.disabled != true) | .scale] | max // 1' <<<"$all")
+  gdk_scale=$(awk -v s="$gdk_scale" 'BEGIN { g = int(s + 0.5); print (g < 1 ? 1 : g) }')
   {
     printf '%s\n' '-- Managed by hrndz-shell. Scale is stored per connector.'
+    printf '%s\n' '-- GDK_SCALE applies to apps started after the next login.'
+    printf 'hl.env("GDK_SCALE", "%s")\n' "$gdk_scale"
     for name in "${names[@]}"; do
       printf 'hl.monitor({ output = "%s", mode = "preferred", position = "auto", scale = %s })\n' "$name" "${scales[$name]}"
     done
