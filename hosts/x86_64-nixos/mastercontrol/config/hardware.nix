@@ -50,6 +50,9 @@
 
   hrndz.hardware = {
     gpu.vendor = "amd";
-    razerLeviathanV2X.enable = true;
+    razerLeviathanV2X = {
+      enable = true;
+      rgb.enable = true;
+    };
   };
 }

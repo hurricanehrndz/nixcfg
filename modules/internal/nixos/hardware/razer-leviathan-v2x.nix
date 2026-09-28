@@ -12,15 +12,6 @@ let
     ;
   cfg = config.hrndz.hardware.razerLeviathanV2X;
 
-  # CEILING: openrazer PR #2903 (Leviathan V2 X support) pinned by commit until it
-  # ships in a release that reaches nixpkgs; drop the overrides below then.
-  openrazerSrc = pkgs.fetchFromGitHub {
-    owner = "openrazer";
-    repo = "openrazer";
-    rev = "4cf64b78dd99634f63ca3ed7675452799662eea8";
-    hash = "sha256-2cRazHLy17RRb04ZvIVXOLKQJYIAP2GyZBtwOwIKR9w=";
-  };
-
   # When the kernel exposes both the per-channel and master volume, PipeWire
   # drives only the per-channel one and the master ('PCM Playback Volume',
   # index=1) keeps whatever it last held: ~29% from the factory, or wherever
@@ -67,7 +58,7 @@ in
   options.hrndz.hardware.razerLeviathanV2X = {
     enable = mkEnableOption "Razer Leviathan V2 X (USB 1532:054a) soundbar support";
 
-    rgb.enable = mkEnableOption "RGB control through a patched OpenRazer driver and daemon";
+    rgb.enable = mkEnableOption "RGB control through OpenRGB, with its effects plugin for audio-reactive lighting";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -75,14 +66,13 @@ in
       environment.systemPackages = [ leviathanVolume ];
     }
 
+    # OpenRGB drives the soundbar over hidraw from userspace, so no kernel module.
+    # The motherboard's SMBus (RAM and board LEDs) is left unprobed.
     (mkIf cfg.rgb.enable {
-      hardware.openrazer = {
+      services.hardware.openrgb = {
         enable = true;
-        users = [ config.system.primaryUser ];
-        packages = {
-          kernel = config.boot.kernelPackages.openrazer.overrideAttrs { src = openrazerSrc; };
-          daemon = pkgs.python3Packages.openrazer-daemon.overridePythonAttrs { src = openrazerSrc; };
-        };
+        package = pkgs.openrgb.withPlugins [ pkgs.openrgb-plugin-effects ];
+        motherboard = null;
       };
     })
   ]);
