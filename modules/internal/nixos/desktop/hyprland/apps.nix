@@ -8,7 +8,7 @@ let
   inherit (lib) genAttrs mkDefault mkIf;
 
   defaults = desktop: types: genAttrs types (_: mkDefault desktop);
-  omasnap = pkgs.callPackage ../../../../../per-system/pkgs/by-name/omasnap/package.nix { };
+  inherit (config.hrndz.desktop.hyprland.shellPackage) omasnap;
 in
 {
   # The desktop's everyday apps, after Omarchy's base set: capture, media,

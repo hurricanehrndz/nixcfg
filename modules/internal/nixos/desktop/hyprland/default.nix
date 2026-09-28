@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 let
@@ -16,14 +17,17 @@ in
   options.hrndz.desktop.hyprland = {
     enable = mkEnableOption "the personal Hyprland desktop";
 
-    # One build of the shell for the fonts, desktop-vnc and Home Manager.
+    # One build of the shell for the fonts, desktop-vnc and Home Manager. Its
+    # passthru.omasnap is the omasnap build apps.nix installs.
     shellPackage = mkOption {
       type = lib.types.package;
       readOnly = true;
       internal = true;
       default = pkgs.callPackage ../../../../../per-system/pkgs/by-name/hrndz-shell/package.nix {
         hyprland = config.programs.hyprland.package;
-        omasnap = pkgs.callPackage ../../../../../per-system/pkgs/by-name/omasnap/package.nix { };
+        omasnap = pkgs.callPackage ../../../../../per-system/pkgs/by-name/omasnap/package.nix {
+          inherit inputs;
+        };
         inherit (cfg.ambient) playbackRate;
         lockBlankSeconds = cfg.idle.lockBlank;
       };

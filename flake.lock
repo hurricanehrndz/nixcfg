@@ -1208,6 +1208,22 @@
         "type": "github"
       }
     },
+    "omasnap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790343074,
+        "narHash": "sha256-8yGxsUgaAy10goygbPQcI3Rg3JkLnIkm5kXVFr20RbU=",
+        "owner": "omacom",
+        "repo": "omasnap",
+        "rev": "614cdf55b42a43c1dcee2c85cd01e4764a52bdae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "omacom",
+        "repo": "omasnap",
+        "type": "github"
+      }
+    },
     "pdenv": {
       "inputs": {
         "copy-reference-nvim-src": "copy-reference-nvim-src",
@@ -1348,6 +1364,7 @@
         "nixpkgs-darwin": "nixpkgs-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "noctis-themes-src": "noctis-themes-src",
+        "omasnap": "omasnap",
         "pdenv": "pdenv",
         "pi": "pi",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",

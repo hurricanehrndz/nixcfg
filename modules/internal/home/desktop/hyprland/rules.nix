@@ -98,6 +98,30 @@
           ];
         }
 
+        ##: Webcam overlay (hrndz-shell screenrecord --webcam)
+        # Placed at its medium size so it appears in the corner; the script
+        # then fits it to the recorded region.
+        {
+          match = {
+            class = "^WebcamOverlay$";
+            title = "^WebcamOverlay$";
+          };
+          tag = "-default-opacity";
+          float = true;
+          pin = true;
+          no_initial_focus = true;
+          no_dim = true;
+          opacity = "1 1";
+          size = [
+            "(monitor_h*2/9)"
+            "(monitor_h/4)"
+          ];
+          move = [
+            "(monitor_w-monitor_h*2/9-40)"
+            "(monitor_h-monitor_h/4-40)"
+          ];
+        }
+
         ##: Floating dialogs and utilities
         {
           match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk)";

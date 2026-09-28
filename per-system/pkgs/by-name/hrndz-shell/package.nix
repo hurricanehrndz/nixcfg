@@ -26,6 +26,7 @@
   gnugrep,
   gnused,
   gpu-screen-recorder,
+  grim,
   gtk3,
   hyprland,
   hyprpicker,
@@ -33,6 +34,7 @@
   iw,
   jq,
   libnotify,
+  mpv,
   networkmanager,
   omasnap,
   perl,
@@ -52,6 +54,7 @@
   wl-clipboard,
   wtype,
   xdg-utils,
+  zbar,
   zenity,
 }:
 let
@@ -85,7 +88,9 @@ let
   ];
 
   # gpu-screen-recorder finds its capture helper in /run/wrappers/bin, which
-  # the NixOS module's programs.gpu-screen-recorder provides.
+  # the NixOS module's programs.gpu-screen-recorder provides. OCR shares
+  # omasnap's English-only tesseract; zbarimg (QR) needs no camera or X
+  # support.
   cli = script "hrndz-shell" [
     brightnessctl
     coreutils
@@ -93,17 +98,24 @@ let
     findutils
     gawk
     gpu-screen-recorder
+    grim
     hyprland
     hyprpicker
     jq
+    mpv
     notificationSend
     omasnap
+    omasnap.tesseract
     procps
     quickshell'
     slurp
     systemd
     wireplumber
     wl-clipboard
+    (zbar.override {
+      enableVideo = false;
+      withXorg = false;
+    })
   ];
 
   # Called by the QML as <share>/bin/<name>.
@@ -273,7 +285,7 @@ stdenvNoCC.mkDerivation {
   '';
 
   passthru = {
-    inherit ambientDir;
+    inherit ambientDir omasnap;
     quickshell = quickshell';
   };
 

@@ -106,6 +106,13 @@
       flake = false;
     };
 
+    # Omarchy's screenshot editor, built from its main branch
+    # (per-system/pkgs/by-name/omasnap).
+    omasnap = {
+      url = "github:omacom/omasnap";
+      flake = false;
+    };
+
     # personalized neovim
     # nixpkgs is deliberately not followed so builds hit hurricanehrndz.cachix.org.
     pdenv.url = "github:hurricanehrndz/pdenv";

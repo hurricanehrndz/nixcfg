@@ -8,6 +8,8 @@
 config=hrndz-shell
 unit=quickshell.service
 state="$HOME/.local/state/hrndz-shell"
+# The running screen recording's pid and file, and its region for the webcam.
+recording="${XDG_RUNTIME_DIR:-/run/user/$UID}/hrndz-screenrecord"
 
 usage() {
   cat <<'USAGE'
@@ -23,8 +25,11 @@ usage: hrndz-shell <feature> [args]
   notifications dismiss-one|dismiss-all|invoke-last|history
   panel audio|bluetooth|network|power|display|calendar
   screenshot [smart|region|window|screen]
-  screenrecord [region|screen] [--audio] [--mic]
+  screenrecord [region|screen] [--audio] [--mic] [--webcam]
                               start, or stop the running recording
+  webcam smaller|larger|small|medium|large
+                              resize the recording's webcam overlay
+  ocr | qr                    copy the text or QR code in a region
   color-picker
   ipc <target> <method> [args...]
 USAGE
@@ -207,11 +212,147 @@ screenshot() {
   exec omasnap "$mode"
 }
 
-# Omarchy's omarchy-capture-screenrecording without the webcam overlay,
-# loudness pass or bar indicator. The recorder's pid and file live in
-# $recording between the start and stop calls.
+# Omarchy's omarchy-capture-text and omarchy-capture-qr (omacom/omarchy, MIT,
+# rev 97a9fce54f5df007afe7b8637ddc09314f38ad00). hyprpicker freezes the screen
+# so nothing moves under the selection; kill $freeze once grim has run.
+freeze_select() {
+  hyprpicker -r -z >/dev/null 2>&1 &
+  freeze=$!
+  sleep 0.1
+  region=$(slurp 2>/dev/null) || region=
+}
+
+ocr() {
+  local freeze region text=
+  freeze_select
+  if [[ -n $region ]]; then
+    text=$(grim -g "$region" - |
+      tesseract stdin stdout --oem 1 --psm 6 -l eng --dpi 300 -c preserve_interword_spaces=1 2>/dev/null) || text=
+  fi
+  kill "$freeze" 2>/dev/null || true
+  [[ -n $text ]] || return 0
+  printf '%s' "$text" | wl-copy
+  omarchy-notification-send -g 󰴑 "Copied text from selection to clipboard"
+}
+
+# QR codes often carry secrets (2FA setup URIs), so the value only goes to
+# the clipboard, marked sensitive: clipboard-capture leaves it out of the
+# history. Only QR is decoded; other symbologies false-positive on screens.
+qr() {
+  local freeze region value=
+  freeze_select
+  if [[ -n $region ]]; then
+    value=$(grim -g "$region" - | zbarimg -q --raw -Sdisable -Sqrcode.enable - 2>/dev/null) || value=
+  fi
+  kill "$freeze" 2>/dev/null || true
+  [[ -n $region ]] || return 0
+  if [[ -z $value ]]; then
+    omarchy-notification-send -g 󰐲 -u critical "No QR code found" "Select a region containing a QR code"
+    return 1
+  fi
+  printf '%s' "$value" | wl-copy --sensitive
+  omarchy-notification-send -g 󰐲 "QR code copied to clipboard"
+}
+
+# Omarchy's webcam overlay, from omarchy-capture-screenrecording and
+# omarchy-capture-webcam-resize (rev as above): the camera cropped to 8:9
+# portrait in a pinned window (rules.nix) in the recorded area's bottom-right
+# corner, where the recording picks it up.
+webcam_start() {
+  local node waited device=
+  # CEILING: takes the first V4L2 node with index 0, which is a camera's
+  # capture node on UVC webcams. Omarchy asks v4l2-ctl for capture-capable
+  # nodes and a 16:9 mode; add v4l-utils if a camera here gets that wrong.
+  for node in /sys/class/video4linux/video*; do
+    if [[ -r $node/index && $(<"$node/index") == 0 ]]; then
+      device=/dev/${node##*/}
+      break
+    fi
+  done
+  if [[ -z $device ]]; then
+    omarchy-notification-send -u critical "No webcam found"
+    return 1
+  fi
+
+  # The driver picks its nearest mode if 720p is not one.
+  mpv "av://v4l2:$device" --profile=low-latency --untimed --no-cache \
+    --demuxer-lavf-o=video_size=1280x720,framerate=30 '--vf=lavfi=[crop=ih*8/9:ih]' \
+    --title=WebcamOverlay --wayland-app-id=WebcamOverlay \
+    --no-border --no-audio --no-osc --osd-level=0 --really-quiet >/dev/null 2>&1 &
+  for ((waited = 0; waited < 40; waited++)); do
+    hyprctl clients -j | jq -e 'any(.[]; .title == "WebcamOverlay")' >/dev/null && break
+    sleep 0.05
+  done
+  if ((waited == 40)); then
+    webcam_stop
+    omarchy-notification-send -u critical "Webcam overlay failed to start" "$device"
+    return 1
+  fi
+  webcam medium
+  # Let the move settle, or the recording starts with it.
+  sleep 0.6
+}
+
+webcam_stop() {
+  pkill -f WebcamOverlay || true
+  rm -f "$recording-region"
+}
+
+# Resize the overlay: three sizes scaled from the recorded region's height
+# (else its monitor's), kept 40px inside that area's bottom-right corner.
+webcam() {
+  local client address width monitor x y w h base i j
+  local -a heights widths
+  case ${1:-} in
+  small) i=0 ;;
+  medium) i=1 ;;
+  large) i=2 ;;
+  smaller | larger) i=-1 ;;
+  *)
+    usage >&2
+    return 2
+    ;;
+  esac
+  client=$(hyprctl clients -j | jq -c 'first(.[] | select(.title == "WebcamOverlay")) // empty')
+  [[ -n $client ]] || return 0
+  read -r address width monitor < <(jq -r '[.address, .size[0], .monitor] | @tsv' <<<"$client")
+  read -r x y w h < <(hyprctl monitors -j | jq -r --argjson id "$monitor" '.[] | select(.id == $id) |
+    (.transform % 2 == 1) as $turned |
+    [.x, .y, ((if $turned then .height else .width end) / .scale | floor),
+      ((if $turned then .width else .height end) / .scale | floor)] | @tsv')
+  if [[ -r $recording-region && $(<"$recording-region") =~ ^([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)$ ]]; then
+    w=${BASH_REMATCH[1]} h=${BASH_REMATCH[2]} x=${BASH_REMATCH[3]} y=${BASH_REMATCH[4]}
+  fi
+
+  # A narrow region scales from the height its width allows the large size.
+  base=$h
+  ((base * 3 / 10 <= w - 80)) || base=$(((w - 80) * 10 / 3))
+  heights=($(((base * 9 + 25) / 50)) $(((base + 2) / 4)) $(((base * 27 + 40) / 80)))
+  for j in 0 1 2; do
+    widths[j]=$(((heights[j] * 8 + 4) / 9))
+  done
+  # smaller: the largest size below the current width; larger: the smallest
+  # above it.
+  for j in 0 1 2; do
+    if [[ $1 == smaller ]] && ((widths[j] < width)); then
+      i=$j
+    elif [[ $1 == larger ]] && ((i < 0 && widths[j] > width)); then
+      i=$j
+    fi
+  done
+  ((i >= 0)) || return 0
+
+  address="address:$address"
+  x=$((x + w - widths[i] - 40)) y=$((y + h - heights[i] - 40))
+  hyprctl dispatch "hl.dsp.window.resize({ window = \"$address\", x = ${widths[i]}, y = ${heights[i]} })" >/dev/null
+  hyprctl dispatch "hl.dsp.window.move({ window = \"$address\", x = $x, y = $y })" >/dev/null
+}
+
+# Omarchy's omarchy-capture-screenrecording without the loudness pass or bar
+# indicator. The recorder's pid and file live in $recording between the start
+# and stop calls.
 screenrecord() {
-  local recording="${XDG_RUNTIME_DIR:-/run/user/$UID}/hrndz-screenrecord" pid file preview dir region sources=
+  local pid file preview dir region='' sources='' webcam=''
   local -a target audio=()
 
   if [[ -r $recording ]] && read -r pid file <"$recording" && kill -0 "$pid" 2>/dev/null; then
@@ -222,6 +363,7 @@ screenrecord() {
       sleep 0.1
     done
     rm -f "$recording"
+    webcam_stop
     if kill -0 "$pid" 2>/dev/null; then
       kill -KILL "$pid"
       omarchy-notification-send -u critical "Screen recording failed" "The recorder had to be killed; $file may be unplayable."
@@ -250,6 +392,7 @@ screenrecord() {
     case $arg in
     --audio) sources+=${sources:+|}default_output ;;
     --mic) sources+=${sources:+|}default_input ;;
+    --webcam) webcam=1 ;;
     *)
       usage >&2
       return 2
@@ -258,6 +401,15 @@ screenrecord() {
   done
   # One mixed track: most players only play the first of several.
   [[ -n $sources ]] && audio=(-a "$sources" -ac aac)
+
+  if [[ -n $webcam ]]; then
+    if [[ -n $region ]]; then
+      printf '%s\n' "$region" >"$recording-region"
+    else
+      rm -f "$recording-region"
+    fi
+    webcam_start || return 1
+  fi
 
   dir="${XDG_VIDEOS_DIR:-$HOME/Videos}"
   mkdir -p "$dir"
@@ -269,6 +421,7 @@ screenrecord() {
     sleep 0.2
   done
   if ! kill -0 "$pid" 2>/dev/null; then
+    webcam_stop
     omarchy-notification-send -u critical "Screen recording failed to start"
     return 1
   fi
@@ -292,6 +445,9 @@ notifications) notifications "$@" ;;
 panel) panel "$@" ;;
 screenshot) screenshot "$@" ;;
 screenrecord) screenrecord "$@" ;;
+webcam) webcam "$@" ;;
+ocr) ocr ;;
+qr) qr ;;
 color-picker) pkill hyprpicker || hyprpicker -a ;;
 ipc) ipc "$@" ;;
 -h | --help | help) usage ;;

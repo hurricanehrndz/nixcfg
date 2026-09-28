@@ -86,10 +86,15 @@ code into the package. Bar entries with `exec` (command widgets) remain.
 
 `modules/internal/nixos/desktop/hyprland/apps.nix` installs the everyday
 apps from Omarchy's base set and makes Celluloid, Papers and imv the default
-apps for video, PDF and images. Screenshots use Omarchy's omasnap, packaged in
-`per-system/pkgs/by-name/omasnap`. Recording is `hrndz-shell screenrecord`,
-which runs gpu-screen-recorder with the capture helper that
-`programs.gpu-screen-recorder` sets up. Both call `omarchy-notification-send`,
+apps for video, PDF and images. Screenshots use Omarchy's omasnap, built in
+`per-system/pkgs/by-name/omasnap` from the `omasnap` flake input, which follows
+upstream's main branch; if `just update` breaks its build, pin the input to a
+tag. Recording is `hrndz-shell screenrecord`, which runs gpu-screen-recorder
+with the capture helper that `programs.gpu-screen-recorder` sets up. With
+`--webcam` it shows the first camera in a pinned mpv window in the recorded
+area's corner (`Super+Alt+[`/`]` resize it). `hrndz-shell ocr` and `qr` copy
+the text or QR code in a region; a QR value is marked sensitive, so the
+clipboard history skips it. All of them call `omarchy-notification-send`,
 vendored into the shell, so clicking the notification opens the capture. A
 capture taken while the display is DPMS-off fails; that is the compositor, not
 the tools.

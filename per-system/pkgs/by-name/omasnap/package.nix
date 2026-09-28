@@ -2,15 +2,20 @@
 # It shells out to hyprctl (from the session PATH, matching the running
 # compositor), wl-copy, tesseract for OCR, and omarchy-notification-send,
 # which hrndz-shell ships.
+#
+# It follows upstream's main branch through the `omasnap` flake input, so
+# `just update` moves it. If a build fails after an update, pin the input to
+# a release tag (github:omacom/omasnap/vX.Y.Z) until this package catches up.
 {
   lib,
+  inputs,
   stdenv,
-  fetchFromGitHub,
   cmake,
   ninja,
   pkg-config,
   qt6,
   kdePackages,
+  libdeflate,
   wayland,
   wayland-protocols,
   wayland-scanner,
@@ -19,17 +24,17 @@
 }:
 let
   tesseract' = tesseract.override { enableLanguages = [ "eng" ]; };
+  cmakeVersion = lib.head (
+    builtins.match ".*project\\(omasnap VERSION ([0-9.]+).*" (
+      builtins.readFile "${inputs.omasnap}/CMakeLists.txt"
+    )
+  );
 in
-stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation {
   pname = "omasnap";
-  version = "1.21.0";
+  version = "${cmakeVersion}-unstable-${inputs.omasnap.shortRev}";
 
-  src = fetchFromGitHub {
-    owner = "omacom";
-    repo = "omasnap";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-kpoPb5F5yqcczBRUfENsEfv+BD67zQsTG9Ur6Bi3viE=";
-  };
+  src = inputs.omasnap;
 
   postPatch = ''
     substituteInPlace CMakeLists.txt \
@@ -50,6 +55,7 @@ stdenv.mkDerivation (finalAttrs: {
     qt6.qtbase
     qt6.qtwayland
     kdePackages.layer-shell-qt
+    libdeflate
     wayland
   ];
 
@@ -58,7 +64,7 @@ stdenv.mkDerivation (finalAttrs: {
   # wrapped binary starts. Enable doCheck again if upstream loosens it.
   doInstallCheck = true;
   installCheckPhase = ''
-    QT_QPA_PLATFORM=offscreen $out/bin/omasnap --version | grep -F ${finalAttrs.version}
+    QT_QPA_PLATFORM=offscreen $out/bin/omasnap --version | grep -F ${cmakeVersion}
   '';
 
   qtWrapperArgs = [
@@ -70,6 +76,9 @@ stdenv.mkDerivation (finalAttrs: {
     }"
   ];
 
+  # hrndz-shell's OCR uses the same English-only build.
+  passthru.tesseract = tesseract';
+
   meta = {
     description = "Wayland screenshot and annotation editor for Hyprland";
     homepage = "https://github.com/omacom/omasnap";
@@ -77,4 +86,4 @@ stdenv.mkDerivation (finalAttrs: {
     mainProgram = "omasnap";
     platforms = lib.platforms.linux;
   };
-})
+}

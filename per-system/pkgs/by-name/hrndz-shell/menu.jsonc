@@ -13,6 +13,9 @@
   "capture.record": {"icon":"","label":"Record region","aliases":["screenrecord"],"action":"@hrndzShell@ screenrecord region --audio"},
   "capture.record-screen": {"icon":"","label":"Record screen","action":"@hrndzShell@ screenrecord screen --audio"},
   "capture.record-mic": {"icon":"","label":"Record screen with microphone","action":"@hrndzShell@ screenrecord screen --audio --mic"},
+  "capture.record-webcam": {"icon":"","label":"Record screen with microphone and webcam","action":"@hrndzShell@ screenrecord screen --audio --mic --webcam"},
+  "capture.text": {"icon":"󰴑","label":"Text (OCR)","action":"@hrndzShell@ ocr"},
+  "capture.qr": {"icon":"󰐲","label":"QR code","action":"@hrndzShell@ qr"},
   "capture.color": {"icon":"󰃉","label":"Color","action":"@hrndzShell@ color-picker"},
 
   "clipboard": {"icon":"","label":"Clipboard","action":"@hrndzShell@ clipboard"},
