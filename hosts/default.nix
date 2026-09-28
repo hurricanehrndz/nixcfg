@@ -11,11 +11,8 @@ let
 
   # Auto-pin every darwin host to nixpkgs-darwin, derived from the
   # `hosts/*-darwin/<host>` layout, so new hosts need no entry here.
-  # The Hyprland desktops run nixos-unstable.
-  desktopHostNames = [
-    "Lucy"
-    "mastercontrol"
-  ];
+  # The Hyprland desktop runs nixos-unstable.
+  desktopHostNames = [ "mastercontrol" ];
 
   darwinHostNames = lib.concatMap (arch: subdirs (hostsPath + "/${arch}")) (
     lib.filter (lib.hasSuffix "-darwin") (subdirs hostsPath)

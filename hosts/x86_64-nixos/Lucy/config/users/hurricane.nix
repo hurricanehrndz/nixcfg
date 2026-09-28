@@ -34,7 +34,7 @@ in
   ];
 
   hrndz = {
-    roles.developerWorkstation.enable = true;
+    roles.terminalDeveloper.enable = true;
     tooling.ai.enable = true;
   };
 }
