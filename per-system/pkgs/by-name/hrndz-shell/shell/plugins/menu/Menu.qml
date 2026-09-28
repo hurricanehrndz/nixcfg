@@ -14,7 +14,6 @@ Item {
   // Injected by the shell when this plugin is summoned.
   property string omarchyPath: ""
   property var shell: null
-  property var manifest: null
 
   // Plugin lifecycle hooks. The host calls open(payloadJson) after
   // `hrndz-shell ipc shell summon omarchy.menu ...` and close() when hidden.

@@ -11,7 +11,6 @@ Item {
 
   property string omarchyPath: ""
   property var shell: null
-  property var manifest: null
 
   property bool opened: false
   property string filterText: ""
@@ -58,7 +57,7 @@ Item {
   function dismiss() {
     root.opened = false
     if (root.shell && typeof root.shell.hide === "function")
-      root.shell.hide((root.manifest && root.manifest.id) || "omarchy.emojis")
+      root.shell.hide("omarchy.emojis")
   }
 
   function toggle() {

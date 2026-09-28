@@ -1,5 +1,5 @@
 # The desktop shell: a fork of Omarchy's Quickshell shell (shell/ in
-# omacom/omarchy 4.0.0.alpha, rev c668141e9c42b13c80c9ca4ea108e11708c5e8a5),
+# omacom/omarchy 4.0.0.alpha (MIT), rev c668141e9c42b13c80c9ca4ea108e11708c5e8a5),
 # no longer tracking upstream. Kept: bar, menu, clipboard, emojis, lock,
 # notifications, OSD, polkit, background, services and the bar panels. The
 # omarchy-* scripts it called are replaced by scripts/, and its theme,
