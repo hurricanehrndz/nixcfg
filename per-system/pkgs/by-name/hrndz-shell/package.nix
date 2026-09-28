@@ -19,6 +19,7 @@
   brightnessctl,
   coreutils,
   dconf,
+  ddcutil,
   ffmpeg-headless,
   findutils,
   fontconfig,
@@ -189,6 +190,7 @@ let
       brightnessctl
       coreutils
       dconf
+      ddcutil
       findutils
       gawk
       hyprland

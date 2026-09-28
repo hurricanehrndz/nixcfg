@@ -12,6 +12,7 @@ export MOCK_MONITORS="$test_dir/monitors.json"
 export MOCK_EVALS="$test_dir/evals"
 export MOCK_TIMERS="$test_dir/timers"
 export MOCK_DCONF="$test_dir/dconf"
+export MOCK_DDC="$test_dir/ddc"
 export HOME="$test_dir/home"
 export PATH="$test_dir/bin:$PATH"
 
@@ -44,6 +45,21 @@ EOF
 printf '%s\n' "$*" >>"$MOCK_DCONF"
 EOF
 } >"$test_dir/bin/dconf"
+{
+  echo "$shebang"
+  cat <<'EOF'
+printf '%s\n' "$*" >>"$MOCK_DDC"
+case "$*" in
+"detect --terse")
+  printf 'Display 1\n   I2C bus:  /dev/i2c-3\n   DRM connector:  card1-HDMI-A-1\n'
+  printf 'Invalid display\n   I2C bus:  /dev/i2c-7\n   DRM connector:  card1-DP-1\n'
+  ;;
+"--bus 7 getvcp 10 --brief") echo "VCP 10 C 100 200" ;;
+"--bus 7 setvcp"*) ;;
+*) exit 1 ;;
+esac
+EOF
+} >"$test_dir/bin/ddcutil"
 chmod +x "$test_dir/bin/"*
 
 cat >"$MOCK_MONITORS" <<'EOF'
@@ -102,3 +118,12 @@ status=0
 run_monitor text-size 99 || status=$?
 [[ $status == 2 ]]
 grep -qx 'base-size = 16' "$HOME/.local/state/hrndz-shell/shell.toml"
+
+# An external display's brightness is DDC/CI, as a percent of the monitor's
+# own maximum; the slow bus lookup runs once.
+mapfile -t state < <(run_monitor state)
+[[ ${#state[@]} == 4 && ${state[0]} == 50 ]]
+run_monitor state >/dev/null
+[[ $(grep -c '^detect' "$MOCK_DDC") == 1 ]]
+run_monitor brightness 30
+grep -qx -- '--bus 7 setvcp 10 60 --noverify' "$MOCK_DDC"

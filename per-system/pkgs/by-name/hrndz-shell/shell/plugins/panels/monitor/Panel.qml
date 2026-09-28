@@ -33,8 +33,9 @@ Panel {
 
   // Cursor model shared by keyboard and mouse. Sections:
   //   "brightness" - single slider row, selectedIndex = -1 sentinel
-  //                  (mirrors Audio's slider rows). Only present if a
-  //                  controllable backlight was detected.
+  //                  (mirrors Audio's slider rows). Only present while
+  //                  the focused display reports brightness (backlight or
+  //                  DDC/CI).
   //   "textsize"   - single slider row over textSizeStops, same sentinel.
   //   "scale"      - 6 Button scale presets; treated as a single
   //                  horizontal row from j/k's perspective. h/l moves

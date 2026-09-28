@@ -2,6 +2,7 @@
   config,
   lib,
   options,
+  pkgs,
   ...
 }:
 let
@@ -68,6 +69,11 @@ in
     services.gnome.gnome-keyring.enable = mkDefault true;
     networking.networkmanager.enable = mkDefault true;
     hardware.bluetooth.enable = mkDefault true;
+
+    # External monitors' brightness over DDC/CI: i2c-dev, and ddcutil's rule
+    # giving the seat's user the displays' I2C buses.
+    hardware.i2c.enable = true;
+    services.udev.packages = [ pkgs.ddcutil ];
 
     # The weather widget locates the machine unless a location is fixed. The
     # shell's locate helper asks through GeoClue's where-am-i client.

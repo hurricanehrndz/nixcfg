@@ -1,20 +1,20 @@
 # monitor: the display panel's reads and writes, ported from Omarchy's
 # omarchy-monitor-state, omarchy-hyprland-monitor-scaling and the backlight
 # half of omarchy-brightness-display.
-#   monitor state          four lines: brightness percent (empty without a
-#                          backlight on the focused display), focused output,
+#   monitor state          four lines: brightness percent (empty when the
+#                          focused display can't report it), focused output,
 #                          its scale, and a JSON array of the displays
 #   monitor scale <scale>  preview on the focused display for 15 seconds;
 #                          exits 3 when the display is already at that scale
 #   monitor confirm        persist the preview per display
 #   monitor revert         restore the previous scale
-#   monitor brightness <N> set the internal panel's backlight to N percent
+#   monitor brightness <N> set the focused display's brightness to N percent
 #   monitor text-size <px> set the shell's base font size and scale GTK text
 #                          to match (omarchy-display-text-size)
 #
-# CEILING: brightness covers internal panels (eDP/LVDS/DSI) through
-# brightnessctl only. External monitors report no brightness; DDC/CI
-# (ddcutil, hardware.i2c) would be the upgrade.
+# Internal panels (eDP/LVDS/DSI) use the backlight through brightnessctl,
+# external monitors DDC/CI through ddcutil. A sleeping monitor doesn't answer
+# DDC, so the panel hides its slider until it wakes.
 #
 # Scale persists in $XDG_CONFIG_HOME/hypr/monitors.lua, which the Hyprland
 # config loads after its fallback rule. This rewrites the generated file.
@@ -59,11 +59,54 @@ brightness_percent() {
   brightnessctl -d "$device" -m 2>/dev/null | awk -F, '{ gsub("%", "", $4); print $4 }'
 }
 
+# ddcutil's I2C bus for a connector, looked up once per boot; the lookup
+# takes seconds. Monitors don't move buses without a replug.
+# CEILING: a monitor plugged into a new connector after the first lookup
+# needs the runtime cache cleared (or a new login) to get brightness.
+ddc_bus() {
+  local name=$1 cache="$preview_dir/ddc-bus-$1" bus=
+  if [[ ! -f $cache ]]; then
+    mkdir -p "$preview_dir"
+    bus=$(ddcutil detect --terse 2>/dev/null | awk -v name="$name" '
+      /I2C bus:/ { bus = $NF; sub(".*i2c-", "", bus) }
+      /DRM connector:/ { c = $NF; sub("^card[0-9]+-", "", c); if (c == name) { print bus; exit } }')
+    echo "${bus:-none}" >"$cache"
+  fi
+  bus=$(<"$cache")
+  [[ $bus =~ ^[0-9]+$ ]] && echo "$bus"
+}
+
+# One ddcutil call at a time per bus: overlapping transactions fail.
+ddc() {
+  local bus=$1
+  shift
+  {
+    flock 8
+    ddcutil --bus "$bus" "$@"
+  } 8>"$preview_dir/ddc-$bus.lock"
+}
+
+# The monitor's brightness (VCP 0x10) as a percent of its maximum, which is
+# remembered for writes.
+ddc_percent() {
+  local bus out
+  bus=$(ddc_bus "$1") || return 0
+  out=$(ddc "$bus" getvcp 10 --brief 2>/dev/null) || return 0
+  read -r _ _ _ current max <<<"$out"
+  [[ $current =~ ^[0-9]+$ && $max =~ ^[1-9][0-9]*$ ]] || return 0
+  echo "$max" >"$preview_dir/ddc-max-$bus"
+  echo $(((current * 100 + max / 2) / max))
+}
+
 state() {
   local all name
   all=$(hyprctl monitors all -j)
   name=$(jq -r '[.[] | select(.focused)][0].name // ""' <<<"$all")
-  if internal "$name"; then brightness_percent; else echo; fi
+  if internal "$name"; then
+    printf '%s\n' "$(brightness_percent)"
+  else
+    printf '%s\n' "$(ddc_percent "$name")"
+  fi
   echo "$name"
   jq -r '[.[] | select(.focused)][0].scale // "" | tostring' <<<"$all"
   jq -c '[.[] | {name, enabled: (.disabled != true), focused: (.focused == true), width, height}]' <<<"$all"
@@ -217,14 +260,21 @@ revert_scale() {
 }
 
 brightness() {
-  local percent=${1:-} device
+  local percent=${1:-} name device bus max=100
   if [[ ! $percent =~ ^[0-9]+$ ]] || ((percent < 1 || percent > 100)); then
     echo "monitor: brightness must be 1-100" >&2
     return 2
   fi
-  device=$(backlight)
-  [[ -n $device ]] || return 0
-  brightnessctl -d "$device" set "$percent%" >/dev/null
+  name=$(focused | jq -r .name)
+  if internal "$name"; then
+    device=$(backlight)
+    [[ -n $device ]] || return 0
+    brightnessctl -d "$device" set "$percent%" >/dev/null
+    return
+  fi
+  bus=$(ddc_bus "$name") || return 0
+  [[ -f $preview_dir/ddc-max-$bus ]] && max=$(<"$preview_dir/ddc-max-$bus")
+  ddc "$bus" setvcp 10 $(((percent * max + 50) / 100)) --noverify
 }
 
 # The shell layers the state file over its Nix theme and watches it. GTK's
