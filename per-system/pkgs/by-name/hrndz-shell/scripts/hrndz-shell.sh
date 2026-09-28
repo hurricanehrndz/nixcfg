@@ -80,7 +80,7 @@ menu() {
 # `select_line <prompt> <width> <max-height>` sizes the card to its rows;
 # `select_line <prompt> palette` gives it the launcher palette's size and place.
 select_line() {
-  local prompt=$1 width=${2:-300} height=${3:-0} layout='' dir payload status=0
+  local prompt=$1 width=${2:-300} height=${3:-0} layout='' dir payload shell_pid status=0
   if [[ $width == palette ]]; then
     layout=palette width=0
   fi
@@ -89,8 +89,16 @@ select_line() {
     --argjson width "$width" --argjson height "$height" --arg layout "$layout" \
     '{mode: "select", prompt: $prompt, options: (split("\n") | map(select(length > 0))),
       selectionFile: $sel, doneFile: $donefile, width: $width, maxHeight: $height, layout: $layout}')
+  # The shell writes `done` when the pick lands or is cancelled. A shell that
+  # restarts in between never will, so stop waiting once it is gone.
+  shell_pid=$(systemctl --user show -p MainPID --value "$unit" 2>/dev/null) || shell_pid=0
   if ipc shell summon omarchy.menu "$payload" >/dev/null; then
-    while [[ ! -e $dir/done ]]; do sleep 0.05; done
+    while [[ ! -e $dir/done ]]; do
+      if ((shell_pid > 0)) && ! kill -0 "$shell_pid" 2>/dev/null; then
+        break
+      fi
+      sleep 0.05
+    done
     [[ -s $dir/selection ]] && cat "$dir/selection" || status=1
   else
     status=1
