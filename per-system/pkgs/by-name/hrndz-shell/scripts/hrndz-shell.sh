@@ -218,8 +218,7 @@ feature=${1:-}
 shift || true
 case $feature in
 start) systemctl --user start "$unit" ;;
-launcher) menu root ;;
-menu) menu root ;;
+launcher | menu) menu root ;;
 system-menu) menu system ;;
 keybindings) keybindings ;;
 clipboard) toggle omarchy.clipboard ;;

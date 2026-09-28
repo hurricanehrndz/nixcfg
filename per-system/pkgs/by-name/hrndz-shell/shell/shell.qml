@@ -604,7 +604,6 @@ ShellRoot {
         ? shell.pluginAppLibraryFor(cacheKey, key) : null,
       bar: shell.pluginBarStateFor(cacheKey, key),
       barConfig: shell.publicBarConfig(),
-      idleConfig: ({}),
       _serviceLookup: function(requestedId) {
         return allowOwnService ? shell.pluginServiceFor(key, requestedId) : null
       },
@@ -862,7 +861,6 @@ ShellRoot {
     for (var shellKey in _pluginShellApis) {
       var shellApi = _pluginShellApis[shellKey]
       shellApi.barConfig = shell.publicBarConfig()
-      shellApi.idleConfig = ({})
     }
     for (var entryKey in _pluginBarEntryShellApis)
       _pluginBarEntryShellApis[entryKey].barConfig = shell.publicBarConfig()

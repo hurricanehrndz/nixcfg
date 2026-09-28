@@ -67,10 +67,6 @@ QtObject {
       console.warn("PluginRegistry: entryPoints must be an object at " + sourcePath)
       return null
     }
-    if (Util.isPlainObject(manifest.omarchy) && manifest.omarchy.clonedFrom) {
-      console.warn("PluginRegistry: clonedFrom is unsupported in this shell at " + sourcePath)
-      return null
-    }
     if (manifest.barWidget !== undefined && Util.isPlainObject(manifest.barWidget)
         && manifest.barWidget.defaultSection !== undefined) {
       var defaultSection = String(manifest.barWidget.defaultSection)

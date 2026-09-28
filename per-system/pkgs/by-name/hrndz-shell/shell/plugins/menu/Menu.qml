@@ -247,7 +247,7 @@ Item {
 
   // The apps provider is QML-native: rows come from the shared AppLibrary
   // (DesktopEntries) instead of a bash enumeration, so they carry image
-  // icons, launch feedback, and uninstall support like the launcher.
+  // icons and launch feedback.
   function mergeAppRows() {
     if (!root.appLibrary) return
 
@@ -851,11 +851,6 @@ Item {
       padding: root.contentMargin
 
       MouseArea { anchors.fill: parent; onClicked: {} }
-
-      Item {
-        id: keyCatcher
-        anchors.fill: parent
-      }
 
       Column {
         anchors.fill: parent
