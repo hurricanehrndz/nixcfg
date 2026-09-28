@@ -3,8 +3,8 @@
 `hrndz-shell` is a frozen fork of Omarchy's Quickshell shell. The source and
 revision are recorded in `per-system/pkgs/by-name/hrndz-shell/package.nix`.
 Home Manager writes its configuration and theme; the package ships the QML and
-the command helpers it needs. Only bundled plugins load today, although the
-fork still carries Omarchy's plugin registry and clone machinery.
+the command helpers it needs. Only bundled components load. The registry
+rejects clone manifests, but the shell host still carries plugin API code.
 
 ## The curated shell model
 
@@ -52,8 +52,9 @@ adopt a feature.
 ## Current boundary
 
 The palette and controls follow this model, but the host still discovers
-bundled components through `PluginRegistry.qml`. It also retains clone,
-capability, and mutable bar-layout code inherited from Omarchy. Simplifying
-that host is separate work: move each live component to a direct, fixed
-reference, keep its behavior, then delete the registry path it no longer uses.
+bundled components through `PluginRegistry.qml`. `shell.qml` also retains
+clone, capability, and mutable bar-layout code inherited from Omarchy.
+Simplifying that host is separate work: move each live component to a direct,
+fixed reference, keep its behavior, then delete the registry path it no longer
+uses.
 Do not remove a used panel merely because the upstream implementation is large.
