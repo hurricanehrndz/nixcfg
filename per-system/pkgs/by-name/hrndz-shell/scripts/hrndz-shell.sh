@@ -38,6 +38,7 @@ usage: hrndz-shell <feature> [args]
                               resize the recording's webcam overlay
   ocr | qr                    copy the text or QR code in a region
   color-picker
+  about                       fastfetch in a window fitted to it
   ipc <target> <method> [args...]
 USAGE
 }
@@ -533,7 +534,77 @@ screenrecord() {
     return 1
   fi
   printf '%s %s\n' "$pid" "$file" >"$recording"
-  omarchy-notification-send -t 3000 "Recording" "Alt+Print stops it"
+  omarchy-notification-send -t 3000 "Recording" "Super+Shift+5 stops it"
+}
+
+# Omarchy's omarchy-launch-about (omacom/omarchy, MIT, rev
+# e332dc975d5f635294c497ebb54feb98dc3d89eb) without its logo branding, sheen or
+# remembered size: the window opens at the size rules.nix gives it, then fits
+# itself to fastfetch's default output.
+about() {
+  if [[ ${1:-} != --render ]]; then
+    exec uwsm-app -- xdg-terminal-exec --app-id=hrndz.about hrndz-shell about --render
+  fi
+
+  printf '\e[?25l'
+  about_settle
+  local grid fitted=false
+  while :; do
+    grid=$(stty size)
+    clear
+    fastfetch
+    if [[ $fitted == false ]]; then
+      fitted=true
+      about_fit || true
+      [[ $(stty size) == "$grid" ]] || continue
+    fi
+    # Any key closes it; a resize draws it again.
+    while [[ $(stty size) == "$grid" ]]; do
+      read -rsn1 -t 0.2 && return 0
+    done
+  done
+}
+
+# Hyprland animates a resize and the terminal reflows to every step of it, so
+# wait for the grid to hold still before measuring it.
+about_settle() {
+  local current previous="" held=0
+  for _ in {1..20}; do
+    current=$(stty size)
+    if [[ $current == "$previous" ]]; then
+      ((++held == 3)) && break
+    else
+      held=0
+      previous=$current
+    fi
+    sleep 0.05
+  done
+}
+
+# Move the window by the cells it is off by, rather than scaling it, which
+# would scale the terminal's padding too. Two nudges, and a cell of slack.
+about_fit() {
+  local layout target_c target_r rows cols address width height dw dh nudges=0
+  layout=$(fastfetch --pipe | sed 's/\x1b\[[0-9;?]*[a-zA-Z]//g')
+  # Two columns of right padding; a row for the cursor and one spare.
+  target_c=$(($(LC_ALL=C.UTF-8 wc -L <<<"$layout") + 2))
+  target_r=$(($(wc -l <<<"$layout") + 2))
+  while :; do
+    read -r rows cols < <(stty size)
+    read -r address width height < <(hyprctl clients -j |
+      jq -r 'first(.[] | select(.class == "hrndz.about")) | "\(.address) \(.size[0]) \(.size[1])"') || true
+    [[ -n ${address:-} ]] || return 1
+    ((cols >= target_c && cols <= target_c + 1 && rows >= target_r && rows <= target_r + 1)) && return 0
+    ((++nudges <= 2)) || return 1
+
+    dw=$(((target_c - cols) * width))
+    dh=$(((target_r - rows) * height))
+    width=$((width + (dw >= 0 ? (dw + cols - 1) / cols : dw / cols)))
+    height=$((height + (dh >= 0 ? (dh + rows - 1) / rows : dh / rows)))
+    hyprctl dispatch "hl.dsp.window.resize({ window = \"address:$address\", x = $width, y = $height })" >/dev/null
+    hyprctl dispatch "hl.dsp.window.center({ window = \"address:$address\" })" >/dev/null
+    about_settle
+  done
 }
 
 feature=${1:-}
@@ -556,6 +627,7 @@ webcam) webcam "$@" ;;
 ocr) ocr ;;
 qr) qr ;;
 color-picker) pkill hyprpicker || hyprpicker -a ;;
+about) about "$@" ;;
 ipc) ipc "$@" ;;
 -h | --help | help) usage ;;
 *)

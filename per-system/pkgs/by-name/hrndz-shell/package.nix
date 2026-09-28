@@ -22,6 +22,7 @@
   coreutils,
   dconf,
   ddcutil,
+  fastfetch,
   ffmpeg-headless,
   findutils,
   fontconfig,
@@ -99,6 +100,7 @@ let
   cli = script "hrndz-shell" [
     brightnessctl
     coreutils
+    fastfetch
     ffmpeg-headless
     findutils
     gawk
