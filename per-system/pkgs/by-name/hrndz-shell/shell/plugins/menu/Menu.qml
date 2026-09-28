@@ -60,6 +60,7 @@ Item {
   property bool rowsLoaded: false
   property string activeMenu: "root"
   property string filterText: ""
+  onFilterTextChanged: if (searchField && searchField.text !== filterText) searchField.text = filterText
   property int selectedIndex: 0
   property bool cursorActive: false
   property int requestSerial: 0
@@ -99,10 +100,9 @@ Item {
   property int rowPeek: Math.round(baseRowHeight * 0.55)
   property int rowSpacing: Style.spacing.xs
   property int dividerHeight: Style.space(17)
-  property bool searchDivider: false
   property int layoutSerial: 0
   property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : Style.space(520), panel.width - Style.gapsOut * 2)
-  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText, searchDivider)
+  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : rowListHeight(layoutSerial, displayModel.count, filterText)
   property int cardHeight: root.dmenuActive
     ? Math.min(contentMargin * 2 + headerHeight + (mode === "input" ? 0 : contentSpacing + visibleRowsHeight), panel.height - Style.gapsOut * 2)
     : Math.min(contentMargin * 2 + headerHeight + contentSpacing + visibleRowsHeight, panel.height - Style.gapsOut * 2)
@@ -171,7 +171,7 @@ Item {
     return totals[full - 1] + root.rowSpacing + peek
   }
 
-  function rowListHeight(_serial, _count, _filter, _divider) {
+  function rowListHeight(_serial, _count, _filter) {
     if (displayModel.count === 0) return root.baseRowHeight
 
     var totals = []
@@ -181,7 +181,7 @@ Item {
     for (var i = 0; i < displayModel.count; i++) {
       var row = displayModel.get(i)
       if (i > 0) total += root.rowSpacing
-      if (row.section === "drilldown" && previousSection !== "drilldown") total += root.dividerHeight
+      if (row.section && row.section !== previousSection) total += root.dividerHeight
       total += root.rowHeightForDetail(row.detail)
       previousSection = row.section
       totals.push(total)
@@ -487,7 +487,6 @@ Item {
 
   function rebuildDmenuDisplay() {
     displayModel.clear()
-    root.searchDivider = false
 
     if (root.mode === "input") {
       layoutSerial += 1
@@ -550,7 +549,6 @@ Item {
     root.activeMenu = active
     var rows = []
     var query = root.filterText.trim()
-    root.searchDivider = false
 
     if (query) {
       for (var i = 0; i < root.itemOrder.length; i++) {
@@ -591,11 +589,12 @@ Item {
         })
       }
       if (active === "root") {
+        for (var app = 0; app < rows.length; app++) rows[app].section = "Applications"
         // Direct actions follow the app list; typing searches both together.
         for (var a = 0; a < root.itemOrder.length; a++) {
           var action = root.item(root.itemOrder[a])
           if (action && action.kind === "action" && root.isVisible(action))
-            rows.push(root.displayRow(action, root.parentPathFor(action.id), action.order))
+            rows.push(root.displayRow(action, root.parentPathFor(action.id), action.order, "Actions"))
         }
       }
     }
@@ -759,7 +758,7 @@ Item {
     // their icons. Refresh here even when the desktop entry list did not change.
     if (root.appLibrary) root.appLibrary.refreshIcons()
 
-    Qt.callLater(function() { keyCatcher.forceActiveFocus() })
+    Qt.callLater(function() { searchField.forceActiveFocus() })
   }
 
   function openDmenu(payload) {
@@ -781,7 +780,7 @@ Item {
     opened = true
     rebuildDisplay()
 
-    Qt.callLater(function() { keyCatcher.forceActiveFocus() })
+    Qt.callLater(function() { searchField.forceActiveFocus() })
   }
   ListModel { id: displayModel }
 
@@ -1002,44 +1001,6 @@ Item {
       Item {
         id: keyCatcher
         anchors.fill: parent
-        focus: true
-
-        Keys.priority: Keys.BeforeItem
-        Keys.onPressed: function(event) {
-          if (event.key === Qt.Key_Escape) {
-            if (root.filterText) root.setFilter("")
-            else root.cancel()
-            event.accepted = true
-          } else if (Util.editsFilter(event, root.filterText)) {
-            root.setFilter(Util.editedFilter(event, root.filterText))
-            event.accepted = true
-          } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
-            root.goBack()
-            event.accepted = true
-          } else if (event.key === Qt.Key_Up) {
-            root.select(-1)
-            event.accepted = true
-          } else if (event.key === Qt.Key_Down) {
-            root.select(1)
-            event.accepted = true
-          } else if (event.key === Qt.Key_PageUp) {
-            root.select(-6)
-            event.accepted = true
-          } else if (event.key === Qt.Key_PageDown) {
-            root.select(6)
-            event.accepted = true
-          } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter || event.key === Qt.Key_Right) {
-            if (root.dmenuActive) {
-              if (root.mode === "input") root.applyDmenuSelection(root.filterText)
-              else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
-            } else if (root.cursorActive) root.activateIndex(root.selectedIndex)
-            else if (displayModel.count > 0) root.cursorActive = true
-            event.accepted = true
-          } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32 && event.text.charCodeAt(0) !== 127 && (event.modifiers === Qt.NoModifier || event.modifiers === Qt.ShiftModifier)) {
-            root.setFilter(root.filterText + event.text)
-            event.accepted = true
-          }
-        }
       }
 
       Column {
@@ -1056,17 +1017,51 @@ Item {
           radius: root.cornerRadius
           color: "transparent"
 
-          Text {
-            textFormat: Text.PlainText
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            text: root.filterText || (root.dmenuActive ? (root.dmenuPrompt + "…") : (root.activeMenu === "root" ? "Search apps and actions…" : ((root.item(root.activeMenu) ? (root.item(root.activeMenu).title || root.item(root.activeMenu).label) : "Go") + "…")))
-            color: root.foreground
-            opacity: root.filterText ? 1 : 0.58
+          TextField {
+            id: searchField
+            anchors.fill: parent
+            foreground: root.foreground
+            accent: root.selectedText
             font.family: root.fontFamily
             font.pixelSize: Style.font.heading
-            elide: Text.ElideRight
+            placeholderText: root.dmenuActive ? root.dmenuPrompt + "…"
+              : root.activeMenu === "root" ? "Search apps and actions…"
+              : (root.item(root.activeMenu) ? root.item(root.activeMenu).label : "Search") + "…"
+            onTextEdited: root.setFilter(text)
+
+            Keys.priority: Keys.BeforeItem
+            Keys.onPressed: function(event) {
+              if (event.key === Qt.Key_Escape) {
+                if (root.filterText) root.setFilter("")
+                else root.cancel()
+                event.accepted = true
+              } else if ((event.key === Qt.Key_Backspace || event.key === Qt.Key_Left) && !root.filterText) {
+                root.goBack()
+                event.accepted = true
+              } else if (event.key === Qt.Key_Up) {
+                root.select(-1)
+                event.accepted = true
+              } else if (event.key === Qt.Key_Down) {
+                root.select(1)
+                event.accepted = true
+              } else if (event.key === Qt.Key_PageUp) {
+                root.select(-6)
+                event.accepted = true
+              } else if (event.key === Qt.Key_PageDown) {
+                root.select(6)
+                event.accepted = true
+              } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if (root.dmenuActive) {
+                  if (root.mode === "input") root.applyDmenuSelection(root.filterText)
+                  else if (displayModel.count > 0) root.activateIndex(root.cursorActive ? root.selectedIndex : 0)
+                } else if (root.cursorActive) root.activateIndex(root.selectedIndex)
+                else if (displayModel.count > 0) root.cursorActive = true
+                event.accepted = true
+              } else if (event.key === Qt.Key_U && event.modifiers === Qt.ControlModifier) {
+                root.setFilter("")
+                event.accepted = true
+              }
+            }
           }
 
         }
@@ -1089,17 +1084,18 @@ Item {
               required property string section
 
               width: ListView.view.width
-              height: section === "drilldown" ? root.dividerHeight : 0
-              visible: section === "drilldown"
+              height: section ? root.dividerHeight : 0
+              visible: !!section
 
-              Rectangle {
+              Text {
                 anchors.left: parent.left
-                anchors.leftMargin: Style.space(4)
-                anchors.right: parent.right
-                anchors.rightMargin: Style.space(4)
+                anchors.leftMargin: Style.space(10)
                 anchors.verticalCenter: parent.verticalCenter
-                height: Style.spacing.hairline
-                color: Util.alpha(root.foreground, 0.2)
+                text: section
+                color: Util.alpha(root.foreground, 0.6)
+                font.family: root.fontFamily
+                font.pixelSize: Style.font.caption
+                font.bold: true
               }
             }
 
