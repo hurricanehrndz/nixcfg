@@ -87,7 +87,7 @@ The `import-tree` utility automatically imports all Nix files in a directory tre
 
 When changing `modules/internal/{home,nixos}/desktop/hyprland/` or
 `per-system/pkgs/by-name/hrndz-shell/`, read
-[docs/hyprland-shell.md](docs/hyprland-shell.md). Follow the curated shell
+[docs/hyprland.md](docs/hyprland.md). Follow the curated shell
 model: Nix owns installed apps and services; one searchable menu shows apps and
 actions; volume and display controls stay in the UI. Port only the parts of an
 Omarchy plugin this desktop uses. Prefer Quickshell or existing helpers; add a
