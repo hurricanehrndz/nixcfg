@@ -1,0 +1,23 @@
+diff -ru a/Controllers/RazerController/RazerController/RazerController.cpp b/Controllers/RazerController/RazerController/RazerController.cpp
+--- a/Controllers/RazerController/RazerController/RazerController.cpp	2026-09-28 17:16:50
++++ b/Controllers/RazerController/RazerController/RazerController.cpp	2026-09-28 17:16:51
+@@ -1897,7 +1897,18 @@
+     report->crc = razer_calculate_crc(report);
+ 
+     DeviceGuardLock _ = guard_manager_ptr->AwaitExclusiveAccess();
+-    return hid_send_feature_report(dev, (unsigned char*)report, sizeof(*report));
++    int result = hid_send_feature_report(dev, (unsigned char*)report, sizeof(*report));
++
++    /*---------------------------------------------------------*\
++    | The Leviathan V2 X drops an effect when the next report   |
++    | (such as brightness) arrives within a few milliseconds.   |
++    \*---------------------------------------------------------*/
++    if(dev_pid == RAZER_LEVIATHAN_V2X_PID)
++    {
++        std::this_thread::sleep_for(20ms);
++    }
++
++    return result;
+ }
+ 
+ int RazerController::razer_usb_send_argb(razer_argb_report* report)

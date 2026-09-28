@@ -102,7 +102,13 @@ in
     (mkIf cfg.rgb.enable {
       services.hardware.openrgb = {
         enable = true;
-        package = pkgs.openrgb.withPlugins [ pkgs.openrgb-plugin-effects ];
+        # CEILING: local patch until OpenRGB spaces its reports to the soundbar
+        # upstream; without it most mode changes are silently dropped.
+        package =
+          (pkgs.openrgb.overrideAttrs (old: {
+            patches = old.patches or [ ] ++ [ ./openrgb-leviathan-v2x-settle.patch ];
+          })).withPlugins
+            [ pkgs.openrgb-plugin-effects ];
         motherboard = null;
       };
       environment.systemPackages = [ leviathanLighting ];
