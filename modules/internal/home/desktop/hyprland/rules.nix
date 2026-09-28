@@ -99,19 +99,22 @@
         }
 
         ##: Webcam overlay (hrndz-shell screenrecord --webcam)
-        # Placed at its medium size so it appears in the corner; the script
-        # then fits it to the recorded region.
+        # Omarchy's webcam-overlay.lua: the 8:9 portrait sizes scale from
+        # monitor height and start in their final corner; the script then fits
+        # the overlay to the recorded region.
         {
-          match = {
-            class = "^WebcamOverlay$";
-            title = "^WebcamOverlay$";
-          };
-          tag = "-default-opacity";
-          float = true;
-          pin = true;
-          no_initial_focus = true;
-          no_dim = true;
-          opacity = "1 1";
+          match.class = "^WebcamOverlay-small$";
+          size = [
+            "(monitor_h*4/25)"
+            "(monitor_h*9/50)"
+          ];
+          move = [
+            "(monitor_w-monitor_h*4/25-40)"
+            "(monitor_h-monitor_h*9/50-40)"
+          ];
+        }
+        {
+          match.class = "^WebcamOverlay-medium$";
           size = [
             "(monitor_h*2/9)"
             "(monitor_h/4)"
@@ -120,6 +123,30 @@
             "(monitor_w-monitor_h*2/9-40)"
             "(monitor_h-monitor_h/4-40)"
           ];
+        }
+        {
+          match.class = "^WebcamOverlay-large$";
+          size = [
+            "(monitor_h*3/10)"
+            "(monitor_h*27/80)"
+          ];
+          move = [
+            "(monitor_w-monitor_h*3/10-40)"
+            "(monitor_h-monitor_h*27/80-40)"
+          ];
+        }
+        # Its own app id keeps it out of mpv's centred floating rules below.
+        {
+          match = {
+            class = "^WebcamOverlay-(small|medium|large)$";
+            title = "^WebcamOverlay$";
+          };
+          tag = "-default-opacity";
+          float = true;
+          pin = true;
+          no_initial_focus = true;
+          no_dim = true;
+          opacity = "1 1";
         }
 
         ##: Floating dialogs and utilities

@@ -56,8 +56,9 @@ in
       (shell "ALT + CTRL + PRINT" "Screen recording with microphone and webcam"
         "screenrecord screen --audio --mic --webcam"
       )
-      (shell "SUPER + ALT + bracketleft" "Make webcam overlay smaller" "webcam smaller")
-      (shell "SUPER + ALT + bracketright" "Make webcam overlay larger" "webcam larger")
+      # code:34 and code:35 are the [ and ] keys.
+      (shell "SUPER + ALT + code:34" "Make webcam overlay smaller" "webcam smaller")
+      (shell "SUPER + ALT + code:35" "Make webcam overlay larger" "webcam larger")
       (shell "SUPER + PRINT" "Color picker" "color-picker")
       (shell "SUPER + CTRL + PRINT" "Copy text from a region (OCR)" "ocr")
 

@@ -91,8 +91,9 @@ apps for video, PDF and images. Screenshots use Omarchy's omasnap, built in
 upstream's main branch; if `just update` breaks its build, pin the input to a
 tag. Recording is `hrndz-shell screenrecord`, which runs gpu-screen-recorder
 with the capture helper that `programs.gpu-screen-recorder` sets up. With
-`--webcam` it shows the first camera in a pinned mpv window in the recorded
-area's corner (`Super+Alt+[`/`]` resize it). `hrndz-shell ocr` and `qr` copy
+`--webcam` it shows a camera (asking which when there are several; v4l-utils
+finds them) in a pinned mpv window in the recorded area's corner
+(`Super+Alt+[`/`]` or `hrndz-shell webcam` resize it). `hrndz-shell ocr` and `qr` copy
 the text or QR code in a region; a QR value is marked sensitive, so the
 clipboard history skips it. All of them call `omarchy-notification-send`,
 vendored into the shell, so clicking the notification opens the capture. A

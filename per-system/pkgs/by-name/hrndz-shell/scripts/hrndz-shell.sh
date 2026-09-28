@@ -9,7 +9,10 @@ config=hrndz-shell
 unit=quickshell.service
 state="$HOME/.local/state/hrndz-shell"
 # The running screen recording's pid and file, and its region for the webcam.
-recording="${XDG_RUNTIME_DIR:-/run/user/$UID}/hrndz-screenrecord"
+# Private to the user: stop reads the file back as a path.
+runtime="${XDG_RUNTIME_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/hrndz-shell}"
+recording="$runtime/hrndz-screenrecord"
+recording_region="$recording-region"
 
 usage() {
   cat <<'USAGE'
@@ -26,8 +29,12 @@ usage: hrndz-shell <feature> [args]
   panel audio|bluetooth|network|power|display|calendar
   screenshot [smart|region|window|screen]
   screenrecord [region|screen] [--audio] [--mic] [--webcam]
-                              start, or stop the running recording
-  webcam smaller|larger|small|medium|large
+      [--webcam-device=<dev>] [--webcam-size=small|medium|large]
+                              start, or stop the running recording; --webcam
+                              asks which camera when there are several
+  webcam list                 the cameras, as "<device>  <name>"; a
+                              /dev/v4l/by-id path also works as --webcam-device
+  webcam smaller|larger|reset|small|medium|large
                               resize the recording's webcam overlay
   ocr | qr                    copy the text or QR code in a region
   color-picker
@@ -254,31 +261,71 @@ qr() {
   omarchy-notification-send -g 󰐲 "QR code copied to clipboard"
 }
 
-# Omarchy's webcam overlay, from omarchy-capture-screenrecording and
-# omarchy-capture-webcam-resize (rev as above): the camera cropped to 8:9
-# portrait in a pinned window (rules.nix) in the recorded area's bottom-right
-# corner, where the recording picks it up.
+# Omarchy's webcam overlay (omacom/omarchy, MIT, rev as above), from
+# omarchy-capture-webcam-list, omarchy-capture-screenrecording-with-webcam,
+# omarchy-capture-screenrecording and omarchy-capture-webcam-resize: the
+# camera cropped to 8:9 portrait in a pinned window (rules.nix) in the
+# recorded area's bottom-right corner, where the recording picks it up.
+
+# The first capture-capable node of each device, as "<device>  <name>".
+webcam_list() {
+  local line name='' device emitted=0
+  while IFS= read -r line; do
+    if [[ -n $line && $line != [[:space:]]* ]]; then
+      name=$line
+      emitted=0
+    elif ((!emitted)); then
+      device=${line#"${line%%[![:space:]]*}"}
+      if [[ $device == /dev/video* ]] && webcam_capture_capable "$device"; then
+        emitted=1
+        printf '%s  %s\n' "$device" "$name"
+      fi
+    fi
+  done < <(v4l2-ctl --list-devices 2>/dev/null)
+}
+
+webcam_capture_capable() {
+  v4l2-ctl --device "$1" --info 2>/dev/null | awk '
+    /^[[:space:]]*Device Caps[[:space:]]*:/ { inspect = 1; next }
+    inspect && /^[[:space:]]*Video Capture/ { found = 1 }
+    END { exit !found }
+  '
+}
+
+# The only camera, or the one picked from the menu when there are several.
+webcam_pick() {
+  local selection
+  local -a devices
+  mapfile -t devices < <(webcam_list)
+  if ((${#devices[@]} == 0)); then
+    omarchy-notification-send "No webcam devices found" -u critical -t 3000
+    return 1
+  fi
+  if ((${#devices[@]} == 1)); then
+    selection=${devices[0]}
+  else
+    selection=$(printf '%s\n' "${devices[@]}" | select_line "Select Webcam" 520 520) || return 1
+  fi
+  printf '%s\n' "${selection%%[[:space:]]*}"
+}
+
 webcam_start() {
-  local node waited device=
-  # CEILING: takes the first V4L2 node with index 0, which is a camera's
-  # capture node on UVC webcams. Omarchy asks v4l2-ctl for capture-capable
-  # nodes and a 16:9 mode; add v4l-utils if a camera here gets that wrong.
-  for node in /sys/class/video4linux/video*; do
-    if [[ -r $node/index && $(<"$node/index") == 0 ]]; then
-      device=/dev/${node##*/}
+  local device=$1 size=$2 region=$3 formats resolution options=framerate=30 waited
+  webcam_stop
+
+  # The first of these 16:9 modes the camera offers.
+  formats=$(v4l2-ctl --list-formats-ext -d "$device" 2>/dev/null) || true
+  for resolution in 640x360 1280x720 1920x1080; do
+    if [[ $formats == *"$resolution"* ]]; then
+      options="video_size=$resolution,$options"
       break
     fi
   done
-  if [[ -z $device ]]; then
-    omarchy-notification-send -u critical "No webcam found"
-    return 1
-  fi
 
-  # The driver picks its nearest mode if 720p is not one.
   mpv "av://v4l2:$device" --profile=low-latency --untimed --no-cache \
-    --demuxer-lavf-o=video_size=1280x720,framerate=30 '--vf=lavfi=[crop=ih*8/9:ih]' \
-    --title=WebcamOverlay --wayland-app-id=WebcamOverlay \
-    --no-border --no-audio --no-osc --osd-level=0 --really-quiet >/dev/null 2>&1 &
+    --demuxer-lavf-o="$options" '--vf=lavfi=[crop=ih*8/9:ih]' \
+    --title=WebcamOverlay --wayland-app-id="WebcamOverlay-$size" \
+    --no-border --no-audio --no-osc --osd-level=0 --really-quiet &>/dev/null &
   for ((waited = 0; waited < 40; waited++)); do
     hyprctl clients -j | jq -e 'any(.[]; .title == "WebcamOverlay")' >/dev/null && break
     sleep 0.05
@@ -288,71 +335,98 @@ webcam_start() {
     omarchy-notification-send -u critical "Webcam overlay failed to start" "$device"
     return 1
   fi
-  webcam medium
+  [[ -z $region ]] || printf '%s\n' "$region" >"$recording_region"
+  webcam "$size"
   # Let the move settle, or the recording starts with it.
   sleep 0.6
 }
 
 webcam_stop() {
   pkill -f WebcamOverlay || true
-  rm -f "$recording-region"
+  rm -f "$recording_region"
 }
 
-# Resize the overlay: three sizes scaled from the recorded region's height
-# (else its monitor's), kept 40px inside that area's bottom-right corner.
+# List the cameras, or resize the overlay to one of three 8:9 sizes scaled
+# from the recorded region's height (else its monitor's), kept $margin inside
+# that area's bottom-right corner.
 webcam() {
-  local client address width monitor x y w h base i j
+  local margin=40 action=${1:-} client address width height monitor_id monitor
+  local x y w h region base available target_width target_height target_x target_y i j
   local -a heights widths
-  case ${1:-} in
-  small) i=0 ;;
-  medium) i=1 ;;
-  large) i=2 ;;
-  smaller | larger) i=-1 ;;
+  case $action in
+  list)
+    webcam_list
+    return
+    ;;
+  smaller | larger | reset | small | medium | large) ;;
   *)
     usage >&2
     return 2
     ;;
   esac
-  client=$(hyprctl clients -j | jq -c 'first(.[] | select(.title == "WebcamOverlay")) // empty')
-  [[ -n $client ]] || return 0
-  read -r address width monitor < <(jq -r '[.address, .size[0], .monitor] | @tsv' <<<"$client")
-  read -r x y w h < <(hyprctl monitors -j | jq -r --argjson id "$monitor" '.[] | select(.id == $id) |
-    (.transform % 2 == 1) as $turned |
-    [.x, .y, ((if $turned then .height else .width end) / .scale | floor),
-      ((if $turned then .width else .height end) / .scale | floor)] | @tsv')
-  if [[ -r $recording-region && $(<"$recording-region") =~ ^([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)$ ]]; then
+
+  client=$(hyprctl clients -j 2>/dev/null |
+    jq -cer 'first(.[] | select(.title == "WebcamOverlay")) // empty' 2>/dev/null) || return 0
+  read -r address width height monitor_id < <(jq -r '[.address, .size[0], .size[1], .monitor] | @tsv' <<<"$client")
+  [[ -n $address && $width =~ ^[0-9]+$ && $height =~ ^[0-9]+$ && $monitor_id =~ ^[0-9]+$ ]] || return 0
+  ((width > 0 && height > 0)) || return 0
+  monitor=$(hyprctl monitors -j 2>/dev/null |
+    jq -cer --argjson id "$monitor_id" 'first(.[] | select(.id == $id)) // empty' 2>/dev/null) || return 0
+  read -r x y w h < <(jq -r '((.transform // 0) % 2 == 1) as $rotated |
+    [.x, .y, (((if $rotated then .height else .width end) / .scale) | floor),
+      (((if $rotated then .width else .height end) / .scale) | floor)] | @tsv' <<<"$monitor")
+  [[ $x =~ ^-?[0-9]+$ && $y =~ ^-?[0-9]+$ && $w =~ ^[0-9]+$ && $h =~ ^[0-9]+$ ]] || return 0
+  if [[ -f $recording_region ]] && region=$(<"$recording_region") &&
+    [[ $region =~ ^([0-9]+)x([0-9]+)\+(-?[0-9]+)\+(-?[0-9]+)$ ]]; then
     w=${BASH_REMATCH[1]} h=${BASH_REMATCH[2]} x=${BASH_REMATCH[3]} y=${BASH_REMATCH[4]}
   fi
 
   # A narrow region scales from the height its width allows the large size.
-  base=$h
-  ((base * 3 / 10 <= w - 80)) || base=$(((w - 80) * 10 / 3))
+  base=$h available=$((w - 2 * margin))
+  if ((available > 0 && base * 3 / 10 > available)); then
+    base=$((available * 10 / 3))
+  fi
   heights=($(((base * 9 + 25) / 50)) $(((base + 2) / 4)) $(((base * 27 + 40) / 80)))
   for j in 0 1 2; do
     widths[j]=$(((heights[j] * 8 + 4) / 9))
   done
-  # smaller: the largest size below the current width; larger: the smallest
-  # above it.
-  for j in 0 1 2; do
-    if [[ $1 == smaller ]] && ((widths[j] < width)); then
-      i=$j
-    elif [[ $1 == larger ]] && ((i < 0 && widths[j] > width)); then
-      i=$j
-    fi
-  done
-  ((i >= 0)) || return 0
 
+  # smaller: the largest size below the current width; larger: the smallest
+  # above it. With neither, the overlay keeps its size and is re-anchored.
+  i=-1
+  case $action in
+  small) i=0 ;;
+  medium | reset) i=1 ;;
+  large) i=2 ;;
+  smaller)
+    for j in 2 1 0; do
+      ((widths[j] < width)) && i=$j && break
+    done
+    ;;
+  larger)
+    for j in 0 1 2; do
+      ((widths[j] > width)) && i=$j && break
+    done
+    ;;
+  esac
+  target_width=$width target_height=$height
+  if ((i >= 0)); then
+    target_width=${widths[i]} target_height=${heights[i]}
+  fi
+
+  target_x=$((x + w - target_width - margin)) target_y=$((y + h - target_height - margin))
+  ((target_x >= x + margin)) || target_x=$((x + margin))
+  ((target_y >= y + margin)) || target_y=$((y + margin))
   address="address:$address"
-  x=$((x + w - widths[i] - 40)) y=$((y + h - heights[i] - 40))
-  hyprctl dispatch "hl.dsp.window.resize({ window = \"$address\", x = ${widths[i]}, y = ${heights[i]} })" >/dev/null
-  hyprctl dispatch "hl.dsp.window.move({ window = \"$address\", x = $x, y = $y })" >/dev/null
+  hyprctl dispatch "hl.dsp.window.resize({ window = \"$address\", x = $target_width, y = $target_height })" >/dev/null
+  hyprctl dispatch "hl.dsp.window.move({ window = \"$address\", x = $target_x, y = $target_y })" >/dev/null
 }
 
-# Omarchy's omarchy-capture-screenrecording without the loudness pass or bar
-# indicator. The recorder's pid and file live in $recording between the start
+# Omarchy's omarchy-capture-screenrecording without the loudness pass, bar
+# indicator or smart region picker. The recorder's pid and file live in $recording between the start
 # and stop calls.
 screenrecord() {
-  local pid file preview dir region='' sources='' webcam=''
+  local pid file preview dir mode region='' sources='' webcam='' device='' size=medium
   local -a target audio=()
 
   if [[ -r $recording ]] && read -r pid file <"$recording" && kill -0 "$pid" 2>/dev/null; then
@@ -376,12 +450,9 @@ screenrecord() {
     return
   fi
 
-  case ${1:-region} in
-  region)
-    region=$(slurp -d -f '%wx%h+%x+%y') || return 0
-    target=(-w region -region "$region")
-    ;;
-  screen) target=(-w "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')") ;;
+  mode=${1:-region}
+  case $mode in
+  region | screen) ;;
   *)
     usage >&2
     return 2
@@ -393,22 +464,38 @@ screenrecord() {
     --audio) sources+=${sources:+|}default_output ;;
     --mic) sources+=${sources:+|}default_input ;;
     --webcam) webcam=1 ;;
+    --webcam-device=*) device=${arg#*=} ;;
+    --webcam-size=*) size=${arg#*=} ;;
     *)
       usage >&2
       return 2
       ;;
     esac
   done
+  case $size in
+  small | medium | large) ;;
+  *)
+    echo "Invalid webcam size: $size (expected small, medium, or large)" >&2
+    return 1
+    ;;
+  esac
   # One mixed track: most players only play the first of several.
   [[ -n $sources ]] && audio=(-a "$sources" -ac aac)
+  if [[ -n $webcam && -z $device ]]; then
+    device=$(webcam_pick) || return 1
+  fi
 
+  if [[ $mode == region ]]; then
+    region=$(slurp -d -f '%wx%h+%x+%y') || return 0
+    target=(-w region -region "$region")
+  else
+    target=(-w "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')")
+  fi
+
+  mkdir -p "$runtime"
+  [[ -n ${XDG_RUNTIME_DIR:-} ]] || chmod 700 "$runtime"
   if [[ -n $webcam ]]; then
-    if [[ -n $region ]]; then
-      printf '%s\n' "$region" >"$recording-region"
-    else
-      rm -f "$recording-region"
-    fi
-    webcam_start || return 1
+    webcam_start "$device" "$size" "$region" || return 1
   fi
 
   dir="${XDG_VIDEOS_DIR:-$HOME/Videos}"

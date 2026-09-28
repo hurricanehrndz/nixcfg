@@ -48,6 +48,7 @@
   ripgrep,
   slurp,
   systemd,
+  v4l-utils,
   upower,
   util-linux,
   wireplumber,
@@ -110,6 +111,7 @@ let
     quickshell'
     slurp
     systemd
+    (v4l-utils.override { withGUI = false; })
     wireplumber
     wl-clipboard
     (zbar.override {
