@@ -32,8 +32,8 @@ in
         ))
       ]) namedWorkspaces
       ++ [
-        (bind "SUPER + S" "Toggle scratchpad" ''hl.dsp.workspace.toggle_special("scratchpad")'')
-        (bind "SUPER + ALT + S" "Move window to scratchpad" (
+        (bind "${meh} + S" "Toggle scratchpad" ''hl.dsp.workspace.toggle_special("scratchpad")'')
+        (bind "${hyper} + S" "Move window to scratchpad" (
           moveWindow ''workspace = "special:scratchpad", follow = false''
         ))
 
