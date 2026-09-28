@@ -58,7 +58,6 @@
   util-linux,
   wireplumber,
   wl-clipboard,
-  wtype,
   xdg-utils,
   zbar,
   zenity,
@@ -137,20 +136,15 @@ let
     ];
     clipboard-paste = [
       coreutils
+      hyprland
       jq
       wl-clipboard
-      wtype
     ];
     clipboard-open = [
       coreutils
       gnugrep
       jq
       xdg-utils
-    ];
-    emoji-insert = [
-      coreutils
-      wl-clipboard
-      wtype
     ];
     focus-app = [
       hyprland

@@ -148,7 +148,7 @@ Item {
   function applySelected(emoji) {
     if (!emoji) return
     root.dismiss()
-    Quickshell.execDetached([root.omarchyPath + "/bin/emoji-insert", emoji])
+    Quickshell.execDetached([root.omarchyPath + "/bin/clipboard-paste", "--text", emoji])
   }
 
   ListModel { id: displayModel }
