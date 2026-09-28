@@ -50,6 +50,10 @@ Item {
   property bool opened: false
   property string mode: "menu"
   readonly property bool dmenuActive: mode === "select" || mode === "input"
+  // A picker asks for the palette's size and place with layout "palette";
+  // any other picker is sized by its caller and its rows.
+  property bool dmenuPalette: false
+  readonly property bool rowSized: dmenuActive && !dmenuPalette
   property string dmenuPrompt: ""
   property var dmenuOptions: []
   property string selectionFile: ""
@@ -109,7 +113,7 @@ Item {
   // A dmenu picker is sized by its caller and its rows; the palette is sized
   // by the output (paletteRect).
   property int dmenuCardWidth: Math.min(Style.space(root.dmenuWidth), panel.width - Style.gapsOut * 2)
-  property int visibleRowsHeight: root.dmenuActive ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : 0
+  property int visibleRowsHeight: root.rowSized ? dmenuRowListHeight(layoutSerial, displayModel.count, filterText) : 0
   property int dmenuCardHeight: Math.min(headerHeight + (mode === "input" ? 0 : 1 + listInset * 2 + visibleRowsHeight), panel.height - Style.gapsOut * 2)
 
   // The palette card grows with the output, 40% × 54% of it, between the
@@ -147,6 +151,7 @@ Item {
   }
   readonly property string crumbText: {
     if (root.filterText) return "Search results"
+    if (root.dmenuActive) return root.dmenuPrompt
     if (root.activeMenu !== "root") return root.pathFor(root.activeMenu)
     return "Apps and actions · type to search"
   }
@@ -651,6 +656,7 @@ Item {
     requestSerial += 1
     panel.unfreezeCardTop()
     mode = payload.mode === "input" ? "input" : "select"
+    dmenuPalette = payload.layout === "palette"
     dmenuPrompt = String(payload.prompt || (mode === "input" ? "Input" : "Select"))
     dmenuOptions = Array.isArray(payload.options) ? payload.options : []
     selectionFile = String(payload.selectionFile || "")
@@ -762,7 +768,7 @@ Item {
     readonly property int centeredTop: Math.max(Style.gapsOut, Math.round((height - root.dmenuCardHeight) / 2))
     readonly property int effectiveCardTop: cardTop >= 0 ? cardTop : centeredTop
     function freezeCardTop() {
-      if (root.dmenuActive && visible && cardTop < 0) {
+      if (root.rowSized && visible && cardTop < 0) {
         cardTop = effectiveCardTop
         maxRowsHeight = root.visibleRowsHeight
       }
@@ -783,10 +789,10 @@ Item {
     BorderSurface {
       id: card
       readonly property var rect: root.paletteRect(panel.width, panel.height, root.shell ? root.shell.bar : null)
-      x: root.dmenuActive ? Math.round((panel.width - width) / 2) : rect.x
-      y: root.dmenuActive ? panel.effectiveCardTop : rect.y
-      width: root.dmenuActive ? root.dmenuCardWidth : rect.width
-      height: root.dmenuActive ? Math.min(root.dmenuCardHeight, panel.height - Style.gapsOut - panel.effectiveCardTop) : rect.height
+      x: root.rowSized ? Math.round((panel.width - width) / 2) : rect.x
+      y: root.rowSized ? panel.effectiveCardTop : rect.y
+      width: root.rowSized ? root.dmenuCardWidth : rect.width
+      height: root.rowSized ? Math.min(root.dmenuCardHeight, panel.height - Style.gapsOut - panel.effectiveCardTop) : rect.height
       radius: root.cornerRadius
       color: root.background
       borderSpec: root.borderSpec
@@ -886,7 +892,7 @@ Item {
       // Breadcrumb: where the palette is and what the field will search.
       Row {
         id: crumbs
-        visible: !root.dmenuActive
+        visible: !root.rowSized
         x: card.borderLeft + Style.space(22)
         y: header.y + header.height + Style.space(6)
         height: root.crumbHeight
@@ -926,9 +932,10 @@ Item {
       Item {
         id: content
         x: card.borderLeft + Style.space(12)
-        y: root.dmenuActive ? header.y + header.height + 1 + root.listInset : crumbs.y + crumbs.height + Style.space(4)
+        y: root.rowSized ? header.y + header.height + 1 + root.listInset : crumbs.y + crumbs.height + Style.space(4)
         width: parent.width - card.borderLeft - card.borderRight - Style.space(24)
-        height: root.dmenuActive ? root.visibleRowsHeight : footer.y - 1 - root.listInset - y
+        height: root.rowSized ? root.visibleRowsHeight
+          : (root.dmenuActive ? card.height - card.borderBottom : footer.y - 1) - root.listInset - y
         visible: !(root.dmenuActive && root.mode === "input")
 
         ListView {

@@ -77,13 +77,18 @@ menu() {
 }
 
 # Pick one line from stdin in the menu; prints the pick, exits 1 on cancel.
+# `select_line <prompt> <width> <max-height>` sizes the card to its rows;
+# `select_line <prompt> palette` gives it the launcher palette's size and place.
 select_line() {
-  local prompt=$1 width=$2 height=$3 dir payload status=0
+  local prompt=$1 width=${2:-300} height=${3:-0} layout='' dir payload status=0
+  if [[ $width == palette ]]; then
+    layout=palette width=0
+  fi
   dir=$(mktemp -d)
   payload=$(jq -Rsc --arg prompt "$prompt" --arg sel "$dir/selection" --arg donefile "$dir/done" \
-    --argjson width "$width" --argjson height "$height" \
+    --argjson width "$width" --argjson height "$height" --arg layout "$layout" \
     '{mode: "select", prompt: $prompt, options: (split("\n") | map(select(length > 0))),
-      selectionFile: $sel, doneFile: $donefile, width: $width, maxHeight: $height}')
+      selectionFile: $sel, doneFile: $donefile, width: $width, maxHeight: $height, layout: $layout}')
   if ipc shell summon omarchy.menu "$payload" >/dev/null; then
     while [[ ! -e $dir/done ]]; do sleep 0.05; done
     [[ -s $dir/selection ]] && cat "$dir/selection" || status=1
@@ -200,7 +205,7 @@ keybindings() {
   }
   # CEILING: a read-only reference; picking a row only closes the menu.
   # Dispatching the pick would need the bind's action next to each line.
-  select_line Keybindings 800 500 <"$list" >/dev/null || true
+  select_line Keybindings palette <"$list" >/dev/null || true
 }
 
 # omasnap saves to ~/Pictures/Screenshots, copies, and shows a preview whose
