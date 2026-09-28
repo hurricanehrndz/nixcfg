@@ -6,6 +6,7 @@ import qs.Commons
 import qs.Ui
 import "MenuModel.js" as MenuModel
 import "Answers.js" as Answers
+import "Frecency.js" as Frecency
 
 Item {
   id: root
@@ -447,6 +448,7 @@ Item {
     var query = root.filterText.trim()
 
     if (query) {
+      var now = Date.now() / 1000
       for (var i = 0; i < root.itemOrder.length; i++) {
         var entry = root.item(root.itemOrder[i])
         if (!entry || entry.id === "root") continue
@@ -454,7 +456,8 @@ Item {
         if (!root.matchesQuery(entry, query)) continue
 
         var detail = root.parentPathFor(entry.id)
-        rows.push(root.displayRow(entry, detail, root.searchScore(entry, query)))
+        var score = root.searchScore(entry, query) - Frecency.bonus(root.usage, entry.id, now)
+        rows.push(root.displayRow(entry, detail, score))
       }
 
       rows.sort(function(a, b) {
@@ -614,6 +617,7 @@ Item {
     } else if (row.kind === "answer") {
       root.applySelected(row.itemId, "printf %s " + Util.shellQuote(row.action) + " | wl-copy")
     } else if (row.kind === "app") {
+      root.recordUse(row.itemId)
       var appId = row.appId
       var label = row.label
       applySerial = requestSerial
@@ -621,6 +625,7 @@ Item {
       filterText = ""
       if (root.appLibrary) root.appLibrary.launch(appId, label)
     } else {
+      root.recordUse(row.itemId)
       root.applySelected(row.itemId, row.action)
     }
   }
@@ -693,6 +698,24 @@ Item {
     Qt.callLater(function() { searchField.forceActiveFocus() })
   }
   ListModel { id: displayModel }
+
+  // Picks of apps and actions, for ranking search results (Frecency.js).
+  // Idle lists stay alphabetical; only equal search matches reorder.
+  property var usage: ({})
+
+  function recordUse(id) {
+    root.usage = Frecency.record(root.usage, id, Date.now() / 1000)
+    usageFile.setText(Frecency.serialize(root.usage))
+  }
+
+  FileView {
+    id: usageFile
+    path: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/hrndz-shell/menu-usage.json"
+    atomicWrites: true
+    printErrors: false
+    onLoaded: root.usage = Frecency.parse(text())
+    onLoadFailed: root.usage = ({})
+  }
 
   // ----------------------------------------------------------- route surface
   //

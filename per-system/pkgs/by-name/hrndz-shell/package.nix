@@ -258,6 +258,7 @@ stdenvNoCC.mkDerivation {
     runHook preCheck
     bash tests/monitor-scale.sh
     node tests/answers.js
+    node tests/frecency.js
     runHook postCheck
   '';
 
