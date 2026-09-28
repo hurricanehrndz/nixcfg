@@ -99,14 +99,15 @@
         }
 
         ##: About (hrndz-shell menu, fastfetch in a terminal)
-        # Sized to fastfetch's default output in Ghostty at font-size 11.
+        # Ghostty at font-size 11: about 132x25 cells, room for fastfetch's
+        # default 126x22 output.
         {
           match.class = "^hrndz\\.about$";
           float = true;
           center = true;
           size = [
             1200
-            480
+            520
           ];
         }
 
