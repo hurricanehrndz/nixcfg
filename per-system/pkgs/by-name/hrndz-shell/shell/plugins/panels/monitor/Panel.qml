@@ -35,6 +35,7 @@ Panel {
   //   "brightness" - single slider row, selectedIndex = -1 sentinel
   //                  (mirrors Audio's slider rows). Only present if a
   //                  controllable backlight was detected.
+  //   "textsize"   - single slider row over textSizeStops, same sentinel.
   //   "scale"      - 6 Button scale presets; treated as a single
   //                  horizontal row from j/k's perspective. h/l moves
   //                  between presets, identical to bluetooth's header.
@@ -55,11 +56,26 @@ Panel {
   property int selectedIndex: 0
   property bool cursorActive: false
 
-  // Omarchy's text-size slider is gone: shell, GTK and terminal font sizes
-  // come from Stylix (stylix.fonts.sizes), so a runtime knob would fight it.
+  // Text size slider notches (px); `monitor text-size` accepts any size in
+  // its range.
+  readonly property var textSizeStops: [9, 10, 11, 12, 14, 16, 20]
+  // The chosen stop while a change is in flight, so the knob doesn't snap
+  // back during the file round-trip; -1 follows Style.font.baseSize.
+  property int textSizePreviewIndex: -1
+
+  // A text-size change reflows the panel under a stationary pointer, which
+  // fires synthetic hover. While true, hover doesn't move the keyboard
+  // cursor, or h/l on the slider would jump to another row.
+  property bool reflowingText: false
+  function markReflowing() {
+    root.reflowingText = true
+    reflowSettle.restart()
+  }
+
   readonly property var visibleSections: {
     var list = []
     if (brightnessAvailable) list.push("brightness")
+    list.push("textsize")
     list.push("scale")
     if (displays.length > 1) list.push("monitors")
     return list
@@ -67,18 +83,19 @@ Panel {
 
   function sectionCount(section) {
     if (section === "brightness") return 0  // only the slider sentinel at -1
+    if (section === "textsize") return 0
     if (section === "scale") return scaleValues.length
     if (section === "monitors") return displays.length
     return 0
   }
 
   function sectionIsSingleRow(section) {
-    // brightness is a lone slider; scale presets sit horizontally.
-    return section === "brightness" || section === "scale"
+    // brightness and text size are lone sliders; scale presets sit horizontally.
+    return section === "brightness" || section === "textsize" || section === "scale"
   }
 
   function sectionFirstIndex(section) {
-    if (section === "brightness") return -1
+    if (section === "brightness" || section === "textsize") return -1
     return 0
   }
 
@@ -151,8 +168,8 @@ Panel {
     }
     var count = sectionCount(focusSection)
     if (sectionIsSingleRow(focusSection)) {
-      // brightness uses the -1 sentinel; scale clamps into the presets.
-      if (focusSection === "brightness") selectedIndex = -1
+      // the sliders use the -1 sentinel; scale clamps into the presets.
+      if (focusSection === "brightness" || focusSection === "textsize") selectedIndex = -1
       else if (selectedIndex < 0 || selectedIndex >= count) selectedIndex = 0
       return
     }
@@ -303,6 +320,37 @@ Panel {
     actionProc.running = true
   }
 
+  function nearestTextStop(px) {
+    var best = 0
+    var bestDist = 1e9
+    for (var i = 0; i < textSizeStops.length; i++) {
+      var d = Math.abs(textSizeStops[i] - px)
+      if (d < bestDist) { bestDist = d; best = i }
+    }
+    return best
+  }
+
+  function currentTextIndex() {
+    return textSizePreviewIndex >= 0 ? textSizePreviewIndex : nearestTextStop(Style.font.baseSize)
+  }
+
+  // The pending stop if any, else the live base-size (which may be off-notch).
+  function displayedTextPx() {
+    return textSizePreviewIndex >= 0 ? textSizeStops[textSizePreviewIndex] : Style.font.baseSize
+  }
+
+  function setTextSize(px) {
+    textSizeProc.command = [root.monitorCommand, "text-size", String(px)]
+    if (!textSizeProc.running) textSizeProc.running = true
+  }
+
+  function adjustTextSize(deltaSteps) {
+    var idx = Math.max(0, Math.min(textSizeStops.length - 1, currentTextIndex() + deltaSteps))
+    markReflowing()
+    textSizePreviewIndex = idx
+    setTextSize(textSizeStops[idx])
+  }
+
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
@@ -414,6 +462,35 @@ Panel {
     }
   }
 
+  // Style picks the new base-size up through Color's file watch, so there's
+  // nothing to refresh here.
+  Process {
+    id: textSizeProc
+    onExited: function(exitCode) {
+      if (exitCode !== 0) {
+        console.warn("text size failed")
+        root.textSizePreviewIndex = -1
+      }
+    }
+  }
+
+  Timer {
+    id: reflowSettle
+    interval: 300
+    onTriggered: root.reflowingText = false
+  }
+
+  // Once base-size catches up to the pending stop, follow the live value.
+  Connections {
+    target: Style
+    function onFontBaseSizeChanged() {
+      root.markReflowing()
+      if (root.textSizePreviewIndex >= 0
+          && root.nearestTextStop(Style.font.baseSize) === root.textSizePreviewIndex)
+        root.textSizePreviewIndex = -1
+    }
+  }
+
   BarIconButton {
     id: button
     anchors.fill: parent
@@ -448,6 +525,7 @@ Panel {
         if (dy !== 0) root.moveCursor(dy)
         else if (dx !== 0) {
           if (root.focusSection === "brightness") root.adjustBrightness(dx * 5)
+          else if (root.focusSection === "textsize") root.adjustTextSize(dx)
           else if (root.focusSection === "scale") root.moveCursorH(dx)
         }
       }
@@ -598,9 +676,85 @@ Panel {
               }
 
               HoverHandler {
-                onHoveredChanged: if (hovered) {
+                onHoveredChanged: if (hovered && !root.reflowingText) {
                   root.cursorActive = true
                   root.focusSection = "brightness"
+                  root.selectedIndex = -1
+                }
+              }
+            }
+          }
+
+          // ---------- Text size ----------
+          PanelSeparator {
+            foreground: root.bar.foreground
+          }
+
+          Column {
+            width: parent.width
+            spacing: Style.space(6)
+
+            Item {
+              width: parent.width
+              implicitHeight: Math.max(textSizeHeader.implicitHeight, textSizePx.implicitHeight)
+
+              PanelSectionHeader {
+                id: textSizeHeader
+                text: "TEXT SIZE"
+                foreground: root.bar.foreground
+                fontFamily: root.bar.fontFamily
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+              }
+
+              Text {
+                id: textSizePx
+                textFormat: Text.PlainText
+                text: (textSizeSlider.dragging
+                       ? root.textSizeStops[Math.round(textSizeSlider.liveValue)]
+                       : root.displayedTextPx()) + "px"
+                color: Qt.darker(root.bar.foreground, 1.4)
+                font.family: root.bar.fontFamily
+                font.pixelSize: Style.font.caption
+                font.bold: true
+                anchors.right: parent.right
+                anchors.rightMargin: Style.space(6)
+                anchors.verticalCenter: parent.verticalCenter
+              }
+            }
+
+            CursorSurface {
+              id: textSizeRow
+              width: parent.width
+              height: textSizeSlider.implicitHeight + Style.spacing.controlGap
+              hasCursor: root.cursorActive && root.focusSection === "textsize" && root.selectedIndex === -1
+              onHasCursorChanged: if (hasCursor) root.ensureCursorVisible(textSizeRow)
+              foreground: root.bar.foreground
+              outline: true
+
+              PanelSlider {
+                id: textSizeSlider
+                bar: root.bar
+                anchors.fill: parent
+                anchors.leftMargin: Style.space(6)
+                anchors.rightMargin: Style.space(6)
+                minimum: 0
+                maximum: root.textSizeStops.length - 1
+                step: 1
+                integer: true
+                tickCount: root.textSizeStops.length
+                value: root.currentTextIndex()
+                onReleased: function(v) {
+                  root.markReflowing()
+                  root.textSizePreviewIndex = Math.round(v)
+                  root.setTextSize(root.textSizeStops[Math.round(v)])
+                }
+              }
+
+              HoverHandler {
+                onHoveredChanged: if (hovered && !root.reflowingText) {
+                  root.cursorActive = true
+                  root.focusSection = "textsize"
                   root.selectedIndex = -1
                 }
               }
@@ -760,7 +914,7 @@ Panel {
 
     onClicked: root.setScale(scaleValue)
     onHovered: function(isHovered) {
-      if (!isHovered) return
+      if (!isHovered || root.reflowingText) return
       root.cursorActive = true
       root.focusSection = "scale"
       root.selectedIndex = pill.scaleIndex
@@ -830,7 +984,7 @@ Panel {
       anchors.fill: parent
       hoverEnabled: true
       cursorShape: monitorRow.canToggle ? Qt.PointingHandCursor : Qt.ArrowCursor
-      onContainsMouseChanged: if (containsMouse) {
+      onContainsMouseChanged: if (containsMouse && !root.reflowingText) {
         root.cursorActive = true
         root.focusSection = "monitors"
         root.selectedIndex = monitorRow.rowIndex

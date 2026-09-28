@@ -9,6 +9,8 @@
 #   monitor confirm        persist the preview per display
 #   monitor revert         restore the previous scale
 #   monitor brightness <N> set the internal panel's backlight to N percent
+#   monitor text-size <px> set the shell's base font size and scale GTK text
+#                          to match (omarchy-display-text-size)
 #
 # CEILING: brightness covers internal panels (eDP/LVDS/DSI) through
 # brightnessctl only. External monitors report no brightness; DDC/CI
@@ -225,14 +227,32 @@ brightness() {
   brightnessctl -d "$device" set "$percent%" >/dev/null
 }
 
+# The shell layers the state file over its Nix theme and watches it. GTK's
+# text-scaling-factor is relative to the shell's default 12px.
+# CEILING: Ghostty keeps its own font-size; ctrl+= / ctrl+- zoom per window.
+text_size() {
+  local px=${1:-} state_file tmp
+  if [[ ! $px =~ ^[0-9]+$ ]] || ((px < 6 || px > 32)); then
+    echo "monitor: text size must be 6-32" >&2
+    return 2
+  fi
+  state_file="$HOME/.local/state/hrndz-shell/shell.toml"
+  mkdir -p "${state_file%/*}"
+  tmp=$(mktemp "$state_file.XXXXXX")
+  printf '[font]\nbase-size = %s\n' "$px" >"$tmp"
+  mv "$tmp" "$state_file"
+  dconf write /org/gnome/desktop/interface/text-scaling-factor "$(awk -v px="$px" 'BEGIN { printf "%.4f", px / 12 }')"
+}
+
 case ${1:-} in
 state) state ;;
 scale) scale "${2:-}" ;;
 confirm) confirm_scale ;;
 revert) revert_scale ;;
 brightness) brightness "${2:-}" ;;
+text-size) text_size "${2:-}" ;;
 *)
-  echo "usage: monitor state | scale <scale> | confirm | revert | brightness <percent>" >&2
+  echo "usage: monitor state | scale <scale> | confirm | revert | brightness <percent> | text-size <px>" >&2
   exit 2
   ;;
 esac

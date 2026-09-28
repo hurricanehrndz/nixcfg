@@ -18,6 +18,7 @@
   bluez,
   brightnessctl,
   coreutils,
+  dconf,
   ffmpeg-headless,
   findutils,
   fontconfig,
@@ -187,6 +188,7 @@ let
     monitor = [
       brightnessctl
       coreutils
+      dconf
       findutils
       gawk
       hyprland

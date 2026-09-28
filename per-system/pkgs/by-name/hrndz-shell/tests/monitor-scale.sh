@@ -11,6 +11,7 @@ export XDG_CONFIG_HOME="$test_dir/config"
 export MOCK_MONITORS="$test_dir/monitors.json"
 export MOCK_EVALS="$test_dir/evals"
 export MOCK_TIMERS="$test_dir/timers"
+export MOCK_DCONF="$test_dir/dconf"
 export HOME="$test_dir/home"
 export PATH="$test_dir/bin:$PATH"
 
@@ -33,8 +34,16 @@ for name in flock systemctl; do
 done
 {
   echo "$shebang"
-  echo 'printf "%s\n" "$*" >>"$MOCK_TIMERS"'
+  cat <<'EOF'
+printf '%s\n' "$*" >>"$MOCK_TIMERS"
+EOF
 } >"$test_dir/bin/systemd-run"
+{
+  echo "$shebang"
+  cat <<'EOF'
+printf '%s\n' "$*" >>"$MOCK_DCONF"
+EOF
+} >"$test_dir/bin/dconf"
 chmod +x "$test_dir/bin/"*
 
 cat >"$MOCK_MONITORS" <<'EOF'
@@ -84,3 +93,12 @@ grep -q 'output = "DP-1".*scale = 2' "$config_file"
 [[ $(grep -c '^hl.monitor' "$config_file") == 2 ]]
 # XWayland apps follow the largest enabled scale, rounded to a whole factor.
 grep -qx 'hl.env("GDK_SCALE", "2")' "$config_file"
+
+# Text size lands in the override the shell watches, and GTK scales with it.
+run_monitor text-size 16
+grep -qx 'base-size = 16' "$HOME/.local/state/hrndz-shell/shell.toml"
+grep -qx 'write /org/gnome/desktop/interface/text-scaling-factor 1.3333' "$MOCK_DCONF"
+status=0
+run_monitor text-size 99 || status=$?
+[[ $status == 2 ]]
+grep -qx 'base-size = 16' "$HOME/.local/state/hrndz-shell/shell.toml"

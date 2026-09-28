@@ -181,11 +181,28 @@ QtObject {
     return parsed
   }
 
-  // The Nix-written shell.toml is the only source; Omarchy's runtime
-  // override (written by its text-size slider) is gone with the slider.
+  // The Nix theme's and the runtime override's dicts, kept apart so either
+  // can reload without re-reading the other.
+  property var themeShellValues: ({})
+  property var userShellValues: ({})
+
+  // Override keys win over the theme's.
+  function mergeShell() {
+    var merged = {}
+    for (var tk in themeShellValues) merged[tk] = themeShellValues[tk]
+    for (var uk in userShellValues) merged[uk] = userShellValues[uk]
+    shellValues = merged
+    Style.applyShellValues(merged)
+  }
+
   function loadShell(raw) {
-    shellValues = parseShell(raw)
-    Style.applyShellValues(shellValues)
+    themeShellValues = parseShell(raw)
+    mergeShell()
+  }
+
+  function loadUserShell(raw) {
+    userShellValues = parseShell(raw)
+    mergeShell()
   }
 
   // Startup load only: the theme changes with a Home Manager switch, which
@@ -204,5 +221,17 @@ QtObject {
     printErrors: false
     onLoaded: root.loadShell(text())
     onLoadFailed: root.loadShell("")
+  }
+  // Runtime override: the display panel's text size writes `[font]
+  // base-size` here (monitor text-size). Watched so it applies live; absent
+  // by default. `text()` is stale in the change signal, so reload first.
+  property FileView userShellFile: FileView {
+    id: userShellFile
+    path: root.home + "/.local/state/hrndz-shell/shell.toml"
+    watchChanges: true
+    printErrors: false
+    onLoaded: root.loadUserShell(text())
+    onFileChanged: reload()
+    onLoadFailed: root.loadUserShell("")
   }
 }
