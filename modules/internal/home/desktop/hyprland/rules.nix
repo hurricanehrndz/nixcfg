@@ -98,6 +98,18 @@
           ];
         }
 
+        ##: About (hrndz-shell menu, fastfetch in a terminal)
+        # Sized to fastfetch's default output in Ghostty at font-size 11.
+        {
+          match.class = "^hrndz\\.about$";
+          float = true;
+          center = true;
+          size = [
+            1200
+            480
+          ];
+        }
+
         ##: Webcam overlay (hrndz-shell screenrecord --webcam)
         # Omarchy's webcam-overlay.lua: the 8:9 portrait sizes scale from
         # monitor height and start in their final corner; the script then fits
