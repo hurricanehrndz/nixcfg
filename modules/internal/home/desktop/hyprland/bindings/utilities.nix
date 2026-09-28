@@ -45,10 +45,14 @@ in
     ++ [
       (shell "SUPER + CTRL + ALT + D" "Panel: calendar" "panel calendar")
 
-      ##: Screenshots
-      # A region to ~/Pictures and the clipboard; SHIFT opens it in satty.
-      (shell "PRINT" "Screenshot" "screenshot region")
-      (shell "SHIFT + PRINT" "Screenshot and annotate" "screenshot region --edit")
+      ##: Capture
+      # omasnap: drag a region or click a window or monitor. The preview it
+      # leaves has an Edit button.
+      (shell "PRINT" "Screenshot" "screenshot")
+      (shell "SHIFT + PRINT" "Screenshot screen" "screenshot screen")
+      # The same keys start and stop a recording, to ~/Videos.
+      (shell "ALT + PRINT" "Screen recording" "screenrecord region --audio")
+      (shell "ALT + SHIFT + PRINT" "Screen recording with microphone" "screenrecord screen --audio --mic")
       (shell "SUPER + PRINT" "Color picker" "color-picker")
 
       ##: Zoom

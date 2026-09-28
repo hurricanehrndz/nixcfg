@@ -22,7 +22,9 @@ usage: hrndz-shell <feature> [args]
   osd volume|microphone|brightness
   notifications dismiss-one|dismiss-all|invoke-last|history
   panel audio|bluetooth|network|power|display|calendar
-  screenshot region|window|screen [--edit]
+  screenshot [smart|region|window|screen]
+  screenrecord [region|screen] [--audio] [--mic]
+                              start, or stop the running recording
   color-picker
   ipc <target> <method> [args...]
 USAGE
@@ -189,29 +191,89 @@ keybindings() {
   select_line Keybindings 800 500 <"$list" >/dev/null || true
 }
 
+# omasnap saves to ~/Pictures/Screenshots, copies, and shows a preview whose
+# Edit button opens the annotation editor.
 screenshot() {
-  local mode=${1:-region} edit=${2:-} dir file region
-  local -a target
-  dir="${XDG_PICTURES_DIR:-$HOME/Pictures}"
-  mkdir -p "$dir"
-  file="$dir/screenshot-$(date +%Y-%m-%d_%H-%M-%S).png"
+  local mode=${1:-smart}
   case $mode in
-  region)
-    region=$(slurp -d) || return 0
-    target=(-g "$region")
-    ;;
-  window) target=(-g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')") ;;
-  screen) target=(-o "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')") ;;
+  smart | region) ;;
+  window) mode=windows ;;
+  screen) mode=fullscreen ;;
   *)
     usage >&2
     return 2
     ;;
   esac
-  if [[ $edit == --edit ]]; then
-    grim "${target[@]}" - | satty --filename - --output-filename "$file" --early-exit --copy-command wl-copy
-  else
-    grim "${target[@]}" "$file" && wl-copy --type image/png <"$file"
+  exec omasnap "$mode"
+}
+
+# Omarchy's omarchy-capture-screenrecording without the webcam overlay,
+# loudness pass or bar indicator. The recorder's pid and file live in
+# $recording between the start and stop calls.
+screenrecord() {
+  local recording="${XDG_RUNTIME_DIR:-/run/user/$UID}/hrndz-screenrecord" pid file preview dir region sources=
+  local -a target audio=()
+
+  if [[ -r $recording ]] && read -r pid file <"$recording" && kill -0 "$pid" 2>/dev/null; then
+    # SIGINT lets it finish the file.
+    kill -INT "$pid"
+    for _ in {1..50}; do
+      kill -0 "$pid" 2>/dev/null || break
+      sleep 0.1
+    done
+    rm -f "$recording"
+    if kill -0 "$pid" 2>/dev/null; then
+      kill -KILL "$pid"
+      omarchy-notification-send -u critical "Screen recording failed" "The recorder had to be killed; $file may be unplayable."
+      return 1
+    fi
+    preview="$recording.png"
+    ffmpeg -y -loglevel quiet -ss 0.1 -i "$file" -frames:v 1 "$preview" || preview=
+    omarchy-notification-send -t 10000 ${preview:+--image "$preview"} \
+      "Screen recording saved" "Click to play" --exec xdg-open "$file"
+    return
   fi
+
+  case ${1:-region} in
+  region)
+    region=$(slurp -d -f '%wx%h+%x+%y') || return 0
+    target=(-w region -region "$region")
+    ;;
+  screen) target=(-w "$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')") ;;
+  *)
+    usage >&2
+    return 2
+    ;;
+  esac
+  shift || true
+  for arg; do
+    case $arg in
+    --audio) sources+=${sources:+|}default_output ;;
+    --mic) sources+=${sources:+|}default_input ;;
+    *)
+      usage >&2
+      return 2
+      ;;
+    esac
+  done
+  # One mixed track: most players only play the first of several.
+  [[ -n $sources ]] && audio=(-a "$sources" -ac aac)
+
+  dir="${XDG_VIDEOS_DIR:-$HOME/Videos}"
+  mkdir -p "$dir"
+  file="$dir/screenrecording-$(date +%Y-%m-%d_%H-%M-%S).mp4"
+  gpu-screen-recorder "${target[@]}" -f 60 -k auto -fm cfr -fallback-cpu-encoding yes \
+    "${audio[@]}" -o "$file" >/dev/null 2>&1 &
+  pid=$!
+  while kill -0 "$pid" 2>/dev/null && [[ ! -f $file ]]; do
+    sleep 0.2
+  done
+  if ! kill -0 "$pid" 2>/dev/null; then
+    omarchy-notification-send -u critical "Screen recording failed to start"
+    return 1
+  fi
+  printf '%s %s\n' "$pid" "$file" >"$recording"
+  omarchy-notification-send -t 3000 "Recording" "Alt+Print stops it"
 }
 
 feature=${1:-}
@@ -229,6 +291,7 @@ osd) osd "$@" ;;
 notifications) notifications "$@" ;;
 panel) panel "$@" ;;
 screenshot) screenshot "$@" ;;
+screenrecord) screenrecord "$@" ;;
 color-picker) pkill hyprpicker || hyprpicker -a ;;
 ipc) ipc "$@" ;;
 -h | --help | help) usage ;;

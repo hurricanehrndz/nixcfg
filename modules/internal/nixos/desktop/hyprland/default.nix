@@ -23,6 +23,7 @@ in
       internal = true;
       default = pkgs.callPackage ../../../../../per-system/pkgs/by-name/hrndz-shell/package.nix {
         hyprland = config.programs.hyprland.package;
+        omasnap = pkgs.callPackage ../../../../../per-system/pkgs/by-name/omasnap/package.nix { };
         inherit (cfg.ambient) playbackRate;
         lockBlankSeconds = cfg.idle.lockBlank;
       };

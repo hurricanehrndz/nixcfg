@@ -100,7 +100,7 @@
 
         ##: Floating dialogs and utilities
         {
-          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Evince|imv|mpv|xdg-desktop-portal-gtk)";
+          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk)";
           tag = "+floating-window";
         }
         {
@@ -143,7 +143,7 @@
 
         ##: Media and games keep full opacity
         {
-          match.class = "^(zoom|vlc|mpv|org.kde.kdenlive|com.obsproject.Studio|imv|org.gnome.NautilusPreviewer|qemu)$";
+          match.class = "^(zoom|vlc|mpv|io.github.celluloid_player.Celluloid|org.kde.kdenlive|com.obsproject.Studio|imv|org.gnome.NautilusPreviewer|qemu)$";
           tag = "-default-opacity";
           opacity = "1 1";
         }

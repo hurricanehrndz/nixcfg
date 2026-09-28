@@ -82,6 +82,18 @@ The shell has one bar and no runtime extension points: no replacement bars
 and no bar widgets loaded from a local QML file. Add a feature by vendoring its
 code into the package. Bar entries with `exec` (command widgets) remain.
 
+## Apps and capture
+
+`modules/internal/nixos/desktop/hyprland/apps.nix` installs the everyday
+apps from Omarchy's base set and makes Celluloid, Papers and imv the default
+apps for video, PDF and images. Screenshots use Omarchy's omasnap, packaged in
+`per-system/pkgs/by-name/omasnap`. Recording is `hrndz-shell screenrecord`,
+which runs gpu-screen-recorder with the capture helper that
+`programs.gpu-screen-recorder` sets up. Both call `omarchy-notification-send`,
+vendored into the shell, so clicking the notification opens the capture. A
+capture taken while the display is DPMS-off fails; that is the compositor, not
+the tools.
+
 ## Display scale
 
 The display panel previews a new scale for 15 seconds and reverts unless you

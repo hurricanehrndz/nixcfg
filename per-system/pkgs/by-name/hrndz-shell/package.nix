@@ -18,13 +18,14 @@
   bluez,
   brightnessctl,
   coreutils,
+  ffmpeg-headless,
   findutils,
   fontconfig,
   gawk,
   geoclue2,
   gnugrep,
   gnused,
-  grim,
+  gpu-screen-recorder,
   gtk3,
   hyprland,
   hyprpicker,
@@ -33,6 +34,7 @@
   jq,
   libnotify,
   networkmanager,
+  omasnap,
   perl,
   power-profiles-daemon,
   procps,
@@ -42,7 +44,6 @@
   runCommand,
   quickshell,
   ripgrep,
-  satty,
   slurp,
   systemd,
   upower,
@@ -77,18 +78,28 @@ let
       text = "#!${python3.interpreter}\n" + builtins.readFile ./scripts/${name}.py;
     };
 
+  # Omarchy's notification sender; omasnap and screenrecord call it.
+  notificationSend = script "omarchy-notification-send" [
+    jq
+    systemd
+  ];
+
+  # gpu-screen-recorder finds its capture helper in /run/wrappers/bin, which
+  # the NixOS module's programs.gpu-screen-recorder provides.
   cli = script "hrndz-shell" [
     brightnessctl
     coreutils
+    ffmpeg-headless
     findutils
     gawk
-    grim
+    gpu-screen-recorder
     hyprland
     hyprpicker
     jq
+    notificationSend
+    omasnap
     procps
     quickshell'
-    satty
     slurp
     systemd
     wireplumber
@@ -232,6 +243,7 @@ stdenvNoCC.mkDerivation {
     mkdir -p $share/bin $out/bin
     cp -r shell theme menu.jsonc $share/
     ln -s ${lib.getExe cli} $out/bin/hrndz-shell
+    ln -s ${lib.getExe notificationSend} $out/bin/omarchy-notification-send
     ${lib.concatMapAttrsStringSep "\n" (
       name: drv: "ln -s ${lib.getExe drv} $share/bin/${name}"
     ) helpers}

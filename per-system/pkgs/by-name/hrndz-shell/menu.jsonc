@@ -10,6 +10,9 @@
   "capture.region": {"icon":"","label":"Screenshot region","action":"@hrndzShell@ screenshot region"},
   "capture.window": {"icon":"","label":"Screenshot window","action":"@hrndzShell@ screenshot window"},
   "capture.screen": {"icon":"","label":"Screenshot screen","action":"@hrndzShell@ screenshot screen"},
+  "capture.record": {"icon":"","label":"Record region","aliases":["screenrecord"],"action":"@hrndzShell@ screenrecord region --audio"},
+  "capture.record-screen": {"icon":"","label":"Record screen","action":"@hrndzShell@ screenrecord screen --audio"},
+  "capture.record-mic": {"icon":"","label":"Record screen with microphone","action":"@hrndzShell@ screenrecord screen --audio --mic"},
   "capture.color": {"icon":"󰃉","label":"Color","action":"@hrndzShell@ color-picker"},
 
   "clipboard": {"icon":"","label":"Clipboard","action":"@hrndzShell@ clipboard"},
