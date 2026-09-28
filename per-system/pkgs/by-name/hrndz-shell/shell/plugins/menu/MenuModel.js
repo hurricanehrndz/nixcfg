@@ -94,7 +94,7 @@ function mergeMenuSources(defaultItems, userItems) {
   }
 }
 
-// Both merges below return fresh items/itemOrder objects for the caller to
+// The app merge below returns fresh items/itemOrder objects for the caller to
 // assign in one go. They must never write into the maps they are handed: those
 // live in QML `var` properties, and an in-place write into such an object is
 // occasionally dropped by the engine — the key lands with an undefined value.
@@ -132,37 +132,6 @@ function mergeAppRows(items, itemOrder, appRows) {
   return { items: nextItems, itemOrder: nextOrder }
 }
 
-// Swaps the rows one provider contributed, leaving every other item untouched.
-// Rows carry the id of the submenu that produced them, so a provider that runs
-// again drops its previous batch — a plugin that was just enabled disappears
-// from the Enable list — without disturbing static children declared in JSONC.
-function swapProviderRows(items, itemOrder, menuId, rows) {
-  var source = items || ({})
-  var order = Array.isArray(itemOrder) ? itemOrder : []
-  var incoming = Array.isArray(rows) ? rows : []
-  var nextItems = ({})
-  var nextOrder = []
-
-  for (var i = 0; i < order.length; i++) {
-    var id = order[i]
-    var existing = source[id]
-    if (!existing || existing.providerMenu === menuId) continue
-    nextItems[id] = existing
-    nextOrder.push(id)
-  }
-
-  for (var j = 0; j < incoming.length; j++) {
-    var row = incoming[j]
-    if (!row || !row.id || nextItems[row.id]) continue
-    row.providerMenu = menuId
-    row.order = nextOrder.length
-    nextItems[row.id] = row
-    nextOrder.push(row.id)
-  }
-
-  return { items: nextItems, itemOrder: nextOrder }
-}
-
 function item(items, id) {
   return items && items[id] ? items[id] : null
 }
@@ -187,10 +156,6 @@ function resolveRoute(items, itemOrder, input) {
     }
   }
   return raw
-}
-
-function slugify(value) {
-  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "item"
 }
 
 function depthFor(items, id) {
@@ -428,10 +393,8 @@ if (typeof module !== "undefined") {
     parseMenuJsonc: parseMenuJsonc,
     mergeMenuSources: mergeMenuSources,
     mergeAppRows: mergeAppRows,
-    swapProviderRows: swapProviderRows,
     item: item,
     resolveRoute: resolveRoute,
-    slugify: slugify,
     depthFor: depthFor,
     pathFor: pathFor,
     parentPathFor: parentPathFor,

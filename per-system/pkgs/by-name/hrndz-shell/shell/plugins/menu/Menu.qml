@@ -68,13 +68,12 @@ Item {
   property var items: ({})
   property var itemOrder: []
   property var navStack: []
-  property var providersLoaded: ({})
-  property var providerQueue: []
-  property int providerRevision: 0
+  property bool appsLoaded: false
 
   // Shared application engine (entries, hidden filters, icons, launch,
   // feedback), owned by the shell.
   readonly property var appLibrary: root.shell ? root.shell.appLibrary : null
+  onAppLibraryChanged: if (root.opened && (root.activeMenu === "root" || root.activeMenu === "apps")) root.loadApps()
   // Bound to the central [menu] section in shell.toml via Color.qml.
   // Each color already includes its alpha companion (composed in the
   // singleton), so consumers can drop them straight into a Rectangle.
@@ -235,30 +234,15 @@ Item {
 
   function rebuildItemsFromSources() {
     var mergedMenu = MenuModel.mergeMenuSources(root.defaultMenuItems, [])
-    root.providerRevision += 1
-    root.providersLoaded = ({})
-    root.providerQueue = []
+    root.appsLoaded = false
     root.items = mergedMenu.items
     root.itemOrder = mergedMenu.itemOrder
     root.rowsLoaded = true
     root.evaluateGuards()
     if (root.opened) {
       root.rebuildDisplay()
-      if (!root.dmenuActive) {
-        if (root.filterText.trim()) root.loadProvidersForSearch()
-        else if (root.activeMenu === "root") root.loadProviderForMenu("apps")
-        else root.loadProviderForMenu(root.activeMenu)
-      }
+      if (!root.dmenuActive && (root.activeMenu === "root" || root.activeMenu === "apps")) root.loadApps()
     }
-  }
-
-  // Bash providers: { script, icon, volatile, actionFor(value) }. The script
-  // emits one tab-delimited row per item: `label\tvalue\tcurrent`, which
-  // become children of `menuId`. None are configured; apps is QML-native.
-  readonly property var providers: ({})
-
-  function slugify(value) {
-    return MenuModel.slugify(value)
   }
 
   // The apps provider is QML-native: rows come from the shared AppLibrary
@@ -304,120 +288,10 @@ Item {
     if (root.opened) root.rebuildDisplay()
   }
 
-  function startProviderForMenu(id) {
-    var entry = root.item(id)
-    if (!entry || !entry.provider || root.providersLoaded[id]) return
-    if (entry.provider === "apps") {
-      root.providersLoaded[id] = true
-      root.mergeAppRows()
-      return
-    }
-    var spec = root.providers[entry.provider]
-    if (!spec) return
-
-    root.providersLoaded[id] = true
-    providerProc.menuId = id
-    providerProc.providerKey = entry.provider
-    providerProc.revision = root.providerRevision
-    providerProc.collected = ""
-    providerProc.command = ["bash", "-lc", spec.script]
-    providerProc.running = true
-  }
-
-  function mergeProviderRows(rows, menuId, providerKey) {
-    var spec = root.providers[providerKey]
-    if (!spec) return
-    var lines = String(rows || "").split("\n")
-    var providerRows = []
-    var takenIds = ({})
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].trim()
-      if (!line) continue
-      var parts = line.split("\t")
-      var label = parts[0] || ""
-      var value = parts[1] || parts[0] || ""
-      var current = parts[2] || ""
-      if (!label) continue
-      // Distinct values can slugify alike — Fira Code and Fira-Code both give
-      // fira-code — and a repeated id is dropped, which would silently lose a
-      // row from the list. Nudge it until it is the row's own.
-      var rowId = menuId + "." + root.slugify(value)
-      while (takenIds[rowId]) rowId += "-"
-      takenIds[rowId] = true
-
-      providerRows.push({
-        id: rowId,
-        parent: menuId,
-        kind: "action",
-        icon: (value === current) ? "✓" : (spec.icon || ""),
-        label: label,
-        title: "",
-        target: "",
-        description: "",
-        action: spec.actionFor(value),
-        provider: "",
-        aliases: [],
-        when: "",
-        checked: "",
-        order: 0
-      })
-    }
-    var merged = MenuModel.swapProviderRows(root.items, root.itemOrder, menuId, providerRows)
-    root.items = merged.items
-    root.itemOrder = merged.itemOrder
-    if (root.opened) root.rebuildDisplay()
-  }
-
-  function startNextProvider() {
-    if (providerProc.running) return
-
-    while (root.providerQueue.length > 0) {
-      var id = root.providerQueue.shift()
-      var entry = root.item(id)
-      if (!entry || !entry.provider || root.providersLoaded[id]) continue
-
-      root.startProviderForMenu(id)
-      return
-    }
-  }
-
-  // Entering a submenu is the one moment a volatile list is worth paying for
-  // again: it may have been reshaped by the last pick from it. Search doesn't
-  // invalidate, or every keystroke would restart the same enumeration.
-  function invalidateVolatileProvider(id) {
-    var entry = root.item(id)
-    var spec = entry && entry.provider ? root.providers[entry.provider] : null
-    if (spec && spec.volatile) root.providersLoaded[id] = false
-  }
-
-  function loadProviderForMenu(id) {
-    var entry = root.item(id)
-    if (!entry || !entry.provider || root.providersLoaded[id]) return
-
-    // Native providers don't touch providerProc, so they never need to queue.
-    if (entry.provider === "apps") {
-      root.startProviderForMenu(id)
-      return
-    }
-
-    if (providerProc.running) {
-      if (root.providerQueue.indexOf(id) < 0) root.providerQueue = root.providerQueue.concat([id])
-      return
-    }
-
-    root.startProviderForMenu(id)
-  }
-
-  function loadProvidersForSearch() {
-    var active = root.item(root.activeMenu) ? root.activeMenu : "root"
-
-    for (var i = 0; i < root.itemOrder.length; i++) {
-      var entry = root.item(root.itemOrder[i])
-      if (!entry || !entry.provider || root.providersLoaded[entry.id]) continue
-      if (active !== "root" && entry.id !== active && !root.isDescendantOf(entry.id, active)) continue
-
-      root.loadProviderForMenu(entry.id)
-    }
+  function loadApps() {
+    if (root.appsLoaded || !root.item("apps") || !root.appLibrary) return
+    root.appsLoaded = true
+    root.mergeAppRows()
   }
 
   function depthFor(id) {
@@ -652,7 +526,7 @@ Item {
     root.selectedIndex = 0
     root.cursorActive = root.mode !== "input"
     root.disarmPointer()
-    if (!root.dmenuActive && root.filterText.trim()) root.loadProvidersForSearch()
+    if (!root.dmenuActive && (root.activeMenu === "root" || root.activeMenu === "apps")) root.loadApps()
     root.rebuildDisplay()
   }
 
@@ -667,8 +541,7 @@ Item {
     if (fromPointer) pointerGate.allowInitialSample()
     else root.disarmPointer()
     root.rebuildDisplay()
-    root.invalidateVolatileProvider(id)
-    root.loadProviderForMenu(id)
+    if (id === "root" || id === "apps") root.loadApps()
   }
 
   function goBack() {
@@ -752,8 +625,7 @@ Item {
     root.evaluateGuards()
     opened = true
     rebuildDisplay()
-    invalidateVolatileProvider(activeMenu)
-    loadProviderForMenu(activeMenu === "root" ? "apps" : activeMenu)
+    if (activeMenu === "root" || activeMenu === "apps") loadApps()
     // The shell may start before first-install packages have finished placing
     // their icons. Refresh here even when the desktop entry list did not change.
     if (root.appLibrary) root.appLibrary.refreshIcons()
@@ -824,24 +696,6 @@ Item {
   }
 
   Process {
-    id: providerProc
-    property string menuId: ""
-    property string providerKey: ""
-    property string collected: ""
-    property int revision: 0
-    stdout: SplitParser {
-      onRead: function(data) { providerProc.collected += data + "\n" }
-    }
-    onExited: {
-      if (providerProc.revision === root.providerRevision) {
-        root.mergeProviderRows(providerProc.collected, providerProc.menuId, providerProc.providerKey)
-        if (root.filterText.trim()) root.loadProvidersForSearch()
-      }
-      root.startNextProvider()
-    }
-  }
-
-  Process {
     id: resultProc
     onExited: {
       if (root.applySerial === root.requestSerial)
@@ -857,7 +711,7 @@ Item {
   Connections {
     target: root.appLibrary
     function onAppsChanged() {
-      if (root.providersLoaded["apps"]) root.mergeAppRows()
+      if (root.appsLoaded) root.mergeAppRows()
     }
   }
 
