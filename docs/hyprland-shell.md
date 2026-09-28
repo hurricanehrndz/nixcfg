@@ -24,6 +24,17 @@ adopt a feature.
   an OS command; add a helper only when the UI needs a command or service that
   Quickshell cannot provide directly. Avoid copying an upstream script tree.
 
+## Repositories for inspiration
+
+- [omacom/omarchy](https://github.com/omacom/omarchy): shell visuals, controls,
+  and the source of the current fork.
+- [ChrisTitusTech/dwm-titus](https://github.com/ChrisTitusTech/dwm-titus): a
+  smaller, personally maintained desktop setup to compare maintenance choices.
+- [olafkfreund/nixarchy](https://github.com/olafkfreund/nixarchy): examples of
+  adapting Omarchy to NixOS.
+- [olafkfreund/nixarchy-menu](https://github.com/olafkfreund/nixarchy-menu):
+  searchable palette behavior for the one-menu design.
+
 ## Adopting a feature
 
 1. Trace the upstream feature's entry point, callers, commands, assets, and
