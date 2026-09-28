@@ -343,6 +343,13 @@ webcam_start() {
 
 webcam_stop() {
   pkill -f WebcamOverlay || true
+  # Unlike upstream, force it after 2s: while the display sleeps mpv ignores
+  # SIGTERM until it wakes, holding the camera (and its light) open.
+  for _ in {1..20}; do
+    pgrep -f WebcamOverlay >/dev/null || break
+    sleep 0.1
+  done
+  pkill -KILL -f WebcamOverlay || true
   rm -f "$recording_region"
 }
 
