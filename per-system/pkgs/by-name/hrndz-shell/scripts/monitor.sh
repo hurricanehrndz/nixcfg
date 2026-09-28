@@ -140,9 +140,10 @@ scale() {
     if [[ -n ${!variable:-} ]]; then timer_env+=("--setenv=$variable=${!variable}"); fi
   done
   # The panel reverts at 15 seconds. This timer is the backstop if the shell
-  # dies, late enough that a last-second Keep still finds the preview.
+  # dies, late enough that a last-second Keep still finds the preview. User
+  # timers default to a minute's accuracy, which let it fire at 40s or later.
   if ! systemd-run --user --quiet --collect --unit="$preview_unit" --on-active=20s \
-    "${timer_env[@]}" "$0" revert; then
+    --timer-property=AccuracySec=1s "${timer_env[@]}" "$0" revert; then
     rm -f "$preview_file"
     return 1
   fi

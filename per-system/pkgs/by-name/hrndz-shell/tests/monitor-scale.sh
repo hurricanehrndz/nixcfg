@@ -58,6 +58,7 @@ run_monitor scale 1.5
 grep -q 'output = "eDP-1".*scale = 1.5' "$MOCK_EVALS"
 # The backstop fires after the panel's 15-second countdown.
 grep -q -- '--on-active=20s' "$MOCK_TIMERS"
+grep -q -- '--timer-property=AccuracySec=1s' "$MOCK_TIMERS"
 
 run_monitor revert
 [[ ! -e $XDG_RUNTIME_DIR/hrndz-monitor/scale-preview ]]

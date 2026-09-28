@@ -1293,14 +1293,14 @@ Item {
         }
 
         ModuleList {
-          visible: !centerRoot.hasAnchor
+          shown: !centerRoot.hasAnchor
           entries: centerRoot.entries
           region: "center"
           anchors.centerIn: parent
         }
 
         ModuleList {
-          visible: centerRoot.hasAnchor
+          shown: centerRoot.hasAnchor
           entries: root.entriesBefore(centerRoot.entries, root.centerAnchor)
           region: "center"
           anchors.right: centerAnchorModule.left
@@ -1316,7 +1316,7 @@ Item {
         }
 
         ModuleList {
-          visible: centerRoot.hasAnchor
+          shown: centerRoot.hasAnchor
           entries: root.entriesAfter(centerRoot.entries, root.centerAnchor)
           region: "center"
           anchors.left: centerAnchorModule.right
@@ -1338,14 +1338,14 @@ Item {
         }
 
         ModuleList {
-          visible: !centerRoot.hasAnchor
+          shown: !centerRoot.hasAnchor
           entries: centerRoot.entries
           region: "center"
           anchors.centerIn: parent
         }
 
         ModuleList {
-          visible: centerRoot.hasAnchor
+          shown: centerRoot.hasAnchor
           entries: root.entriesBefore(centerRoot.entries, root.centerAnchor)
           region: "center"
           anchors.bottom: centerAnchorModule.top
@@ -1361,7 +1361,7 @@ Item {
         }
 
         ModuleList {
-          visible: centerRoot.hasAnchor
+          shown: centerRoot.hasAnchor
           entries: root.entriesAfter(centerRoot.entries, root.centerAnchor)
           region: "center"
           anchors.top: centerAnchorModule.bottom
@@ -1458,14 +1458,18 @@ Item {
 
     property var entries: []
     property string region: ""
+    property bool shown: true
 
-    visible: entries.length > 0
+    visible: active
     // A hidden list must not build its modules. The center section declares
     // both an anchored and an unanchored arrangement and shows whichever
     // fits, so leaving the other one loaded mounts every center module
     // twice — two IPC handlers registered for the same target, two clocks
-    // ticking, two of every timer and fetch behind them.
-    active: visible && entries.length > 0
+    // ticking, two of every timer and fetch behind them. Gate on `shown`, not
+    // `visible`: reading `visible` gives the effective visibility, which goes
+    // false whenever the bar window is unmapped, and unloading would destroy
+    // every module's state (a pending display scale preview among them).
+    active: shown && entries.length > 0
     sourceComponent: root.vertical ? verticalModuleList : horizontalModuleList
     width: item ? item.implicitWidth : 0
     height: item ? item.implicitHeight : 0
