@@ -92,7 +92,7 @@ in
       (bind "SUPER + G" "Toggle window grouping" "hl.dsp.group.toggle()")
       (bind "SUPER + ALT + G" "Move window out of group" "hl.dsp.window.move({ out_of_group = true })")
     ]
-    ++ perKey arrows (
+    ++ perKey (arrows // vimKeys) (
       key: dir: [
         (bind "SUPER + ALT + ${key}" "Move window into group ${dir}"
           ''hl.dsp.window.move({ into_group = "${dir}" })''
