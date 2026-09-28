@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -10,7 +11,7 @@ let
   launch =
     keys: description: command:
     bind keys description (exec "uwsm-app -- ${command}");
-  browser = ''"$(xdg-settings get default-web-browser)"'';
+  browser = ''${lib.getExe' pkgs.gtk3 "gtk-launch"} "$(xdg-settings get default-web-browser)"'';
 in
 {
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {

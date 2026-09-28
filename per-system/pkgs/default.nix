@@ -4,6 +4,7 @@
     inputs.pkgs-by-name-for-flake-parts.flakeModule
     {
       perSystem.pkgsDirectory = ./by-name;
+      perSystem.pkgsFilterByPlatforms = true;
     }
   ];
 }

@@ -100,15 +100,6 @@
 
         ##: Floating dialogs and utilities
         {
-          match.tag = "floating-window";
-          float = true;
-          center = true;
-          size = [
-            875
-            600
-          ];
-        }
-        {
           match.class = "(org.gnome.NautilusPreviewer|org.gnome.Evince|imv|mpv|xdg-desktop-portal-gtk)";
           tag = "+floating-window";
         }
@@ -139,6 +130,15 @@
         {
           match.class = "^(jetbrains-.*)$";
           no_follow_mouse = true;
+        }
+        {
+          match.tag = "floating-window";
+          float = true;
+          center = true;
+          size = [
+            875
+            600
+          ];
         }
 
         ##: Media and games keep full opacity
