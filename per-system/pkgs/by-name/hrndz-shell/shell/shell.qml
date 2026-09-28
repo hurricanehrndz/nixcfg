@@ -17,6 +17,7 @@ import "plugins/osd" as Osd
 import "plugins/panels/audio" as Audio
 import "plugins/panels/bluetooth" as Bluetooth
 import "plugins/panels/clock" as Clock
+import "plugins/panels/lighting" as Lighting
 import "plugins/panels/monitor" as Monitor
 import "plugins/panels/network" as Network
 import "plugins/panels/power" as Power
@@ -275,6 +276,7 @@ ShellRoot {
     "omarchy.bluetooth": { component: bluetoothWidget },
     "omarchy.clock": { component: clockWidget },
     "omarchy.indicators": { component: indicatorsWidget },
+    "omarchy.lighting": { component: lightingWidget },
     "omarchy.media": { component: mediaWidget },
     "omarchy.menu": { component: menuWidget },
     "omarchy.microphone": { component: microphoneWidget },
@@ -294,6 +296,7 @@ ShellRoot {
   Component { id: bluetoothWidget; Bluetooth.Panel { } }
   Component { id: clockWidget; Clock.BarWidget { } }
   Component { id: indicatorsWidget; Widgets.Indicators { } }
+  Component { id: lightingWidget; Lighting.Panel { } }
   Component { id: mediaWidget; Media.BarWidget { } }
   Component { id: menuWidget; Menu.BarWidget { } }
   Component { id: microphoneWidget; Widgets.Microphone { } }

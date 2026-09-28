@@ -49,6 +49,7 @@ let
             "network"
           ]
           ++ lib.optional osConfig.services.tailscale.enable "tailscale"
+          ++ osConfig.hrndz.desktop.hyprland.barItems
           ++ [
             "audio"
             "monitor"

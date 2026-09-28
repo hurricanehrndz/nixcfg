@@ -54,35 +54,56 @@ let
     '';
   };
 
-  # Static takes the theme's accent, when there is one.
+  # Static defaults to the theme's accent, when there is one.
   accent = config.lib.stylix.colors.base0D or "44D62C";
   leviathanLighting = pkgs.writeShellApplication {
     name = "leviathan-lighting";
     runtimeInputs = [ config.services.hardware.openrgb.package ];
     text = ''
-      case "''${1:-}" in
+      state="''${XDG_STATE_HOME:-$HOME/.local/state}/leviathan-lighting"
+      usage() {
+        echo "usage: leviathan-lighting breathing|spectrum|wave|static [RRGGBB]|off|status|restore" >&2
+        exit 2
+      }
+
+      mode="''${1:-}"
+      color="''${2:-${accent}}"
+      color="''${color#\#}"
+      case "$mode" in
+        # The last mode set here, as "MODE [RRGGBB]", for the shell's panel.
+        status)
+          cat "$state" 2>/dev/null || true
+          exit
+          ;;
+        restore)
+          [ -r "$state" ] || exit 0
+          read -r mode color <"$state"
+          exec "$0" "$mode" ''${color:+"$color"}
+          ;;
         # Random colours, as the soundbar breathes from the factory.
         breathing) args=(-m Breathing -c random) ;;
         spectrum) args=(-m "Spectrum Cycle") ;;
         wave) args=(-m Wave) ;;
-        static) args=(-m Static -c "${accent}") ;;
-        off) args=(-m Off) ;;
-        *)
-          echo "usage: leviathan-lighting breathing|spectrum|wave|static|off" >&2
-          exit 2
+        static)
+          [[ $color =~ ^[0-9A-Fa-f]{6}$ ]] || usage
+          args=(-m Static -c "$color")
           ;;
+        off) args=(-m Off) ;;
+        *) usage ;;
       esac
-      # Through the server: standalone openrgb exits before sending the change.
-      exec openrgb --client localhost:${toString config.services.hardware.openrgb.server.port} \
-        --noautoconnect -d "Razer Leviathan V2 X" "''${args[@]}"
+
+      # Through the server: standalone openrgb exits before sending the change,
+      # and --noautoconnect makes the client wait 5 s for nothing.
+      openrgb --client localhost:${toString config.services.hardware.openrgb.server.port} \
+        --nodetect -d "Razer Leviathan V2 X" "''${args[@]}" >/dev/null
+
+      mkdir -p "$(dirname "$state")"
+      if [ "$mode" = static ]; then
+        echo "$mode ''${color^^}" >"$state"
+      else
+        echo "$mode" >"$state"
+      fi
     '';
-  };
-  lightingModes = {
-    breathing = "Breathing";
-    spectrum = "Spectrum cycle";
-    wave = "Wave";
-    static = "Static";
-    off = "Off";
   };
 in
 {
@@ -113,8 +134,19 @@ in
       };
       environment.systemPackages = [ leviathanLighting ];
 
-      hrndz.desktop.hyprland.menuItems = {
-        "setup.lighting" = {
+      # The soundbar keeps OpenRGB's changes only until it loses power.
+      systemd.user.services.leviathan-lighting = {
+        description = "Restore the soundbar's last lighting mode";
+        wantedBy = [ "default.target" ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${lib.getExe leviathanLighting} restore";
+        };
+      };
+
+      hrndz.desktop.hyprland = {
+        barItems = [ "lighting" ];
+        menuItems."setup.lighting" = {
           icon = "󰌵";
           label = "Soundbar lighting";
           aliases = [
@@ -122,16 +154,9 @@ in
             "rgb"
             "soundbar"
           ];
+          action = "@hrndzShell@ panel lighting";
         };
-      }
-      // lib.mapAttrs' (
-        mode: label:
-        lib.nameValuePair "setup.lighting.${mode}" {
-          icon = "󰌵";
-          inherit label;
-          action = "${lib.getExe leviathanLighting} ${mode}";
-        }
-      ) lightingModes;
+      };
     })
   ]);
 }

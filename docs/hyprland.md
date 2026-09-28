@@ -84,6 +84,10 @@ The bar still edits its layout at runtime (drag to reorder, move edge,
 transparency) through `mutateShellConfig`; those edits last until the shell
 restarts.
 
+Hardware that only some hosts have adds its panel and menu row from its own
+NixOS module through `hrndz.desktop.hyprland.barItems` and `menuItems`; the
+soundbar lighting panel (`plugins/panels/lighting`) is the example.
+
 The shell has one bar and no runtime extension points: no replacement bars
 and no bar widgets loaded from a local QML file. Add a feature by vendoring its
 code into the package. Bar entries with `exec` (command widgets) remain.

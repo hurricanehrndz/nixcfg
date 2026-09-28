@@ -26,7 +26,7 @@ usage: hrndz-shell <feature> [args]
   bar                         show or hide the bar
   osd volume|microphone|brightness
   notifications dismiss-one|dismiss-all|invoke-last|history
-  panel audio|bluetooth|network|power|display|calendar
+  panel audio|bluetooth|lighting|network|power|display|calendar
   screenshot [smart|region|window|screen]
   screenrecord [region|screen] [--audio] [--mic] [--webcam]
       [--webcam-device=<dev>] [--webcam-size=small|medium|large]
@@ -195,7 +195,7 @@ notifications() {
 panel() {
   local id
   case ${1:-} in
-  audio | bluetooth | network | power) id=omarchy.$1 ;;
+  audio | bluetooth | lighting | network | power) id=omarchy.$1 ;;
   display) id=omarchy.monitor ;;
   calendar) id=omarchy.clock ;;
   *)

@@ -34,6 +34,16 @@ in
       };
     };
 
+    barItems = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      example = [ "lighting" ];
+      description = ''
+        Host-specific bar panels, by name, placed in the right section before
+        the audio panel.
+      '';
+    };
+
     menuItems = mkOption {
       type = types.attrsOf (types.attrsOf types.anything);
       default = { };
