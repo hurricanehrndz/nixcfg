@@ -35,9 +35,29 @@ Item {
     onTriggered: root.remapping = false
   }
 
+  // The screen also reports x/y changes when only its scale or mode changed.
+  // Remap only on a real move, so a scale preview doesn't blink the surface.
+  property real lastX: 0
+  property real lastY: 0
+
+  function remember() {
+    if (!screen) return
+    lastX = screen.x
+    lastY = screen.y
+  }
+
+  function positionChanged() {
+    if (!screen || (screen.x === lastX && screen.y === lastY)) return
+    remember()
+    settleTimer.restart()
+  }
+
+  onScreenChanged: remember()
+  Component.onCompleted: remember()
+
   Connections {
     target: root.screen
-    function onXChanged() { settleTimer.restart() }
-    function onYChanged() { settleTimer.restart() }
+    function onXChanged() { root.positionChanged() }
+    function onYChanged() { root.positionChanged() }
   }
 }
