@@ -101,35 +101,11 @@ function inlineSettingsDelta(current, next) {
   return changes
 }
 
-function expandPath(value, home) {
-  var path = String(value || "")
-  if (path === "") return ""
-  if (path.indexOf("~/") === 0) return home + path.substring(1)
-  if (path.indexOf("$HOME/") === 0) return home + path.substring(5)
-  return path
-}
-
-function customModuleSafeName(name) {
-  var value = String(name || "")
-  return value !== "" && value.indexOf("..") === -1 && value[0] !== "/"
-}
-
 function customModuleType(entry) {
   var settings = entrySettings(entry)
   var type = String(settings.type || "")
   if (type) return type
-  if (settings.exec) return "command"
-  if (settings.source) return "qml"
-  return ""
-}
-
-function customModulePath(entry, home, configDir) {
-  var settings = entrySettings(entry)
-  var name = entryId(entry)
-  var source = settings.source ? expandPath(settings.source, home) : ""
-  if (!source && customModuleSafeName(name))
-    source = String(configDir || "") + "/bar/modules/" + String(name) + ".qml"
-  return source
+  return settings.exec ? "command" : ""
 }
 
 // A center module is mounted twice once an anchor is set: the copy that is
@@ -223,9 +199,6 @@ if (typeof module !== "undefined") {
     entriesBefore: entriesBefore,
     entriesAfter: entriesAfter,
     inlineSettingsDelta: inlineSettingsDelta,
-    expandPath: expandPath,
-    customModuleSafeName: customModuleSafeName,
-    customModuleType: customModuleType,
-    customModulePath: customModulePath
+    customModuleType: customModuleType
   }
 }

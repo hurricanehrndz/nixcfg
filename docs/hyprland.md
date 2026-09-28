@@ -73,11 +73,14 @@ Places to look for ideas:
 ## Current boundary
 
 The shell host still discovers its bundled components through
-`PluginRegistry.qml`, and `shell.qml` still carries Omarchy's scoped plugin
-APIs and mutable bar-layout code. Removing them is ongoing: move each live
-component to a direct reference, keep its behaviour, then delete the registry
-path it no longer uses. Don't remove a used panel just because its upstream
-implementation is large.
+`PluginRegistry.qml`, and `shell.qml` still carries mutable bar-layout code.
+Removing them is ongoing: move each live component to a direct reference, keep
+its behaviour, then delete the registry path it no longer uses. Don't remove a
+used panel just because its upstream implementation is large.
+
+The shell has one bar and no runtime extension points: no replacement bars
+and no bar widgets loaded from a local QML file. Add a feature by vendoring its
+code into the package. Bar entries with `exec` (command widgets) remain.
 
 ## Display scale
 
