@@ -69,14 +69,6 @@
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Omarchy desktop, vendored for NixOS. Only the package (and its tested
-    # Hyprland) is used; nixarchy's modules and app installer are not imported.
-    # Follows the desktops' nixpkgs so Omarchy's runtime deps match the system's;
-    # its cache served none of our outputs, and Hyprland keeps its own nixpkgs
-    # so hyprland.cachix still hits.
-    nixarchy.url = "github:olafkfreund/nixarchy/v4.0.4-1";
-    nixarchy.inputs.nixpkgs.follows = "nixos-unstable";
-
     # System tools
     snapraid-runner.url = "github:hurricanehrndz/snapraid-runner/v2.0.0";
     snapraid-runner.inputs.nixpkgs.follows = "nixpkgs";

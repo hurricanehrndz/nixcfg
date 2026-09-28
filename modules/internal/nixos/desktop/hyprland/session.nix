@@ -37,7 +37,7 @@ in
     ##: Sessions (the login screen is sddm.nix)
     services.displayManager = {
       # CEILING: forcing the list drops sessions any other module registers.
-      # Fine while this is the host's only desktop (asserted against Omarchy);
+      # Fine while this is the host's only desktop;
       # filter the list instead if another desktop can sit alongside it.
       sessionPackages = mkForce [ uwsmSession ];
       defaultSession = "hyprland-uwsm";

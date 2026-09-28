@@ -1,4 +1,4 @@
 { ... }:
 {
-  hrndz.desktop.omarchy.enable = true;
+  hrndz.desktop.hyprland.enable = true;
 }

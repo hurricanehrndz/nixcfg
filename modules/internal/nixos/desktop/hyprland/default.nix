@@ -7,7 +7,6 @@
 let
   inherit (lib)
     mkEnableOption
-    mkIf
     mkOption
     types
     ;
@@ -103,14 +102,5 @@ in
         VPN exit node.
       '';
     };
-  };
-
-  config = mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !config.hrndz.desktop.omarchy.enable;
-        message = "hrndz.desktop.hyprland and hrndz.desktop.omarchy are separate desktops; enable only one.";
-      }
-    ];
   };
 }

@@ -116,7 +116,7 @@ Hosts are organized by architecture in `hosts/<architecture>/<hostname>/default.
 - Applies class-specific modules (darwin or nixos) from `modules/internal/`
 - Integrates home-manager, agenix, and (NixOS only) disko modules
 
-The Omarchy desktops (`desktopHostNames` in `hosts/default.nix`: Lucy, mastercontrol) run `nixos-unstable` with main-branch home-manager and stylix, selected by the `channel = "unstable"` specialArg through `channelInputs`. Every other host stays on the 26.05 release. Shared modules must therefore evaluate on both channels: where an option or package exists on only one, branch on its presence (`options.services.journald ? settings`, `pkgs.vncdotool or pkgs.vncdo`) rather than on the host name.
+The Hyprland desktops (`desktopHostNames` in `hosts/default.nix`: Lucy, mastercontrol) run `nixos-unstable` with main-branch home-manager and stylix, selected by the `channel = "unstable"` specialArg through `channelInputs`. Every other host stays on the 26.05 release. Shared modules must therefore evaluate on both channels: where an option or package exists on only one, branch on its presence (`options.services.journald ? settings`, `pkgs.vncdotool or pkgs.vncdo`) rather than on the host name.
 
 ### Host Capability Options (`hrndz`)
 Host capabilities are toggled through `hrndz.*` options defined in `modules/internal/shared/options.nix`, then enabled per-host (typically in `hosts/<arch>/<host>/config/users/hurricane.nix` or the host `default.nix`):
@@ -125,7 +125,7 @@ Host capabilities are toggled through `hrndz.*` options defined in `modules/inte
 - `roles.developerWorkstation` — graphical developer workstation. It implies `terminalDeveloper`.
 - `roles.swiftDeveloper` — Darwin-only Swift development role. It implies `terminalDeveloper`.
 - `roles.vmHost` — VM hosting role. It implies `terminalUser` and provides platform-specific virtualization tooling.
-- `theme.*` — every colour choice in one place. `scheme` (default `catppuccin-latte`) is a base16 scheme applied via Stylix (`modules/internal/home/theme.nix`) to tmux (styled natively, no plugin), zellij, bat/delta, fzf and lazygit; zellij and bat use the official ports for Catppuccin schemes. `ghostty` is a Ghostty theme name (default `noctis-lux`; null follows the scheme). `omarchy.theme` is the Omarchy desktop theme, set on first login unless `omarchy.pin` reapplies it every switch. `unified` defaults the other two to the scheme.
+- `theme.*` — every colour choice in one place. `scheme` (default `catppuccin-latte`) is a base16 scheme applied via Stylix (`modules/internal/home/theme.nix`) to tmux (styled natively, no plugin), zellij, bat/delta, fzf and lazygit; zellij and bat use the official ports for Catppuccin schemes. `ghostty` is a Ghostty theme name (default `noctis-lux`; null follows the scheme). `unified` makes Ghostty follow the scheme too.
 - `tooling.*` — opt-in toggles for heavier/optional tooling: `ai`, `python`, `ruby`, `js`, `golang`, `documentTools`, `macAdmin`.
 
 These gates are an allowlist whose purpose is to keep heavy/dev tooling **off** low-end hosts (e.g. `hal`, which enables none of them). Put heavy packages behind an existing role or `tooling.*` gate rather than installing them unconditionally, then enable it per-host. AI tooling is gated on `tooling.ai`, independent of `roles.terminalDeveloper`.

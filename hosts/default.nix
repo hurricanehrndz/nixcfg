@@ -11,7 +11,7 @@ let
 
   # Auto-pin every darwin host to nixpkgs-darwin, derived from the
   # `hosts/*-darwin/<host>` layout, so new hosts need no entry here.
-  # Omarchy desktops run nixos-unstable, which nixarchy is built against.
+  # The Hyprland desktops run nixos-unstable.
   desktopHostNames = [
     "Lucy"
     "mastercontrol"

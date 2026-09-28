@@ -9,14 +9,6 @@ let
     types
     ;
   cfg = config.hrndz;
-
-  # base16 scheme -> closest stock Omarchy theme, for unified mode.
-  omarchyThemes = {
-    catppuccin-mocha = "catppuccin";
-    gruvbox-dark = "gruvbox";
-    rose-pine-dawn = "rose-pine";
-    tokyo-night-dark = "tokyo-night";
-  };
 in
 {
   options.hrndz = {
@@ -60,17 +52,7 @@ in
         description = "Ghostty theme name, or null to use the scheme.";
       };
 
-      omarchy = {
-        theme = mkOption {
-          type = types.str;
-          default = "catppuccin-latte";
-          description = "Stock Omarchy theme for the desktop.";
-        };
-
-        pin = mkEnableOption "reapplying the Omarchy theme on every switch, instead of only on first login (after which the Style menu owns it)";
-      };
-
-      unified = mkEnableOption "the scheme everywhere: Ghostty follows it and Omarchy is pinned to its closest stock theme";
+      unified = mkEnableOption "the scheme everywhere, Ghostty included";
     };
 
     roles = {
@@ -87,10 +69,6 @@ in
   config.hrndz = mkMerge [
     (mkIf cfg.theme.unified {
       theme.ghostty = mkDefault null;
-      theme.omarchy = {
-        theme = mkDefault (omarchyThemes.${cfg.theme.scheme} or cfg.theme.scheme);
-        pin = mkDefault true;
-      };
     })
 
     (mkIf cfg.roles.terminalDeveloper.enable {
