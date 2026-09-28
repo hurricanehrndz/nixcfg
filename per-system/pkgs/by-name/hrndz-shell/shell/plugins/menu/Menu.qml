@@ -510,6 +510,11 @@ Item {
   // hidden row peeking past the cursor in the direction of travel.
   function revealCursor() {
     if (displayModel.count === 0) return
+    // The first row reads as the top of the list only with nothing above it.
+    if (root.selectedIndex === 0) {
+      resultList.positionViewAtBeginning()
+      return
+    }
     resultList.positionViewAtIndex(root.selectedIndex, ListView.Contain)
 
     var item = resultList.itemAtIndex(root.selectedIndex)
@@ -945,6 +950,9 @@ Item {
           clip: true
           spacing: root.rowSpacing
           boundsBehavior: Flickable.StopAtBounds
+          // The card can change size after the rows land (a picker taking the
+          // palette's size), so reveal the cursor again against the new height.
+          onHeightChanged: if (root.opened) root.revealCursor()
 
           section.property: "section"
           section.criteria: ViewSection.FullString
