@@ -178,8 +178,10 @@ Item {
     Util.execDetached(command)
   }
 
+  // Palette rows share one height so a missing subtitle doesn't make the
+  // list uneven; a dmenu picker without subtext stays compact.
   function rowHeightForDetail(detail) {
-    return detail ? root.detailRowHeight : root.baseRowHeight
+    return detail || !root.dmenuActive ? root.detailRowHeight : root.baseRowHeight
   }
 
   // Height a dmenu card can devote to rows before running off the screen —
