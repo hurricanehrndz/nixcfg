@@ -538,11 +538,19 @@ screenrecord() {
 }
 
 # Omarchy's omarchy-launch-about (omacom/omarchy, MIT, rev
-# e332dc975d5f635294c497ebb54feb98dc3d89eb) without its logo branding, sheen or
-# remembered size: the window opens at the size rules.nix gives it, then fits
-# itself to fastfetch's default output.
+# e332dc975d5f635294c497ebb54feb98dc3d89eb) without its logo branding or sheen.
+# The window fits itself to fastfetch's default output and remembers that size,
+# so the next one opens at it; until then it opens at the size in rules.nix.
+about_size="$state/about.size"
+
 about() {
   if [[ ${1:-} != --render ]]; then
+    local width height rule=""
+    if read -r width height 2>/dev/null <"$about_size" && [[ $width =~ ^[0-9]+$ && $height =~ ^[0-9]+$ ]]; then
+      rule="hrndz_about_size = hl.window_rule({ match = { class = \"^hrndz\\\\.about$\" }, size = { $width, $height } })"
+    fi
+    # Replace the rule from the last launch rather than stacking them.
+    hyprctl eval "if hrndz_about_size then hrndz_about_size:set_enabled(false) end; hrndz_about_size = nil; $rule" >/dev/null 2>&1 || true
     exec uwsm-app -- xdg-terminal-exec --app-id=hrndz.about hrndz-shell about --render
   fi
 
@@ -594,7 +602,11 @@ about_fit() {
     read -r address width height < <(hyprctl clients -j |
       jq -r 'first(.[] | select(.class == "hrndz.about")) | "\(.address) \(.size[0]) \(.size[1])"') || true
     [[ -n ${address:-} ]] || return 1
-    ((cols >= target_c && cols <= target_c + 1 && rows >= target_r && rows <= target_r + 1)) && return 0
+    if ((cols >= target_c && cols <= target_c + 1 && rows >= target_r && rows <= target_r + 1)); then
+      mkdir -p "$state"
+      printf '%s %s\n' "$width" "$height" >"$about_size"
+      return 0
+    fi
     ((++nudges <= 2)) || return 1
 
     dw=$(((target_c - cols) * width))
