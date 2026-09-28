@@ -70,7 +70,7 @@ let
       color="''${2:-${accent}}"
       color="''${color#\#}"
       case "$mode" in
-        # The last mode set here, as "MODE [RRGGBB]", for the shell's panel.
+        # The last mode set here and the last static colour, for the panel.
         status)
           cat "$state" 2>/dev/null || true
           exit
@@ -97,12 +97,12 @@ let
       openrgb --client localhost:${toString config.services.hardware.openrgb.server.port} \
         --nodetect -d "Razer Leviathan V2 X" "''${args[@]}" >/dev/null
 
-      mkdir -p "$(dirname "$state")"
-      if [ "$mode" = static ]; then
-        echo "$mode ''${color^^}" >"$state"
-      else
-        echo "$mode" >"$state"
+      # Other modes keep the last static colour, so the panel still shows it.
+      if [ "$mode" != static ] && [ -r "$state" ]; then
+        read -r _ color <"$state" || true
       fi
+      mkdir -p "$(dirname "$state")"
+      echo "$mode ''${color^^}" >"$state"
     '';
   };
 in
