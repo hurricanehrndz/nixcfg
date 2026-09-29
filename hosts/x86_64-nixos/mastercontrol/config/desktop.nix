@@ -3,7 +3,6 @@
   hrndz.desktop = {
     hyprland.enable = true;
     gaming.enable = true;
-    flatpak.packages = [ "sh.cider.Cider" ];
   };
 
   programs._1password-gui = {
@@ -12,6 +11,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    cider-2
     discord
     obsidian
     zed-editor
