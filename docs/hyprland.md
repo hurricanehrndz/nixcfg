@@ -86,7 +86,8 @@ restarts.
 
 Hardware that only some hosts have adds its panel and menu row from its own
 NixOS module through `hrndz.desktop.hyprland.barItems` and `menuItems`; the
-soundbar lighting panel (`plugins/panels/lighting`) is the example.
+lighting panel (`plugins/panels/lighting`, fed by `hrndz.hardware.openrgb.lights`) is
+the example.
 
 The shell has one bar and no runtime extension points: no replacement bars
 and no bar widgets loaded from a local QML file. Add a feature by vendoring its

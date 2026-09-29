@@ -53,58 +53,6 @@ let
       fi
     '';
   };
-
-  # Static defaults to the theme's accent, when there is one.
-  accent = config.lib.stylix.colors.base0D or "44D62C";
-  leviathanLighting = pkgs.writeShellApplication {
-    name = "leviathan-lighting";
-    runtimeInputs = [ config.services.hardware.openrgb.package ];
-    text = ''
-      state="''${XDG_STATE_HOME:-$HOME/.local/state}/leviathan-lighting"
-      usage() {
-        echo "usage: leviathan-lighting breathing|spectrum|wave|static [RRGGBB]|off|status|restore" >&2
-        exit 2
-      }
-
-      mode="''${1:-}"
-      color="''${2:-${accent}}"
-      color="''${color#\#}"
-      case "$mode" in
-        # The last mode set here and the last static colour, for the panel.
-        status)
-          cat "$state" 2>/dev/null || true
-          exit
-          ;;
-        restore)
-          [ -r "$state" ] || exit 0
-          read -r mode color <"$state"
-          exec "$0" "$mode" ''${color:+"$color"}
-          ;;
-        # Random colours, as the soundbar breathes from the factory.
-        breathing) args=(-m Breathing -c random) ;;
-        spectrum) args=(-m "Spectrum Cycle") ;;
-        wave) args=(-m Wave) ;;
-        static)
-          [[ $color =~ ^[0-9A-Fa-f]{6}$ ]] || usage
-          args=(-m Static -c "$color")
-          ;;
-        off) args=(-m Off) ;;
-        *) usage ;;
-      esac
-
-      # Through the server, which the client finds on its default port:
-      # standalone openrgb exits before sending the change, --noautoconnect
-      # makes the client wait 5 s, and --client beside autoconnect joins twice.
-      openrgb --nodetect -d "Razer Leviathan V2 X" "''${args[@]}" >/dev/null
-
-      # Other modes keep the last static colour, so the panel still shows it.
-      if [ "$mode" != static ] && [ -r "$state" ]; then
-        read -r _ color <"$state" || true
-      fi
-      mkdir -p "$(dirname "$state")"
-      echo "$mode ''${color^^}" >"$state"
-    '';
-  };
 in
 {
   options.hrndz.hardware.razerLeviathanV2X = {
@@ -121,31 +69,57 @@ in
     (mkIf cfg.rgb.enable {
       hrndz.hardware.openrgb = {
         enable = true;
-        devices = [ "1532:054a" ];
-      };
-      environment.systemPackages = [ leviathanLighting ];
-
-      # The soundbar keeps OpenRGB's changes only until it loses power.
-      systemd.user.services.leviathan-lighting = {
-        description = "Restore the soundbar's last lighting mode";
-        wantedBy = [ "default.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = "${lib.getExe leviathanLighting} restore";
-        };
-      };
-
-      hrndz.desktop.hyprland = {
-        barItems = [ "lighting" ];
-        menuItems."setup.lighting" = {
-          icon = "󰌵";
-          label = "Soundbar lighting";
-          aliases = [
-            "lighting"
-            "rgb"
-            "soundbar"
+        lights.soundbar = {
+          label = "Soundbar";
+          device = "Razer Leviathan V2 X";
+          usbId = "1532:054a";
+          modes = [
+            {
+              # Random colours, as the soundbar breathes from the factory.
+              id = "breathing";
+              label = "Breathe";
+              args = [
+                "-m"
+                "Breathing"
+                "-c"
+                "random"
+              ];
+            }
+            {
+              id = "spectrum";
+              label = "Spectrum";
+              args = [
+                "-m"
+                "Spectrum Cycle"
+              ];
+            }
+            {
+              id = "wave";
+              label = "Wave";
+              args = [
+                "-m"
+                "Wave"
+              ];
+            }
+            {
+              id = "static";
+              label = "Static";
+              args = [
+                "-m"
+                "Static"
+                "-c"
+                "@color@"
+              ];
+            }
+            {
+              id = "off";
+              label = "Off";
+              args = [
+                "-m"
+                "Off"
+              ];
+            }
           ];
-          action = "@hrndzShell@ panel lighting";
         };
       };
     })
