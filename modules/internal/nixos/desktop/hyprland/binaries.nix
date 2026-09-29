@@ -6,6 +6,18 @@
 }:
 let
   inherit (lib) mkIf;
+
+  appimage = pkgs.writeShellApplication {
+    name = "appimage";
+    runtimeInputs = [
+      config.programs.appimage.package
+      pkgs.coreutils
+      pkgs.findutils
+      pkgs.gnugrep
+      pkgs.gnused
+    ];
+    text = builtins.readFile ./appimage.sh;
+  };
 in
 {
   config = mkIf config.hrndz.desktop.hyprland.enable {
@@ -42,5 +54,6 @@ in
       enable = true;
       binfmt = true;
     };
+    environment.systemPackages = [ appimage ];
   };
 }
