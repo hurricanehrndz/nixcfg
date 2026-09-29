@@ -93,9 +93,7 @@ actions; volume and display controls stay in the UI. Port only the parts of an
 Omarchy plugin this desktop uses. Prefer Quickshell or existing helpers; add a
 script only for an OS command boundary. Do not add package installation,
 runtime plugin installation, cloning, or a second menu. Record the source and
-license of copied code. The existing plugin registry is legacy infrastructure,
-not a pattern for new features; remove it only as its callers are migrated and
-verified on a live Hyprland session.
+license of copied code.
 
 To test on the live desktop, SSH to mastercontrol as `hurricane@172.24.225.1`
 or `hurricane@mastercontrol`. Login uses a YubiKey-backed key, so a
