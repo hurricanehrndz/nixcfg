@@ -9,6 +9,14 @@ let
 
   defaults = desktop: types: genAttrs types (_: mkDefault desktop);
   inherit (config.hrndz.desktop.hyprland.shellPackage) omasnap;
+
+  # Omarchy's "Disk Usage" entry, so dua shows in the menu's Apps list.
+  diskUsage = pkgs.makeDesktopItem {
+    name = "disk-usage";
+    desktopName = "Disk Usage";
+    icon = "drive-harddisk";
+    exec = "xdg-terminal-exec --app-id=TUI.float -e dua i /";
+  };
 in
 {
   # The desktop's everyday apps, after Omarchy's base set: capture, media,
@@ -26,6 +34,8 @@ in
 
     environment.systemPackages = with pkgs; [
       celluloid
+      diskUsage
+      dua
       fastfetch
       imv
       mpv

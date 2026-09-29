@@ -205,7 +205,7 @@
 
         ##: Floating dialogs and utilities
         {
-          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk)";
+          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk|TUI.float)";
           tag = "+floating-window";
         }
         {
