@@ -92,10 +92,10 @@ let
         *) usage ;;
       esac
 
-      # Through the server: standalone openrgb exits before sending the change,
-      # and --noautoconnect makes the client wait 5 s for nothing.
-      openrgb --client localhost:${toString config.services.hardware.openrgb.server.port} \
-        --nodetect -d "Razer Leviathan V2 X" "''${args[@]}" >/dev/null
+      # Through the server, which the client finds on its default port:
+      # standalone openrgb exits before sending the change, --noautoconnect
+      # makes the client wait 5 s, and --client beside autoconnect joins twice.
+      openrgb --nodetect -d "Razer Leviathan V2 X" "''${args[@]}" >/dev/null
 
       # Other modes keep the last static colour, so the panel still shows it.
       if [ "$mode" != static ] && [ -r "$state" ]; then
@@ -110,7 +110,7 @@ in
   options.hrndz.hardware.razerLeviathanV2X = {
     enable = mkEnableOption "Razer Leviathan V2 X (USB 1532:054a) soundbar support";
 
-    rgb.enable = mkEnableOption "RGB control through OpenRGB, with its effects plugin for audio-reactive lighting";
+    rgb.enable = mkEnableOption "lighting control through OpenRGB";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -118,19 +118,10 @@ in
       environment.systemPackages = [ leviathanVolume ];
     }
 
-    # OpenRGB drives the soundbar over hidraw from userspace, so no kernel module.
-    # The motherboard's SMBus (RAM and board LEDs) is left unprobed.
     (mkIf cfg.rgb.enable {
-      services.hardware.openrgb = {
+      hrndz.hardware.openrgb = {
         enable = true;
-        # CEILING: local patch until OpenRGB spaces its reports to the soundbar
-        # upstream; without it most mode changes are silently dropped.
-        package =
-          (pkgs.openrgb.overrideAttrs (old: {
-            patches = old.patches or [ ] ++ [ ./openrgb-leviathan-v2x-settle.patch ];
-          })).withPlugins
-            [ pkgs.openrgb-plugin-effects ];
-        motherboard = null;
+        devices = [ "1532:054a" ];
       };
       environment.systemPackages = [ leviathanLighting ];
 

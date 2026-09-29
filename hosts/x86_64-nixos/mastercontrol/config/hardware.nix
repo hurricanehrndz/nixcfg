@@ -54,5 +54,7 @@
       enable = true;
       rgb.enable = true;
     };
+    # The LG 27GN950-B's Sphere Lighting, which reconnects after standby.
+    openrgb.devices = [ "043e:9a8a" ];
   };
 }
