@@ -35,7 +35,6 @@ in
     environment.systemPackages = with pkgs; [
       celluloid
       diskUsage
-      dua
       fastfetch
       imv
       mpv

@@ -28,6 +28,7 @@ in
     dosfstools
     gptfdisk
     e2fsprogs
+    dua
   ];
 
   ##: programs
