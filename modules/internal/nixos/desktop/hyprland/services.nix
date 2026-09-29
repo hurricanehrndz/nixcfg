@@ -89,6 +89,11 @@ in
     hardware.i2c.enable = true;
     services.udev.packages = [ pkgs.ddcutil ];
 
+    # YubiKey: browsers reach FIDO2 through systemd's own udev rules; OATH
+    # codes (ykman oath) and the GPG card (scdaemon has disable-ccid) go
+    # through pcscd.
+    services.pcscd.enable = true;
+
     # The weather widget locates the machine unless a location is fixed. The
     # shell's locate helper asks through GeoClue's where-am-i client.
     services.geoclue2 = mkIf (config.hrndz.desktop.hyprland.weather.location == null) {
