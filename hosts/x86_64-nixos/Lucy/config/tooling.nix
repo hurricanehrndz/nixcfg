@@ -5,6 +5,7 @@
       enable = true;
       hardware.cpuVendor = "intel";
       users = [ "hurricane" ];
+      windowsTestRig.enable = true;
 
       vfio = {
         enable = true;
