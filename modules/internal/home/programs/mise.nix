@@ -16,7 +16,7 @@ in
   # state dir, not this file; only `mise use -g`/`mise settings set` need it
   # writable.
   config = mkIf cfg.roles.terminalDeveloper.enable {
-    home.packages = [ pkgs.mise ];
+    home.packages = [ pkgs.unstable.mise ];
 
     xdg.configFile."mise/config.toml".source = (pkgs.formats.toml { }).generate "mise-config.toml" {
       settings.trusted_config_paths = [
