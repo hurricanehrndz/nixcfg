@@ -33,6 +33,10 @@ in
     gtk = {
       enable = true;
       colorScheme = config.lib.stylix.colors.variant;
+      iconTheme = {
+        name = "Adwaita";
+        package = pkgs.adwaita-icon-theme;
+      };
     };
   };
 }

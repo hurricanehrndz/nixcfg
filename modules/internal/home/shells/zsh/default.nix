@@ -28,6 +28,17 @@ let
     #
     # }
     {
+      # Sourced here rather than by Ghostty's ZDOTDIR injection so nested
+      # shells (tmux, zellij) get it too; HM's integration is lost to mkForce.
+      name = "ghostty-integration";
+      content = ''
+        if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+          builtin source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+        fi
+      '';
+      order = 5;
+    }
+    {
       name = "default-nix-environment";
       content = ''
         # Nix environment -- this will provide completions from nix pkgs i.e. home.packages
@@ -185,12 +196,6 @@ let
 in
 {
   config = mkIf cfg.roles.terminalUser.enable {
-    home.extraOutputsToInstall = [
-      "/share/zsh"
-      # TODO: is this already implied by `/share/zsh`?
-      "/share/zsh/site-functions"
-    ];
-
     # Add plugin files to dotDir
     home.file = fzl.mkPluginFiles {
       inherit

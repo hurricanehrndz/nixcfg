@@ -275,11 +275,10 @@ function parseSettings(raw) {
 // ---------------------------------------------------- popup persistence
 //
 // Each on-screen popup is mirrored to its own file under
-// ~/.local/state/hrndz-shell/notifications/ so toasts survive shell restarts
-// (e.g. the restart `omarchy-update` performs). The file exists exactly as
-// long as the popup is on screen: it is written when the toast appears and
-// moved into the history/ subdirectory when the toast expires, is dismissed,
-// or its action is invoked. History is those moved files, newest last-10.
+// ~/.local/state/hrndz-shell/notifications/ so toasts survive shell restarts.
+// The file exists exactly as long as the popup is on screen: it is written
+// when the toast appears and moved into the history/ subdirectory when the
+// toast expires, is dismissed, or its action is invoked. History is those moved files, newest last-10.
 
 function popupEntry(value, normalUrgency) {
   var entry = historyEntry(value, normalUrgency)

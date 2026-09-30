@@ -2,6 +2,7 @@
   config,
   lib,
   options,
+  pkgs,
   ...
 }:
 let
@@ -31,6 +32,20 @@ in
     # USB devices stay awake (keyboards, the soundbar). A kernel parameter:
     # usbcore is built in, so modprobe options never reach it.
     boot.kernelParams = [ "usbcore.autosuspend=-1" ];
+
+    ##: Keyboard
+    # Caps Lock is Meh (Ctrl+Shift+Alt), as Superkey makes it on macOS; with
+    # Super it makes Hyper. xkb has no option for a modifier chord.
+    services.keyd = {
+      enable = true;
+      keyboards.default = {
+        ids = [ "*" ];
+        settings = {
+          main.capslock = "layer(meh)";
+          "meh:C-S-A" = { };
+        };
+      };
+    };
 
     ##: Limits
     # Proton/Wine and file watchers want more than the default 1024 soft limit.
@@ -68,6 +83,16 @@ in
     services.gnome.gnome-keyring.enable = mkDefault true;
     networking.networkmanager.enable = mkDefault true;
     hardware.bluetooth.enable = mkDefault true;
+
+    # External monitors' brightness over DDC/CI: i2c-dev, and ddcutil's rule
+    # giving the seat's user the displays' I2C buses.
+    hardware.i2c.enable = true;
+    services.udev.packages = [ pkgs.ddcutil ];
+
+    # YubiKey: browsers reach FIDO2 through systemd's own udev rules; OATH
+    # codes (ykman oath) and the GPG card (scdaemon has disable-ccid) go
+    # through pcscd.
+    services.pcscd.enable = true;
 
     # The weather widget locates the machine unless a location is fixed. The
     # shell's locate helper asks through GeoClue's where-am-i client.

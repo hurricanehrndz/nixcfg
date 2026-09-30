@@ -49,6 +49,7 @@ let
             "network"
           ]
           ++ lib.optional osConfig.services.tailscale.enable "tailscale"
+          ++ osConfig.hrndz.desktop.hyprland.barItems
           ++ [
             "audio"
             "monitor"
@@ -60,11 +61,13 @@ let
     plugins = [ ];
   };
 
-  # Desktop entries the launcher leaves out: avahi's browsers.
+  # Desktop entries the launcher leaves out: avahi's browsers, and uwsm's
+  # unit picker, which needs a dmenu-style launcher this desktop doesn't have.
   launcherHides = [
     "avahi-discover"
     "bssh"
     "bvnc"
+    "uuctl"
   ];
 
   # "KEYS → description" for every described binding, for the keybindings

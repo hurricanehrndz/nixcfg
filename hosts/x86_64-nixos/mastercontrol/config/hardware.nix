@@ -50,6 +50,51 @@
 
   hrndz.hardware = {
     gpu.vendor = "amd";
-    razerLeviathanV2X.enable = true;
+    razerLeviathanV2X = {
+      enable = true;
+      rgb.enable = true;
+    };
+    # The LG 27GN950-B's Sphere Lighting.
+    openrgb.lights.monitor = {
+      label = "Monitor";
+      device = "LG 27GN950-B Monitor";
+      usbId = "043e:9a8a";
+      modes = [
+        {
+          id = "static";
+          label = "Static";
+          args = [
+            "-m"
+            "Static"
+            "-c"
+            "@color@"
+          ];
+        }
+        {
+          id = "spectrum";
+          label = "Spectrum";
+          args = [
+            "-m"
+            "Spectrum Cycle"
+          ];
+        }
+        {
+          id = "rainbow";
+          label = "Rainbow";
+          args = [
+            "-m"
+            "Rainbow Wave"
+          ];
+        }
+        {
+          id = "off";
+          label = "Off";
+          args = [
+            "-m"
+            "Off"
+          ];
+        }
+      ];
+    };
   };
 }

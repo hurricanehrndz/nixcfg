@@ -10,12 +10,11 @@ rec {
   hyper = "SUPER + CTRL + SHIFT + ALT";
 
   # Named workspaces mirror the AeroSpace config; the shell's workspaces
-  # widget shows them in this order.
+  # widget shows them in this order. S is the scratchpad (workspaces.nix).
   namedWorkspaces = [
     "W"
     "A"
     "R"
-    "S"
     "T"
     "V"
     "C"

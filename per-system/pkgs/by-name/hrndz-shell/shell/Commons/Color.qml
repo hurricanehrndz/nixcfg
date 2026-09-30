@@ -99,9 +99,8 @@ QtObject {
     property color selectedText: root.pick("menu.selected-text", root.accent)
     property color selectedBorder: root.composed("menu.selected-border", "menu.selected-border-alpha", root.foreground, 0.0)
   }
-  // polkit + lock share a single border-alpha across border / border-active /
-  // border-error: the three states are mutually exclusive in time, so one
-  // companion is enough.
+  // polkit uses a single border-alpha across border and border-error: the
+  // states are mutually exclusive in time, so one companion is enough.
   readonly property QtObject polkit: QtObject {
     property color background: root.composed("polkit.background", "polkit.background-alpha", root.background, 1.0)
     property color text: root.pick("polkit.text", root.foreground)
@@ -112,13 +111,7 @@ QtObject {
     property color scrim: root.composed("polkit.scrim", "polkit.scrim-alpha", root.background, 0.5)
   }
   readonly property QtObject lock: QtObject {
-    property color background: root.composed("lock.background", "lock.background-alpha", root.background, 0.8)
-    property color text: root.pick("lock.text", root.foreground)
-    property color placeholder: root.shellValues["lock.placeholder"] ? root.flatColor(root.shellValues["lock.placeholder"], Util.alpha(root.foreground, 0.66)) : Util.alpha(root.foreground, 0.66)
     property color textError: root.pick("lock.text-error", root.urgent)
-    property color border: root.composed("lock.border", "lock.border-alpha", root.foreground, 1.0)
-    property color borderActive: root.composed("lock.border-active", "lock.border-alpha", root.accent, 1.0)
-    property color borderError: root.composed("lock.border-error", "lock.border-alpha", root.urgent, 1.0)
     property color selection: root.composed("lock.selection", "lock.selection-alpha", root.accent, 0.45)
   }
   function loadColors(raw) {
@@ -181,11 +174,28 @@ QtObject {
     return parsed
   }
 
-  // The Nix-written shell.toml is the only source; Omarchy's runtime
-  // override (written by its text-size slider) is gone with the slider.
+  // The Nix theme's and the runtime override's dicts, kept apart so either
+  // can reload without re-reading the other.
+  property var themeShellValues: ({})
+  property var userShellValues: ({})
+
+  // Override keys win over the theme's.
+  function mergeShell() {
+    var merged = {}
+    for (var tk in themeShellValues) merged[tk] = themeShellValues[tk]
+    for (var uk in userShellValues) merged[uk] = userShellValues[uk]
+    shellValues = merged
+    Style.applyShellValues(merged)
+  }
+
   function loadShell(raw) {
-    shellValues = parseShell(raw)
-    Style.applyShellValues(shellValues)
+    themeShellValues = parseShell(raw)
+    mergeShell()
+  }
+
+  function loadUserShell(raw) {
+    userShellValues = parseShell(raw)
+    mergeShell()
   }
 
   // Startup load only: the theme changes with a Home Manager switch, which
@@ -204,5 +214,17 @@ QtObject {
     printErrors: false
     onLoaded: root.loadShell(text())
     onLoadFailed: root.loadShell("")
+  }
+  // Runtime override: the display panel's text size writes `[font]
+  // base-size` here (monitor text-size). Watched so it applies live; absent
+  // by default. `text()` is stale in the change signal, so reload first.
+  property FileView userShellFile: FileView {
+    id: userShellFile
+    path: root.home + "/.local/state/hrndz-shell/shell.toml"
+    watchChanges: true
+    printErrors: false
+    onLoaded: root.loadUserShell(text())
+    onFileChanged: reload()
+    onLoadFailed: root.loadUserShell("")
   }
 }

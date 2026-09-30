@@ -54,7 +54,7 @@
           tag = "+chromium-based-browser";
         }
         {
-          match.class = "([fF]irefox|zen|librewolf)";
+          match.class = "([fF]irefox|zen(-.*)?|librewolf)";
           tag = "+firefox-based-browser";
         }
         {
@@ -67,6 +67,48 @@
           match.tag = "firefox-based-browser";
           tag = "-default-opacity";
           opacity = "1.0 0.985";
+        }
+
+        ##: Workspace assignments
+        # Mirrors AeroSpace's on-window-detected rules. Applied only when a
+        # window opens, so moved windows stay put.
+        {
+          match.class = "zen(-.*)?";
+          workspace = "name:W";
+        }
+        {
+          match.class = "cider";
+          workspace = "name:A";
+        }
+        {
+          match.class = "discord";
+          workspace = "name:R";
+        }
+        {
+          match.class = "com.mitchellh.ghostty";
+          workspace = "name:T";
+        }
+        {
+          match.class = "(imv|mpv|io.github.celluloid_player.Celluloid|org.gnome.Papers|remote-viewer|\\.?virt-manager(-wrapped)?)";
+          workspace = "name:V";
+        }
+        # VM consoles float, as UTM and Screen Sharing do under AeroSpace.
+        {
+          match.class = "(remote-viewer|\\.?virt-manager(-wrapped)?)";
+          float = true;
+          center = true;
+        }
+        {
+          match.class = "dev.zed.Zed";
+          workspace = "name:C";
+        }
+        {
+          match.class = "md.obsidian.Obsidian";
+          workspace = "name:B";
+        }
+        {
+          match.class = "org.gnome.Nautilus";
+          workspace = "name:F";
         }
 
         # Hide screen sharing notification windows.
@@ -95,6 +137,18 @@
           move = [
             "(monitor_w-window_w-40)"
             "(monitor_h*0.04)"
+          ];
+        }
+
+        ##: About (hrndz-shell menu, fastfetch in a terminal)
+        # The starting size; hrndz-shell about then fits it to fastfetch.
+        {
+          match.class = "^hrndz\\.about$";
+          float = true;
+          center = true;
+          size = [
+            1200
+            520
           ];
         }
 
@@ -151,7 +205,7 @@
 
         ##: Floating dialogs and utilities
         {
-          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk)";
+          match.class = "(org.gnome.NautilusPreviewer|org.gnome.Papers|imv|mpv|xdg-desktop-portal-gtk|TUI.float)";
           tag = "+floating-window";
         }
         {
@@ -174,7 +228,7 @@
           ];
         }
         {
-          match.class = "^(1[p|P]assword)$";
+          match.class = "com.onepassword.OnePassword";
           no_screen_share = true;
           tag = "+floating-window";
         }

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -9,6 +10,18 @@ let
     mkEnableOption
     ;
   cfg = config.hrndz.foreignBinaries;
+
+  appimage = pkgs.writeShellApplication {
+    name = "appimage";
+    runtimeInputs = [
+      config.programs.appimage.package
+      pkgs.coreutils
+      pkgs.findutils
+      pkgs.gnugrep
+      pkgs.gnused
+    ];
+    text = builtins.readFile ./foreign-binaries-appimage.sh;
+  };
 in
 {
   options.hrndz.foreignBinaries = {
@@ -29,6 +42,7 @@ in
       enable = true;
       binfmt = true;
     };
+    environment.systemPackages = mkIf cfg.appimage.enable [ appimage ];
     # nixpkgs' default library set covers headless tools (libstdc++, zlib,
     # openssl, curl, libxml2, ...); the desktop adds its GUI libraries.
     programs.nix-ld.enable = true;

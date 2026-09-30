@@ -61,12 +61,15 @@ Item {
           playing: Ambient.displaysOn
           // The first output's playback is the one the lock screen resumes.
           publishPosition: output.modelData === Quickshell.screens[0]
-          Keys.onPressed: Ambient.screensaver = false
+          // Dismissed after the event is delivered: hiding drops the video
+          // items, and Qt 6.11 then maps its synthesized context-menu event
+          // (right button, Menu key) through the freed items and crashes.
+          Keys.onPressed: Qt.callLater(() => Ambient.screensaver = false)
 
           MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.AllButtons
-            onPressed: Ambient.screensaver = false
+            onPressed: Qt.callLater(() => Ambient.screensaver = false)
           }
         }
       }

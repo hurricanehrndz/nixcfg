@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -18,5 +19,8 @@ in
       wireplumber.enable = true;
     };
     services.pulseaudio.enable = false;
+
+    # amixer/alsamixer: the hardware mixer controls PipeWire doesn't show.
+    environment.systemPackages = [ pkgs.alsa-utils ];
   };
 }

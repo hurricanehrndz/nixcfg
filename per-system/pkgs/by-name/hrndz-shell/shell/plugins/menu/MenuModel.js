@@ -32,9 +32,7 @@ function normalizeItem(id, raw) {
     description: value.description || "",
     action: value.action || "",
     provider: value.provider || "",
-    aliases: aliases,
-    when: value.when || "",
-    checked: value.checked || ""
+    aliases: aliases
   }
 }
 
@@ -83,7 +81,7 @@ function mergeMenuSources(defaultItems, userItems) {
   }
 
   if (!nextItems.root) {
-    nextItems.root = { id: "root", parent: "", kind: "menu", icon: "", iconFont: "", label: "Go", title: "", target: "", description: "", aliases: [], when: "", checked: "", action: "", provider: "" }
+    nextItems.root = { id: "root", parent: "", kind: "menu", icon: "", iconFont: "", label: "Go", title: "", target: "", description: "", aliases: [], action: "", provider: "" }
     nextOrder.unshift("root")
   }
   for (var k3 = 0; k3 < nextOrder.length; k3++) nextItems[nextOrder[k3]].order = k3
@@ -216,9 +214,10 @@ function childCount(items, itemOrder, id) {
   return count
 }
 
-function isVisible(items, itemOrder, whenResults, entry, depth) {
+// Static submenus are hidden when none of their descendants are visible;
+// provider-backed menus stay visible because their rows load on demand.
+function isVisible(items, itemOrder, entry, depth) {
   if (!entry) return false
-  if (entry.when && whenResults && whenResults[entry.id] === false) return false
   if (entry.kind !== "menu" && entry.kind !== "link") return true
   if (entry.provider) return true
 
@@ -229,27 +228,21 @@ function isVisible(items, itemOrder, whenResults, entry, depth) {
   var order = Array.isArray(itemOrder) ? itemOrder : []
   for (var i = 0; i < order.length; i++) {
     var child = item(items, order[i])
-    if (child && child.parent === target && isVisible(items, itemOrder, whenResults, child, guard + 1)) return true
+    if (child && child.parent === target && isVisible(items, itemOrder, child, guard + 1)) return true
   }
 
   return false
 }
 
-function isSearchVisible(items, itemOrder, whenResults, entry) {
+function isSearchVisible(items, itemOrder, entry) {
   var current = entry
   var guard = 0
   while (current && current.id !== "root" && guard < 32) {
-    if (!isVisible(items, itemOrder, whenResults, current)) return false
+    if (!isVisible(items, itemOrder, current)) return false
     current = item(items, current.parent)
     guard++
   }
   return !!current
-}
-
-function labelFor(entry, checkedResults) {
-  if (!entry) return ""
-  if (entry.checked && checkedResults && checkedResults[entry.id]) return entry.label + " ✓"
-  return entry.label
 }
 
 function searchableToken(value) {
@@ -340,7 +333,7 @@ function searchScore(items, entry, query) {
   return score * 1000 + depthFor(items, entry.id) * 25 + entry.order
 }
 
-function displayRow(items, itemOrder, checkedResults, entry, detail, score, section) {
+function displayRow(items, itemOrder, entry, detail, score, section) {
   var target = entry.kind === "link" ? entry.target : entry.id
   return {
     itemId: entry.id,
@@ -349,7 +342,7 @@ function displayRow(items, itemOrder, checkedResults, entry, detail, score, sect
     iconFont: entry.iconFont || "",
     appIcon: entry.appIcon || "",
     appId: entry.appId || "",
-    label: labelFor(entry, checkedResults),
+    label: entry.label,
     target: target,
     detail: detail || "",
     path: pathFor(items, entry.id),
@@ -361,32 +354,8 @@ function displayRow(items, itemOrder, checkedResults, entry, detail, score, sect
   }
 }
 
-function guardLine(id, tag, expression) {
-  return "if { " + expression + "; } >/dev/null 2>&1; then echo "
-    + id + ":" + tag + ":1; else echo " + id + ":" + tag + ":0; fi\n"
-}
-
-// One bash script for every `when:` and `checked:` in the menu, reporting
-// `<id>:<w|c>:<0|1>` per line. Speed is the whole point: the menu opens on
-// the last evaluation's answers, so however long this takes is how long a row
-// can contradict the state it describes.
-function guardScript(items) {
-  var guards = ""
-  var ids = Object.keys(items || {})
-
-  for (var i = 0; i < ids.length; i++) {
-    var entry = items[ids[i]]
-    if (!entry) continue
-    if (entry.when) guards += guardLine(ids[i], "w", entry.when)
-    if (entry.checked) guards += guardLine(ids[i], "c", entry.checked)
-  }
-
-  return guards
-}
-
 if (typeof module !== "undefined") {
   module.exports = {
-    guardScript: guardScript,
     stripJsonc: stripJsonc,
     normalizeAliases: normalizeAliases,
     normalizeItem: normalizeItem,
@@ -402,7 +371,6 @@ if (typeof module !== "undefined") {
     childCount: childCount,
     isVisible: isVisible,
     isSearchVisible: isSearchVisible,
-    labelFor: labelFor,
     searchableToken: searchableToken,
     leafIdFor: leafIdFor,
     nameSearchText: nameSearchText,

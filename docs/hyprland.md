@@ -72,11 +72,22 @@ Places to look for ideas:
 
 ## Current boundary
 
-The shell host still discovers its bundled components through
-`PluginRegistry.qml`, and `shell.qml` still carries mutable bar-layout code.
-Removing them is ongoing: move each live component to a direct reference, keep
-its behaviour, then delete the registry path it no longer uses. Don't remove a
-used panel just because its upstream implementation is large.
+`shell.qml` declares every bundled component directly: services, the
+summoned windows (menu, clipboard, emojis, OSD) and the bar widgets the
+layout can name. There are no manifests and no plugin scan. Lock and polkit
+are the exception: they are created without a parent so nothing can walk the
+object tree to them. Add a component by importing its directory and declaring
+it there. Don't remove a used panel just because its upstream implementation
+is large.
+
+The bar still edits its layout at runtime (drag to reorder, move edge,
+transparency) through `mutateShellConfig`; those edits last until the shell
+restarts.
+
+Hardware that only some hosts have adds its panel and menu row from its own
+NixOS module through `hrndz.desktop.hyprland.barItems` and `menuItems`; the
+lighting panel (`plugins/panels/lighting`, fed by `hrndz.hardware.openrgb.lights`) is
+the example.
 
 The shell has one bar and no runtime extension points: no replacement bars
 and no bar widgets loaded from a local QML file. Add a feature by vendoring its

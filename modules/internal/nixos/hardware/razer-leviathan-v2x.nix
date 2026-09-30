@@ -12,15 +12,6 @@ let
     ;
   cfg = config.hrndz.hardware.razerLeviathanV2X;
 
-  # CEILING: openrazer PR #2903 (Leviathan V2 X support) pinned by commit until it
-  # ships in a release that reaches nixpkgs; drop the overrides below then.
-  openrazerSrc = pkgs.fetchFromGitHub {
-    owner = "openrazer";
-    repo = "openrazer";
-    rev = "4cf64b78dd99634f63ca3ed7675452799662eea8";
-    hash = "sha256-2cRazHLy17RRb04ZvIVXOLKQJYIAP2GyZBtwOwIKR9w=";
-  };
-
   # When the kernel exposes both the per-channel and master volume, PipeWire
   # drives only the per-channel one and the master ('PCM Playback Volume',
   # index=1) keeps whatever it last held: ~29% from the factory, or wherever
@@ -67,7 +58,7 @@ in
   options.hrndz.hardware.razerLeviathanV2X = {
     enable = mkEnableOption "Razer Leviathan V2 X (USB 1532:054a) soundbar support";
 
-    rgb.enable = mkEnableOption "RGB control through a patched OpenRazer driver and daemon";
+    rgb.enable = mkEnableOption "lighting control through OpenRGB";
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -76,12 +67,59 @@ in
     }
 
     (mkIf cfg.rgb.enable {
-      hardware.openrazer = {
+      hrndz.hardware.openrgb = {
         enable = true;
-        users = [ config.system.primaryUser ];
-        packages = {
-          kernel = config.boot.kernelPackages.openrazer.overrideAttrs { src = openrazerSrc; };
-          daemon = pkgs.python3Packages.openrazer-daemon.overridePythonAttrs { src = openrazerSrc; };
+        lights.soundbar = {
+          label = "Soundbar";
+          device = "Razer Leviathan V2 X";
+          usbId = "1532:054a";
+          modes = [
+            {
+              # Random colours, as the soundbar breathes from the factory.
+              id = "breathing";
+              label = "Breathe";
+              args = [
+                "-m"
+                "Breathing"
+                "-c"
+                "random"
+              ];
+            }
+            {
+              id = "spectrum";
+              label = "Spectrum";
+              args = [
+                "-m"
+                "Spectrum Cycle"
+              ];
+            }
+            {
+              id = "wave";
+              label = "Wave";
+              args = [
+                "-m"
+                "Wave"
+              ];
+            }
+            {
+              id = "static";
+              label = "Static";
+              args = [
+                "-m"
+                "Static"
+                "-c"
+                "@color@"
+              ];
+            }
+            {
+              id = "off";
+              label = "Off";
+              args = [
+                "-m"
+                "Off"
+              ];
+            }
+          ];
         };
       };
     })

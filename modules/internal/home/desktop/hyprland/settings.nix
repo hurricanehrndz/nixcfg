@@ -41,9 +41,10 @@ in
       config = {
         input = {
           kb_layout = "us";
-          # Caps Lock is Compose; both Shifts set Caps Lock, and the next lone
-          # Shift releases it, so a misfire clears itself.
-          kb_options = "compose:caps,shift:both_capslock_cancel";
+          # Caps Lock is Meh (keyd, in the NixOS module), so Right Alt is
+          # Compose; both Shifts set Caps Lock, and the next lone Shift
+          # releases it, so a misfire clears itself.
+          kb_options = "compose:ralt,shift:both_capslock_cancel";
           follow_mouse = 1;
           sensitivity = 0;
 

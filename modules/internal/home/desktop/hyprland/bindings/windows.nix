@@ -51,7 +51,6 @@ in
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
     wayland.windowManager.hyprland.settings.bind = [
       (bind "SUPER + W" "Close window" "hl.dsp.window.close()")
-      (bind "SUPER + Q" "Close window" "hl.dsp.window.close()")
 
       (bind "SUPER + J" "Toggle window split" ''hl.dsp.layout("togglesplit")'')
       (bind "SUPER + P" "Pseudo window" "hl.dsp.window.pseudo()")
@@ -59,16 +58,8 @@ in
       (bind "SUPER + F" "Full screen" ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
       (bind "SUPER + ALT + F" "Full width" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
     ]
-    # Focus and swap with the arrows, and with h/j/k/l as in AeroSpace.
-    ++ perKey arrows (
-      key: dir: [
-        (bind "SUPER + ${key}" "Focus ${dir}" ''hl.dsp.focus({ direction = "${dir}" })'')
-        (bind "SUPER + SHIFT + ${key}" "Swap window ${dir}"
-          ''hl.dsp.window.swap({ direction = "${dir}" })''
-        )
-      ]
-    )
-    ++ perKey vimKeys (
+    # Meh focuses and Hyper swaps, with the arrows or h/j/k/l as in AeroSpace.
+    ++ perKey (arrows // vimKeys) (
       key: dir: [
         (bind "${meh} + ${key}" "Focus ${dir}" ''hl.dsp.focus({ direction = "${dir}" })'')
         (bind "${hyper} + ${key}" "Move window ${dir}" ''hl.dsp.window.swap({ direction = "${dir}" })'')
@@ -101,7 +92,7 @@ in
       (bind "SUPER + G" "Toggle window grouping" "hl.dsp.group.toggle()")
       (bind "SUPER + ALT + G" "Move window out of group" "hl.dsp.window.move({ out_of_group = true })")
     ]
-    ++ perKey arrows (
+    ++ perKey (arrows // vimKeys) (
       key: dir: [
         (bind "SUPER + ALT + ${key}" "Move window into group ${dir}"
           ''hl.dsp.window.move({ into_group = "${dir}" })''

@@ -10,10 +10,10 @@
   "capture.region": {"icon":"","label":"Screenshot region","action":"@hrndzShell@ screenshot region"},
   "capture.window": {"icon":"","label":"Screenshot window","action":"@hrndzShell@ screenshot window"},
   "capture.screen": {"icon":"","label":"Screenshot screen","action":"@hrndzShell@ screenshot screen"},
-  "capture.record": {"icon":"","label":"Record region","aliases":["screenrecord"],"action":"@hrndzShell@ screenrecord region --audio"},
-  "capture.record-screen": {"icon":"","label":"Record screen","action":"@hrndzShell@ screenrecord screen --audio"},
-  "capture.record-mic": {"icon":"","label":"Record screen with microphone","action":"@hrndzShell@ screenrecord screen --audio --mic"},
-  "capture.record-webcam": {"icon":"","label":"Record screen with microphone and webcam","when":"[[ -n $(@hrndzShell@ webcam list) ]]","action":"@hrndzShell@ screenrecord screen --audio --mic --webcam"},
+  "capture.record": {"icon":"󰑊","label":"Record region","aliases":["screenrecord"],"action":"@hrndzShell@ screenrecord region --audio"},
+  "capture.record-screen": {"icon":"󰑊","label":"Record screen","action":"@hrndzShell@ screenrecord screen --audio"},
+  "capture.record-mic": {"icon":"󰍬","label":"Record screen with microphone","action":"@hrndzShell@ screenrecord screen --audio --mic"},
+  "capture.record-webcam": {"icon":"󰖠","label":"Record screen with microphone and webcam","action":"@hrndzShell@ screenrecord screen --audio --mic --webcam"},
   "capture.text": {"icon":"󰴑","label":"Text (OCR)","action":"@hrndzShell@ ocr"},
   "capture.qr": {"icon":"󰐲","label":"QR code","action":"@hrndzShell@ qr"},
   "capture.color": {"icon":"󰃉","label":"Color","action":"@hrndzShell@ color-picker"},
@@ -40,4 +40,6 @@
   "system.logout": {"icon":"󰍃","label":"Logout","action":"uwsm stop"},
   "system.reboot": {"icon":"󰜉","label":"Reboot","action":"systemctl reboot"},
   "system.shutdown": {"icon":"󰐥","label":"Shutdown","action":"systemctl poweroff"},
+
+  "about": {"icon":"","label":"About","aliases":["fastfetch"],"action":"@hrndzShell@ about"},
 }

@@ -19,6 +19,7 @@ in
   config = mkIf cfg.tooling.ai.enable {
     home.packages = [
       packages.claude-code
+      packages.herdr
       packages.prime-agent
     ]
     # agent-browser drives a real Chrome via CDP; on headless hosts it has no

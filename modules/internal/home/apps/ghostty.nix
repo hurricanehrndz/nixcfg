@@ -24,13 +24,14 @@ in
       # ghostty installed via Homebrew
       package = if isDarwin then pkgs.ghostty-bin else pkgs.unstable.ghostty;
       enable = true;
-      # disable nix's integration
+      # HM's snippet is dropped by our mkForce'd initContent; zsh sources it.
       enableZshIntegration = false;
       settings = {
         # null means Stylix sets it from the scheme (see ../theme.nix).
         theme = mkIf (cfg.theme.ghostty != null) cfg.theme.ghostty;
         window-theme = "ghostty";
-        # disable automatic injection - we do it in zsh
+        font-size = mkIf (!isDarwin) 11;
+        # disable automatic injection - zsh sources it (../shells/zsh)
         shell-integration = "none";
         # background-opacity = 0.80;
         background-opacity-cells = true;

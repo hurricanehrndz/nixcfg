@@ -186,19 +186,9 @@ scrim-alpha      = 0.5
 accent           = "@accent@"
 
 [lock]
-# Lock screen password input. background/background-alpha control the
-# centered input field card; border/border-active/border-error cycle
-# through idle, typing/authenticating, and wrong-password states.
-# border-alpha applies to all three border states (they are mutually
-# exclusive in time).
-background       = "@background@"
-background-alpha = 0.8
-text             = "@foreground@"
+# Lock screen, laid out like the login screen: text sits on the dimmed
+# ambient video in the scheme's lighter base colour. text-error is the
+# failure message and underline; selection tints selected text.
 text-error       = "@red@"
-border           = "hyprland.active-border"
-border-active    = "hyprland.active-border"
-border-error     = "@red@"
-border-alpha     = 1.0
-# selection is the text-selection tint inside the input field.
 selection        = "@accent@"
 selection-alpha  = 0.45

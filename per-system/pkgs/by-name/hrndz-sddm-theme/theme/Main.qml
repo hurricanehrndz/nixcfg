@@ -6,7 +6,9 @@ import QtMultimedia
 // colour) softly blurred and dimmed, a large clock and a password field for
 // the last user, after qylock's winter theme. The only session is
 // preselected and not shown. Colours, font and the ambient directory come
-// from theme.conf, filled in from Stylix at build time.
+// from theme.conf, filled in from Stylix at build time. The shell's lock
+// screen (hrndz-shell's plugins/lock/LockView.qml) copies this layout, so
+// change the two together.
 Rectangle {
   id: root
 

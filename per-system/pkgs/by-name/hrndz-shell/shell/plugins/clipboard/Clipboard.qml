@@ -363,7 +363,9 @@ Item {
           } else if (Util.editsFilter(event, root.filterText)) {
             root.setFilter(Util.editedFilter(event, root.filterText))
             event.accepted = true
-          } else if (event.key === Qt.Key_Delete) {
+          } else if (event.key === Qt.Key_Delete || event.key === Qt.Key_Backspace) {
+            // Backspace reaches here only with an empty filter; otherwise
+            // editsFilter above took it to edit the search.
             if (event.modifiers & Qt.ShiftModifier) root.requestClearHistory()
             else root.removeDisplayIndex(root.selectedIndex)
             event.accepted = true
@@ -447,7 +449,7 @@ Item {
 
         Item {
           width: parent.width
-          height: parent.height - root.headerHeight - root.contentSpacing
+          height: parent.height - root.headerHeight - footer.height - root.contentSpacing * 2
 
           Row {
             anchors.fill: parent
@@ -606,6 +608,19 @@ Item {
               width: parent.width
             }
           }
+        }
+
+        Text {
+          id: footer
+          textFormat: Text.PlainText
+          width: parent.width
+          text: "Enter paste · Shift+Enter copy · Alt+Enter open · Del/Backspace delete · Shift+Del clear all · Esc close"
+          color: root.foreground
+          opacity: 0.58
+          font.family: root.fontFamily
+          font.pixelSize: Style.font.caption
+          horizontalAlignment: Text.AlignHCenter
+          elide: Text.ElideRight
         }
       }
     }

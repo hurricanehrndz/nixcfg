@@ -58,6 +58,17 @@ in
             }
           ];
         };
+        "mastercontrol" = {
+          HostName = "172.24.225.1";
+          User = "hurricane";
+          ForwardAgent = true;
+          RemoteForward = [
+            {
+              host.address = localGpgExtraSocket;
+              bind.address = "/run/user/1000/gnupg/S.gpg-agent";
+            }
+          ];
+        };
         "*.yelpcorp.com" = {
           User = "chernand";
           UserKnownHostsFile = "/dev/null";

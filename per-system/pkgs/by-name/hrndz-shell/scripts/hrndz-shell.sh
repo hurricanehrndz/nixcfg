@@ -26,7 +26,7 @@ usage: hrndz-shell <feature> [args]
   bar                         show or hide the bar
   osd volume|microphone|brightness
   notifications dismiss-one|dismiss-all|invoke-last|history
-  panel audio|bluetooth|network|power|display|calendar
+  panel audio|bluetooth|lighting|network|power|display|calendar
   screenshot [smart|region|window|screen]
   screenrecord [region|screen] [--audio] [--mic] [--webcam]
       [--webcam-device=<dev>] [--webcam-size=small|medium|large]
@@ -38,6 +38,7 @@ usage: hrndz-shell <feature> [args]
                               resize the recording's webcam overlay
   ocr | qr                    copy the text or QR code in a region
   color-picker
+  about                       fastfetch in a window fitted to it
   ipc <target> <method> [args...]
 USAGE
 }
@@ -77,15 +78,28 @@ menu() {
 }
 
 # Pick one line from stdin in the menu; prints the pick, exits 1 on cancel.
+# `select_line <prompt> <width> <max-height>` sizes the card to its rows;
+# `select_line <prompt> palette` gives it the launcher palette's size and place.
 select_line() {
-  local prompt=$1 width=$2 height=$3 dir payload status=0
+  local prompt=$1 width=${2:-300} height=${3:-0} layout='' dir payload shell_pid status=0
+  if [[ $width == palette ]]; then
+    layout=palette width=0
+  fi
   dir=$(mktemp -d)
   payload=$(jq -Rsc --arg prompt "$prompt" --arg sel "$dir/selection" --arg donefile "$dir/done" \
-    --argjson width "$width" --argjson height "$height" \
+    --argjson width "$width" --argjson height "$height" --arg layout "$layout" \
     '{mode: "select", prompt: $prompt, options: (split("\n") | map(select(length > 0))),
-      selectionFile: $sel, doneFile: $donefile, width: $width, maxHeight: $height}')
+      selectionFile: $sel, doneFile: $donefile, width: $width, maxHeight: $height, layout: $layout}')
+  # The shell writes `done` when the pick lands or is cancelled. A shell that
+  # restarts in between never will, so stop waiting once it is gone.
+  shell_pid=$(systemctl --user show -p MainPID --value "$unit" 2>/dev/null) || shell_pid=0
   if ipc shell summon omarchy.menu "$payload" >/dev/null; then
-    while [[ ! -e $dir/done ]]; do sleep 0.05; done
+    while [[ ! -e $dir/done ]]; do
+      if ((shell_pid > 0)) && ! kill -0 "$shell_pid" 2>/dev/null; then
+        break
+      fi
+      sleep 0.05
+    done
     [[ -s $dir/selection ]] && cat "$dir/selection" || status=1
   else
     status=1
@@ -181,7 +195,7 @@ notifications() {
 panel() {
   local id
   case ${1:-} in
-  audio | bluetooth | network | power) id=omarchy.$1 ;;
+  audio | bluetooth | lighting | network | power) id=omarchy.$1 ;;
   display) id=omarchy.monitor ;;
   calendar) id=omarchy.clock ;;
   *)
@@ -200,7 +214,7 @@ keybindings() {
   }
   # CEILING: a read-only reference; picking a row only closes the menu.
   # Dispatching the pick would need the bind's action next to each line.
-  select_line Keybindings 800 500 <"$list" >/dev/null || true
+  select_line Keybindings palette <"$list" >/dev/null || true
 }
 
 # omasnap saves to ~/Pictures/Screenshots, copies, and shows a preview whose
@@ -520,7 +534,89 @@ screenrecord() {
     return 1
   fi
   printf '%s %s\n' "$pid" "$file" >"$recording"
-  omarchy-notification-send -t 3000 "Recording" "Alt+Print stops it"
+  omarchy-notification-send -t 3000 "Recording" "Super+Shift+5 stops it"
+}
+
+# Omarchy's omarchy-launch-about (omacom/omarchy, MIT, rev
+# e332dc975d5f635294c497ebb54feb98dc3d89eb) without its logo branding or sheen.
+# The window fits itself to fastfetch's default output and remembers that size,
+# so the next one opens at it; until then it opens at the size in rules.nix.
+about_size="$state/about.size"
+
+about() {
+  if [[ ${1:-} != --render ]]; then
+    local width height rule=""
+    if read -r width height 2>/dev/null <"$about_size" && [[ $width =~ ^[0-9]+$ && $height =~ ^[0-9]+$ ]]; then
+      rule="hrndz_about_size = hl.window_rule({ match = { class = \"^hrndz\\\\.about$\" }, size = { $width, $height } })"
+    fi
+    # Replace the rule from the last launch rather than stacking them.
+    hyprctl eval "if hrndz_about_size then hrndz_about_size:set_enabled(false) end; hrndz_about_size = nil; $rule" >/dev/null 2>&1 || true
+    exec uwsm-app -- xdg-terminal-exec --app-id=hrndz.about hrndz-shell about --render
+  fi
+
+  printf '\e[?25l'
+  about_settle
+  local grid fitted=false
+  while :; do
+    grid=$(stty size)
+    clear
+    fastfetch
+    if [[ $fitted == false ]]; then
+      fitted=true
+      about_fit || true
+      [[ $(stty size) == "$grid" ]] || continue
+    fi
+    # Any key closes it; a resize draws it again.
+    while [[ $(stty size) == "$grid" ]]; do
+      read -rsn1 -t 0.2 && return 0
+    done
+  done
+}
+
+# Hyprland animates a resize and the terminal reflows to every step of it, so
+# wait for the grid to hold still before measuring it.
+about_settle() {
+  local current previous="" held=0
+  for _ in {1..20}; do
+    current=$(stty size)
+    if [[ $current == "$previous" ]]; then
+      ((++held == 3)) && break
+    else
+      held=0
+      previous=$current
+    fi
+    sleep 0.05
+  done
+}
+
+# Move the window by the cells it is off by, rather than scaling it, which
+# would scale the terminal's padding too. Two nudges, and a cell of slack.
+about_fit() {
+  local layout target_c target_r rows cols address width height dw dh nudges=0
+  layout=$(fastfetch --pipe | sed 's/\x1b\[[0-9;?]*[a-zA-Z]//g')
+  # Two columns of right padding; a row for the cursor and one spare.
+  target_c=$(($(LC_ALL=C.UTF-8 wc -L <<<"$layout") + 2))
+  target_r=$(($(wc -l <<<"$layout") + 2))
+  while :; do
+    read -r rows cols < <(stty size)
+    read -r address width height < <(hyprctl clients -j |
+      jq -r 'first(.[] | select(.class == "hrndz.about")) | "\(.address) \(.size[0]) \(.size[1])"') || true
+    [[ -n ${address:-} ]] || return 1
+    if ((cols >= target_c && cols <= target_c + 1 && rows >= target_r && rows <= target_r + 1)); then
+      mkdir -p "$state"
+      printf '%s %s\n' "$width" "$height" >"$about_size"
+      return 0
+    fi
+    ((++nudges <= 2)) || return 1
+
+    dw=$(((target_c - cols) * width))
+    dh=$(((target_r - rows) * height))
+    width=$((width + (dw >= 0 ? (dw + cols - 1) / cols : dw / cols)))
+    height=$((height + (dh >= 0 ? (dh + rows - 1) / rows : dh / rows)))
+    hyprctl dispatch "hl.dsp.window.resize({ window = \"address:$address\", x = $width, y = $height })" >/dev/null
+    hyprctl dispatch "hl.dsp.window.center({ window = \"address:$address\" })" >/dev/null
+    about_settle
+  done
 }
 
 feature=${1:-}
@@ -543,6 +639,7 @@ webcam) webcam "$@" ;;
 ocr) ocr ;;
 qr) qr ;;
 color-picker) pkill hyprpicker || hyprpicker -a ;;
+about) about "$@" ;;
 ipc) ipc "$@" ;;
 -h | --help | help) usage ;;
 *)

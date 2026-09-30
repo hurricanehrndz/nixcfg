@@ -13,6 +13,8 @@ Item {
 
   readonly property string home: Quickshell.env("HOME")
   readonly property string userName: Quickshell.env("USER") || Quickshell.env("LOGNAME")
+  // The passwd comment's full name, which the login screen shows too.
+  property string realName: userName
   // The NixOS module defines this PAM service (security.pam.services).
   readonly property string pamService: "desktop-lock"
 
@@ -233,12 +235,27 @@ Item {
         inputEnabled: root.lockRequested
         loadBackground: root.locked
         passwordText: root.enteredPassword
+        realName: root.realName
         onPasswordTextEdited: function(password) { root.enteredPassword = password }
         onSubmitPassword: function(password) { root.submitPassword(password) }
         onClearFailureRequested: root.failureMessage = ""
         onWakeRequested: root.runWake()
       }
 
+    }
+  }
+
+  FileView {
+    path: "/etc/passwd"
+    printErrors: false
+    onLoaded: {
+      var lines = text().split("\n")
+      for (var i = 0; i < lines.length; i++) {
+        var fields = lines[i].split(":")
+        if (fields[0] !== root.userName) continue
+        root.realName = String(fields[4] || "").split(",")[0] || root.userName
+        return
+      }
     }
   }
 
@@ -260,6 +277,7 @@ Item {
       inputEnabled: false
       loadBackground: root.previewVisible
       passwordText: ""
+      realName: root.realName
     }
 
     MouseArea {
