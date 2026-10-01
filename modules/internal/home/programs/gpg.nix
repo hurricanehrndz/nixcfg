@@ -93,6 +93,8 @@ in
         enable = true;
         enableSshSupport = false;
         enableZshIntegration = false;
+        pinentry.package =
+          if cfg.roles.developerWorkstation.enable then pkgs.pinentry-qt else pkgs.pinentry-curses;
         extraConfig = ''
           enable-ssh-support
         '';

@@ -91,8 +91,19 @@ in
 
     # YubiKey: browsers reach FIDO2 through systemd's own udev rules; OATH
     # codes (ykman oath) and the GPG card (scdaemon has disable-ccid) go
-    # through pcscd.
+    # through pcscd. pcscd's polkit policy admits only processes in the active
+    # session, and gpg-agent starts scdaemon from the systemd user manager,
+    # which sits outside it.
     services.pcscd.enable = true;
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if ((action.id == "org.debian.pcsc-lite.access_pcsc" ||
+             action.id == "org.debian.pcsc-lite.access_card") &&
+            subject.isInGroup("wheel")) {
+          return polkit.Result.YES;
+        }
+      });
+    '';
 
     # The weather widget locates the machine unless a location is fixed. The
     # shell's locate helper asks through GeoClue's where-am-i client.
