@@ -19,10 +19,15 @@ in
     home.packages = [ pkgs.unstable.mise ];
 
     xdg.configFile."mise/config.toml".source = (pkgs.formats.toml { }).generate "mise-config.toml" {
-      settings.trusted_config_paths = [
-        "${home}/src/me/agent-toolkit"
-        "${home}/src/me/respec"
-      ];
+      settings = {
+        # mise defaults to compiling Python from source on NixOS; nix-ld
+        # (hrndz.foreignBinaries) runs its locked prebuilt binaries instead.
+        all_compile = false;
+        trusted_config_paths = [
+          "${home}/src/me/agent-toolkit"
+          "${home}/src/me/respec"
+        ];
+      };
     };
   };
 }
