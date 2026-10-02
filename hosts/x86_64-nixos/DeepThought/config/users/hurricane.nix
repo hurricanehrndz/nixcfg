@@ -34,5 +34,6 @@ in
   hrndz = {
     roles.terminalDeveloper.enable = true;
     tooling.ai.enable = true;
+    foreignBinaries.enable = false;
   };
 }

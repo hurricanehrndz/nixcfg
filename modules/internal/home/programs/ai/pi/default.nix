@@ -34,7 +34,7 @@ in
           pkgs.git
           pkgs.jq
           pkgs.coreutils
-          pkgs.mise
+          pkgs.unstable.mise
         ]
       }:$PATH"
 

@@ -31,4 +31,5 @@ in
   ];
 
   hrndz.roles.terminalDeveloper.enable = true;
+  hrndz.foreignBinaries.enable = false;
 }
