@@ -11,8 +11,8 @@ let
   };
   yubikeys = {
     yubikey-5cNFC-20497165 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
-    yubikey-5cNFC-20497186 = "age1yubikey1qtl8vgsdswdzxkksnr088ezlgj8vu7t632a4x8fckgzs7yxkufrk676gs7r";
-    yubikey-5NFC-10327455 = "age1yubikey1q0v4s9zc0c7jtkqmfkhfmmyay00typ05rz3wvak5uw7gjejz944xsjf8uys";
+    # yubikey-5cNFC-20497186 + yubikey-5NFC-10327455 pub key
+    yubikey-shared = "age1yubikey1qvwg4wvk0ealn3xexe6qg54c4xf00cvk0eam8t0nwg6fhf2zk4vq2lf9z34";
   };
   deepthoughtKeys = [
     machineKeys.DeepThought
