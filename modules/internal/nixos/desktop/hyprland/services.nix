@@ -81,6 +81,9 @@ in
     services.upower.enable = mkDefault true;
     services.power-profiles-daemon.enable = mkDefault (!config.services.tlp.enable);
     services.gnome.gnome-keyring.enable = mkDefault true;
+    # gpg-agent serves SSH (home/programs/gpg.nix); gcr's agent would claim
+    # SSH_AUTH_SOCK in the systemd user environment.
+    services.gnome.gcr-ssh-agent.enable = false;
     networking.networkmanager.enable = mkDefault true;
     hardware.bluetooth.enable = mkDefault true;
 
