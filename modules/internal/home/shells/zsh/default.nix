@@ -17,8 +17,21 @@ let
   # Initialize zsh library
   fzl = self.lib.fast-zsh-lib { inherit pkgs; };
 
+  # ssh can't tell gpg-agent where to show pinentry, so point it at the
+  # newest local shell. Remote shells leave the agent alone.
+  gpgAgentTty = {
+    name = "gpg-agent-tty";
+    content = ''
+      if [[ -z $SSH_CLIENT ]]; then
+        export GPG_TTY=$TTY
+        ${config.programs.gpg.package}/bin/gpg-connect-agent --quiet updatestartuptty /bye >/dev/null
+      fi
+    '';
+    order = 6;
+  };
+
   # zsh raw scripts
-  rawScripts = [
+  rawScripts = lib.optional config.services.gpg-agent.enable gpgAgentTty ++ [
     # {
     #   name = "zprof";
     #   content = ''
