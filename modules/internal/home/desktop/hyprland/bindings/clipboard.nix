@@ -17,7 +17,9 @@ in
     wayland.windowManager.hyprland.settings = {
       # universal_shortcut(mods, key[, terminal_mods, terminal_key]) returns a
       # bind action. Terminals carry the "terminal" tag from rules.nix; dynamic
-      # tags have a trailing "*".
+      # tags have a trailing "*". Terminals get CTRL + SHIFT, not the Insert
+      # keys: SHIFT + Insert pastes the primary selection in Ghostty, kitty and
+      # Alacritty, so it would miss what tmux copied over OSC 52.
       universal_shortcut._var = mkLuaInline ''
         function(mods, key, terminal_mods, terminal_key)
           local function is_terminal()
@@ -43,8 +45,8 @@ in
         end'';
 
       bind = [
-        (bind "SUPER + C" "Universal copy" ''universal_shortcut("CTRL", "C", "CTRL", "Insert")'')
-        (bind "SUPER + V" "Universal paste" ''universal_shortcut("CTRL", "V", "SHIFT", "Insert")'')
+        (bind "SUPER + C" "Universal copy" ''universal_shortcut("CTRL", "C", "CTRL + SHIFT", "C")'')
+        (bind "SUPER + V" "Universal paste" ''universal_shortcut("CTRL", "V", "CTRL + SHIFT", "V")'')
         (bind "SUPER + X" "Universal cut" ''universal_shortcut("CTRL", "X")'')
         (bind "SUPER + CTRL + V" "Clipboard history" (exec "hrndz-shell clipboard"))
       ];
