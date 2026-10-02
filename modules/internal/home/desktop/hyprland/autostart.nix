@@ -5,6 +5,7 @@
 }:
 let
   inherit (import ./bindings/_lib.nix { inherit lib; }) namedWorkspaces;
+  gpgUpdateTty = lib.optionalString config.services.gpg-agent.enable "${config.programs.gpg.package}/bin/gpg-connect-agent updatestartuptty /bye; ";
 in
 {
   config = lib.mkIf config.wayland.windowManager.hyprland.enable {
@@ -17,7 +18,9 @@ in
             -- this config, to systemd and D-Bus activated services.
             -- Then start the shell: uwsm's graphical-session.target already
             -- has, but a session desktop-vnc starts has no such target.
-            hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1); dbus-update-activation-environment --systemd --all; hrndz-shell start")
+            -- gpg-agent starts at login, before the session exists, and shows
+            -- pinentry for SSH on its startup display, so point it here.
+            hl.exec_cmd("systemctl --user import-environment $(env | cut -d'=' -f 1); dbus-update-activation-environment --systemd --all; ${gpgUpdateTty}hrndz-shell start")
 
             hl.exec_cmd("uwsm-app -- udiskie --automount --no-notify --no-tray")
 
