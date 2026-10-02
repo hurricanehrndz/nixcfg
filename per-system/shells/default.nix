@@ -17,10 +17,13 @@
           nix = pkgs.lixPackageSets.latest.lix;
           pkgWithCategory = category: package: { inherit package category; };
 
-          # Override agenix to use age with age-plugin-yubikey
-          agenix-age = pkgs.agenix.override {
-            ageBin = "PATH=\${PATH}:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
-          };
+          # Override agenix to use age with age-plugin-yubikey. The override is
+          # never in a binary cache, so skip upstream's test suite on each rebuild.
+          agenix-age =
+            (pkgs.agenix.override {
+              ageBin = "PATH=\${PATH}:${lib.makeBinPath [ pkgs.age-plugin-yubikey ]} ${pkgs.age}/bin/age";
+            }).overrideAttrs
+              { doInstallCheck = false; };
         in
         {
           name = "default";
