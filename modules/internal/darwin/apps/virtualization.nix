@@ -15,6 +15,7 @@ in
       docker-client
       docker-compose
       lazydocker
+      libvirt # virsh client; windows-test-rig drives remote libvirt hosts over qemu+ssh
       tart
       vncdo
     ];
