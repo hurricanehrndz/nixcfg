@@ -99,11 +99,11 @@ already-trusted identity present at `.age/local-key` (or `AGE_IDENTITY`):
 git-age-filter rekey-masters
 ```
 
-## 4. Add the recipient to agenix (`secrets/secrets.nix`)
+## 4. Add the recipient to agenix (`secrets/agenix-rules.nix`)
 
 agenix tracks its own recipient list, separate from `.age/recipients`. Add the
 new key to the `yubikeys` attrset in
-[`secrets/secrets.nix`](../secrets/secrets.nix):
+[`secrets/agenix-rules.nix`](../secrets/agenix-rules.nix):
 
 ```nix
 yubikeys = {
@@ -115,7 +115,7 @@ yubikeys = {
 Because the `yubikeys` set feeds `darwin_Keys`, `deepthoughtKeys`, and the
 `home/zsh/env_vars.age` recipient list, every secret that already grants a
 YubiKey will pick up the new one. Re-encrypt all secrets for the updated
-recipients. agenix resolves recipients from `./secrets.nix`, so run it from the
+recipients. agenix finds `agenix-rules.nix` in the current directory or a parent, so run it from the
 `secrets/` directory:
 
 ```sh
@@ -134,7 +134,7 @@ for a touch on that key.)
 git add \
   identities/age/yubikey-id-<tag>.txt \
   .age/recipients .age/local-key.age \
-  secrets/secrets.nix secrets/
+  secrets/agenix-rules.nix secrets/
 
 git commit -m "feat(secrets): add YubiKey <tag> as an age recipient"
 ```
@@ -189,7 +189,7 @@ has an age slot — look for `CN=AGE` under `Slot 82`/`RETIRED1`, which is age
 | Path | Tracked | Purpose |
 |---|---|---|
 | `.age/recipients` | Yes | Master keys that can recover the git-age-filter local key. Updated in step 3, then `git-age-filter rekey-masters`. |
-| `secrets/secrets.nix` (`yubikeys`) | Yes | agenix recipients for `secrets/**.age`. Updated in step 4, then `agenix --rekey`. |
+| `secrets/agenix-rules.nix` (`yubikeys`) | Yes | agenix recipients for `secrets/**.age`. Updated in step 4, then `agenix --rekey`. |
 | `identities/age/yubikey-id-*.txt` | Yes | Per-YubiKey identity stub (slot pointer, not secret). One per key. |
 | `identities/age/recipients.txt` | Yes | Reference copy of YubiKey recipient public keys. |
 

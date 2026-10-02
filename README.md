@@ -112,7 +112,7 @@ rekey secrets for it.
    ```
 
 2. **Add the host key to secrets configuration:**
-   - Edit `secrets/secrets.nix` and add the new host's public key
+   - Edit `secrets/agenix-rules.nix` and add the new host's public key
    - Rekey all secrets:
      ```console
      agenix --rekey

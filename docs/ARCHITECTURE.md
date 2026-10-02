@@ -43,7 +43,7 @@ construction from directory structure.
 │   ├── treefmt.nix            # Code formatting config
 │   └── formatter.nix          # Exposes formatter for `nix fmt`
 ├── secrets/                   # agenix-encrypted secrets
-│   ├── secrets.nix            # Secret definitions + host key mapping
+│   ├── agenix-rules.nix       # Secret definitions + host key mapping
 │   ├── darwin/                # Darwin-specific secrets
 │   └── services/              # Service secrets (homarr, ingress, etc.)
 ├── identities/                # Public keys (age recipients, GPG)
@@ -124,7 +124,7 @@ used throughout the configuration to toggle features per host:
 Secrets are encrypted with [agenix](https://github.com/ryantm/agenix) using
 host SSH keys and yubikey age identities:
 
-- `secrets/secrets.nix` maps secret files to the host keys that can decrypt
+- `secrets/agenix-rules.nix` maps secret files to the host keys that can decrypt
   them
 - `identities/age/` holds age public keys and yubikey identity files
 - The `bootstrap` flake input (`inputs/flags/`) controls whether secrets are

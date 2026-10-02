@@ -27,7 +27,7 @@ in
   };
 
   # The auth key lives at secrets/services/tailscale/auth.age and is decryptable
-  # by every host listed in secrets/secrets.nix, so enabling the service is all a
+  # by every host listed in secrets/agenix-rules.nix, so enabling the service is all a
   # host needs to do. Rotate the key there when it expires.
   config = mkIf (cfg.enable && !isBootstrap) {
     age.secrets."tailscale-auth".file = "${self}/secrets/services/tailscale/auth.age";

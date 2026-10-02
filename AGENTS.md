@@ -167,16 +167,16 @@ All agents are gated on `tooling.ai` and managed via home-manager. Their package
 
 ### Secrets Management
 Uses agenix for secret encryption:
-- `secrets/secrets.nix` - Defines which secrets exist and which host SSH keys can decrypt them (`machineKeys`, `yubikeys`)
+- `secrets/agenix-rules.nix` - Defines which secrets exist and which host SSH keys can decrypt them (`machineKeys`, `yubikeys`)
 - `secrets/darwin/`, `secrets/home/`, `secrets/services/` - encrypted secrets grouped by scope
-- Machine SSH keys are defined in `secrets/secrets.nix` under `machineKeys`; yubikey age identities under `yubikeys`
-- After adding a new host, update `secrets/secrets.nix` with the host's public key and run `agenix --rekey`
+- Machine SSH keys are defined in `secrets/agenix-rules.nix` under `machineKeys`; yubikey age identities under `yubikeys`
+- After adding a new host, update `secrets/agenix-rules.nix` with the host's public key and run `agenix --rekey`
 - Some working-tree files are also encrypted at rest via `git-age-filter` (see `docs/manual-nixos-install.md` and the README "Secrets" section)
 
 ### Bootstrap Mode
 The `bootstrap` flake input (`github:boolean-option/false` by default, see `flake.nix`) controls whether agenix secrets are enabled:
 - During initial installation, use `--override-input bootstrap github:boolean-option/true` to disable secrets
-- After installation, obtain the host SSH key and add it to `secrets/secrets.nix`
+- After installation, obtain the host SSH key and add it to `secrets/agenix-rules.nix`
 - Run `agenix --rekey` to re-encrypt secrets for the new host
 - Rebuild without the bootstrap flag to enable secrets
 
