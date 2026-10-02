@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   osConfig,
   ...
 }:
@@ -9,8 +10,13 @@ let
   cfg = osConfig.hrndz;
   isWorkUser = config.home.username == "chernand";
   # Restricted agent socket on the *local* machine, forwarded to remotes.
-  # Resolves per-host: /Users/hurricane on muthur, /Users/chernand on the work mac.
-  localGpgExtraSocket = "${config.home.homeDirectory}/.gnupg/S.gpg-agent.extra";
+  # launchd's agent uses the homedir; systemd's lives under the runtime dir
+  # (%i is the local uid).
+  localGpgExtraSocket =
+    if pkgs.stdenv.hostPlatform.isDarwin then
+      "${config.home.homeDirectory}/.gnupg/S.gpg-agent.extra"
+    else
+      "/run/user/%i/gnupg/S.gpg-agent.extra";
 in
 {
   config = mkIf cfg.roles.terminalUser.enable {

@@ -91,13 +91,13 @@ in
     (mkIf isLinux {
       services.gpg-agent = {
         enable = true;
-        enableSshSupport = false;
+        # Under systemd socket activation the agent only serves sockets systemd
+        # passes it, so the ssh socket unit must come from home-manager.
+        enableSshSupport = true;
+        enableExtraSocket = true;
         enableZshIntegration = false;
         pinentry.package =
           if cfg.roles.developerWorkstation.enable then pkgs.pinentry-qt else pkgs.pinentry-curses;
-        extraConfig = ''
-          enable-ssh-support
-        '';
       };
       home.sessionVariablesExtra = ''
         # only set SSH_AUTH_SOCK if not SSH session
