@@ -16,12 +16,14 @@ let
     "$schema" = "https://json.schemastore.org/claude-code-settings.json";
 
     includeCoAuthoredBy = false;
+    skipDangerousModePermissionPrompt = true;
 
     # Light theme + vim keybindings in the input editor.
     # (Shift+Enter for newlines needs no setting here — Ghostty supports it
     # natively. Ctrl+J or `\`+Enter also work in any terminal.)
     theme = "light";
     editorMode = "vim";
+    tui = "default";
 
     # Nix owns the Claude version (from nixpkgs), so the in-app
     # auto-updater must stay off.
@@ -33,6 +35,8 @@ let
     env.ENABLE_TOOL_SEARCH = "1";
 
     permissions = {
+      defaultMode = "auto";
+
       # Allow-by-default to minimize prompts: a broad allow auto-approves
       # everything, and the deny list still wins (precedence is deny > ask >
       # allow), so only the genuinely destructive commands are blocked.

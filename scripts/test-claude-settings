@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+workdir="$(mktemp -d)"
+trap 'rm -rf "$workdir"' EXIT
+export HOME="$workdir/home" DRY_RUN_CMD=""
+
+# Evaluate just this module, using the local jq/coreutils for activation.
+nix eval --impure --raw --expr '
+  (import ./modules/internal/home/programs/ai/claude/default.nix {
+    lib = {
+      mkIf = condition: content: if condition then content else {};
+      makeBinPath = _: "";
+      hm.dag.entryAfter = _: text: text;
+    };
+    pkgs = {
+      writeText = builtins.toFile;
+      python3 = "/unused";
+      jq = null;
+      coreutils = null;
+    };
+    osConfig.hrndz.tooling.ai.enable = true;
+  }).config.home.activation.claudeSettings
+' >"$workdir/activate.sh"
+
+settings="$HOME/.claude/settings.json"
+assert_settings() {
+  jq -e '
+    .skipDangerousModePermissionPrompt == true and
+    .theme == "light" and
+    .editorMode == "vim" and
+    .tui == "default" and
+    .includeCoAuthoredBy == false and
+    .permissions.defaultMode == "auto" and
+    .permissions.allow == [
+      "Bash(*)", "Read(*)", "Edit(*)", "Write(*)", "WebFetch(*)"
+    ] and
+    .permissions.deny == [
+      "Bash(sudo:*)", "Bash(su:*)", "Bash(doas:*)", "Bash(mkfs:*)",
+      "Bash(mount:*)", "Bash(umount:*)", "Bash(dd:*)", "Bash(shutdown:*)",
+      "Bash(reboot:*)", "Bash(rm -rf /:*)", "Bash(rm -rf ~:*)",
+      "Bash(diskutil:*)", "Bash(nix-collect-garbage:*)"
+    ]
+  ' "$settings" >/dev/null || {
+    printf '%s\n' "Required Claude settings are missing or incorrect." >&2
+    return 1
+  }
+}
+
+# A fresh config gets every required setting.
+bash "$workdir/activate.sh"
+assert_settings
+
+# Runtime preference changes are reset; unrelated and nested keys survive.
+jq '
+  .skipDangerousModePermissionPrompt = false |
+  .theme = "dark" | .editorMode = "normal" | .tui = "other" |
+  .includeCoAuthoredBy = true |
+  .permissions = {allow: [], deny: [], defaultMode: "default", ask: ["WebSearch"]} |
+  .enabledPlugins = {"example@marketplace": true}
+' "$settings" >"$workdir/drift.json"
+mv "$workdir/drift.json" "$settings"
+bash "$workdir/activate.sh"
+assert_settings
+jq -e '
+  .enabledPlugins == {"example@marketplace": true} and
+  .permissions.ask == ["WebSearch"]
+' "$settings" >/dev/null
+
+cp "$settings" "$workdir/expected.json"
+bash "$workdir/activate.sh"
+cmp "$settings" "$workdir/expected.json"
+test ! -L "$settings"
+
+printf '%s\n' "Claude settings activation tests passed."
