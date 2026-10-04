@@ -8,6 +8,7 @@ let
     HHY314TN61 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIBVjEb2tV4daRlqt2lXspKqXFav2Prg1IVSZA71A3qY";
     hal = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWYoQyoNQ4dFZfPIyzZ/bRDnUo/dSQFu+gxr626kHua";
     mastercontrol = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICHjbHviKroSd7V8Vz31UJr+eBSPYy5C2BGbUxjQKY0f";
+    muthur = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINDOG7UKi459w67vwfpmmljkZq0wiQRkOQ7SFIsIGpIH";
   };
   yubikeys = {
     yubikey-5cNFC-20497165 = "age1yubikey1q2tegcah05hmykj02tnefl9kggdvudu0x2ehhqkkcar8ermqzfsky94kqzz";
