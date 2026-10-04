@@ -39,6 +39,7 @@ in
     tooling.js.enable = true;
     tooling.ai.enable = true;
     tooling.ai.localInference.enable = true;
+    services.syncthing.enable = true;
   };
 
   users.users.${username} = {

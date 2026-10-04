@@ -42,6 +42,19 @@ in
   "services/media-app-stack/rkey.age".publicKeys = deepthoughtKeys;
   "services/searxng/env.age".publicKeys = deepthoughtKeys;
 
+  # Syncthing device keys. The matching cert.pem files are public and sit next
+  # to these unencrypted; together they fix each host's device ID.
+  "services/syncthing/DeepThought/key.pem.age".publicKeys = deepthoughtKeys;
+  "services/syncthing/DeepThought/gui-password.age".publicKeys = deepthoughtKeys;
+  "services/syncthing/muthur/key.pem.age".publicKeys = [
+    machineKeys.muthur
+  ]
+  ++ (builtins.attrValues yubikeys);
+  "services/syncthing/LH9KCR6DJX/key.pem.age".publicKeys = [
+    machineKeys.LH9KCR6DJX
+  ]
+  ++ (builtins.attrValues yubikeys);
+
   # added 2026-07-19 + 30 day expiration
   "services/tailscale/auth.age".publicKeys = deepthoughtKeys ++ [
     machineKeys.Lucy

@@ -107,6 +107,13 @@
                       "noatime"
                     ];
                   };
+                  "@vaults" = {
+                    mountpoint = "/volumes/vaults";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                    ];
+                  };
                   "@swap" = {
                     mountpoint = "/.swapvol";
                     swap = {

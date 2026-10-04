@@ -19,6 +19,7 @@ in
     tooling.documentTools.enable = true;
     tooling.js.enable = true;
     tooling.ai.enable = true;
+    services.syncthing.enable = true;
   };
 
   users.users.${username} = {
