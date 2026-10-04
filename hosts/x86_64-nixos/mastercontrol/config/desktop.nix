@@ -11,9 +11,9 @@
   };
 
   environment.systemPackages = with pkgs; [
-    cider-2
     discord
     obsidian
     zed-editor
+    local.sidra
   ];
 }

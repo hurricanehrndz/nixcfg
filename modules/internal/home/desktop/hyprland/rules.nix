@@ -77,7 +77,7 @@
           workspace = "name:W";
         }
         {
-          match.class = "cider";
+          match.class = "[Ss]idra";
           workspace = "name:A";
         }
         {
