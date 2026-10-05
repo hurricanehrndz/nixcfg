@@ -71,7 +71,7 @@ in
             ;;
         esac
 
-        if [ ! -f "$toolkit" ] || [ ! -f "$repo/context/working-style.md" ]; then
+        if [ ! -f "$toolkit" ] || [ ! -f "$repo/context/working-style.md.j2" ]; then
           echo "agentToolkit: $repo is missing the installer or global context source; update it before activating" >&2
           exit 1
         fi
