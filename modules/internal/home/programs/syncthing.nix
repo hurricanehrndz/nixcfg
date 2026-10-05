@@ -20,6 +20,7 @@ let
     };
     muthur.id = "QTIVQ3Q-H3PPVYG-PPJMBGX-OJ6GE6A-BKXEJVO-J6RJPJH-ZG4BTR7-GQ4IYA2";
     LH9KCR6DJX.id = "JAKDKYR-KKKU3YG-CUZOS3O-MSVRUXD-ISY36EP-EFR7D46-ORDKZ6C-5RDUYQZ";
+    mastercontrol.id = "QXO7FGO-PNAXSDL-MSVDSTR-W3G2XGH-2YGYL7V-B3PZCJ6-ONX77VJ-AWYJEQH";
   };
   peers = if hostName == hub then lib.attrNames (removeAttrs devices [ hub ]) else [ hub ];
 in

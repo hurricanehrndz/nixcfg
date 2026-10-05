@@ -54,6 +54,10 @@ in
     machineKeys.LH9KCR6DJX
   ]
   ++ (builtins.attrValues yubikeys);
+  "services/syncthing/mastercontrol/key.pem.age".publicKeys = [
+    machineKeys.mastercontrol
+  ]
+  ++ (builtins.attrValues yubikeys);
 
   # added 2026-07-19 + 30 day expiration
   "services/tailscale/auth.age".publicKeys = deepthoughtKeys ++ [
