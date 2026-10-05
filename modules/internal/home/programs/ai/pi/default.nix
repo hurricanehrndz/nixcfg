@@ -19,10 +19,11 @@ in
     package = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
   };
 
-  # Bootstrap the personal Agent Toolkit without updating or otherwise touching
-  # an existing checkout. The toolkit remains the sole owner of its skill and
-  # global-context links and the respec binary; this activation invokes its sync
-  # wrapper after Home Manager has updated links for the new generation.
+  # Bootstrap the personal Agent Toolkit and fast-forward a clean checkout.
+  # Dirty checkouts are left at their current revision. The toolkit remains the
+  # sole owner of its skill and global-context links and the respec binary; this
+  # activation invokes its sync wrapper after Home Manager has updated links for
+  # the new generation.
   #
   # pi owns settings.json at runtime. Nix narrowly ensures the package entries
   # required on every AI-enabled host, preserves all other settings/packages,
@@ -70,6 +71,12 @@ in
             exit 1
             ;;
         esac
+
+        if [ -z "$(git -C "$repo" status --porcelain=v1)" ]; then
+          $DRY_RUN_CMD git -C "$repo" pull --ff-only
+        else
+          echo "agentToolkit: $repo has local changes; skipping update"
+        fi
 
         if [ ! -f "$toolkit" ] || [ ! -f "$repo/context/working-style.md.j2" ]; then
           echo "agentToolkit: $repo is missing the installer or global context source; update it before activating" >&2
