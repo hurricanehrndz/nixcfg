@@ -47,12 +47,13 @@ in
       };
     };
 
-    # Obsidian rewrites its pane layout constantly; syncing it only breeds
-    # conflict copies.
+    # Obsidian rewrites its pane layout constantly, and Lean Terminal saves
+    # every session's scrollback; syncing either only breeds conflict copies.
     home.file."vaults/personal/.stignore" = lib.mkIf (hostName != hub) {
       text = ''
         .obsidian/workspace.json
         .obsidian/workspace-mobile.json
+        .obsidian/plugins/lean-terminal/data.json
       '';
     };
   };
