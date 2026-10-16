@@ -247,6 +247,10 @@ in
         if [[ -d "$HOME/.cache/.bun/bin" ]]; then
           path=("$HOME/.cache/.bun/bin" $path)
         fi
+
+        if [[ -d "$HOME/go/bin" ]]; then
+          path=("$HOME/go/bin" $path)
+        fi
       '';
       completionInit = "";
       initContent =
