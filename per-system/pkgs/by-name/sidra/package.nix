@@ -7,11 +7,11 @@
 }:
 let
   pname = "sidra";
-  version = "1.1.2";
+  version = "1.2.1";
 
   src = fetchurl {
     url = "https://github.com/wimpysworld/sidra/releases/download/${version}/Sidra-linux-x86_64.AppImage";
-    hash = "sha256-ON9b0VkPWRRW7+0TIw2Ygs464WYHeFigD+gfz/sEql4=";
+    hash = "sha256-jip87nDTVxudIThGVsZ3bnuZU32YPMfjEug0y48mKA0=";
   };
 
   contents = appimageTools.extractType2 { inherit pname version src; };
@@ -22,7 +22,7 @@ appimageTools.wrapType2 {
   extraInstallCommands = ''
     install -Dm444 ${contents}/sidra.desktop -t $out/share/applications
     substituteInPlace $out/share/applications/sidra.desktop \
-      --replace-fail 'Exec=AppRun --no-sandbox' 'Exec=sidra'
+      --replace-fail 'Exec=AppRun' 'Exec=sidra'
     cp -r ${contents}/usr/share/icons $out/share
   '';
 
