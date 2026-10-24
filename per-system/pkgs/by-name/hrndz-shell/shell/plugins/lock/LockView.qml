@@ -41,10 +41,7 @@ Item {
 
   // The clock sits on the ambient video or image, dimmed, where the lighter of
   // the scheme's two base colours reads; on the plain colour it is the text.
-  // A configured lock image replaces the ambient video and its still.
-  readonly property string lockImageUrl: "@lockImageUrl@"
-  readonly property string imageUrl: lockImageUrl || Ambient.imageUrl
-  readonly property bool mediaBehind: imageUrl !== "" || Ambient.hasVideo
+  readonly property bool mediaBehind: Ambient.imageUrl !== "" || Ambient.hasVideo
   readonly property color clockColor: !mediaBehind ? ShellColor.foreground
     : (ShellColor.foreground.hslLightness > ShellColor.background.hslLightness ? ShellColor.foreground : ShellColor.background)
 
@@ -85,18 +82,16 @@ Item {
     anchors.fill: parent
     color: ShellColor.background
 
-    // The ambient video, softly blurred and dimmed, from the wallpaper's
-    // frame or from where the screensaver was. It pauses with the displays
-    // off.
+    // The ambient video, dimmed, from the wallpaper's frame or from where the
+    // screensaver was. It pauses with the displays off.
     AmbientView {
       id: wallpaper
       anchors.fill: parent
       visible: false
       // On Qt 6.12 the video stutters and then freezes on the lock surface
       // while frames keep decoding (not on 6.11, and not in a single-window
-      // process); hosts on 6.12 set a lock image until a Qt release fixes it.
-      video: root.loadBackground && root.lockImageUrl === ""
-      imageUrl: root.imageUrl
+      // process); hosts on 6.12 set a wallpaper until a Qt release fixes it.
+      video: root.loadBackground && Ambient.wallpaperUrl === ""
       playing: Ambient.displaysOn
       resume: true
     }
@@ -105,9 +100,6 @@ Item {
       anchors.fill: wallpaper
       source: wallpaper
       autoPaddingEnabled: false
-      blurEnabled: root.mediaBehind
-      blur: 0.35
-      blurMax: 64
       brightness: root.mediaBehind ? -0.18 : 0
     }
 

@@ -26,7 +26,9 @@ Singleton {
   property int version: 0
 
   readonly property string videoUrl: hasVideo ? "file://" + dir + "/video" : ""
-  readonly property string imageUrl: hasStill
+  // A configured wallpaper replaces the still, and the video on the lock.
+  readonly property string wallpaperUrl: "@wallpaperUrl@"
+  readonly property string imageUrl: wallpaperUrl !== "" ? wallpaperUrl : hasStill
     ? "file://" + dir + "/still.png?v=" + version
     : (hasStylixImage ? "file://" + stylixImage.split("/").map(encodeURIComponent).join("/") : "")
 

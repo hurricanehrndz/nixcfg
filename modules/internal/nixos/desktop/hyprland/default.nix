@@ -37,7 +37,7 @@ in
           inherit inputs;
         };
         inherit (cfg.ambient) playbackRate;
-        inherit (cfg) lockImage;
+        inherit (cfg) wallpaper;
         lockBlankSeconds = cfg.idle.lockBlank;
         extraMenuItems = cfg.menuItems;
       };
@@ -62,12 +62,14 @@ in
       '';
     };
 
-    lockImage = mkOption {
+    wallpaper = mkOption {
       type = types.nullOr types.path;
       default = null;
       description = ''
-        Image behind the lock and login screens. Null plays the ambient
-        video on both instead.
+        Image on the desktop and behind the lock and login screens, in place
+        of the ambient still and of the video on the lock and login screens.
+        The screensaver still plays the video. Null uses the ambient video
+        and its still.
       '';
     };
 

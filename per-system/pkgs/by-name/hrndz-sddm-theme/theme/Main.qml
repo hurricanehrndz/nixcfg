@@ -3,7 +3,7 @@ import QtQuick.Effects
 import QtMultimedia
 
 // The login screen: the ambient video (or its still, or the background
-// colour) softly blurred and dimmed, a large clock and a password field for
+// colour) dimmed, a large clock and a password field for
 // the last user, after qylock's winter theme. The only session is
 // preselected and not shown. Colours, font and the ambient directory come
 // from theme.conf, filled in from Stylix at build time. The shell's lock
@@ -119,9 +119,6 @@ Rectangle {
     anchors.fill: parent
     source: backdrop
     autoPaddingEnabled: false
-    blurEnabled: root.mediaBehind
-    blur: 0.35
-    blurMax: 64
     brightness: root.mediaBehind ? -0.18 : 0
   }
 

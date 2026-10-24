@@ -20,13 +20,12 @@ Rectangle {
   // when it takes over from a running screensaver.
   property bool publishPosition: false
   property bool resume: false
-  property string imageUrl: Ambient.imageUrl
 
   color: ShellColor.background
 
   Image {
     anchors.fill: parent
-    source: root.imageUrl
+    source: Ambient.imageUrl
     fillMode: Image.PreserveAspectCrop
     asynchronous: true
     cache: false

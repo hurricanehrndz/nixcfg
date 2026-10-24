@@ -3,7 +3,7 @@
   hrndz.desktop = {
     hyprland = {
       enable = true;
-      lockImage = ./lock.jpg;
+      wallpaper = ./wallpaper.jpg;
     };
     gaming.enable = true;
   };

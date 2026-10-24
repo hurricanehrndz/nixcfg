@@ -14,8 +14,9 @@
   ambientDir ? "/var/lib/ambient",
   playbackRate ? 1.0,
   lockBlankSeconds ? 60,
-  # Shown behind the lock screen instead of the ambient video and still.
-  lockImage ? null,
+  # Shown on the desktop and lock screen instead of the ambient still, and
+  # instead of the video behind the lock.
+  wallpaper ? null,
   # Host-specific menu rows, keyed by id like menu.jsonc.
   extraMenuItems ? { },
   stdenvNoCC,
@@ -315,8 +316,8 @@ stdenvNoCC.mkDerivation {
           --subst-var-by ambientDir "${ambientDir}" \
           --subst-var-by playbackRate "${toString playbackRate}" \
           --subst-var-by lockBlankMs "${toString (lockBlankSeconds * 1000)}" \
-          --subst-var-by lockImageUrl "${
-            lib.optionalString (lockImage != null) "file://${lockImage}"
+          --subst-var-by wallpaperUrl "${
+            lib.optionalString (wallpaper != null) "file://${wallpaper}"
           }" \
           --subst-var-by hrndzShell "$out/bin/hrndz-shell" \
           --subst-var-by fcMatch "${lib.getExe' fontconfig "fc-match"}" \
