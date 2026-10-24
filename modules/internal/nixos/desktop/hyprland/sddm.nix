@@ -29,6 +29,27 @@ in
       extraPackages = [ pkgs.kdePackages.qtmultimedia ];
       # The theme reads the still's time from a file next to the video.
       settings.General.GreeterEnvironment = "QML_XHR_ALLOW_FILE_READ=1";
+      # nixpkgs' weston.ini plus require-outputs: the monitor can still be
+      # waking when the greeter starts, and by default Weston exits without an
+      # output and leaves a black screen. Keep the rest in sync with nixpkgs.
+      wayland.compositorCommand =
+        let
+          xkb = config.services.xserver.xkb;
+          westonIni = (pkgs.formats.ini { }).generate "weston.ini" {
+            core.require-outputs = "none";
+            libinput = {
+              enable-tap = config.services.libinput.mouse.tapping;
+              left-handed = config.services.libinput.mouse.leftHanded;
+            };
+            keyboard = {
+              keymap_model = xkb.model;
+              keymap_layout = xkb.layout;
+              keymap_variant = xkb.variant;
+              keymap_options = xkb.options;
+            };
+          };
+        in
+        "${lib.getExe pkgs.weston} --shell=kiosk -c ${westonIni}";
     };
 
     # SDDM finds themes in the system profile.
