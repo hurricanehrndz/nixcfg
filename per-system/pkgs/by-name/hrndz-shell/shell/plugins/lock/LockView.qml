@@ -42,8 +42,8 @@ Item {
   // The clock sits on the ambient video or image, dimmed, where the lighter of
   // the scheme's two base colours reads; on the plain colour it is the text.
   readonly property bool mediaBehind: Ambient.imageUrl !== "" || Ambient.hasVideo
-  readonly property color clockColor: !mediaBehind ? Color.foreground
-    : (Color.foreground.hslLightness > Color.background.hslLightness ? Color.foreground : Color.background)
+  readonly property color clockColor: !mediaBehind ? ShellColor.foreground
+    : (ShellColor.foreground.hslLightness > ShellColor.background.hslLightness ? ShellColor.foreground : ShellColor.background)
 
   function forcePasswordFocus() {
     passwordInput.forceActiveFocus()
@@ -80,7 +80,7 @@ Item {
 
   Rectangle {
     anchors.fill: parent
-    color: Color.background
+    color: ShellColor.background
 
     // The ambient video, softly blurred and dimmed, from the wallpaper's
     // frame or from where the screensaver was. It pauses with the displays
@@ -110,7 +110,7 @@ Item {
       visible: root.mediaBehind
       gradient: Gradient {
         GradientStop { position: 0.5; color: "transparent" }
-        GradientStop { position: 1.0; color: Qt.alpha(Color.background.hslLightness < 0.5 ? Color.background : "black", 0.6) }
+        GradientStop { position: 1.0; color: Qt.alpha(ShellColor.background.hslLightness < 0.5 ? ShellColor.background : "black", 0.6) }
       }
     }
 
@@ -198,7 +198,7 @@ Item {
           passwordCharacter: "\u00B7"
           passwordMaskDelay: 0
           color: root.clockColor
-          selectionColor: Color.lock.selection
+          selectionColor: ShellColor.lock.selection
           selectedTextColor: root.clockColor
           font.family: Style.font.family
           font.pixelSize: root.dotsOverflow
@@ -275,7 +275,7 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
           height: Math.max(1, Math.round(root.s))
           width: passwordInput.activeFocus ? parent.width : parent.width * 0.3
-          color: root.errorState ? Color.lock.textError : root.clockColor
+          color: root.errorState ? ShellColor.lock.textError : root.clockColor
           opacity: passwordInput.activeFocus ? 0.8 : 0.2
           Behavior on width { NumberAnimation { duration: 350; easing.type: Easing.OutQuart } }
           Behavior on opacity { NumberAnimation { duration: 350 } }
@@ -288,7 +288,7 @@ Item {
         height: 15 * root.s
         horizontalAlignment: Text.AlignHCenter
         text: root.failureMessage.toUpperCase()
-        color: Color.lock.textError
+        color: ShellColor.lock.textError
         font.family: Style.font.family
         font.pixelSize: 10 * root.s
         font.letterSpacing: 2 * root.s

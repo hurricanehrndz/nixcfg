@@ -11,11 +11,11 @@ Panel {
   ipcTarget: "omarchy.agents"
   manageIpc: false
 
-  readonly property color foreground: bar ? bar.foreground : Color.foreground
-  readonly property color urgent: bar ? bar.urgent : Color.urgent
+  readonly property color foreground: bar ? bar.foreground : ShellColor.foreground
+  readonly property color urgent: bar ? bar.urgent : ShellColor.urgent
   readonly property color dim: Qt.darker(foreground, 1.55)
-  readonly property color surface: Color.popups.background
-  readonly property color track: Style.selectedFillFor(foreground, Color.accent)
+  readonly property color surface: ShellColor.popups.background
+  readonly property color track: Style.selectedFillFor(foreground, ShellColor.accent)
   readonly property string fontFamily: bar ? bar.fontFamily : Style.font.family
 
   readonly property var providers: usage.enabledProviders
@@ -292,7 +292,7 @@ Panel {
     var candidates = []
     // Only Codex ships a light-surface twin; asking for claude-light.svg
     // logged a failed image load on every light theme.
-    if (p.providerId === "codex" && colorLuminance(surfaceColor || Color.background) >= 0.5)
+    if (p.providerId === "codex" && colorLuminance(surfaceColor || ShellColor.background) >= 0.5)
       candidates.push(Qt.resolvedUrl("assets/" + p.providerId + "-light.svg"))
     candidates.push(Qt.resolvedUrl("assets/" + p.providerId + ".svg"))
     return candidates

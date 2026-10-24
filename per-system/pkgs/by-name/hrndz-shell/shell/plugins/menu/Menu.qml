@@ -79,22 +79,22 @@ Item {
   // feedback), owned by the shell.
   readonly property var appLibrary: root.shell ? root.shell.appLibrary : null
   onAppLibraryChanged: if (root.opened && (root.activeMenu === "root" || root.activeMenu === "apps")) root.loadApps()
-  // Bound to the central [menu] section in shell.toml via Color.qml.
+  // Bound to the central [menu] section in shell.toml via ShellColor.qml.
   // Each color already includes its alpha companion (composed in the
   // singleton), so consumers can drop them straight into a Rectangle.
-  property color background: Color.menu.background
-  property color foreground: Color.menu.text
-  property color border: Color.menu.border
+  property color background: ShellColor.menu.background
+  property color foreground: ShellColor.menu.text
+  property color border: ShellColor.menu.border
   property var borderSpec: Border.surfaceSpec("menu", "border", border, Math.max(1, Style.space(2)))
-  property color scrim: Color.menu.scrim
-  property color selectedBackground: Color.menu.selectedBackground
-  property color selectedText: Color.menu.selectedText
-  property color selectedBorder: Color.menu.selectedBorder
+  property color scrim: ShellColor.menu.scrim
+  property color selectedBackground: ShellColor.menu.selectedBackground
+  property color selectedText: ShellColor.menu.selectedText
+  property color selectedBorder: ShellColor.menu.selectedBorder
   property var selectedBorderSpec: Border.surfaceSpec("menu", "selected-border", selectedBorder, 0)
   readonly property real rowReservedBorderLeft: Border.left(selectedBorderSpec)
   readonly property real rowReservedBorderRight: Border.right(selectedBorderSpec)
   readonly property int cornerRadius: Style.cornerRadius
-  readonly property color accent: Color.accent
+  readonly property color accent: ShellColor.accent
   readonly property color muted: Util.alpha(root.foreground, 0.55)
   readonly property color hairline: Util.alpha(root.foreground, 0.1)
   property int headerHeight: Style.space(62)
@@ -1280,7 +1280,7 @@ Item {
     id: keycap
     property string label: ""
     property bool bright: false
-    property color foreground: Color.menu.text
+    property color foreground: ShellColor.menu.text
     implicitWidth: Math.max(implicitHeight, keyText.implicitWidth + Style.space(12))
     implicitHeight: Style.space(22)
     radius: Math.min(Style.cornerRadius, Style.space(5))

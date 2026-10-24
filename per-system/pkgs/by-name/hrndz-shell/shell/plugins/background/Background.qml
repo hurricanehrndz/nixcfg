@@ -24,7 +24,7 @@ Item {
         screen: output.modelData
         visible: !remapGuard.remapping
         anchors { top: true; bottom: true; left: true; right: true }
-        color: Color.background
+        color: ShellColor.background
 
         ScreenMoveRemap {
           id: remapGuard
@@ -46,7 +46,7 @@ Item {
         screen: output.modelData
         visible: Ambient.screensaver && !Ambient.locked
         anchors { top: true; bottom: true; left: true; right: true }
-        color: Color.background
+        color: ShellColor.background
 
         WlrLayershell.namespace: "hrndz-screensaver"
         WlrLayershell.layer: WlrLayer.Overlay

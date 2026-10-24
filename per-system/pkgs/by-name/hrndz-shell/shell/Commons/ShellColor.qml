@@ -146,7 +146,7 @@ QtObject {
     if (!foundMuted) muted = color8Value.length > 0 ? color8Value : foreground
   }
 
-  // Single TOML walker for shell.toml. Both Color (surface roles) and Style
+  // Single TOML walker for shell.toml. Both ShellColor (surface roles) and Style
   // (typography, spacing, bar, control states) consume the resulting dict.
   // Accepts quoted strings, bare numeric values, bare width lists, and bare
   // role names; tolerates inline comments. Numbers are kept as strings here —

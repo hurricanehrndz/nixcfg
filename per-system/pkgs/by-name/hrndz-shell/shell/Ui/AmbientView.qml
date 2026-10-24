@@ -21,7 +21,7 @@ Rectangle {
   property bool publishPosition: false
   property bool resume: false
 
-  color: Color.background
+  color: ShellColor.background
 
   Image {
     anchors.fill: parent
