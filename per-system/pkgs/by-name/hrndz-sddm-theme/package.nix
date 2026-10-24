@@ -17,6 +17,8 @@
   font ? "monospace",
   ambientDir ? "/var/lib/ambient",
   playbackRate ? 1.0,
+  # Shown instead of the ambient video and still, as on the lock screen.
+  image ? null,
 }:
 stdenvNoCC.mkDerivation {
   pname = "hrndz-sddm-theme";
@@ -39,7 +41,8 @@ stdenvNoCC.mkDerivation {
       --subst-var-by base0D "${colors.base0D}" \
       --subst-var-by font "${font}" \
       --subst-var-by ambientDir "${ambientDir}" \
-      --subst-var-by playbackRate "${toString playbackRate}"
+      --subst-var-by playbackRate "${toString playbackRate}" \
+      --subst-var-by image "${lib.optionalString (image != null) "${image}"}"
 
     runHook postInstall
   '';

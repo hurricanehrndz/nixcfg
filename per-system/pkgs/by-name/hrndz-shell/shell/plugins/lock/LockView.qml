@@ -41,7 +41,10 @@ Item {
 
   // The clock sits on the ambient video or image, dimmed, where the lighter of
   // the scheme's two base colours reads; on the plain colour it is the text.
-  readonly property bool mediaBehind: Ambient.imageUrl !== "" || Ambient.hasVideo
+  // A configured lock image replaces the ambient video and its still.
+  readonly property string lockImageUrl: "@lockImageUrl@"
+  readonly property string imageUrl: lockImageUrl || Ambient.imageUrl
+  readonly property bool mediaBehind: imageUrl !== "" || Ambient.hasVideo
   readonly property color clockColor: !mediaBehind ? ShellColor.foreground
     : (ShellColor.foreground.hslLightness > ShellColor.background.hslLightness ? ShellColor.foreground : ShellColor.background)
 
@@ -89,7 +92,11 @@ Item {
       id: wallpaper
       anchors.fill: parent
       visible: false
-      video: root.loadBackground
+      // On Qt 6.12 the video stutters and then freezes on the lock surface
+      // while frames keep decoding (not on 6.11, and not in a single-window
+      // process); hosts on 6.12 set a lock image until a Qt release fixes it.
+      video: root.loadBackground && root.lockImageUrl === ""
+      imageUrl: root.imageUrl
       playing: Ambient.displaysOn
       resume: true
     }

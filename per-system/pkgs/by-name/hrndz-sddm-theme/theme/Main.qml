@@ -13,6 +13,8 @@ Rectangle {
   id: root
 
   readonly property string ambientDir: config.ambientDir
+  // A configured image replaces the ambient video and its still.
+  readonly property string image: config.image || ""
   readonly property color foreground: config.foreground
   readonly property color accent: config.accent
   readonly property color error: config.error
@@ -72,7 +74,7 @@ Rectangle {
     Image {
       id: still
       anchors.fill: parent
-      source: "file://" + root.ambientDir + "/still.png"
+      source: "file://" + (root.image || root.ambientDir + "/still.png")
       fillMode: Image.PreserveAspectCrop
       asynchronous: true
       sourceSize.width: Math.min(4096, root.width)
@@ -82,7 +84,7 @@ Rectangle {
     // picture only comes alive. A missing video leaves the still.
     MediaPlayer {
       id: player
-      source: "file://" + root.ambientDir + "/video"
+      source: root.image ? "" : "file://" + root.ambientDir + "/video"
       loops: MediaPlayer.Infinite
       playbackRate: parseFloat(config.playbackRate) || 1.0
       videoOutput: video

@@ -1,7 +1,10 @@
 { pkgs, ... }:
 {
   hrndz.desktop = {
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      lockImage = ./lock.jpg;
+    };
     gaming.enable = true;
   };
 

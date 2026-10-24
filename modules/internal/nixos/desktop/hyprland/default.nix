@@ -37,6 +37,7 @@ in
           inherit inputs;
         };
         inherit (cfg.ambient) playbackRate;
+        inherit (cfg) lockImage;
         lockBlankSeconds = cfg.idle.lockBlank;
         extraMenuItems = cfg.menuItems;
       };
@@ -58,6 +59,15 @@ in
       description = ''
         Host-specific rows added to the shell menu, keyed by menu id, in the
         same shape as menu.jsonc (for example `"setup.foo".action`).
+      '';
+    };
+
+    lockImage = mkOption {
+      type = types.nullOr types.path;
+      default = null;
+      description = ''
+        Image behind the lock and login screens. Null plays the ambient
+        video on both instead.
       '';
     };
 
