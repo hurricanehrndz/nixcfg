@@ -119,6 +119,10 @@ in
       virtualisation.libvirtd = {
         enable = true;
         qemu.swtpm.enable = mkDefault true;
+        # Only guests flagged with `virsh autostart` start at boot; the
+        # NixOS default (suspend + start) resumes whatever was running.
+        onBoot = mkDefault "ignore";
+        onShutdown = mkDefault "shutdown";
       };
     })
 
