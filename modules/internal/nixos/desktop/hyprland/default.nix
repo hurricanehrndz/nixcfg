@@ -12,6 +12,7 @@ let
     types
     ;
   cfg = config.hrndz.desktop.hyprland;
+  stablePkgs = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   options.hrndz.desktop.hyprland = {
@@ -25,6 +26,13 @@ in
       internal = true;
       default = pkgs.callPackage ../../../../../per-system/pkgs/by-name/hrndz-shell/package.nix {
         hyprland = config.programs.hyprland.package;
+        # Quickshell on the 26.05 release's Qt 6.11: on Qt 6.12 the lock
+        # screen's video stutters and freezes. Only Qt comes from 26.05; a
+        # whole-26.05 build has an older glibc than the system's GPU driver
+        # and gets no EGL. This costs a second Qt in the closure; drop these
+        # lines once a 6.12 point release plays the lock preview smoothly.
+        inherit (stablePkgs) qt6;
+        quickshell = pkgs.quickshell.override { inherit (stablePkgs) qt6; };
         omasnap = pkgs.callPackage ../../../../../per-system/pkgs/by-name/omasnap/package.nix {
           inherit inputs;
         };
