@@ -32,7 +32,11 @@ Item {
   property bool strandedLock: false
   property bool strandedLockResolved: false
 
-  readonly property bool locked: lockRequested || sessionLock.locked || sessionLock.secure
+  // Only lockRequested: WlSessionLock doesn't always emit lockStateChanged on
+  // unlock, so a binding on sessionLock.locked could stay true and turn every
+  // later lock() into a no-op. The session lock is only taken while
+  // lockRequested is set, and every unlock path clears it.
+  readonly property bool locked: lockRequested
   readonly property bool authenticating: authenticatingPassword
 
   function realScreenCount() {
