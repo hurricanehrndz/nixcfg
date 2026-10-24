@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  options,
   osConfig,
   ...
 }:
@@ -13,6 +14,44 @@ let
   findDirs = args: find (args // { type = "d"; });
   dirPreviewCommand = "${l.getBin pkgs.eza}/bin/eza --tree {} | head -n 200";
   filePreviewCommand = "${l.getBin pkgs.bat}/bin/bat -n --color=always {}";
+
+  fileWidget = {
+    command = findFiles {
+      hidden = true;
+      follow = true;
+      exclude = [
+        ".git"
+        ".devenv"
+        ".direnv"
+        ".std"
+        "node_modules"
+        "vendor"
+      ];
+    };
+    options = [
+      "--preview '${filePreviewCommand}'"
+    ];
+  };
+  changeDirWidget = {
+    command = findDirs { };
+    options = [
+      "--tiebreak=index"
+      "--preview '${dirPreviewCommand}'"
+    ];
+  };
+
+  # Renamed to fileWidget.* / changeDirWidget.* on main-branch home-manager;
+  # the 26.05 release only has the flat names.
+  widgets =
+    if options.programs.fzf ? fileWidget then
+      { inherit fileWidget changeDirWidget; }
+    else
+      {
+        fileWidgetCommand = fileWidget.command;
+        fileWidgetOptions = fileWidget.options;
+        changeDirWidgetCommand = changeDirWidget.command;
+        changeDirWidgetOptions = changeDirWidget.options;
+      };
 in
 {
   config = l.mkIf cfg.roles.terminalUser.enable {
@@ -26,29 +65,8 @@ in
         "ctrl-f:preview-page-down,ctrl-b:preview-page-up"
       ];
 
-      fileWidgetCommand = findFiles {
-        hidden = true;
-        follow = true;
-        exclude = [
-          ".git"
-          ".devenv"
-          ".direnv"
-          ".std"
-          "node_modules"
-          "vendor"
-        ];
-      };
-      fileWidgetOptions = [
-        "--preview '${filePreviewCommand}'"
-      ];
-
-      changeDirWidgetCommand = findDirs { };
-      changeDirWidgetOptions = [
-        "--tiebreak=index"
-        "--preview '${dirPreviewCommand}'"
-      ];
-
       enableZshIntegration = false;
-    };
+    }
+    // widgets;
   };
 }

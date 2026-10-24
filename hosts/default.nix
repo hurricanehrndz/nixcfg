@@ -46,6 +46,9 @@ in
     shared.modules = [
       (import-tree ../modules/internal/shared)
     ];
+    # easy-hosts folds specialArgs shared -> host -> perClass, last one
+    # winning, so the default channel lives here where a host can override it.
+    shared.specialArgs.channel = "stable";
 
     perClass = class: {
       modules =
@@ -85,7 +88,6 @@ in
 
       specialArgs = {
         isBootstrap = inputs.bootstrap.value;
-        channel = "stable";
         inherit channelInputs;
       };
     };
