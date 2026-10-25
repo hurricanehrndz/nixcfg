@@ -61,7 +61,10 @@ in
           log-file = "$HOME/.gnupg/gpg-agent.log";
           debug-ccid-driver = true;
           # reader-port = "Yubico Yubikey";
-          card-timeout = "1";
+          # Keep the card connected so its PIN stays verified between SSH
+          # operations (card-timeout powers it off and drops the PIN). Shared
+          # access lets ykman reach OATH through pcscd meanwhile.
+          pcsc-shared = true;
         };
 
         # https://github.com/drduh/config/blob/master/gpg.conf
