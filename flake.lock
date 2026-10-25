@@ -1323,6 +1323,7 @@
         "pdenv": "pdenv",
         "pi": "pi",
         "pkgs-by-name-for-flake-parts": "pkgs-by-name-for-flake-parts_2",
+        "sidra": "sidra",
         "snapraid-runner": "snapraid-runner",
         "stylix": "stylix",
         "stylix-unstable": "stylix-unstable",
@@ -1330,6 +1331,26 @@
         "treefmt-nix": "treefmt-nix_6",
         "zen-browser": "zen-browser",
         "zephyr-zsh-src": "zephyr-zsh-src"
+      }
+    },
+    "sidra": {
+      "inputs": {
+        "nixpkgs": [
+          "nixos-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792884562,
+        "narHash": "sha256-Oo5fj3jEvziZ5PDSrhewJ2mMK2rCVfhSBMplogvG8RU=",
+        "owner": "wimpysworld",
+        "repo": "sidra",
+        "rev": "34e7eb680a02f43b64216f4ddfe97d6fc978a257",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wimpysworld",
+        "repo": "sidra",
+        "type": "github"
       }
     },
     "snapraid-runner": {

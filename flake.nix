@@ -29,9 +29,11 @@
     nixos-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    # Browser packages that have not landed in nixpkgs yet.
+    # Desktop packages that have not landed in nixpkgs yet.
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
     zen-browser.inputs.nixpkgs.follows = "nixos-unstable";
+    sidra.url = "github:wimpysworld/sidra";
+    sidra.inputs.nixpkgs.follows = "nixos-unstable";
     # nix-darwin
     nixpkgs-darwin.url = "github:NixOS/nixpkgs/nixpkgs-26.05-darwin";
 

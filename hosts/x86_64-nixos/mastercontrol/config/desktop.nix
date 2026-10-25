@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   hrndz.desktop = {
     hyprland = {
@@ -17,6 +17,6 @@
     discord
     obsidian
     zed-editor
-    local.sidra
+    inputs.sidra.packages.${pkgs.stdenv.hostPlatform.system}.sidra
   ];
 }
