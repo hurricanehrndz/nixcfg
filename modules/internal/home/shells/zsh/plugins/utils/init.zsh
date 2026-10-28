@@ -25,6 +25,21 @@ if [[ -n "$TMUX" ]]; then
     add-zsh-hook preexec _update_ssh_agent
 fi
 
+# Append gitignore.io templates to the repo's .gitignore; no args opens a picker.
+gi() {
+    local api="https://www.toptal.com/developers/gitignore/api"
+    local -a templates=("$@")
+    if ((!$#templates)); then
+        templates=(${(f)"$(curl -fsSL "$api/list?format=lines" |
+            fzf -m --preview "curl -fsSL $api/{}")"})
+    fi
+    (($#templates)) || return 1
+    local file="$(git rev-parse --show-toplevel 2>/dev/null || print -r -- "$PWD")/.gitignore"
+    local body
+    body="$(curl -fsSL "$api/${(j:,:)templates}")" || return
+    print -r -- "$body" >>"$file" && print -r -- "updated $file"
+}
+
 batman() {
     BAT_THEME='Catppuccin Latte' command batman "$@"
     return $?
