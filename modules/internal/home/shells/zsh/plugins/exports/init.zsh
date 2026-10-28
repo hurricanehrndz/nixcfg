@@ -41,3 +41,6 @@ export FZF_CTRL_R_COMMAND=
 
 # virtual machines
 export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+# free `gi` for the gitignore.io helper in utils
+export forgit_ignore='forgit-ignore'
