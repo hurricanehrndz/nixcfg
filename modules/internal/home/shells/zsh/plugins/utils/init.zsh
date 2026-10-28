@@ -25,11 +25,6 @@ if [[ -n "$TMUX" ]]; then
     add-zsh-hook preexec _update_ssh_agent
 fi
 
-gi() {
-    local IFS=,
-    curl -sL "https://www.toptal.com/developers/gitignore/api/$*"
-}
-
 batman() {
     BAT_THEME='Catppuccin Latte' command batman "$@"
     return $?
