@@ -42,6 +42,5 @@ in
     # Keep kernel and initrd messages off the splash (plymouth adds "splash").
     boot.kernelParams = [ "quiet" ];
     boot.consoleLogLevel = 3;
-    boot.initrd.verbose = false;
   };
 }
