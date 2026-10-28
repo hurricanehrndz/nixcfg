@@ -36,12 +36,6 @@ in
     global.brewfile = true;
     onActivation.upgrade = true;
     onActivation.autoUpdate = true;
-    # Homebrew 6 refuses to load formulae from custom-remote taps (e.g.
-    # `jundot/omlx`, see programs/ai.nix) until they're trusted via `brew
-    # trust`, which otherwise prompts interactively during activation. Opt out
-    # of the trust check for the unattended `brew bundle` run; activation runs
-    # under sudo, so this isn't inherited from the user's shell env.
-    onActivation.extraEnv.HOMEBREW_NO_REQUIRE_TAP_TRUST = "1";
     # Homebrew 6 deprecated the bare `--cleanup` switch that nix-darwin's
     # `onActivation.cleanup = "zap"` emits ("Calling the --cleanup switch is
     # deprecated"). Keep cleanup off in the module and drive it ourselves via

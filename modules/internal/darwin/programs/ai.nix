@@ -15,11 +15,14 @@ in
       {
         name = "jundot/omlx";
         clone_target = "https://github.com/jundot/omlx";
+        trusted = true;
       }
     ];
 
     homebrew.brews = [
-      "omlx" # MLX-based local LLM server; run `omlx start`
+      # Fully qualified: `brew bundle cleanup` matches entries against each
+      # formula's full name, so a bare `omlx` keeps omlx but not its deps.
+      "jundot/omlx/omlx" # MLX-based local LLM server; run `omlx start`
     ];
   };
 }
