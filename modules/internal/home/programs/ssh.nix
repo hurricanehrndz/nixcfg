@@ -68,6 +68,14 @@ in
           HostName = "172.24.225.1";
           User = "hurricane";
           ForwardAgent = true;
+          LocalForward = [
+            {
+              bind.address = "127.0.0.1";
+              bind.port = 1315;
+              host.address = "127.0.0.1";
+              host.port = 1313;
+            }
+          ];
           RemoteForward = [
             {
               host.address = localGpgExtraSocket;
