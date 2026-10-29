@@ -48,6 +48,8 @@ in
     shell = pkgs.zsh;
   };
 
+  home-manager.users.${username}.programs.git.settings.user.email = lib.mkForce "chernand@yelp.com";
+
   system.primaryUser = "${username}";
   system.stateVersion = lib.mkForce 6;
 }
