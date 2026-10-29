@@ -61,11 +61,13 @@ in
           log-file = "$HOME/.gnupg/gpg-agent.log";
           debug-ccid-driver = true;
           # reader-port = "Yubico Yubikey";
-          # Keep the card connected so its PIN stays verified between SSH
-          # operations (card-timeout powers it off and drops the PIN). Shared
-          # access lets ykman reach OATH through pcscd meanwhile.
-          pcsc-shared = true;
-        };
+        }
+        # Linux: keep the card connected so its PIN stays verified between SSH
+        # operations (card-timeout powers it off and drops the PIN). Shared
+        # access lets ykman reach OATH through pcscd meanwhile.
+        # macOS: shared access lets CryptoTokenKit reset the card, which makes
+        # every operation ask for the PIN, so release the card instead.
+        // (if isLinux then { pcsc-shared = true; } else { card-timeout = "1"; });
 
         # https://github.com/drduh/config/blob/master/gpg.conf
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
