@@ -27,6 +27,12 @@ in
           "${home}/src/me/agent-toolkit"
           "${home}/src/me/respec"
         ];
+        # Like direnv's load/unload messages: print the tools, env vars and PATH
+        # entries that change when an activated shell enters or leaves a project.
+        status = {
+          show_tools = true;
+          show_env = true;
+        };
       };
     };
   };
