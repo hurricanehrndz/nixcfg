@@ -30,8 +30,21 @@ let
     order = 6;
   };
 
+  # Not a cachedInit: `mise activate` embeds the caller's PATH in its output.
+  miseActivate = {
+    name = "mise";
+    content = ''
+      eval "$(${lib.getExe pkgs.unstable.mise} activate zsh)"
+    '';
+    order = 1610; # After direnv
+  };
+
+  optionalRawScripts =
+    lib.optional config.services.gpg-agent.enable gpgAgentTty
+    ++ lib.optional cfg.roles.terminalDeveloper.enable miseActivate;
+
   # zsh raw scripts
-  rawScripts = lib.optional config.services.gpg-agent.enable gpgAgentTty ++ [
+  rawScripts = optionalRawScripts ++ [
     # {
     #   name = "zprof";
     #   content = ''
