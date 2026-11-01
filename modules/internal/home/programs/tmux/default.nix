@@ -97,8 +97,9 @@ in
         set -g status-style "bg=${c.base00},fg=${c.base05}"
         set -g status-left-length 100
         set -g status-right-length 100
-        set -g message-style "fg=${c.base0C},bg=${c.base01},align=centre"
-        set -g message-command-style "fg=${c.base0C},bg=${c.base01},align=centre"
+        # tmux 3.7 draws messages over the status line; fill clears it.
+        set -g message-style "fg=${c.base0C},bg=${c.base01},fill=${c.base01}"
+        set -g message-command-style "fg=${c.base0C},bg=${c.base01},fill=${c.base01}"
         set -g mode-style "bg=${c.base01},bold"
         set -g menu-selected-style "fg=${c.base05},bold,bg=${c.base02}"
         set -g popup-style "bg=${c.base00},fg=${c.base05}"
