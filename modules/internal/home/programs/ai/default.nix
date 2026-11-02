@@ -21,6 +21,8 @@ in
       packages.claude-code
       packages.herdr
       packages.prime-agent
+      # bx, the Brave Search CLI the bx and web-search skills call.
+      pkgs.brave-search-cli
     ]
     # agent-browser drives a real Chrome via CDP; on headless hosts it has no
     # usable browser (and its `install` download won't run on NixOS), so gate
