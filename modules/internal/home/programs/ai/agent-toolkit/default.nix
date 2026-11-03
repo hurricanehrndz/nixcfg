@@ -7,6 +7,18 @@
 let
   cfg = osConfig.hrndz;
 
+  # Unlisted test-rig commands have their links removed by the sync wrapper.
+  binFlags = lib.escapeShellArgs (
+    lib.optionals cfg.tooling.ai.testRig.windows.enable [
+      "--bin"
+      "rig"
+    ]
+    ++ lib.optionals cfg.tooling.ai.testRig.macos.enable [
+      "--bin"
+      "mac"
+    ]
+  );
+
   # Home Manager also activates at boot on NixOS, before the network is up.
   # The toolkit only updates on a switch. Darwin has no systemctl, so this is
   # always false there.
@@ -72,7 +84,7 @@ in
             exit 1
           fi
 
-          ${pkgs.nodejs_24}/bin/node "$toolkit" --dry-run --home "$HOME"
+          ${pkgs.nodejs_24}/bin/node "$toolkit" --dry-run --home "$HOME" ${binFlags}
         else
           # During a Home Manager dry-run, the clone is printed rather than
           # performed, so there is no checkout to validate yet.
@@ -96,7 +108,7 @@ in
       if ${booting}; then
         :
       elif [ -f "$toolkit" ]; then
-        $DRY_RUN_CMD ${pkgs.nodejs_24}/bin/node "$toolkit" --home "$HOME"
+        $DRY_RUN_CMD ${pkgs.nodejs_24}/bin/node "$toolkit" --home "$HOME" ${binFlags}
       elif [ -n "''${DRY_RUN_CMD:-}" ] && [ ! -e "$repo" ]; then
         echo "agentToolkit: checkout would be reconciled after clone"
       else

@@ -27,6 +27,12 @@ in
         # omlx and friends load large MLX models into RAM, so only enable this
         # on hosts with ample memory (>=30GB). Off by default; flip on per-host.
         localInference.enable = mkEnableOption "Enable local LLM inference tooling (omlx)";
+
+        # Agent Toolkit links these test-rig commands into ~/.local/bin.
+        testRig = {
+          windows.enable = mkEnableOption "the `rig` command for the windows-test-rig skill";
+          macos.enable = mkEnableOption "the `mac` command for the macos-test-rig skill";
+        };
       };
 
       golang.enable = mkEnableOption "Enable Golang tooling";
