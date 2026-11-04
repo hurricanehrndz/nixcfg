@@ -35,7 +35,7 @@ assert_settings() {
     .includeCoAuthoredBy == false and
     .permissions.defaultMode == "auto" and
     .permissions.allow == [
-      "Bash(*)", "Read(*)", "Edit(*)", "Write(*)", "WebFetch(*)"
+      "Bash(*)", "Read", "Edit", "Write", "WebFetch(*)"
     ] and
     .permissions.deny == [
       "Bash(sudo:*)", "Bash(su:*)", "Bash(doas:*)", "Bash(mkfs:*)",

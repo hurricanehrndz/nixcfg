@@ -42,9 +42,10 @@ let
       # allow), so only the genuinely destructive commands are blocked.
       allow = [
         "Bash(*)"
-        "Read(*)"
-        "Edit(*)"
-        "Write(*)"
+        # Bare names: "Read(*)" etc. only cover the working directories.
+        "Read"
+        "Edit"
+        "Write"
         "WebFetch(*)"
       ];
       deny = [
