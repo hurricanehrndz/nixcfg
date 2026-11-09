@@ -164,6 +164,11 @@ in
         "*.sql"
         "*.sqlite"
 
+        # Python cache files #
+        ######################
+        "__pycache__/"
+        "*.py[cod]"
+
         # OS generated files #
         ######################
         ".DS_Store"
