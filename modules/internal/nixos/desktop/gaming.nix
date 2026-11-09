@@ -13,7 +13,7 @@ let
 in
 {
   options.hrndz.desktop.gaming = {
-    enable = mkEnableOption "Steam with Proton, gamemode, gamescope and MangoHud";
+    enable = mkEnableOption "Steam with Proton, gamemode, gamescope, MangoHud and OpenRA";
   };
 
   config = mkIf cfg.enable {
@@ -31,6 +31,9 @@ in
 
     users.users.${config.system.primaryUser}.extraGroups = [ "gamemode" ];
 
-    environment.systemPackages = [ pkgs.mangohud ];
+    environment.systemPackages = [
+      pkgs.mangohud
+      pkgs.openra
+    ];
   };
 }
