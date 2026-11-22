@@ -162,9 +162,22 @@ Item {
     liveRefs[snapshot.originalId] = notification
     // Guard the delete: a newer notification may have reused this originalId
     // (freedesktop replaces_id) and taken over the map slot.
-    notification.closed.connect(function() {
-      if (service.liveRefs[snapshot.originalId] === notification)
-        delete service.liveRefs[snapshot.originalId]
+    notification.closed.connect(function(reason) {
+      if (service.liveRefs[snapshot.originalId] !== notification) return
+      delete service.liveRefs[snapshot.originalId]
+      // The sender closed it (CloseNotification). Dismiss and expire already
+      // go through removePopup; without this a sender's close left the toast
+      // up, for ever if it was critical. liveRefs is cleared first so
+      // removePopup sends no close back. From olafkfreund/nixarchy dc081dd
+      // (MIT).
+      if (reason !== NotificationCloseReason.CloseRequested) return
+      Qt.callLater(function() {
+        for (var i = popupModel.count - 1; i >= 0; i--) {
+          var row = popupModel.get(i)
+          if (row && row.originalId === snapshot.originalId && !isRestoredRow(row))
+            service.removePopup(i, "close")
+        }
+      })
     })
 
     // DND bypass rules: chat apps abuse urgency=critical to force
