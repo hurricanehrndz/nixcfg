@@ -29,7 +29,7 @@ let
           { id = "omarchy.indicators"; }
           {
             id = "omarchy.clock";
-            format = "dddd HH:mm";
+            format = "dddd, MMMM d HH:mm";
             formatAlt = "d MMMM 'W'ww yyyy";
             verticalFormat = "HH\n—\nmm";
           }
