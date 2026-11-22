@@ -2,6 +2,7 @@
   config,
   lib,
   osConfig,
+  pkgs,
   ...
 }:
 let
@@ -31,7 +32,15 @@ in
         PartOf = [ config.programs.quickshell.systemd.target ];
         X-Restart-Triggers = [ "${shell}" ];
       };
-      Service.RestartSec = 1;
+      Service = {
+        RestartSec = 1;
+        # Quickshell 0.3.2 picks its network backend once at startup and never
+        # retries, so a switch that restarts NetworkManager alongside the shell
+        # leaves the bar showing no network until the next restart. Wait for NM
+        # on the bus; '-' and the timeout keep a missing NM from blocking the
+        # shell. Drop this once Quickshell reconnects a late backend itself.
+        ExecStartPre = lib.mkIf osConfig.networking.networkmanager.enable "-${pkgs.glib}/bin/gdbus wait --system --timeout 15 org.freedesktop.NetworkManager";
+      };
     };
 
     home.packages = [ shell ];
