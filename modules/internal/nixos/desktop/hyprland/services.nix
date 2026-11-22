@@ -14,8 +14,11 @@ in
     security.polkit.enable = true;
     services.dbus.enable = true;
 
-    # The shell's lock screen authenticates through this PAM service.
-    security.pam.services.desktop-lock = { };
+    # The shell's lock screen authenticates through this PAM service. It also
+    # unlocks the login keyring, for a session that started without a
+    # password (autologin). From olafkfreund/nixarchy 6297375 (MIT).
+    security.pam.services.desktop-lock.enableGnomeKeyring =
+      mkDefault config.services.gnome.gnome-keyring.enable;
 
     services.logind.settings.Login = {
       # The shell's power menu owns the power button; logind's default
