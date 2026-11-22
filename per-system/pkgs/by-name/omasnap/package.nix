@@ -24,15 +24,13 @@
 }:
 let
   tesseract' = tesseract.override { enableLanguages = [ "eng" ]; };
-  cmakeVersion = lib.head (
-    builtins.match ".*project\\(omasnap VERSION ([0-9.]+).*" (
-      builtins.readFile "${inputs.omasnap}/CMakeLists.txt"
-    )
-  );
+  # Upstream derives its version from git tags, which a flake source lacks,
+  # so report the revision through its OMASNAP_VERSION override instead.
+  version = "0-unstable-${inputs.omasnap.shortRev}";
 in
 stdenv.mkDerivation {
   pname = "omasnap";
-  version = "${cmakeVersion}-unstable-${inputs.omasnap.shortRev}";
+  inherit version;
 
   src = inputs.omasnap;
 
@@ -41,7 +39,10 @@ stdenv.mkDerivation {
       --replace-fail /usr/share/wayland-protocols ${wayland-protocols}/share/wayland-protocols
   '';
 
-  cmakeFlags = [ (lib.cmakeBool "BUILD_TESTING" false) ];
+  cmakeFlags = [
+    (lib.cmakeBool "BUILD_TESTING" false)
+    (lib.cmakeFeature "OMASNAP_VERSION" version)
+  ];
 
   nativeBuildInputs = [
     cmake
@@ -64,7 +65,7 @@ stdenv.mkDerivation {
   # wrapped binary starts. Enable doCheck again if upstream loosens it.
   doInstallCheck = true;
   installCheckPhase = ''
-    QT_QPA_PLATFORM=offscreen $out/bin/omasnap --version | grep -F ${cmakeVersion}
+    QT_QPA_PLATFORM=offscreen $out/bin/omasnap --version | grep -F ${version}
   '';
 
   qtWrapperArgs = [
